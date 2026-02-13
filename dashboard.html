@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Proma</title>
+  <style>
+    body {
+      margin: 0px;
+      font-family: "Helvetica Neue",
+        Arial,
+        "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans",
+        "Noto Sans JP",
+        sans-serif;
+      background: #ffffff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 固定ヘッダー（スクロールしても消えない） */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: #ffffff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 18px;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 5px 0px 0px 5px;
+      font-size: 20px;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0px 0px 2px 0px;
+      font-size: 15px;
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 30px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 35px;
+      height: 41px;
+      background: #008632;
+      color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      display: none;
+      min-width: 90px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .account-menu .menu-item {
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .account-menu .menu-item:hover {
+      background: #006C29;
+    }
+
+    /* 左端に固定されるアイコン */
+    .header-account_circle {
+      width: 22px;
+      height: 22px;
+      padding: 5px 0px 0px 0px;
+    }
+
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 1px;
+      height: calc(100vh - 30px);
+    }
+
+    /* 左ペイン */
+    .sidebar {
+      width: 200px;
+      background: #008632;
+      color: #ffffff;
+      padding: 2px;
+      box-sizing: border-box;
+      overflow: visible;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar h2 {
+      margin: 10px 0px 5px 10px;
+      font-size: 18px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #4A9A2A;
+    }
+
+    .sidebar-logo-proma {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .sidebar-logo-marushin {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1500;
+    }
+
+    /* ツリーメニュー */
+    .menu-item {
+      margin-top: 0px;
+      position: relative;
+    }
+
+    .menu-title {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0px 10px;
+      border-radius: 3px;
+
+    }
+
+    .menu-title img {
+      margin-right: 8px;
+    }
+
+    .menu-label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-item:hover>.submenu {
+      display: block;
+    }
+
+    .menu-item:hover .menu-title {
+      background: #006C29;
+      /* 好きな色に変更 */
+    }
+
+    .menu-title span {
+      font-size: 16px;
+    }
+
+    .arrow {
+      transition: transform 0.2s;
+      margin-left: auto;
+    }
+
+    /* サブメニュー */
+    .submenu {
+      position: absolute;
+      /* 右側に出すために絶対配置 */
+      top: -13px;
+      left: 100%;
+      /* menu-title の右側に表示 */
+      background: #008632;
+      padding: 0px 0px 0px 0px;
+      border-radius: 3px;
+      display: none;
+      min-width: 250px;
+      list-style: none;
+    }
+
+    .submenu li {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .submenu li:hover {
+      background: #006C29;
+      /* 好きな色に変更 */
+      border-radius: 4px;
+      /* 角丸にしたい場合 */
+    }
+
+    .submenu a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* メインコンテンツ */
+    .content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    .dashboard-section {
+      display: flex;
+      gap: 30px;
+      margin-top: 0px;
+      width: 50%;
+      flex-direction: column;
+    }
+
+    .dashboard-box.info-box {
+      flex: 1;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 5px 10px 5px 10px;
+      max-height: 30vh;
+      overflow-y: auto;
+    }
+
+    .dashboard-box.notice-box {
+      flex: 1;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 5px 10px 5px 10px;
+      max-height: 55vh;
+      overflow-y: auto;
+    }
+
+    .dashboard-box h2 {
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 17px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .dashboard-list {
+      list-style: none;
+      padding-left: 3px;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .dashboard-list li {
+      padding: 5px 0;
+      font-size: 14px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .dashboard-list li:last-child {
+      border-bottom: none;
+    }
+
+    .dashboard-list a {
+      text-decoration: none;
+      /* 下線を消す */
+
+    }
+
+    /* モーダル背景（黒の半透明） */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 2000;
+    }
+
+    /* モーダル本体 */
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      padding: 20px;
+      width: 85%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 2001;
+    }
+
+    .modal-window h3 {
+      margin-top: 0;
+      font-size: 18px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+
+    .modal-footer {
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    .modal-close {
+      margin-top: 15px;
+      padding: 8px 15px;
+      background: #008632;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      
+    }
+
+    .modal-close:hover {
+      background: #006C29;
+    }
+
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #fff;
+      margin-top: 10px;
+    }
+
+    .modal-table th {
+      background: #008632;
+      color: #fff;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .modal-table td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .modal-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    .modal-table tr:hover {
+      background: #e8f5e9;
+    }
+
+    .modal-table,
+    .modal-table th,
+    .modal-table td {
+      border: 1px solid #ccc;
+    }
+
+    /* ガントチャートスタート */
+    .timeline-wrapper {
+      position: relative;
+      margin-bottom: 0px;
+      width: 600px;
+    }
+
+    /* 背景の一本線（丸の中心を通る） */
+    .timeline-line {
+      position: absolute;
+      top: 47%;
+      left: 50px;
+      right: 50px;
+      height: 6px;
+      background: #ccc;
+      z-index: 1;
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step {
+      text-align: center;
+      width: 120px;
+      position: relative;
+    }
+
+    /* 丸いボタン（ノード） */
+    .completednode-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 10px;
+      border-radius: 50%;
+      border: none;
+      background: #4caf50;
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      box-shadow: 0 0 0 3px white, 0 0 0 5px #4caf50;
+    }
+
+    /* 丸いボタン（ノード） */
+    .notcompletednode-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 10px;
+      border-radius: 50%;
+      border: none;
+      background: #ccc;
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      box-shadow: 0 0 0 3px white, 0 0 0 5px #ccc;
+    }
+
+    .node-btn:hover {
+      background: #43a047;
+    }
+
+    /* 予定・実績 */
+    .plan {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #000000;
+    }
+
+    .actual {
+      font-size: 14px;
+      margin-top: 6px;
+      color: #000000;
+    }
+
+    /* ガントチャートエンド */
+
+    /* 画面の高さが750px以下ならロゴを非表示 */
+    @media (max-height: 750px) {
+      .sidebar-logo-proma {
+        display: none;
+      }
+    }
+
+    /* 画面の高さが600px以下ならロゴを非表示 */
+    @media (max-height: 600px) {
+      .sidebar-logo-marushin {
+        display: none;
+      }
+    }
+
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 650px) {
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: 20px;
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .content {
+        flex: 1;
+        padding: 20px;
+        /* 好みで調整 */
+        margin-left: -200px;
+        /* ← これが重要 */
+        width: 100%;
+        /* 念のため */
+      }
+
+      .dashboard-section {
+        display: flex;
+        gap: 30px;
+        margin-top: 0px;
+        width: 100%;
+        flex-direction: column;
+      }
+
+      /* サイドバーを隠す */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+
+      /* 開いた状態 */
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!-- ★ 固定ヘッダー（スクロールしても消えない） -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ★ ヘッダーの下に全体レイアウト -->
+  <div class="main-wrapper">
+
+    <!-- 左ペイン -->
+    <div class="sidebar">
+      <h2>メニュー</h2>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/linear_scale_20dp_F4F6F9.svg">
+          <span>進捗管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/color_lens_20dp_F4F6F9.svg">
+          <span>図案管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">概算見積依頼</a></li>
+          <li><a href="#">別注図案依頼</a></li>
+          <li><a href="#">図案情報登録</a></li>
+          <li><a href="#">図案振分け</a></li>
+          <li><a href="#">図案アップロード</a></li>
+          <li><a href="#">見積依頼</a></li>
+          <li><a href="#">図案選定結果登録</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/edit_document_20dp_F4F6F9.svg">
+          <span>仕様書管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/smart_toy_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>サンプル管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/high_quality_20dp_F4F6F9.svg">
+          <span>品質管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/manufacturing_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>発注管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/directions_boat_filled_20dp_F4F6F9.svg">
+          <span>入荷管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/map_20dp_F4F6F9.svg">
+          <span>マップ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/conversation_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>評価分析</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/factory_20dp_F4F6F9.svg">
+          <span>工場監査</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>マスタ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li>機能①</li>
+          <li>機能②</li>
+          <li>機能③</li>
+        </ul>
+      </div>
+
+      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="150">
+      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="180">
+
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="content">
+      <div class="dashboard-section">
+
+        <!-- お知らせ -->
+        <div class="dashboard-box info-box">
+          <h2>お知らせ</h2>
+          <ul class="dashboard-list">
+            <li>
+              2026/01/02　例）【重要】システムメンテナンスのお知らせ
+              <br>例）
+              <br>以下の日程でシステムメンテナンスを実施いたします。
+              <br>日時：◯月◯日（◯）◯◯:◯◯〜◯◯:◯◯
+              <br>メンテナンス中は本サービスをご利用いただくことができません。
+            </li>
+            <li>
+              2026/01/01　タイトル
+              <br>１行目本文
+              <br>２行目本文
+              <br>３行目本文
+            </li>
+          </ul>
+        </div>
+
+        <!-- 通知 -->
+        <div class="dashboard-box notice-box">
+          <h2>通知</h2>
+          <ul class="dashboard-list">
+            <li><a href="#" data-title="進行中データ">9,999件の進行中データがあります。</a></li>
+            <li><a href="#" data-title="遅延している進行中データ">遅延している進行中データが9,999件あります。</a></li>
+            <li><a href="#" data-title="結果未登録の図案選定">結果未登録の図案選定が9,999件あります。</a></li>
+            <li><a href="#" data-title="未承認の別注図案作成依頼">未承認の別注図案作成依頼が9,999件あります。</a></li>
+            <li><a href="#" data-title="未承認の試作仕様書">未承認の試作仕様書が9,999件あります。</a></li>
+            <li><a href="#" data-title="未承認の最終仕様書">未承認の最終仕様書が9,999件あります。</a></li>
+            <li><a href="#" data-title="未承認のShip依頼書/国内手配書">未承認のShip依頼書/国内手配書が9,999件あります。</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="right-pane">
+      <!-- 右側のコンテンツ（必要なら） -->
+    </div>
+  </div>
+
+  <!-- ▼ モーダル（小窓） -->
+  <div id="modal-overlay" class="modal-overlay"></div>
+
+  <div id="modal-window" class="modal-window">
+    <h3 id="modal-title"></h3>
+    <div class="modal-list" id="modal-list">
+      <table class="modal-table">
+        <thead>
+          <tr>
+            <th>販売区分</th>
+            <th>展示会</th>
+            <th>担当</th>
+            <th>カテゴリー</th>
+            <th>キャラクター</th>
+            <th>進行状況</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>定番</td>
+            <td>2026.01</td>
+            <td>丸眞花子(商品部)</td>
+            <td>タオル</td>
+            <td>ミッキー</td>
+            <td>
+              <div class="timeline-wrapper small-timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline">
+                  <div class="step">
+                    <div class="plan">1月10日</div>
+                    <button class="completednode-btn">図提</button>
+                    <div class="actual">1月12日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月15日</div>
+                    <button class="notcompletednode-btn">図申</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月20日</div>
+                    <button class="notcompletednode-btn">試入</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月25日</div>
+                    <button class="notcompletednode-btn">サ申</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月30日</div>
+                    <button class="notcompletednode-btn">最入</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月5日</div>
+                    <button class="notcompletednode-btn">発注</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月10日</div>
+                    <button class="notcompletednode-btn">手配</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月15日</div>
+                    <button class="notcompletednode-btn">入荷</button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>別注</td>
+            <td></td>
+            <td>丸眞花子(商品部)　丸眞太郎(営業部)</td>
+            <td>タオル</td>
+            <td>ミッキー</td>
+            <td>
+              <div class="timeline-wrapper small-timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline">
+                  <div class="step">
+                    <div class="plan">1月10日</div>
+                    <button class="completednode-btn">図提</button>
+                    <div class="actual">1月12日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月15日</div>
+                    <button class="completednode-btn">図申</button>
+                    <div class="actual">1月16日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月20日</div>
+                    <button class="completednode-btn">試入</button>
+                    <div class="actual">1月22日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月25日</div>
+                    <button class="notcompletednode-btn">サ申</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月30日</div>
+                    <button class="notcompletednode-btn">最入</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月5日</div>
+                    <button class="notcompletednode-btn">発注</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月10日</div>
+                    <button class="notcompletednode-btn">手配</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月15日</div>
+                    <button class="notcompletednode-btn">入荷</button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>OEM</td>
+            <td></td>
+            <td>丸眞花子(商品部)　丸眞太郎(営業部)</td>
+            <td>タオル</td>
+            <td>ミッキー</td>
+            <td>
+              <div class="timeline-wrapper small-timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline">
+                  <div class="step">
+                    <div class="plan">1月10日</div>
+                    <button class="completednode-btn">図提</button>
+                    <div class="actual">1月12日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月15日</div>
+                    <button class="completednode-btn">図申</button>
+                    <div class="actual">1月16日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月20日</div>
+                    <button class="completednode-btn">試入</button>
+                    <div class="actual">1月22日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月25日</div>
+                    <button class="completednode-btn">サ申</button>
+                    <div class="actual">1月25日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月30日</div>
+                    <button class="completednode-btn">最入</button>
+                    <div class="actual">2月1日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月5日</div>
+                    <button class="notcompletednode-btn">発注</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月10日</div>
+                    <button class="notcompletednode-btn">手配</button>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月15日</div>
+                    <button class="notcompletednode-btn">入荷</button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>定番加工</td>
+            <td></td>
+            <td>丸眞花子(商品部)　丸眞太郎(営業部)</td>
+            <td>タオル</td>
+            <td>ミッキー</td>
+            <td>
+              <div class="timeline-wrapper small-timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline">
+                  <div class="step">
+                    <div class="plan">1月10日</div>
+                    <button class="completednode-btn">図提</button>
+                    <div class="actual">1月12日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月15日</div>
+                    <button class="completednode-btn">図申</button>
+                    <div class="actual">1月16日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月20日</div>
+                    <button class="completednode-btn">試入</button>
+                    <div class="actual">1月22日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月25日</div>
+                    <button class="completednode-btn">サ申</button>
+                    <div class="actual">1月25日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">1月30日</div>
+                    <button class="completednode-btn">最入</button>
+                    <div class="actual">2月1日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月5日</div>
+                    <button class="completednode-btn">発注</button>
+                    <div class="actual">2月6日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月10日</div>
+                    <button class="completednode-btn">手配</button>
+                    <div class="actual">2月6日</div>
+                  </div>
+                  <div class="step">
+                    <div class="plan">2月15日</div>
+                    <button class="notcompletednode-btn">入荷</button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button id="modal-close" class="modal-close">閉じる</button>
+    </div>
+  </div>
+
+  <script>
+    // 通知リンクをすべて取得
+    document.querySelectorAll(".dashboard-list a").forEach(link => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        // ▼ クリックしたリンクの data-title を取得
+        const title = this.dataset.title;
+
+        // ▼ モーダルにタイトルと本文をセット
+        document.getElementById("modal-title").textContent = title;
+
+        // ▼ モーダル表示
+        document.getElementById("modal-overlay").style.display = "block";
+        document.getElementById("modal-window").style.display = "block";
+      });
+    });
+
+    // 閉じるボタン
+    document.getElementById("modal-close").addEventListener("click", function () {
+      document.getElementById("modal-overlay").style.display = "none";
+      document.getElementById("modal-window").style.display = "none";
+    });
+
+
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // 画面のどこかをクリックしたら閉じる
+    document.addEventListener('click', () => {
+      menu.style.display = 'none';
+    });
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');   // ← オーバーレイ表示
+      } else {
+
+        overlay.classList.remove('show'); // ← オーバーレイ非表示
+      }
+    }
+
+    // メニュー開閉
+    document.querySelectorAll('.menu-title').forEach(title => {
+      title.addEventListener('click', () => {
+        title.parentElement.classList.toggle('open');
+      });
+    });
+
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+  </script>
+</body>
+
+</html>
