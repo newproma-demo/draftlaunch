@@ -8,6 +8,7 @@
   <style>
     body {
       margin: 0px;
+      font-size: 13px;
       font-family: "Helvetica Neue",
         Arial,
         "Hiragino Kaku Gothic ProN",
@@ -20,7 +21,7 @@
       flex-direction: column;
     }
 
-    /* 固定ヘッダー（スクロールしても消えない） */
+    /* #region ヘッダー */
     .header {
       position: relative;
       top: 0;
@@ -32,7 +33,6 @@
       display: flex;
       align-items: center;
       padding: 0 10px;
-      font-size: 18px;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     }
 
@@ -54,7 +54,6 @@
       position: absolute;
       right: 70px;
       padding: 0px 0px 2px 0px;
-      font-size: 15px;
     }
 
     .account-wrapper {
@@ -72,37 +71,40 @@
       border: 1px solid #ccc;
       border-radius: 3px;
       display: none;
-      min-width: 90px;
+      min-width: 85px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .account-menu .menu-item {
       padding: 10px;
-      font-size: 14px;
     }
 
     .account-menu .menu-item:hover {
       background: #006C29;
     }
 
-    /* 左端に固定されるアイコン */
     .header-account_circle {
       width: 22px;
       height: 22px;
-      padding: 5px 0px 0px 0px;
+      padding: 0px 0px 0px 0px;
     }
 
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
     /* ヘッダーの下に全体レイアウトを配置 */
     .main-wrapper {
       display: flex;
       flex: 1;
       margin-top: 1px;
-      height: calc(100vh - 30px);
+      height: calc(100vh - 50px);
     }
 
-    /* 左ペイン */
+    /* #endregion */
+
+    /* #region メニュー */
     .sidebar {
-      width: 200px;
+      width: 170px;
       background: #008632;
       color: #ffffff;
       padding: 2px;
@@ -112,9 +114,29 @@
       transition: transform 0.3s ease;
     }
 
+    .sidebar.closed {
+      transform: translateX(-170px);
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      left: 170px;
+      top: 0px;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .sidebar-toggle img {
+      width: 12px;
+      height: 13px;
+      padding-top: 2px;
+      pointer-events: none;
+    }
+
     .sidebar h2 {
       margin: 10px 0px 5px 10px;
-      font-size: 18px;
+      font-size: 14px;
       padding-bottom: 4px;
       border-bottom: 1px solid #4A9A2A;
     }
@@ -148,14 +170,14 @@
       z-index: 1500;
     }
 
-    /* ツリーメニュー */
     .menu-item {
       margin-top: 0px;
       position: relative;
     }
 
     .menu-title {
-      height: 40px;
+      position: relative;
+      height: 35px;
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -168,23 +190,12 @@
       margin-right: 8px;
     }
 
-    .menu-label {
-      flex: 1;
-      display: flex;
-      align-items: center;
-    }
-
     .menu-item:hover>.submenu {
       display: block;
     }
 
     .menu-item:hover .menu-title {
       background: #006C29;
-      /* 好きな色に変更 */
-    }
-
-    .menu-title span {
-      font-size: 16px;
     }
 
     .arrow {
@@ -194,11 +205,12 @@
 
     /* サブメニュー */
     .submenu {
+      display: none;
       position: absolute;
       /* 右側に出すために絶対配置 */
       top: -13px;
-      left: 100%;
-      /* menu-title の右側に表示 */
+      left: 105%;
+      /* margin-left: 10px; */
       background: #008632;
       padding: 0px 0px 0px 0px;
       border-radius: 3px;
@@ -207,9 +219,22 @@
       list-style: none;
     }
 
+    /* 隙間を埋める透明のホバー領域 */
+    .submenu::before {
+      content: "";
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: -5%;
+      width: 5%;
+      height: 100%;
+      background: transparent;
+      display: block;
+    }
+
     .submenu li {
-      padding: 10px;
-      font-size: 16px;
+      padding: 8px 0px 0px 10px;
+      height: 27px;
     }
 
     .submenu li:hover {
@@ -224,11 +249,21 @@
       color: inherit;
     }
 
-    /* メインコンテンツ */
+    /* #endregion */
+
+    /* #region メインコンテンツ */
     .content {
       flex: 1;
-      padding: 30px;
+      display: flex;
+      /* 横並びにする */
+      padding: 15px;
       overflow-y: auto;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* サイドバーが閉じたときに広げる */
+    .content.expanded {
+      margin-left: -170px;
     }
 
     .content h1 {
@@ -236,37 +271,43 @@
     }
 
     .dashboard-section {
-      display: flex;
-      gap: 30px;
-      margin-top: 0px;
+      flex: 1;
       width: 50%;
+      padding: 20px 10px;
+      display: flex;
       flex-direction: column;
+      gap: 15px;
+      height: auto;
     }
 
-    .dashboard-box.info-box {
-      flex: 1;
+    .dashboard-box {
+      display: flex;
+      flex-direction: column;
       background: #f8f8f8;
       border: 1px solid #ddd;
       border-radius: 6px;
-      padding: 5px 10px 5px 10px;
+      padding: 5px 10px;
+    }
+
+    .info-box {
       max-height: 30vh;
-      overflow-y: auto;
+      height: auto;
     }
 
-    .dashboard-box.notice-box {
-      flex: 1;
-      background: #f8f8f8;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 5px 10px 5px 10px;
-      max-height: 55vh;
-      overflow-y: auto;
+    .notice-box {
+      max-height: 60vh;
+      height: auto;
+    }
+
+    .shinko-box {
+      max-height: 90vh;
+      height: auto;
     }
 
     .dashboard-box h2 {
       margin-top: 0;
       margin-bottom: 0;
-      font-size: 17px;
+      font-size: 14px;
       border-bottom: 1px solid #ccc;
       padding-bottom: 5px;
     }
@@ -276,11 +317,11 @@
       padding-left: 3px;
       margin-top: 0;
       margin-bottom: 0;
+      overflow-y: auto;
     }
 
     .dashboard-list li {
       padding: 5px 0;
-      font-size: 14px;
       border-bottom: 1px solid #ddd;
     }
 
@@ -290,8 +331,46 @@
 
     .dashboard-list a {
       text-decoration: none;
-      /* 下線を消す */
+    }
 
+    .shinko-table-wrapper {
+      overflow-y: auto;
+    }
+
+    /* ヘッダーを固定 */
+    .shinko-table thead th {
+      position: sticky;
+      top: 0;
+      /* 背景色を指定しないと透ける */
+      color: #fff;
+    }
+
+    .shinko-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      margin-top: 10px;
+    }
+
+    .shinko-table th {
+      background: #008632;
+      color: #fff;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .shinko-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    .shinko-table tr:hover {
+      background: #e8f5e9;
+    }
+
+    .shinko-table,
+    .shinko-table th,
+    .shinko-table td {
+      border: 1px solid #ccc;
     }
 
     /* モーダル背景（黒の半透明） */
@@ -323,7 +402,6 @@
 
     .modal-window h3 {
       margin-top: 0;
-      font-size: 18px;
       border-bottom: 1px solid #ddd;
       padding-bottom: 5px;
     }
@@ -341,7 +419,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      
+
     }
 
     .modal-close:hover {
@@ -351,9 +429,9 @@
     .modal-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
       background: #fff;
       margin-top: 10px;
+      overflow-y: scroll;
     }
 
     .modal-table th {
@@ -447,19 +525,20 @@
 
     /* 予定・実績 */
     .plan {
-      font-size: 14px;
+      font-size: 13px;
       margin-bottom: 6px;
       color: #000000;
     }
 
     .actual {
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 6px;
       color: #000000;
     }
 
-    /* ガントチャートエンド */
+    /* #endregion */
 
+    /* #region レスポンシブ対応 */
     /* 画面の高さが750px以下ならロゴを非表示 */
     @media (max-height: 750px) {
       .sidebar-logo-proma {
@@ -482,25 +561,15 @@
       }
 
       .header-user {
-        display: none;
+        color: transparent;
       }
 
-      .content {
-        flex: 1;
-        padding: 20px;
-        /* 好みで調整 */
-        margin-left: -200px;
-        /* ← これが重要 */
-        width: 100%;
-        /* 念のため */
-      }
-
-      .dashboard-section {
-        display: flex;
-        gap: 30px;
-        margin-top: 0px;
-        width: 100%;
-        flex-direction: column;
+      .header-user::after {
+        content: "丸眞 太郎";
+        position: absolute;
+        color: #000;
+        right: 0px;
+        padding: 0px 0px 2px 0px;
       }
 
       /* サイドバーを隠す */
@@ -515,6 +584,10 @@
         transform: translateX(0);
       }
 
+      .sidebar-toggle {
+        display: none;
+      }
+
       /* ハンバーガーボタン */
       .hamburger {
         display: block;
@@ -527,7 +600,25 @@
       .hamburger img {
         width: 30px;
       }
+
+      .content {
+        flex-direction: column;
+        flex: 1;
+        padding: 20px;
+        margin-left: -170px;
+        width: 100%;
+      }
+
+      .dashboard-section {
+        display: flex;
+        gap: 30px;
+        margin-top: 0px;
+        width: 100%;
+        flex-direction: column;
+      }
     }
+
+    /* #endregion */
   </style>
 </head>
 
@@ -535,7 +626,7 @@
 
   <div class="overlay" onclick="closeSidebar()"></div>
 
-  <!-- ★ 固定ヘッダー（スクロールしても消えない） -->
+  <!--#region ヘッダー  -->
   <div class="header">
     <div class="hamburger" onclick="toggleSidebar()">
       <img src="images/menu_50dp_008632.svg" />
@@ -549,12 +640,16 @@
       </div>
     </div>
   </div>
+  <!-- #endregion -->
 
-  <!-- ★ ヘッダーの下に全体レイアウト -->
+  <!-- ヘッダー下のレイアウト -->
   <div class="main-wrapper">
 
-    <!-- 左ペイン -->
+    <!--#region メニュー  -->
     <div class="sidebar">
+      <button class="sidebar-toggle">
+        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle">
+      </button>
       <h2>メニュー</h2>
 
       <div class="menu-item">
@@ -564,9 +659,10 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">進行状況確認（仕様書別・商品別）</a></li>
+          <li><a href="#">進行状況確認（担当者別入稿状況）</a></li>
+          <li><a href="#">発注状況管理</a></li>
+          <li><a href="#">マニフェスト管理</a></li>
         </ul>
       </div>
 
@@ -577,13 +673,17 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li><a href="#">概算見積依頼</a></li>
-          <li><a href="#">別注図案依頼</a></li>
+          <li><a href="#">見積依頼入力・送信</a></li>
+          <li><a href="#">見積回答登録・メーカー決定</a></li>
+          <li><a href="#">別注図案作成依頼登録・申請</a></li>
+          <li><a href="#">別注図案作成依頼承認</a></li>
           <li><a href="#">図案情報登録</a></li>
           <li><a href="#">図案振分け</a></li>
-          <li><a href="#">図案アップロード</a></li>
-          <li><a href="#">見積依頼</a></li>
+          <li><a href="#">図案提出</a></li>
           <li><a href="#">図案選定結果登録</a></li>
+          <li><a href="#">図案申請</a></li>
+          <li><a href="#">図案承認結果登録</a></li>
+          <li><a href="#">見積図案アップロード</a></li>
         </ul>
       </div>
 
@@ -594,9 +694,10 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">仕様書情報登録</a></li>
+          <li><a href="#">仕様書情報決済</a></li>
+          <li><a href="#">仕様書情報入稿</a></li>
+          <li><a href="#">サンプル承認結果登録</a></li>
         </ul>
       </div>
 
@@ -607,9 +708,8 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">サンプル管理</a></li>
+          <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
         </ul>
       </div>
 
@@ -620,9 +720,8 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">品質検査合格書登録</a></li>
+          <li><a href="#">品質検査合格書決済</a></li>
         </ul>
       </div>
 
@@ -633,9 +732,16 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">契約書送付依頼</a></li>
+          <li><a href="#">契約書登録</a></li>
+          <li><a href="#">発注入力</a></li>
+          <li><a href="#">発注書決済</a></li>
+          <li><a href="#">証紙依頼書入力</a></li>
+          <li><a href="#">証紙依頼書決済</a></li>
+          <li><a href="#">契約書サイン</a></li>
+          <li><a href="#">契約書送信</a></li>
+          <li><a href="#">発注情報Mｼｽﾃﾑ連携</a></li>
+          <li><a href="#">発注履歴照会</a></li>
         </ul>
       </div>
 
@@ -646,9 +752,9 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">Ship依頼書/国内手配書登録</a></li>
+          <li><a href="#">Ship依頼書/国内手配書決済</a></li>
+          <li><a href="#">Ship依頼書送信</a></li>
         </ul>
       </div>
 
@@ -659,9 +765,8 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">商品マップ生成</a></li>
+          <li><a href="#">商品マップ公開</a></li>
         </ul>
       </div>
 
@@ -672,9 +777,7 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">人事考課用実績集計</a></li>
         </ul>
       </div>
 
@@ -685,9 +788,10 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">ライセンス契約情報入力</a></li>
+          <li><a href="#">ライセンス契約チェック</a></li>
+          <li><a href="#">工場認定情報入力</a></li>
+          <li><a href="#">工場認定有効期限確認</a></li>
         </ul>
       </div>
 
@@ -698,18 +802,28 @@
           <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
         </div>
         <ul class="submenu">
-          <li>機能①</li>
-          <li>機能②</li>
-          <li>機能③</li>
+          <li><a href="#">コスト管理表</a></li>
+          <li><a href="#">商品情報照会</a></li>
+          <li><a href="#">システム設定マスタメンテナンス</a></li>
+          <li><a href="#">権限グループマスタメンテナンス</a></li>
+          <li><a href="#">ユーザーマスタメンテナンス</a></li>
+          <li><a href="#">ライセンスマスタメンテナンス</a></li>
+          <li><a href="#">ブランドマスタメンテナンス</a></li>
+          <li><a href="#">キャラクタマスタメンテナンス</a></li>
+          <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
+          <li><a href="#">資材マスタメンテナンス</a></li>
         </ul>
       </div>
 
-      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="150">
-      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="180">
+      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="120">
+      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="155">
 
     </div>
+    <!-- #endregion -->
 
-    <!-- メインコンテンツ -->
+    <!--#region メインコンテンツ  -->
     <div class="content">
       <div class="dashboard-section">
 
@@ -746,16 +860,233 @@
             <li><a href="#" data-title="未承認のShip依頼書/国内手配書">未承認のShip依頼書/国内手配書が9,999件あります。</a></li>
           </ul>
         </div>
-
       </div>
-    </div>
 
-    <div class="right-pane">
-      <!-- 右側のコンテンツ（必要なら） -->
+      <div class="dashboard-section">
+        <!-- 右側のコンテンツ -->
+        <!-- 通知 -->
+        <div class="dashboard-box shinko-box">
+          <h2>進行状況確認（担当者別入稿状況）</h2>
+          <div class="shinko-table-wrapper">
+            <table class="shinko-table">
+              <thead>
+                <tr>
+                  <th>販売区分</th>
+                  <th>展示会</th>
+                  <th>担当</th>
+                  <th>品名</th>
+                  <th>進行状況</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>定番</td>
+                  <td>2026.01</td>
+                  <td>丸眞花子(商品部)</td>
+                  <td>ディズニー「ミッキータオル」</td>
+                  <td>
+                    <div class="timeline-wrapper small-timeline">
+                      <div class="timeline-line"></div>
+                      <div class="timeline">
+                        <div class="step">
+                          <div class="plan">1月10日</div>
+                          <button class="completednode-btn">図提</button>
+                          <div class="actual">1月12日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月15日</div>
+                          <button class="notcompletednode-btn">図申</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月20日</div>
+                          <button class="notcompletednode-btn">試入</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月25日</div>
+                          <button class="notcompletednode-btn">サ申</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月30日</div>
+                          <button class="notcompletednode-btn">最入</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月5日</div>
+                          <button class="notcompletednode-btn">発注</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月10日</div>
+                          <button class="notcompletednode-btn">手配</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月15日</div>
+                          <button class="notcompletednode-btn">入荷</button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>別注</td>
+                  <td></td>
+                  <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+                  <td>ディズニー「ミッキータオル」</td>
+                  <td>
+                    <div class="timeline-wrapper small-timeline">
+                      <div class="timeline-line"></div>
+                      <div class="timeline">
+                        <div class="step">
+                          <div class="plan">1月10日</div>
+                          <button class="completednode-btn">図提</button>
+                          <div class="actual">1月12日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月15日</div>
+                          <button class="completednode-btn">図申</button>
+                          <div class="actual">1月16日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月20日</div>
+                          <button class="completednode-btn">試入</button>
+                          <div class="actual">1月22日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月25日</div>
+                          <button class="notcompletednode-btn">サ申</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月30日</div>
+                          <button class="notcompletednode-btn">最入</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月5日</div>
+                          <button class="notcompletednode-btn">発注</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月10日</div>
+                          <button class="notcompletednode-btn">手配</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月15日</div>
+                          <button class="notcompletednode-btn">入荷</button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>OEM</td>
+                  <td></td>
+                  <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+                  <td>ディズニー「ミッキータオル」</td>
+                  <td>
+                    <div class="timeline-wrapper small-timeline">
+                      <div class="timeline-line"></div>
+                      <div class="timeline">
+                        <div class="step">
+                          <div class="plan">1月10日</div>
+                          <button class="completednode-btn">図提</button>
+                          <div class="actual">1月12日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月15日</div>
+                          <button class="completednode-btn">図申</button>
+                          <div class="actual">1月16日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月20日</div>
+                          <button class="completednode-btn">試入</button>
+                          <div class="actual">1月22日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月25日</div>
+                          <button class="completednode-btn">サ申</button>
+                          <div class="actual">1月25日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月30日</div>
+                          <button class="completednode-btn">最入</button>
+                          <div class="actual">2月1日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月5日</div>
+                          <button class="notcompletednode-btn">発注</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月10日</div>
+                          <button class="notcompletednode-btn">手配</button>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月15日</div>
+                          <button class="notcompletednode-btn">入荷</button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>定番加工</td>
+                  <td></td>
+                  <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+                  <td>ディズニー「ミッキータオル」</td>
+                  <td>
+                    <div class="timeline-wrapper small-timeline">
+                      <div class="timeline-line"></div>
+                      <div class="timeline">
+                        <div class="step">
+                          <div class="plan">1月10日</div>
+                          <button class="completednode-btn">図提</button>
+                          <div class="actual">1月12日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月15日</div>
+                          <button class="completednode-btn">図申</button>
+                          <div class="actual">1月16日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月20日</div>
+                          <button class="completednode-btn">試入</button>
+                          <div class="actual">1月22日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月25日</div>
+                          <button class="completednode-btn">サ申</button>
+                          <div class="actual">1月25日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">1月30日</div>
+                          <button class="completednode-btn">最入</button>
+                          <div class="actual">2月1日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月5日</div>
+                          <button class="completednode-btn">発注</button>
+                          <div class="actual">2月6日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月10日</div>
+                          <button class="completednode-btn">手配</button>
+                          <div class="actual">2月6日</div>
+                        </div>
+                        <div class="step">
+                          <div class="plan">2月15日</div>
+                          <button class="notcompletednode-btn">入荷</button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
+    <!-- #endregion -->
+
   </div>
 
-  <!-- ▼ モーダル（小窓） -->
+  <!--#region モーダル(通知のリンク)  -->
   <div id="modal-overlay" class="modal-overlay"></div>
 
   <div id="modal-window" class="modal-window">
@@ -767,6 +1098,7 @@
             <th>販売区分</th>
             <th>展示会</th>
             <th>担当</th>
+            <th>品名</th>
             <th>カテゴリー</th>
             <th>キャラクター</th>
             <th>進行状況</th>
@@ -777,6 +1109,7 @@
             <td>定番</td>
             <td>2026.01</td>
             <td>丸眞花子(商品部)</td>
+            <td>ディズニー「ミッキータオル」</td>
             <td>タオル</td>
             <td>ミッキー</td>
             <td>
@@ -823,7 +1156,8 @@
           <tr>
             <td>別注</td>
             <td></td>
-            <td>丸眞花子(商品部)　丸眞太郎(営業部)</td>
+            <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+            <td>ディズニー「ミッキータオル」</td>
             <td>タオル</td>
             <td>ミッキー</td>
             <td>
@@ -872,7 +1206,8 @@
           <tr>
             <td>OEM</td>
             <td></td>
-            <td>丸眞花子(商品部)　丸眞太郎(営業部)</td>
+            <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+            <td>ディズニー「ミッキータオル」</td>
             <td>タオル</td>
             <td>ミッキー</td>
             <td>
@@ -923,7 +1258,8 @@
           <tr>
             <td>定番加工</td>
             <td></td>
-            <td>丸眞花子(商品部)　丸眞太郎(営業部)</td>
+            <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+            <td>ディズニー「ミッキータオル」</td>
             <td>タオル</td>
             <td>ミッキー</td>
             <td>
@@ -980,8 +1316,69 @@
       <button id="modal-close" class="modal-close">閉じる</button>
     </div>
   </div>
+  <!-- #endregion -->
 
   <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');   // ← オーバーレイ表示
+      } else {
+
+        overlay.classList.remove('show'); // ← オーバーレイ非表示
+      }
+    }
+
+    // メニュー開閉
+    // document.querySelectorAll('.menu-title').forEach(title => {
+    //   title.addEventListener('click', () => {
+    //     title.parentElement.classList.toggle('open');
+    //   });
+    // });
+
+    // PCのとき、メニューの開閉ボタン
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.querySelector('.sidebar-toggle');
+    const toggleImg = toggle.querySelector('img');
+    const content = document.querySelector('.content');
+
+    toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('closed');
+      content.classList.toggle('expanded');
+
+      if (sidebar.classList.contains('closed')) {
+        toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+      } else {
+        toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+      }
+    });
+
+    // スマホのとき、開いたメニューを閉じる
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // // 画面のどこかをクリックしたら閉じる
+    // document.addEventListener('click', () => {
+    //   menu.style.display = 'none';
+    // });
+
     // 通知リンクをすべて取得
     document.querySelectorAll(".dashboard-list a").forEach(link => {
       link.addEventListener("click", function (e) {
@@ -1004,51 +1401,6 @@
       document.getElementById("modal-overlay").style.display = "none";
       document.getElementById("modal-window").style.display = "none";
     });
-
-
-
-    const icon = document.querySelector('.header-account_circle');
-    const menu = document.querySelector('.account-menu');
-
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation(); // クリックが外側に伝播しないように
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // 画面のどこかをクリックしたら閉じる
-    document.addEventListener('click', () => {
-      menu.style.display = 'none';
-    });
-
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
-
-      sidebar.classList.toggle('active');
-
-      if (sidebar.classList.contains('active')) {
-        overlay.classList.add('show');   // ← オーバーレイ表示
-      } else {
-
-        overlay.classList.remove('show'); // ← オーバーレイ非表示
-      }
-    }
-
-    // メニュー開閉
-    document.querySelectorAll('.menu-title').forEach(title => {
-      title.addEventListener('click', () => {
-        title.parentElement.classList.toggle('open');
-      });
-    });
-
-    function closeSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
-
-      sidebar.classList.remove('active');
-      overlay.classList.remove('show');
-    }
-
   </script>
 </body>
 
