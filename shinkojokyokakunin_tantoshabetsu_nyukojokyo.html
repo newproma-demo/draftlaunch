@@ -7,8 +7,8 @@
   <title>Proma</title>
   <style>
     td {
-  text-align: center;
-}
+      text-align: center;
+    }
 
     .pc-only {
       display: block;
@@ -558,6 +558,10 @@
         font-size: 20px;
       }
 
+      .header-user {
+        display: none;
+      }
+
       /* サイドバーを隠す */
       .sidebar {
         transform: translateX(-100%);
@@ -990,7 +994,7 @@
       </div>
 
       <div class="sp-only">
-      <div class="dashboard-section">
+        <div class="dashboard-section">
           <div class="dashboard-box shinko-box">
             <div class="shinko-table-wrapper">
               <table class="shinko-table">
@@ -1144,95 +1148,95 @@
             </div>
           </div>
         </div>
+      </div>
+      <!-- #endregion -->
+
     </div>
-    <!-- #endregion -->
 
-  </div>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
 
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
+        sidebar.classList.toggle('active');
 
-      sidebar.classList.toggle('active');
+        if (sidebar.classList.contains('active')) {
+          overlay.classList.add('show');   // ← オーバーレイ表示
+        } else {
 
-      if (sidebar.classList.contains('active')) {
-        overlay.classList.add('show');   // ← オーバーレイ表示
-      } else {
-
-        overlay.classList.remove('show'); // ← オーバーレイ非表示
+          overlay.classList.remove('show'); // ← オーバーレイ非表示
+        }
       }
-    }
 
-    // メニュー開閉
-    // document.querySelectorAll('.menu-title').forEach(title => {
-    //   title.addEventListener('click', () => {
-    //     title.parentElement.classList.toggle('open');
-    //   });
-    // });
+      // メニュー開閉
+      // document.querySelectorAll('.menu-title').forEach(title => {
+      //   title.addEventListener('click', () => {
+      //     title.parentElement.classList.toggle('open');
+      //   });
+      // });
 
-    // PCのとき、メニューの開閉ボタン
-    const sidebar = document.querySelector('.sidebar');
-    const toggle = document.querySelector('.sidebar-toggle');
-    const toggleImg = toggle.querySelector('img');
-    const content = document.querySelector('.content');
-
-    toggle.addEventListener('click', () => {
-      sidebar.classList.toggle('closed');
-      content.classList.toggle('expanded');
-
-      if (sidebar.classList.contains('closed')) {
-        toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
-      } else {
-        toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
-      }
-    });
-
-    // スマホのとき、開いたメニューを閉じる
-    function closeSidebar() {
+      // PCのとき、メニューの開閉ボタン
       const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const toggleImg = toggle.querySelector('img');
+      const content = document.querySelector('.content');
 
-      sidebar.classList.remove('active');
-      overlay.classList.remove('show');
-    }
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
 
-    const icon = document.querySelector('.header-account_circle');
-    const menu = document.querySelector('.account-menu');
-
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation(); // クリックが外側に伝播しないように
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // // 画面のどこかをクリックしたら閉じる
-    // document.addEventListener('click', () => {
-    //   menu.style.display = 'none';
-    // });
-
-    // 通知リンクをすべて取得
-    document.querySelectorAll(".dashboard-list a").forEach(link => {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        // ▼ クリックしたリンクの data-title を取得
-        const title = this.dataset.title;
-
-        // ▼ モーダルにタイトルと本文をセット
-        document.getElementById("modal-title").textContent = title;
-
-        // ▼ モーダル表示
-        document.getElementById("modal-overlay").style.display = "block";
-        document.getElementById("modal-window").style.display = "block";
+        if (sidebar.classList.contains('closed')) {
+          toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        } else {
+          toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+        }
       });
-    });
 
-    // 閉じるボタン
-    document.getElementById("modal-close").addEventListener("click", function () {
-      document.getElementById("modal-overlay").style.display = "none";
-      document.getElementById("modal-window").style.display = "none";
-    });
-  </script>
+      // スマホのとき、開いたメニューを閉じる
+      function closeSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        sidebar.classList.remove('active');
+        overlay.classList.remove('show');
+      }
+
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation(); // クリックが外側に伝播しないように
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // // 画面のどこかをクリックしたら閉じる
+      // document.addEventListener('click', () => {
+      //   menu.style.display = 'none';
+      // });
+
+      // 通知リンクをすべて取得
+      document.querySelectorAll(".dashboard-list a").forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // ▼ クリックしたリンクの data-title を取得
+          const title = this.dataset.title;
+
+          // ▼ モーダルにタイトルと本文をセット
+          document.getElementById("modal-title").textContent = title;
+
+          // ▼ モーダル表示
+          document.getElementById("modal-overlay").style.display = "block";
+          document.getElementById("modal-window").style.display = "block";
+        });
+      });
+
+      // 閉じるボタン
+      document.getElementById("modal-close").addEventListener("click", function () {
+        document.getElementById("modal-overlay").style.display = "none";
+        document.getElementById("modal-window").style.display = "none";
+      });
+    </script>
 </body>
 
 </html>
