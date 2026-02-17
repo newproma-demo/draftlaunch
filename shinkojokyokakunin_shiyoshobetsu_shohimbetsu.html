@@ -16,7 +16,7 @@
 
     body {
       margin: 0px;
-      font-size: 13px;
+      font-size: 10px;
       font-family: "Helvetica Neue",
         Arial,
         "Hiragino Kaku Gothic ProN",
@@ -279,7 +279,7 @@
     }
 
     .content h2 {
-      margin-top: 10;
+      margin: 10px 0px 0px 0px;
       font-size: 14px;
       padding-bottom: 5px;
     }
@@ -287,23 +287,23 @@
     /* #region 検索条件ボックス */
     .search-box {
       display: flex;
-      padding: 0px 10px;
     }
 
     /* 各行 */
     .search-row {
-      margin: 10px 20px 10px 0;
+      margin: 10px 15px 0px 0;
       gap: 10px;
     }
 
     .search-row label {
       width: 80px;
-      font-size: 13px;
+      font-size: 10px;
     }
 
     .search-row select,
     .search-row input {
       flex: 1;
+      font-size: 10px;
       padding: 6px;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -322,6 +322,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 10px;
     }
 
     .search-button:hover {
@@ -332,7 +333,6 @@
 
     .dashboard-section {
       flex: 1;
-      padding: 0px 10px;
       display: flex;
       flex-direction: column;
       gap: 15px;
@@ -458,97 +458,58 @@
       background: #006C29;
     }
 
-    .modal-table {
+    .shinko-table {
       width: 100%;
       border-collapse: collapse;
       background: #fff;
       margin-top: 10px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
 
-    .modal-table th {
+    .shinko-table th {
       background: #008632;
       color: #fff;
       padding: 8px;
       text-align: left;
     }
 
-    .modal-table td {
+    .shinko-table td {
       padding: 8px;
       border-bottom: 1px solid #ddd;
     }
 
-    .modal-table tr:nth-child(even) {
+    .shinko-table tr:nth-child(even) {
       background: #f9f9f9;
     }
 
-    .modal-table tr:hover {
+    .shinko-table tr:hover {
       background: #e8f5e9;
     }
 
-    .modal-table,
-    .modal-table th,
-    .modal-table td {
+    .shinko-table,
+    .shinko-table th,
+    .shinko-table td {
       border: 1px solid #ccc;
-    }
-
-    /* ガントチャートスタート */
-    .timeline-wrapper {
-      position: relative;
-      margin-bottom: 0px;
-      width: 600px;
-    }
-
-    /* 背景の一本線（丸の中心を通る） */
-    .timeline-line {
-      position: absolute;
-      top: 47%;
-      left: 50px;
-      right: 50px;
-      height: 6px;
-      background: #ccc;
-      z-index: 1;
-    }
-
-    .timeline {
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-      z-index: 2;
     }
 
     .step {
       text-align: center;
-      width: 120px;
+      width: 25px;
       position: relative;
     }
 
-    /* 丸いボタン（ノード） */
     .completednode-btn {
-      width: 32px;
-      height: 32px;
-      font-size: 10px;
-      border-radius: 50%;
+      width: 10px;
+      height: 10px;
+      background-image: url("images/check_50dp_1F1F1F.svg");
+      background-size: cover;
+      background-color: #ffffff;
+      /* 画像をボタンにフィット */
+      background-position: center;
+      /* 中央に配置 */
+      background-repeat: no-repeat;
       border: none;
-      background: #4caf50;
       cursor: pointer;
-      margin: 0 auto;
-      display: block;
-      box-shadow: 0 0 0 3px white, 0 0 0 5px #4caf50;
-    }
-
-    /* 丸いボタン（ノード） */
-    .notcompletednode-btn {
-      width: 32px;
-      height: 32px;
-      font-size: 10px;
-      border-radius: 50%;
-      border: none;
-      background: #ccc;
-      cursor: pointer;
-      margin: 0 auto;
-      display: block;
-      box-shadow: 0 0 0 3px white, 0 0 0 5px #ccc;
     }
 
     .node-btn:hover {
@@ -557,15 +518,11 @@
 
     /* 予定・実績 */
     .plan {
-      font-size: 13px;
       margin-bottom: 6px;
-      color: #000000;
     }
 
     .actual {
-      font-size: 13px;
       margin-top: 6px;
-      color: #000000;
     }
 
     /* #endregion */
@@ -891,6 +848,16 @@
         </div>
 
         <div class="search-row">
+          <label>展示会</label>
+          <select>
+            <option value="">選択してください</option>
+            <option value="1">2026.4月</option>
+            <option value="2">2026.7月</option>
+            <option value="3">2026.10月</option>
+          </select>
+        </div>
+
+        <div class="search-row">
           <label>デザイナー</label>
           <select>
             <option value="">選択してください</option>
@@ -938,213 +905,268 @@
             <div class="shinko-table-wrapper">
               <table class="shinko-table">
                 <thead>
-                  <tr>
-                    <th>デザイナー</th>
-                    <th>販売区分</th>
-                    <th>展示会</th>
-                    <th>営業担当</th>
-                    <th>品名</th>
-                    <th>進行状況</th>
-                  </tr>
-                </thead>
+                  <thead>
+                    <tr>
+                      <th>デザイナー</th>
+                      <th>区分</th>
+                      <th>ステータス</th>
+                      <th>アイテム</th>
+                      <th>提出</th>
+                      <th>申請</th>
+                      <th>試作</th>
+                      <th>ｻﾝﾌﾟﾙ</th>
+                      <th>最終</th>
+                      <th>発注</th>
+                      <th>手配</th>
+                      <th>入荷</th>
+                    </tr>
+                  </thead>
                 <tbody>
                   <tr>
                     <td>丸眞花子</td>
-                    <td>定番</td>
-                    <td>2026.01</td>
-                    <td></td>
-                    <td>ディズニー「ミッキータオル」</td>
+                    <td>定番（2026.01）</td>
+                    <td>図案選定中</td>
+                    <td>ダイカットミニタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="notcompletednode-btn">図申</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="notcompletednode-btn">試入</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="notcompletednode-btn">サ申</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="notcompletednode-btn">最入</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="notcompletednode-btn">発注</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="notcompletednode-btn">手配</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">1/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">1/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/10</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/15</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/20</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/25</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>丸眞花子</td>
                     <td>別注</td>
-                    <td></td>
-                    <td>丸眞太郎</td>
-                    <td>ディズニー「ミッキータオル」</td>
+                    <td>サンプル到着待ち</td>
+                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="completednode-btn">図申</button>
-                            <div class="actual">1月16日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="completednode-btn">試入</button>
-                            <div class="actual">1月22日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="notcompletednode-btn">サ申</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="notcompletednode-btn">最入</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="notcompletednode-btn">発注</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="notcompletednode-btn">手配</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">2/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">2/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/5</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">2/5</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/10</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">2/10</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/15</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/20</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/25</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td>丸眞幸子</td>
+                    <td>丸眞花子</td>
                     <td>OEM</td>
-                    <td></td>
-                    <td>丸眞太郎</td>
-                    <td>ディズニー「ミッキータオル」</td>
+                    <td>最終サンプル申請中</td>
+                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="completednode-btn">図申</button>
-                            <div class="actual">1月16日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="completednode-btn">試入</button>
-                            <div class="actual">1月22日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="completednode-btn">サ申</button>
-                            <div class="actual">1月25日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="completednode-btn">最入</button>
-                            <div class="actual">2月1日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="notcompletednode-btn">発注</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="notcompletednode-btn">手配</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">3/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/5</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/5</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/10</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/10</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/15</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/15</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/20</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/25</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td>丸眞幸子</td>
+                    <td>丸眞花子</td>
                     <td>定番加工</td>
-                    <td></td>
-                    <td>丸眞太郎</td>
-                    <td>ディズニー「ミッキータオル」</td>
+                    <td>手配中</td>
+                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="completednode-btn">図申</button>
-                            <div class="actual">1月16日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="completednode-btn">試入</button>
-                            <div class="actual">1月22日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="completednode-btn">サ申</button>
-                            <div class="actual">1月25日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="completednode-btn">最入</button>
-                            <div class="actual">2月1日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="completednode-btn">発注</button>
-                            <div class="actual">2月6日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="completednode-btn">手配</button>
-                            <div class="actual">2月6日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">4/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/5</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/5</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/10</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/10</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/15</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/15</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/20</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/20</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/25</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/25</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">5/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
@@ -1161,192 +1183,268 @@
             <div class="shinko-table-wrapper">
               <table class="shinko-table">
                 <thead>
-                  <tr>
-                    <th>進行状況</th>
-                  </tr>
-                </thead>
+                  <thead>
+                    <tr>
+                      <th>デザイナー</th>
+                      <th>区分</th>
+                      <th>ステータス</th>
+                      <th>アイテム</th>
+                      <th>提出</th>
+                      <th>申請</th>
+                      <th>試作</th>
+                      <th>ｻﾝﾌﾟﾙ</th>
+                      <th>最終</th>
+                      <th>発注</th>
+                      <th>手配</th>
+                      <th>入荷</th>
+                    </tr>
+                  </thead>
                 <tbody>
                   <tr>
+                    <td>丸眞花子</td>
+                    <td>定番（2026.01）</td>
+                    <td>図案選定中</td>
+                    <td>ダイカットミニタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      丸眞花子　定番(2026.01展示会)　ディズニー「ミッキータオル」
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="notcompletednode-btn">図申</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="notcompletednode-btn">試入</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="notcompletednode-btn">サ申</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="notcompletednode-btn">最入</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="notcompletednode-btn">発注</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="notcompletednode-btn">手配</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">1/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">1/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/10</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/15</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/20</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/25</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">1/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
                   <tr>
+                    <td>丸眞花子</td>
+                    <td>別注</td>
+                    <td>サンプル到着待ち</td>
+                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      丸眞花子　別注　ディズニー「ミッキータオル」
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="completednode-btn">図申</button>
-                            <div class="actual">1月16日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="completednode-btn">試入</button>
-                            <div class="actual">1月22日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="notcompletednode-btn">サ申</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="notcompletednode-btn">最入</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="notcompletednode-btn">発注</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="notcompletednode-btn">手配</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">2/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">2/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/5</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">2/5</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/10</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">2/10</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/15</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/20</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/25</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">2/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
                   <tr>
+                    <td>丸眞花子</td>
+                    <td>OEM</td>
+                    <td>最終サンプル申請中</td>
+                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      丸眞花子　OEM　ディズニー「ミッキータオル」
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="completednode-btn">図申</button>
-                            <div class="actual">1月16日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="completednode-btn">試入</button>
-                            <div class="actual">1月22日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="completednode-btn">サ申</button>
-                            <div class="actual">1月25日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="completednode-btn">最入</button>
-                            <div class="actual">2月1日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="notcompletednode-btn">発注</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="notcompletednode-btn">手配</button>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">3/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/5</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/5</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/10</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/10</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/15</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">3/15</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/20</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/25</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">3/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
                   <tr>
+                    <td>丸眞花子</td>
+                    <td>定番加工</td>
+                    <td>手配中</td>
+                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
                     <td>
-                      丸眞花子　定番加工　ディズニー「ミッキータオル」
-                      <div class="timeline-wrapper small-timeline">
-                        <div class="timeline-line"></div>
-                        <div class="timeline">
-                          <div class="step">
-                            <div class="plan">1月10日</div>
-                            <button class="completednode-btn">図提</button>
-                            <div class="actual">1月12日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月15日</div>
-                            <button class="completednode-btn">図申</button>
-                            <div class="actual">1月16日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月20日</div>
-                            <button class="completednode-btn">試入</button>
-                            <div class="actual">1月22日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月25日</div>
-                            <button class="completednode-btn">サ申</button>
-                            <div class="actual">1月25日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">1月30日</div>
-                            <button class="completednode-btn">最入</button>
-                            <div class="actual">2月1日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月5日</div>
-                            <button class="completednode-btn">発注</button>
-                            <div class="actual">2月6日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月10日</div>
-                            <button class="completednode-btn">手配</button>
-                            <div class="actual">2月6日</div>
-                          </div>
-                          <div class="step">
-                            <div class="plan">2月15日</div>
-                            <button class="notcompletednode-btn">入荷</button>
-                          </div>
-                        </div>
+                      <div class="step">
+                        <div class="plan">4/1</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/1</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/5</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/5</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/10</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/10</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/15</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/15</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/20</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/20</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/25</div>
+                        <button class="completednode-btn"></button>
+                        <div class="actual">4/25</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">4/30</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="step">
+                        <div class="plan">5/5</div>
+                        <button class="completednode-btn" style="opacity:0;"></button>
+                        <div class="actual">--/--</div>
                       </div>
                     </td>
                   </tr>
