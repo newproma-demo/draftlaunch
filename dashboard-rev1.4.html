@@ -766,17 +766,33 @@
       .filter-row {
         flex-wrap: wrap;
       }
-      /* gauge-card: 1つ表示・3つを横スクロール */
+      /* gauge-card: 1つ表示・3つを横スクロール（横スクロールバー表示） */
       .gauges-row {
         display: flex;
         flex-wrap: nowrap;
         gap: 16px;
-        overflow-x: auto;
+        overflow-x: scroll;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
-        padding-bottom: 8px;
+        padding-bottom: 12px;
         margin-bottom: 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-border) var(--color-surface);
+      }
+      .gauges-row::-webkit-scrollbar {
+        height: 8px;
+      }
+      .gauges-row::-webkit-scrollbar-track {
+        background: var(--color-surface);
+        border-radius: 4px;
+      }
+      .gauges-row::-webkit-scrollbar-thumb {
+        background: var(--color-border);
+        border-radius: 4px;
+      }
+      .gauges-row::-webkit-scrollbar-thumb:hover {
+        background: var(--color-text-muted);
       }
       .gauges-row .gauge-card {
         flex: 0 0 auto;
@@ -790,11 +806,13 @@
         margin-right: auto;
       }
       /* zenkai-tabs-wrap: 2段（上段 図案申請・試作入稿・サンプル申請、下段 最終入稿・発注・入荷） */
-      .zenkai-flow {
+      .zenkai-tabs-wrap .zenkai-flow {
+        display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: auto auto;
+        grid-auto-flow: row;
       }
-      .zenkai-item .name { font-size: 11px; }
+      .zenkai-tabs-wrap .zenkai-item .name { font-size: 11px; }
 
       /* イメージ案②: スマホ用 */
       .view-layout-2 .status-buttons {
