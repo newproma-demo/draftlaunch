@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-size-base: 16pt;
+      --fs-base: 16pt;
+      --fs-sm: 14pt;
+      --fs-xs: 12pt;
+      --fs-lg: 18pt;
+      --fs-xl: 20pt;
+      --color-primary: #008632;
+      --color-primary-dark: #006C29;
+      --color-primary-light: #00a840;
+      --color-surface: #f8faf9;
+      --color-tanto-hover: #47bdc5;
+      --color-card: #ffffff;
+      --color-border: #e2e8e6;
+      --color-text: #1a2e26;
+      --color-text-muted: #5c6f66;
+      --shadow-sm: 0 1px 3px rgba(0, 134, 50, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 134, 50, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 134, 50, 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-sans: "Outfit", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    }
+
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+    body {
+      margin: 0;
+      font-size: var(--font-size-base);
+      font-family: var(--font-sans);
+      background: var(--color-surface);
+      color: var(--color-text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* #region ヘッダー */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      font-size: var(--font-size-base); /* ヘッダーのフォントサイズ */
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+
+    /* #endregion */
+
+    /* #region メニュー */
+    .sidebar {
+      width: 220px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 12px 0;
+      box-sizing: border-box;
+      overflow: visible;
+      position: relative;
+      z-index: 100;
+      transition: transform 0.3s ease;
+      box-shadow: 2px 0 12px rgba(0, 134, 50, 0.15);
+    }
+
+    .sidebar.closed {
+      transform: translateX(-220px);
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      left: 220px;
+      top: 12px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-left: none;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      cursor: pointer;
+      padding: 6px 8px;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s ease;
+    }
+
+    .sidebar-toggle:hover {
+      background: var(--color-surface);
+    }
+
+    .sidebar-toggle img {
+      width: 12px;
+      height: 13px;
+      padding-top: 0;
+      pointer-events: none;
+    }
+
+    .sidebar h2 {
+      margin: 8px 12px 12px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      text-transform: uppercase;
+    }
+
+    .sidebar-logo-proma {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .sidebar-logo-marushin {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1500;
+      backdrop-filter: blur(2px);
+    }
+
+    .menu-item {
+      margin: 2px 8px;
+      position: relative;
+      border-radius: var(--radius-sm);
+    }
+
+    .menu-title {
+      position: relative;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 16px;
+      transition: background 0.2s ease;
+    }
+
+    .menu-title img {
+      margin-right: 10px;
+      opacity: 0.9;
+    }
+
+    .menu-item:hover>.submenu {
+      display: block;
+    }
+
+    .menu-item:hover .menu-title {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .arrow {
+      transition: transform 0.2s ease;
+      margin-left: auto;
+      opacity: 0.8;
+    }
+
+    /* サブメニュー */
+    .submenu {
+      display: none;
+      position: absolute;
+      /* 右側に出すために絶対配置 */
+      top: -13px;
+      left: 105%;
+      /* margin-left: 10px; */
+      background: #008632;
+      padding: 0px 0px 0px 0px;
+      border-radius: 3px;
+      display: none;
+      min-width: 330px;
+      list-style: none;
+      font-size: 16px;
+    }
+
+    /* 隙間を埋める透明のホバー領域 */
+    .submenu::before {
+      content: "";
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: -5%;
+      width: 5%;
+      height: 100%;
+      background: transparent;
+      display: block;
+    }
+
+    .submenu li {
+      padding: 8px 10px;
+      height: auto;
+      /* ←折り返し対応 */
+    }
+
+    .submenu li:hover {
+      background: #006C29;
+      /* 好きな色に変更 */
+      border-radius: 4px;
+      /* 角丸にしたい場合 */
+    }
+
+    .submenu li a {
+      display: block;
+      /* 折り返しを効かせる */
+      white-space: normal;
+      /* 折り返しOK */
+      word-break: break-word;
+      /* 日本語も途中で折れる */
+      line-height: 1.1;
+      /* 行間を少し広めに */
+    }
+
+    .submenu a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    .dashboard-section {
+      flex: 1 1 auto;
+      min-height: min-content;
+      padding: 0 0 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      width: 100%;
+      max-width: none; 
+    }
+
+    .dashboard-box {
+      display: flex;
+      flex-direction: column;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .dashboard-box:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(0, 134, 50, 0.15);
+    }
+
+    .info-box {
+      max-height: 30vh;
+      width: auto;
+      height: auto;
+    }
+
+    .notice-box {
+      max-height: 60vh;
+      height: auto;
+    }
+
+    .shinko-box {
+      max-height: 90vh;
+      height: auto;
+    }
+
+    .dashboard-box h2 {
+      margin: 0 0 16px;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 10px;
+      color: var(--color-text);
+    }
+
+    .dashboard-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+    }
+
+    .dashboard-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-border);
+      transition: background 0.15s ease;
+    }
+
+    .dashboard-list li:last-child {
+      border-bottom: none;
+    }
+
+    .dashboard-list li:hover {
+      background: var(--color-surface);
+    }
+
+    .dashboard-list a {
+      text-decoration: none;
+      color: var(--color-text);
+      font-weight: 500;
+      display: block;
+      padding: 2px 0;
+      transition: color 0.15s ease;
+    }
+
+    .dashboard-list a:hover {
+      color: var(--color-primary);
+    }
+
+    .shinko-table-wrapper {
+      overflow-y: auto;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+
+    .shinko-table thead th {
+      position: sticky;
+      top: 0;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .shinko-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-card);
+      margin-top: 0;
+    }
+
+    .shinko-table th {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .shinko-table tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+
+    .shinko-table tr:hover {
+      background: rgba(0, 134, 50, 0.06);
+    }
+
+    .shinko-table td {
+      padding: 12px 14px;
+      font-size: 14px;
+      border-color: var(--color-border);
+    }
+
+    .shinko-table,
+    .shinko-table th,
+    .shinko-table td {
+      border: 1px solid var(--color-border);
+    }
+
+    /* モーダル */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 2000;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      padding: 28px;
+      width: 85%;
+      max-width: 900px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2001;
+    }
+
+    .modal-window h3 {
+      margin: 0 0 20px;
+      font-size: 18px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 12px;
+      color: var(--color-text);
+    }
+
+    .modal-footer {
+      text-align: right;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .modal-close {
+      padding: 10px 24px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-card);
+      margin-top: 0;
+      overflow-y: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+    }
+
+    .modal-table th {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .modal-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 14px;
+    }
+
+    .modal-table tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+
+    .modal-table tr:hover {
+      background: rgba(0, 134, 50, 0.06);
+    }
+
+    .modal-table,
+    .modal-table th,
+    .modal-table td {
+      border: 1px solid var(--color-border);
+    }
+
+    /* ガントチャート */
+    .timeline-wrapper {
+      position: relative;
+      margin-bottom: 0;
+      width: 450px;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 47%;
+      left: 50px;
+      right: 50px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step {
+      text-align: center;
+      width: 120px;
+      position: relative;
+    }
+
+    .completednode-btn {
+      width: 32px;
+      height: 32px;
+      font-size: var(--fs-xs);
+      border-radius: 50%;
+      border: none;
+      background: var(--color-primary);
+      color: #fff;
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      box-shadow: 0 0 0 3px var(--color-card), 0 0 0 5px var(--color-primary);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .completednode-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 0 3px var(--color-card), 0 0 0 6px var(--color-primary);
+    }
+
+    .notcompletednode-btn {
+      width: 32px;
+      height: 32px;
+      font-size: var(--fs-xs);
+      border-radius: 50%;
+      border: none;
+      background: var(--color-border);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      box-shadow: 0 0 0 3px var(--color-card), 0 0 0 5px var(--color-border);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .notcompletednode-btn:hover {
+      background: var(--color-text-muted);
+      transform: scale(1.05);
+    }
+
+    .plan {
+      font-size: 12px;
+      margin-bottom: 6px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .actual {
+      font-size: 12px;
+      margin-top: 6px;
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    /* #endregion */
+
+    /* #region レスポンシブ対応 */
+    /* 画面の高さが750px以下ならロゴを非表示 */
+    @media (max-height: 750px) {
+      .sidebar-logo-proma {
+        display: none;
+      }
+    }
+
+    /* 画面の高さが600px以下ならロゴを非表示 */
+    @media (max-height: 600px) {
+      .sidebar-logo-marushin {
+        display: none;
+      }
+    }
+
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 650px) {
+      .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+    .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* サイドバーを隠す */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+
+      /* 開いた状態 */
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-toggle {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .dashboard-section {
+        display: flex;
+        gap: 24px;
+        margin-top: 0;
+        width: 100%;
+        flex-direction: column;
+        padding-bottom: 40px;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+      /* gauge-card: 1つ表示・3つを横スクロール */
+      .gauges-row {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 16px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 8px;
+        margin-bottom: 24px;
+      }
+      .gauges-row .gauge-card {
+        flex: 0 0 auto;
+        min-width: min(280px, 85vw);
+        scroll-snap-align: start;
+      }
+      .gauge-semicircle {
+        width: 100%;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      /* zenkai-tabs-wrap: 2段（上段 図案申請・試作入稿・サンプル申請、下段 最終入稿・発注・入荷） */
+      .zenkai-flow {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: auto auto;
+      }
+      .zenkai-item .name { font-size: 11px; }
+
+      /* イメージ案②: スマホ用 */
+      .view-layout-2 .status-buttons {
+        gap: 8px;
+      }
+      .status-btn {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+      .case-list li {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      /* イメージ案③: スマホ用 */
+      .tantosha-header {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .tantosha-summary {
+        width: 100%;
+        order: 3;
+        font-size: 12px;
+      }
+      .phase-badges {
+        flex-direction: column;
+      }
+
+      .view-layout-title {
+        font-size: 16px;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+
+    /* 進捗管理（フェーズカード） */
+    .phase-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .phase-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .phase-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(0, 134, 50, 0.2);
+    }
+
+    .phase-card h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .phase-card .count {
+      margin-top: 12px;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .phase-card .count span {
+      color: #c62828;
+      font-weight: 700;
+    }
+
+    .phase-card .rate {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    /* 展示会選択セレクト */
+    .dashboard-box select,
+    #tenjikaiSelect {
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #tenjikaiSelect:hover,
+    .dashboard-box select:hover {
+      border-color: var(--color-primary);
+    }
+
+    #tenjikaiSelect:focus,
+    .dashboard-box select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+    }
+
+    .tenjikai-summary,
+    #tenjikaiSummary {
+      margin: 14px 0;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--color-text);
+    }
+
+    .tenjikai-select-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tenjikai-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    /* ========== イメージ案：3つとも一括表示 ========== */
+    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout-1-group,
+    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
+    .dashboard-section { width: 100%; display: flex; flex-direction: column; gap: 32px; align-items: stretch; }
+    .view-layout-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+    }
+
+    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
+    .view-layout-1 { padding: 0; }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .filter-row .filter-label { font-weight: 600; font-size: 14px; }
+    .filter-row input[type="text"], .filter-row select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      min-width: 160px;
+    }
+
+    /* 半円グラフ（サンプル着・最終入稿・発注） */
+    .gauges-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .gauge-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .gauge-card .gauge-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+    .gauge-semicircle {
+      width: 160px;
+      height: 90px;
+      margin: 0 auto 8px;
+      position: relative;
+    }
+    .gauge-semicircle svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    /* 半円の軌道（背景）: 左→右の半円、半径40・中心(50,50) */
+    .gauge-track {
+      fill: none;
+      stroke: var(--color-border);
+      stroke-width: 10;
+      stroke-linecap: round;
+    }
+    /* 進捗: 完了(青)・7日前(黄)・遅延(赤)を重ねて表示 */
+    .gauge-fill, .gauge-fill-warn7, .gauge-fill-delay {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dasharray 0.3s ease, stroke-dashoffset 0.3s ease;
+    }
+    .gauge-fill { stroke: #1976d2; }
+    .gauge-fill-warn7 { stroke: #f9a825; }
+    .gauge-fill-delay { stroke: #c62828; }
+    .gauge-count {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .gauge-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--color-text-muted);
+    }
+    .gauge-legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .gauge-legend .dot-blue { width: 12px; height: 12px; border-radius: 50%; background: #1976d2; }
+    .gauge-legend .dot-yellow { width: 12px; height: 12px; border-radius: 50%; background: #f9a825; }
+    .gauge-legend .dot-red { width: 12px; height: 12px; border-radius: 50%; background: #c62828; }
+
+    /* 承認通知エリア（ボタン＋一覧） */
+    .approval-area {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .approval-area h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+    .status-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .status-btn {
+      padding: 12px 20px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-card);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .status-btn:hover, .status-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+    .status-btn .count { margin-left: 4px; color: var(--color-text-muted); }
+    .status-btn:hover .count, .status-btn.active .count { color: rgba(255,255,255,0.9); }
+    .approval-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .approval-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .approval-list li:last-child { border-bottom: none; }
+
+    /* 全体・課別（タブ） */
+    .zenkai-tabs-wrap {
+      margin-bottom: 24px;
+    }
+    .zenkai-tab-list {
+      font-size: 16px;
+      display: flex;
+      gap: 0;
+      margin: 0 0 0;
+      padding: 0;
+      list-style: none;
+      border-bottom: 2px solid var(--color-border);
+    }
+    .zenkai-tab-list li {
+      margin: 0;
+    }
+    .zenkai-tab-list button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .zenkai-tab-list button:hover {
+      color: var(--color-text);
+    }
+    .zenkai-tab-list button.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+    .zenkai-panel {
+      display: none;
+      padding-top: 12px;
+    }
+    .zenkai-panel.is-active {
+      display: block;
+    }
+    .zenkai-area {
+      margin-bottom: 0;
+    }
+    .zenkai-flow {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+    .zenkai-item {
+      font-size: 16px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+    .zenkai-item .name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .zenkai-item .count { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+    .kabei-list { display: none; }
+    .kabei-item { display: none; }
+
+    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
+    .view-layout-2 { padding: 0; }
+    .view-layout-2 .status-buttons { margin-bottom: 20px; }
+    .view-layout-2 .list-section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .category-block {
+      margin-bottom: 24px;
+    }
+    .category-block h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .case-list { list-style: none; padding: 0; margin: 0; }
+    .case-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .case-list li:hover { background: var(--color-surface); }
+    .btn-detail {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+    .btn-detail:hover { background: var(--color-primary-dark); }
+
+    /* ========== 案③: 担当者別入稿状況・フェーズ ========== */
+    .view-layout-3 { padding: 0 0 24px; }
+    .tantosha-block {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .tantosha-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .tantosha-header:hover { background: var(--color-tanto-hover); }
+    .tantosha-summary {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+    .tantosha-expand {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    .tantosha-block.open .tantosha-expand { transform: rotate(180deg); }
+    .tantosha-body {
+      display: none;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    .tantosha-block.open .tantosha-body { display: block; }
+    .tantosha-row {
+      padding: 6px 0;
+      font-size: 16px;
+    }
+    .phase-area,
+    .approval-area {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .phase-area {
+      padding: 16px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .phase-area h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .phase-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .phase-badge {
+      padding: 8px 14px;
+      background: var(--color-surface);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+    }
+    .phase-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    /* #endregion */
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー  -->
+    <div class="sidebar">
+      <button class="sidebar-toggle">
+        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle">
+      </button>
+      <h2>メニュー</h2>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/linear_scale_20dp_F4F6F9.svg">
+          <span>進捗管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">進行状況確認（仕様書別・商品別）</a></li>
+          <li><a href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html">進行状況確認（担当者別入稿状況）</a></li>
+          <li><a href="hatchujokyokanri.html">発注状況管理</a></li>
+          <li><a href="#">マニフェスト管理</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/color_lens_20dp_F4F6F9.svg">
+          <span>図案管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">見積依頼入力・送信</a></li>
+          <li><a href="#">見積回答登録・メーカー決定</a></li>
+          <li><a href="#">別注図案作成依頼登録・申請</a></li>
+          <li><a href="#">別注図案作成依頼承認</a></li>
+          <li><a href="#">図案情報登録</a></li>
+          <li><a href="#">図案振分け</a></li>
+          <li><a href="#">図案提出</a></li>
+          <li><a href="#">図案選定結果登録</a></li>
+          <li><a href="#">図案申請</a></li>
+          <li><a href="#">図案承認結果登録</a></li>
+          <li><a href="#">見積図案アップロード</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/edit_document_20dp_F4F6F9.svg">
+          <span>仕様書管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">仕様書情報登録</a></li>
+          <li><a href="#">仕様書情報決済</a></li>
+          <li><a href="#">仕様書情報入稿</a></li>
+          <li><a href="#">サンプル承認結果登録</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/smart_toy_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>サンプル管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">サンプル管理</a></li>
+          <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/high_quality_20dp_F4F6F9.svg">
+          <span>品質管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">品質検査合格書登録</a></li>
+          <li><a href="#">品質検査合格書決済</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/manufacturing_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>発注管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">契約書送付依頼</a></li>
+          <li><a href="#">契約書登録</a></li>
+          <li><a href="#">発注入力</a></li>
+          <li><a href="#">発注書決済</a></li>
+          <li><a href="#">証紙依頼書入力</a></li>
+          <li><a href="#">証紙依頼書決済</a></li>
+          <li><a href="#">契約書サイン</a></li>
+          <li><a href="#">契約書送信</a></li>
+          <li><a href="#">発注情報Mｼｽﾃﾑ連携</a></li>
+          <li><a href="#">発注履歴照会</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/directions_boat_filled_20dp_F4F6F9.svg">
+          <span>入荷管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">Ship依頼書/国内手配書登録</a></li>
+          <li><a href="#">Ship依頼書/国内手配書決済</a></li>
+          <li><a href="#">Ship依頼書送信</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/map_20dp_F4F6F9.svg">
+          <span>マップ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">商品マップ生成</a></li>
+          <li><a href="#">商品マップ公開</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/conversation_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>評価分析</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">人事考課用実績集計</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/factory_20dp_F4F6F9.svg">
+          <span>工場監査</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">ライセンス契約情報入力</a></li>
+          <li><a href="#">ライセンス契約チェック</a></li>
+          <li><a href="#">工場認定情報入力</a></li>
+          <li><a href="#">工場認定有効期限確認</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>マスタ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">コスト管理表</a></li>
+          <li><a href="#">商品情報照会</a></li>
+          <li><a href="#">システム設定マスタメンテナンス</a></li>
+          <li><a href="#">権限グループマスタメンテナンス</a></li>
+          <li><a href="#">ユーザーマスタメンテナンス</a></li>
+          <li><a href="#">ライセンスマスタメンテナンス</a></li>
+          <li><a href="#">ブランドマスタメンテナンス</a></li>
+          <li><a href="#">キャラクタマスタメンテナンス</a></li>
+          <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
+          <li><a href="#">資材マスタメンテナンス</a></li>
+        </ul>
+      </div>
+
+      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="120">
+      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="155">
+
+    </div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="dashboard-section" id="dashboardSection">
+
+        <!-- ========== : 半円グラフ・承認通知・全体・課別 ========== -->
+        <div class="view-layout view-layout-1-group">
+        <div class="approval-area">
+          <div class="view-layout view-layout-1">
+            <h2 class="view-layout-title">展示会別ステータス</h2>
+            <div class="filter-row">
+              <span class="filter-label">検索</span>
+              <input type="text" placeholder="検索" />
+              <span class="filter-label">展示会</span>
+              <select id="tenjikaiSelect">
+                <option value="2026.01">2026.01 展示会</option>
+                <option value="2026.03">2026.03 展示会</option>
+                <option value="2026.06">2026.06 展示会</option>
+              </select>
+            </div>
+
+            <div class="gauges-row">
+              <div class="gauge-card">
+                <div class="gauge-title">サンプル着</div>
+                <div class="gauge-semicircle">
+                  <svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
+                    <path class="gauge-track" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill-delay" id="gaugeSampleFillDelay" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill-warn7" id="gaugeSampleFillWarn7" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill" id="gaugeSampleFill" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="62.8 125.66" />
+                  </svg>
+                </div>
+                <div class="gauge-count"><span id="gaugeSampleDone">50</span>件 / <span id="gaugeSampleTotal">200</span>件</div>
+                <div class="gauge-detail">
+                  <span class="warn7"><i class="dot-yellow"></i>締切7日前 <span id="gaugeSampleWarn7" class="num">0</span>件</span>
+                  <span class="delay"><i class="dot-red"></i>遅延 <span id="gaugeSampleDelay" class="num">0</span>件</span>
+                </div>
+                <div class="gauge-legend">
+                  <span><i class="dot-blue"></i>完了</span>
+                  <span><i class="dot-yellow"></i>7日前</span>
+                  <span><i class="dot-red"></i>遅延</span>
+                </div>
+              </div>
+              <div class="gauge-card">
+                <div class="gauge-title">最終入稿</div>
+                <div class="gauge-semicircle">
+                  <svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
+                    <path class="gauge-track" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill-delay" id="gaugeNyukoFillDelay" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill-warn7" id="gaugeNyukoFillWarn7" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill" id="gaugeNyukoFill" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="0 125.66" />
+                  </svg>
+                </div>
+                <div class="gauge-count"><span id="gaugeNyukoDone">0</span>件 / <span id="gaugeNyukoTotal">200</span>件</div>
+                <div class="gauge-detail">
+                  <span class="warn7"><i class="dot-yellow"></i>締切7日前 <span id="gaugeNyukoWarn7" class="num">0</span>件</span>
+                  <span class="delay"><i class="dot-red"></i>遅延 <span id="gaugeNyukoDelay" class="num">0</span>件</span>
+                </div>
+                <div class="gauge-legend">
+                  <span><i class="dot-blue"></i>完了</span>
+                  <span><i class="dot-yellow"></i>7日前</span>
+                  <span><i class="dot-red"></i>遅延</span>
+                </div>
+              </div>
+              <div class="gauge-card">
+                <div class="gauge-title">発注</div>
+                <div class="gauge-semicircle">
+                  <svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
+                    <path class="gauge-track" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill-delay" id="gaugeHatchuFillDelay" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill-warn7" id="gaugeHatchuFillWarn7" d="M 10 50 A 40 40 0 0 1 90 50" />
+                    <path class="gauge-fill" id="gaugeHatchuFill" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="0 125.66" />
+                  </svg>
+                </div>
+                <div class="gauge-count"><span id="gaugeHatchuDone">0</span>件 / <span id="gaugeHatchuTotal">200</span>件</div>
+                <div class="gauge-detail">
+                  <span class="warn7"><i class="dot-yellow"></i>締切7日前 <span id="gaugeHatchuWarn7" class="num">0</span>件</span>
+                  <span class="delay"><i class="dot-red"></i>遅延 <span id="gaugeHatchuDelay" class="num">0</span>件</span>
+                </div>
+                <div class="gauge-legend">
+                  <span><i class="dot-blue"></i>完了</span>
+                  <span><i class="dot-yellow"></i>7日前</span>
+                  <span><i class="dot-red"></i>遅延</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="approval-area" id="approvalNoticeArea">
+            <div class="view-layout view-layout-2">
+              <h2 class="view-layout-title">承認通知<p style="font-size:var(--fs-xs);color:var(--color-text-muted);">詳細ボタンから詳細画面へ遷移し、その画面上で決裁まで行えます。</p></h2>
+              <div class="status-buttons">
+                <button type="button" class="status-btn active" data-status="waiting">
+                  承認待ち <span class="count">12件</span>
+                </button>
+                <button type="button" class="status-btn" data-status="applying">
+                  申請中 <span class="count">5件</span>
+                </button>
+                <button type="button" class="status-btn" data-status="returned">
+                  差し戻し <span class="count">2件</span>
+                </button>
+                <button type="button" class="status-btn" data-status="done">
+                  完了 <span class="count">180件</span>
+                </button>
+              </div>
+              <div id="approvalListArea"></div>
+              
+            </div>
+          </div>
+          <div class="approval-area" id="approvalNoticeArea">
+            <div class="zenkai-tabs-wrap">
+              <ul class="zenkai-tab-list" role="tablist" aria-label="表示切替">
+                <li role="presentation"><button type="button" class="zenkai-tab active" role="tab" aria-selected="true" data-view="zenkai">全体</button></li>
+                <li role="presentation"><button type="button" class="zenkai-tab" role="tab" aria-selected="false" data-view="ka1">1課</button></li>
+                <li role="presentation"><button type="button" class="zenkai-tab" role="tab" aria-selected="false" data-view="ka2">2課</button></li>
+                <li role="presentation"><button type="button" class="zenkai-tab" role="tab" aria-selected="false" data-view="ka3">3課</button></li>
+              </ul>
+              <div class="zenkai-panel is-active zenkai-area" id="zenkaiPanelZenkai" data-view="zenkai" role="tabpanel">
+                <div class="zenkai-flow" id="zenkaiFlow">
+                  <div class="zenkai-item"><div class="name">図案申請</div><div class="count">25件/200件</div></div>
+                  <div class="zenkai-item"><div class="name">試作入稿</div><div class="count">18件/200件</div></div>
+                  <div class="zenkai-item"><div class="name">サンプル申請</div><div class="count">12件/200件</div></div>
+                  <div class="zenkai-item"><div class="name">最終入稿</div><div class="count">8件/200件</div></div>
+                  <div class="zenkai-item"><div class="name">発注</div><div class="count">5件/200件</div></div>
+                  <div class="zenkai-item"><div class="name">入荷</div><div class="count">2件/200件</div></div>
+                </div>
+              </div>
+              <div class="zenkai-panel zenkai-area" data-view="ka1" role="tabpanel">
+                <div class="zenkai-flow" id="zenkaiFlowKa1"></div>
+              </div>
+              <div class="zenkai-panel zenkai-area" data-view="ka2" role="tabpanel">
+                <div class="zenkai-flow" id="zenkaiFlowKa2"></div>
+              </div>
+              <div class="zenkai-panel zenkai-area" data-view="ka3" role="tabpanel">
+                <div class="zenkai-flow" id="zenkaiFlowKa3"></div>
+              </div>
+            </div>
+          </div>
+          <!-- ========== 担当者別入稿状況・フェーズ ========== -->
+          <div class="approval-area" id="approvalNoticeArea">
+            <div class="view-layout view-layout-3">
+              <h2 class="view-layout-title">個別入稿状況</h2>
+              <div class="tantosha-block open">
+                <div class="tantosha-header" onclick="this.parentElement.classList.toggle('open')">
+                  <span>担当者①</span>
+                  <span class="tantosha-summary">（合計）未入稿 3件 / 入稿済 15件 / 全体 18件</span>
+                  <span class="tantosha-expand">▼</span>
+                </div>
+                <div class="tantosha-body">
+                  <div class="tantosha-row">2026年4月　5件 / 8件</div>
+                  <div class="tantosha-row">2026年7月　10件 / 10件</div>
+                  <div class="tantosha-row">スポット　0件 / 0件</div>
+                </div>
+              </div>
+              <div class="tantosha-block">
+                <div class="tantosha-header" onclick="this.parentElement.classList.toggle('open')">
+                  <span>担当者②</span>
+                  <span class="tantosha-summary">（合計）未入稿 1件 / 入稿済 12件 / 全体 13件</span>
+                  <span class="tantosha-expand">▼</span>
+                </div>
+                <div class="tantosha-body">
+                  <div class="tantosha-row">2026年4月　4件 / 6件</div>
+                  <div class="tantosha-row">2026年7月　8件 / 7件</div>
+                </div>
+              </div>
+              <div class="tantosha-block">
+                <div class="tantosha-header" onclick="this.parentElement.classList.toggle('open')">
+                  <span>担当者③</span>
+                  <span class="tantosha-summary">（合計）未入稿 0件 / 入稿済 20件 / 全体 20件</span>
+                  <span class="tantosha-expand">▼</span>
+                </div>
+                <div class="tantosha-body">
+                  <div class="tantosha-row">2026年4月　10件 / 10件</div>
+                  <div class="tantosha-row">2026年7月　10件 / 10件</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phase-area view-layout view-layout-3">
+            <h2 class="view-layout-title">フェーズ</h2>
+            <div class="phase-badges">
+              <span class="phase-badge">中止（＝対象外）</span>
+              <span class="phase-badge">保留（＝交渉中など）</span>
+              <span class="phase-badge">移行（＝別の展示会へ移動）</span>
+            </div>
+            <div class="phase-note">※ 変更時は理由入力を必須とします。フェーズ変更権限はマネージャーのみ付与する想定です。</div>
+          </div>    
+          <!-- #endregion -->
+
+        </div>       
+
+
+
+    </div>
+
+    <!--#region モーダル(通知のリンク)  -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <div id="modal-window" class="modal-window">
+      <h3 id="modal-title"></h3>
+      <div class="modal-list" id="modal-list">
+        <table class="modal-table">
+          <thead>
+            <tr>
+              <th>販売区分</th>
+              <th>展示会</th>
+              <th>担当</th>
+              <th>品名</th>
+              <th>カテゴリー</th>
+              <th>キャラクター</th>
+              <th>進行状況</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>定番</td>
+              <td>2026.01</td>
+              <td>丸眞花子(商品部)</td>
+              <td>ディズニー「ミッキータオル」</td>
+              <td>タオル</td>
+              <td>ミッキー</td>
+              <td>
+                <div class="timeline-wrapper small-timeline">
+                  <div class="timeline-line"></div>
+                  <div class="timeline">
+                    <div class="step">
+                      <div class="plan">1月10日</div>
+                      <button class="completednode-btn">図提</button>
+                      <div class="actual">1月12日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月15日</div>
+                      <button class="notcompletednode-btn">図申</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月20日</div>
+                      <button class="notcompletednode-btn">試入</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月25日</div>
+                      <button class="notcompletednode-btn">サ申</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月30日</div>
+                      <button class="notcompletednode-btn">最入</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月5日</div>
+                      <button class="notcompletednode-btn">発注</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月10日</div>
+                      <button class="notcompletednode-btn">手配</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月15日</div>
+                      <button class="notcompletednode-btn">入荷</button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>別注</td>
+              <td></td>
+              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+              <td>ディズニー「ミッキータオル」</td>
+              <td>タオル</td>
+              <td>ミッキー</td>
+              <td>
+                <div class="timeline-wrapper small-timeline">
+                  <div class="timeline-line"></div>
+                  <div class="timeline">
+                    <div class="step">
+                      <div class="plan">1月10日</div>
+                      <button class="completednode-btn">図提</button>
+                      <div class="actual">1月12日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月15日</div>
+                      <button class="completednode-btn">図申</button>
+                      <div class="actual">1月16日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月20日</div>
+                      <button class="completednode-btn">試入</button>
+                      <div class="actual">1月22日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月25日</div>
+                      <button class="notcompletednode-btn">サ申</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月30日</div>
+                      <button class="notcompletednode-btn">最入</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月5日</div>
+                      <button class="notcompletednode-btn">発注</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月10日</div>
+                      <button class="notcompletednode-btn">手配</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月15日</div>
+                      <button class="notcompletednode-btn">入荷</button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>OEM</td>
+              <td></td>
+              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+              <td>ディズニー「ミッキータオル」</td>
+              <td>タオル</td>
+              <td>ミッキー</td>
+              <td>
+                <div class="timeline-wrapper small-timeline">
+                  <div class="timeline-line"></div>
+                  <div class="timeline">
+                    <div class="step">
+                      <div class="plan">1月10日</div>
+                      <button class="completednode-btn">図提</button>
+                      <div class="actual">1月12日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月15日</div>
+                      <button class="completednode-btn">図申</button>
+                      <div class="actual">1月16日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月20日</div>
+                      <button class="completednode-btn">試入</button>
+                      <div class="actual">1月22日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月25日</div>
+                      <button class="completednode-btn">サ申</button>
+                      <div class="actual">1月25日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月30日</div>
+                      <button class="completednode-btn">最入</button>
+                      <div class="actual">2月1日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月5日</div>
+                      <button class="notcompletednode-btn">発注</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月10日</div>
+                      <button class="notcompletednode-btn">手配</button>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月15日</div>
+                      <button class="notcompletednode-btn">入荷</button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>定番加工</td>
+              <td></td>
+              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
+              <td>ディズニー「ミッキータオル」</td>
+              <td>タオル</td>
+              <td>ミッキー</td>
+              <td>
+                <div class="timeline-wrapper small-timeline">
+                  <div class="timeline-line"></div>
+                  <div class="timeline">
+                    <div class="step">
+                      <div class="plan">1月10日</div>
+                      <button class="completednode-btn">図提</button>
+                      <div class="actual">1月12日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月15日</div>
+                      <button class="completednode-btn">図申</button>
+                      <div class="actual">1月16日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月20日</div>
+                      <button class="completednode-btn">試入</button>
+                      <div class="actual">1月22日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月25日</div>
+                      <button class="completednode-btn">サ申</button>
+                      <div class="actual">1月25日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">1月30日</div>
+                      <button class="completednode-btn">最入</button>
+                      <div class="actual">2月1日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月5日</div>
+                      <button class="completednode-btn">発注</button>
+                      <div class="actual">2月6日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月10日</div>
+                      <button class="completednode-btn">手配</button>
+                      <div class="actual">2月6日</div>
+                    </div>
+                    <div class="step">
+                      <div class="plan">2月15日</div>
+                      <button class="notcompletednode-btn">入荷</button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button id="modal-close" class="modal-close">閉じる</button>
+      </div>
+    </div>
+    <!-- #endregion -->
+
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        sidebar.classList.toggle('active');
+
+        if (sidebar.classList.contains('active')) {
+          overlay.classList.add('show');   // ← オーバーレイ表示
+        } else {
+
+          overlay.classList.remove('show'); // ← オーバーレイ非表示
+        }
+      }
+
+      // メニュー開閉
+      // document.querySelectorAll('.menu-title').forEach(title => {
+      //   title.addEventListener('click', () => {
+      //     title.parentElement.classList.toggle('open');
+      //   });
+      // });
+
+      // PCのとき、メニューの開閉ボタン
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const toggleImg = toggle.querySelector('img');
+      const content = document.querySelector('.content');
+
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        } else {
+          toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+        }
+      });
+
+      // スマホのとき、開いたメニューを閉じる
+      function closeSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        sidebar.classList.remove('active');
+        overlay.classList.remove('show');
+      }
+
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation(); // クリックが外側に伝播しないように
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // // 画面のどこかをクリックしたら閉じる
+      // document.addEventListener('click', () => {
+      //   menu.style.display = 'none';
+      // });
+
+      // 閉じるボタン（モーダル）
+      document.getElementById("modal-close").addEventListener("click", function () {
+        document.getElementById("modal-overlay").style.display = "none";
+        document.getElementById("modal-window").style.display = "none";
+      });
+
+      // 案①②のステータスボタン：押すと active 切り替え（同じブロック内のみ）
+      document.querySelectorAll(".status-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var parent = this.closest(".view-layout");
+          if (!parent) return;
+          parent.querySelectorAll(".status-btn").forEach(function (b) { b.classList.remove("active"); });
+          this.classList.add("active");
+        });
+      });
+
+      // 案①：展示会変更で全体・半円グラフを更新
+      var tenjikaiData = {
+        "2026.01": { total: 120, phases: [
+          { name: "図案申請", done: 15 }, { name: "試作入稿", done: 18 }, { name: "サンプル申請", done: 20 },
+          { name: "最終入稿", done: 22 }, { name: "発注", done: 23 }, { name: "入荷", done: 22 }
+        ], sample: { done: 50, total: 120, warn7: 8, delay: 3 }, nyuko: { done: 0, total: 120, warn7: 5, delay: 2 }, hatchu: { done: 0, total: 120, warn7: 4, delay: 1 }, status: { approval: 14, applying: 6, sendback: 2, done: 98 } },
+        "2026.03": { total: 200, phases: [
+          { name: "図案申請", done: 25 }, { name: "試作入稿", done: 18 }, { name: "サンプル申請", done: 12 },
+          { name: "最終入稿", done: 8 }, { name: "発注", done: 5 }, { name: "入荷", done: 2 }
+        ], sample: { done: 50, total: 200, warn7: 12, delay: 5 }, nyuko: { done: 0, total: 200, warn7: 8, delay: 4 }, hatchu: { done: 0, total: 200, warn7: 6, delay: 3 }, status: { approval: 12, applying: 5, sendback: 2, done: 181 } },
+        "2026.06": { total: 80, phases: [
+          { name: "図案申請", done: 10 }, { name: "試作入稿", done: 12 }, { name: "サンプル申請", done: 14 },
+          { name: "最終入稿", done: 15 }, { name: "発注", done: 14 }, { name: "入荷", done: 15 }
+        ], sample: { done: 60, total: 80, warn7: 4, delay: 2 }, nyuko: { done: 70, total: 80, warn7: 3, delay: 1 }, hatchu: { done: 75, total: 80, warn7: 2, delay: 0 }, status: { approval: 8, applying: 4, sendback: 1, done: 67 } }
+      };
+      var GAUGE_ARC_LENGTH = Math.PI * 40;
+      function setGaugeFillSegments(fillId, warn7Id, delayId, done, total, warn7, delay) {
+        var L = GAUGE_ARC_LENGTH;
+        var t = total > 0 ? total : 1;
+        var w7 = (warn7 != null ? warn7 : 0);
+        var dly = (delay != null ? delay : 0);
+        var lenDone = (done / t) * L;
+        var lenWarn7 = (w7 / t) * L;
+        var lenDelay = (dly / t) * L;
+        var el = document.getElementById(fillId);
+        if (el) {
+          el.setAttribute("stroke-dasharray", lenDone.toFixed(2) + " " + L.toFixed(2));
+          el.setAttribute("stroke-dashoffset", "0");
+        }
+        el = document.getElementById(warn7Id);
+        if (el) {
+          el.setAttribute("stroke-dasharray", lenWarn7.toFixed(2) + " " + L.toFixed(2));
+          el.setAttribute("stroke-dashoffset", (-lenDone).toFixed(2));
+        }
+        el = document.getElementById(delayId);
+        if (el) {
+          el.setAttribute("stroke-dasharray", lenDelay.toFixed(2) + " " + L.toFixed(2));
+          el.setAttribute("stroke-dashoffset", (-(lenDone + lenWarn7)).toFixed(2));
+        }
+      }
+      var ZENKAI_NAMES = ["図案申請","試作入稿","サンプル申請","最終入稿","発注","入荷"];
+      var KA_RATIO = [67/200, 66/200, 67/200];
+      function updateLayout1(key) {
+        var data = tenjikaiData[key];
+        if (!data) return;
+        var total = data.total;
+        // 全体（完了数/総数）
+        var zenkai = document.getElementById("zenkaiFlow");
+        if (zenkai) {
+          zenkai.innerHTML = data.phases.map(function (p, i) {
+            return '<div class="zenkai-item"><div class="name">' + (ZENKAI_NAMES[i] || p.name) + '</div><div class="count">' + p.done + '件/' + total + '件</div></div>';
+          }).join("");
+        }
+        // 1課・2課・3課を全体から按分（割合 67:66:67）
+        var kaTotals = [
+          Math.round(total * KA_RATIO[0]),
+          Math.round(total * KA_RATIO[1]),
+          total - Math.round(total * KA_RATIO[0]) - Math.round(total * KA_RATIO[1])
+        ];
+        ["zenkaiFlowKa1", "zenkaiFlowKa2", "zenkaiFlowKa3"].forEach(function (flowId, ki) {
+          var el = document.getElementById(flowId);
+          if (!el) return;
+          var kaTotal = kaTotals[ki];
+          el.innerHTML = data.phases.map(function (p, i) {
+            var d = p.done;
+            var ka1 = Math.round(d * KA_RATIO[0]);
+            var ka2 = Math.round(d * KA_RATIO[1]);
+            var ka3 = d - ka1 - ka2;
+            var done = [ka1, ka2, ka3][ki];
+            return '<div class="zenkai-item"><div class="name">' + (ZENKAI_NAMES[i] || p.name) + '</div><div class="count">' + done + '件/' + kaTotal + '件</div></div>';
+          }).join("");
+        });
+        if (data.sample) {
+          var el = document.getElementById("gaugeSampleDone"); if (el) el.textContent = data.sample.done;
+          el = document.getElementById("gaugeSampleTotal"); if (el) el.textContent = data.sample.total;
+          setGaugeFillSegments("gaugeSampleFill", "gaugeSampleFillWarn7", "gaugeSampleFillDelay", data.sample.done, data.sample.total, data.sample.warn7, data.sample.delay);
+          el = document.getElementById("gaugeSampleWarn7"); if (el) el.textContent = (data.sample.warn7 != null ? data.sample.warn7 : 0);
+          el = document.getElementById("gaugeSampleDelay"); if (el) el.textContent = (data.sample.delay != null ? data.sample.delay : 0);
+        }
+        if (data.nyuko) {
+          var el = document.getElementById("gaugeNyukoDone"); if (el) el.textContent = data.nyuko.done;
+          el = document.getElementById("gaugeNyukoTotal"); if (el) el.textContent = data.nyuko.total;
+          setGaugeFillSegments("gaugeNyukoFill", "gaugeNyukoFillWarn7", "gaugeNyukoFillDelay", data.nyuko.done, data.nyuko.total, data.nyuko.warn7, data.nyuko.delay);
+          el = document.getElementById("gaugeNyukoWarn7"); if (el) el.textContent = (data.nyuko.warn7 != null ? data.nyuko.warn7 : 0);
+          el = document.getElementById("gaugeNyukoDelay"); if (el) el.textContent = (data.nyuko.delay != null ? data.nyuko.delay : 0);
+        }
+        if (data.hatchu) {
+          var el = document.getElementById("gaugeHatchuDone"); if (el) el.textContent = data.hatchu.done;
+          el = document.getElementById("gaugeHatchuTotal"); if (el) el.textContent = data.hatchu.total;
+          setGaugeFillSegments("gaugeHatchuFill", "gaugeHatchuFillWarn7", "gaugeHatchuFillDelay", data.hatchu.done, data.hatchu.total, data.hatchu.warn7, data.hatchu.delay);
+          el = document.getElementById("gaugeHatchuWarn7"); if (el) el.textContent = (data.hatchu.warn7 != null ? data.hatchu.warn7 : 0);
+          el = document.getElementById("gaugeHatchuDelay"); if (el) el.textContent = (data.hatchu.delay != null ? data.hatchu.delay : 0);
+        }
+        if (data.status) {
+          var area = document.getElementById("approvalNoticeArea");
+          if (area) {
+            var btns = area.querySelectorAll(".status-btn");
+            if (btns.length >= 4) {
+              btns[0].querySelector(".count").textContent = data.status.approval + "件";
+              btns[1].querySelector(".count").textContent = data.status.applying + "件";
+              btns[2].querySelector(".count").textContent = data.status.sendback + "件";
+              btns[3].querySelector(".count").textContent = data.status.done + "件";
+            }
+          }
+        }
+      }
+      var sel = document.getElementById("tenjikaiSelect");
+      if (sel) {
+        sel.value = "2026.03";
+        updateLayout1("2026.03");
+        sel.addEventListener("change", function () { updateLayout1(this.value); });
+      }
+
+      // 全体・1課・2課・3課タブ
+      document.querySelectorAll(".zenkai-tab").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var view = this.getAttribute("data-view");
+          document.querySelectorAll(".zenkai-tab").forEach(function (b) {
+            b.classList.remove("active");
+            b.setAttribute("aria-selected", "false");
+          });
+          this.classList.add("active");
+          this.setAttribute("aria-selected", "true");
+          document.querySelectorAll(".zenkai-panel").forEach(function (panel) {
+            var isActive = panel.getAttribute("data-view") === view;
+            panel.classList.toggle("is-active", isActive);
+          });
+        });
+      });
+
+      const approvalData = [
+        { name: "A案件", category: "①別注", status: "waiting" },
+        { name: "B案件", category: "①別注", status: "waiting" },
+        { name: "C案件", category: "②試作仕様書", status: "waiting" },
+
+        { name: "D案件", category: "②試作仕様書", status: "applying" },
+        { name: "E案件", category: "③最終仕様書", status: "applying" },
+
+        { name: "F案件", category: "①別注", status: "returned" },
+
+        { name: "G案件", category: "③最終仕様書", status: "done" },
+      ];      
+      const buttons = document.querySelectorAll(".status-btn");
+      const listArea = document.getElementById("approvalListArea");
+
+      function renderList(status) {
+        listArea.innerHTML = "";
+
+        const filtered = approvalData.filter(item => item.status === status);
+
+        if (filtered.length === 0) {
+          listArea.innerHTML = "<p>該当案件はありません。</p>";
+          return;
+        }
+
+        const ul = document.createElement("ul");
+        ul.className = "case-list";
+
+        filtered.forEach(item => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            ${item.category} - ${item.name}
+            <button type="button" class="btn-detail">詳細</button>
+          `;
+          ul.appendChild(li);
+        });
+
+        listArea.appendChild(ul);
+      }
+
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const status = btn.dataset.status;
+          renderList(status);
+        });
+      });
+
+      // 初期表示（承認待ち）
+      renderList("waiting");      
+    </script>
+</body>
+
+</html>
