@@ -866,6 +866,34 @@
       }
       .zenkai-tabs-wrap .zenkai-item .name { font-size: 11px; }
 
+      /* 個別入稿状況: スマホでヘッダ固定（スクロール時に上部に固定・他ヘッダーと統一） */
+      #kobetsuArea #kobetsuTitle {
+        position: sticky;
+        top: -20px;
+        z-index: 20;
+        background: var(--color-card);
+        margin-left: -20px;
+        margin-right: -20px;
+        margin-bottom: 16px;
+        padding: 20px 20px 12px 20px;
+        transition: box-shadow 0.15s ease;
+        border-bottom: none;
+      }
+      /* 下線だけコンテンツ幅に揃える（他セクションのタイトルと同じ長さ） */
+      #kobetsuArea #kobetsuTitle::after {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 0;
+        border-bottom: 2px solid var(--color-primary);
+      }
+      /* スクロールで固定されているときだけ影を付ける */
+      #kobetsuArea #kobetsuTitle.is-stuck {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+
       /* イメージ案②: スマホ用 */
       .view-layout-2 .status-buttons {
         gap: 8px;
@@ -2269,6 +2297,29 @@
         document.getElementById("kobetsuTitle")
           .textContent = `個別入稿状況（${selectedText}）`;
       }
+
+      /* 個別入稿状況ヘッダ: スクロールで固定されているときだけ影を付ける */
+      (function () {
+        var titleEl = document.getElementById("kobetsuTitle");
+        if (!titleEl) return;
+        var stickyTop = -20;
+        function checkStuck() {
+          if (window.innerWidth > 768) {
+            titleEl.classList.remove("is-stuck");
+            return;
+          }
+          var rect = titleEl.getBoundingClientRect();
+          if (rect.top <= stickyTop + 5) {
+            titleEl.classList.add("is-stuck");
+          } else {
+            titleEl.classList.remove("is-stuck");
+          }
+        }
+        window.addEventListener("scroll", checkStuck, { passive: true });
+        window.addEventListener("resize", checkStuck);
+        checkStuck();
+      })();
+
       let currentSection = "all";
 
       function sectionLabel(section){
