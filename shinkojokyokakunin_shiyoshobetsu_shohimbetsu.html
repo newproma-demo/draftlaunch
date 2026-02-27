@@ -585,22 +585,42 @@
       vertical-align: middle;
     }
 
-    /* 子行の先頭セル：樹形インジケータ（│Ｌ└の代わり） */
+    /* 子行の先頭セル：ツリー風インジケータ */
     .shinko-table td.tree-cell {
       position: relative;
-      width: 40px;
+      width: 32px;
       vertical-align: middle;
     }
 
+    /* ベースの縦線（薄いグレー） */
     .shinko-table td.tree-cell::before {
       content: "";
       position: absolute;
       left: 50%;
-      top: 0;
-      bottom: 0;
+      top: 2px;
+      bottom: 2px;
       width: 2px;
-      background: rgba(0, 134, 50, 0.35);
+      background: #d5dfd9;
+      border-radius: 999px;
       transform: translateX(-50%);
+    }
+
+    /* 展開中の子行：縦線を緑トーン＋中央にドット */
+    .shinko-table tr.child-row.child-visible td.tree-cell::before {
+      background: rgba(0, 134, 50, 0.45);
+    }
+
+    .shinko-table tr.child-row.child-visible td.tree-cell::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(0, 134, 50, 0.2);
+      transform: translate(-50%, -50%);
     }
 
     .expand-toggle-btn {
@@ -640,14 +660,7 @@
     }
 
     .expand-toggle-btn.no-children {
-      opacity: 0.4;
-      cursor: default;
-    }
-
-    .expand-toggle-btn.no-children:hover {
-      background: var(--color-card);
-      border-color: var(--color-border);
-      color: var(--color-text);
+      display: none;
     }
 
     /* モーダル背景 */
