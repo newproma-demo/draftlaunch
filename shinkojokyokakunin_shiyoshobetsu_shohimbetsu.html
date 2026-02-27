@@ -564,6 +564,79 @@
       background: #dceee0;
     }
 
+    /* アイテム列レイアウト */
+    .shinko-table .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .delay-marker {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .delay-marker span { display: inline-flex; align-items: center;}
+    .delay-marker .dot-blue { width: 12px; height: 12px; border-radius: 50%; background: #1976d2; }
+    .delay-marker .dot-yellow { width: 12px; height: 12px; border-radius: 50%; background: #f9a825; }
+    .delay-marker .dot-red { width: 12px; height: 12px; border-radius: 50%; background: #c62828; }
+
+    /* 28px固定（行高さを崩さない） */
+    .shinko-table .item-thumb {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      object-fit: cover;
+      border-radius: 3px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      display: block;
+    }
+    /* 文字バランス */
+    .shinko-table .item-cell span {
+      line-height: 1.2;
+    }
+    /* 控えめhover */
+    .shinko-table .item-thumb:hover {
+      opacity: 0.85;
+    }
+    /* 画像をモーダル表示 */
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9999;
+    }
+
+    .image-modal.active {
+      display: block;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .image-modal.active .modal-backdrop {
+      opacity: 1;
+    }
+
+    .modal-wrapper {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .modal-wrapper img {
+      position: absolute;
+      border-radius: 8px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+      transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    }
     .child-row {
       display: none;
     }
@@ -1283,7 +1356,14 @@
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>丸眞花子</td>
                     <td>定番（2026.01展示会）</td>
-                    <td>ミッキー／ディズニー「ミッキータオル」<br></td>
+                    <td>
+                      <div class="item-cell">
+                        <img src="images/sample.jpg"
+                             class="item-thumb"
+                             onerror="this.src='images/noimage.png'">
+                        <span>ミッキー／ディズニー「ミッキータオル」</span>
+                      </div>
+                    </td>
                     <td>試作仕様書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1332,7 +1412,14 @@
                     <td class="tree-cell"></td>
                     <td>丸眞花子</td>
                     <td>定番（2026.01展示会）</td>
-                    <td>ダイカットミニタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
+                    <td>
+                      <div class="item-cell">
+                        <img src="images/sample.jpg"
+                             class="item-thumb"
+                             onerror="this.src='images/noimage.png'">
+                        <span>ダイカットミニタオル／ミッキー／ディズニー「ミッキータオル」</span>
+                      </div>
+                    </td>                    
                     <td>試作仕様書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1381,7 +1468,14 @@
                     <td class="tree-cell"></td>
                     <td>丸眞花子</td>
                     <td>定番（2026.01展示会）</td>
-                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
+                    <td>
+                      <div class="item-cell">
+                        <img src="images/sample.jpg"
+                             class="item-thumb"
+                             onerror="this.src='images/noimage.png'">
+                        <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
+                      </div>
+                    </td>                    
                     <td>試作仕様書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1430,7 +1524,14 @@
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>丸眞花子</td>
                     <td>別注</td>
-                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
+                    <td>
+                      <div class="item-cell">
+                        <img src="images/sample.jpg"
+                             class="item-thumb"
+                             onerror="this.src='images/noimage.png'">
+                        <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
+                      </div>
+                    </td>
                     <td>サンプル到着待ち</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1623,7 +1724,9 @@
                   <tr class="parent-row" onclick="toggleRows(this)">
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>
-                      2日遅れ<br>
+                      <div class="delay-marker">
+                        <span><i class="dot-yellow"></i>2日遅れ</span>
+                      </div>
                       丸眞花子　別注　フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br>
                       サンプル到着待ち
                     </td>
@@ -1653,7 +1756,15 @@
 
   </div>
 
+
+  <div id="imageModal" class="image-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-wrapper"></div>
+  </div>
+
   <script>
+    const NO_IMAGE = "images/noimage.png";
+
     function toggleSidebar() {
       const sidebar = document.querySelector('.sidebar');
       const overlay = document.querySelector('.overlay');
@@ -1772,8 +1883,98 @@
       if (btn && !hasChildren) btn.classList.add("no-children");
     });
 
+    
+    //サムネイルのモーダル関連
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const modal = document.getElementById("imageModal");
+      const backdrop = document.querySelector(".modal-backdrop");
+      const wrapper = document.querySelector(".modal-wrapper");
+
+      let activeImg = null;
+      let originalRect = null;
+
+      document.querySelectorAll(".item-thumb").forEach(img => {
+
+        img.addEventListener("click", function (e) {
+
+          e.stopPropagation();
+          e.preventDefault();
+
+          activeImg = this;
+          originalRect = this.getBoundingClientRect();
+
+          const clone = this.cloneNode();
+          clone.style.top = originalRect.top + "px";
+          clone.style.left = originalRect.left + "px";
+          clone.style.width = originalRect.width + "px";
+          clone.style.height = originalRect.height + "px";
+
+          wrapper.innerHTML = "";
+          wrapper.appendChild(clone);
+
+          modal.classList.add("active");
+
+          requestAnimationFrame(() => {
+
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            const maxWidth = viewportWidth * 0.8;
+            const maxHeight = viewportHeight * 0.8;
+
+            const ratio = clone.naturalWidth / clone.naturalHeight;
+
+            let targetWidth = maxWidth;
+            let targetHeight = maxWidth / ratio;
+
+            if (targetHeight > maxHeight) {
+              targetHeight = maxHeight;
+              targetWidth = maxHeight * ratio;
+            }
+
+            clone.style.top = (viewportHeight - targetHeight) / 2 + "px";
+            clone.style.left = (viewportWidth - targetWidth) / 2 + "px";
+            clone.style.width = targetWidth + "px";
+            clone.style.height = targetHeight + "px";
+
+          });
+
+        });
+
+      });
+
+      function closeModal() {
+
+        const clone = wrapper.querySelector("img");
+        if (!clone) return;
+
+        clone.style.top = originalRect.top + "px";
+        clone.style.left = originalRect.left + "px";
+        clone.style.width = originalRect.width + "px";
+        clone.style.height = originalRect.height + "px";
+
+        backdrop.style.opacity = 0;
+
+        setTimeout(() => {
+          modal.classList.remove("active");
+          wrapper.innerHTML = "";
+          backdrop.style.opacity = "";
+        }, 300);
+      }
+
+      backdrop.addEventListener("click", closeModal);
+
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeModal();
+      });
+
+    });
+
 
   </script>
+
+  
 </body>
 
 </html>
