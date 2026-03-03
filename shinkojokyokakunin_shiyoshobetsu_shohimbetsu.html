@@ -365,6 +365,54 @@
       letter-spacing: 0.02em;
     }
 
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .content-box .search-box {
+      flex-shrink: 0;
+      margin: 0 0 24px 0;
+    }
+
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
+    }
+
     /* #region 検索条件ボックス（モダンカード） */
     .search-box {
       display: flex;
@@ -377,6 +425,20 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--color-border);
+    }
+
+    /* スマホ用「検索条件を開く」ボタン（PCでは非表示） */
+    .search-toggle-sp {
+      display: none;
+    }
+
+    /* PCでは search-box-inner は常に表示（flexで検索行を並べる） */
+    .search-box .search-box-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 24px;
+      width: 100%;
     }
 
     .search-row {
@@ -430,23 +492,18 @@
     }
 
     .search-button {
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      padding: 10px 24px;
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: var(--fs-sm);
+      padding: 6px 14px;
+      font-size: 16px;
       font-weight: 600;
-      font-family: inherit;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
-      box-shadow: var(--shadow-sm);
+      font-family: var(--font-sans);
     }
 
-    .search-button:hover {
-      background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
-      box-shadow: 0 4px 12px rgba(0, 134, 50, 0.25);
-    }
+    .search-button:hover { background: var(--color-primary-dark); }
 
     .search-button:active {
       transform: translateY(1px);
@@ -513,7 +570,7 @@
     .shinko-table th {
       background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       color: #fff;
-      padding: 4px 10px;
+      padding: 14px 16px;
       text-align: left;
       font-weight: 600;
       letter-spacing: 0.02em;
@@ -529,7 +586,7 @@
     }
 
     .shinko-table td {
-      padding: 3px 10px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--color-border);
       vertical-align: middle;
     }
@@ -564,79 +621,6 @@
       background: #dceee0;
     }
 
-    /* アイテム列レイアウト */
-    .shinko-table .item-cell {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .delay-marker {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .delay-marker span { display: inline-flex; align-items: center;}
-    .delay-marker .dot-blue { width: 12px; height: 12px; border-radius: 50%; background: #1976d2; }
-    .delay-marker .dot-yellow { width: 12px; height: 12px; border-radius: 50%; background: #f9a825; }
-    .delay-marker .dot-red { width: 12px; height: 12px; border-radius: 50%; background: #c62828; }
-
-    /* 28px固定（行高さを崩さない） */
-    .shinko-table .item-thumb {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      object-fit: cover;
-      border-radius: 3px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      cursor: pointer;
-      display: block;
-    }
-    /* 文字バランス */
-    .shinko-table .item-cell span {
-      line-height: 1.2;
-    }
-    /* 控えめhover */
-    .shinko-table .item-thumb:hover {
-      opacity: 0.85;
-    }
-    /* 画像をモーダル表示 */
-    .image-modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      z-index: 9999;
-    }
-
-    .image-modal.active {
-      display: block;
-    }
-
-    .modal-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(6px);
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-
-    .image-modal.active .modal-backdrop {
-      opacity: 1;
-    }
-
-    .modal-wrapper {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .modal-wrapper img {
-      position: absolute;
-      border-radius: 8px;
-      box-shadow: 0 30px 70px rgba(0,0,0,0.4);
-      transition: all 0.3s cubic-bezier(.2,.8,.2,1);
-    }
     .child-row {
       display: none;
     }
@@ -678,11 +662,12 @@
       transform: translateX(-50%);
     }
 
-    /* 展開中の子行：縦線を緑トーン＋中央にドット */
+    /* 展開中の子行：縦線を緑トーン */
     .shinko-table tr.child-row.child-visible td.tree-cell::before {
       background: rgba(0, 134, 50, 0.45);
     }
 
+    /* 展開中の子行：縦線中央にドット */
     .shinko-table tr.child-row.child-visible td.tree-cell::after {
       content: "";
       position: absolute;
@@ -694,6 +679,69 @@
       background: var(--color-primary);
       box-shadow: 0 0 0 2px rgba(0, 134, 50, 0.2);
       transform: translate(-50%, -50%);
+    }
+
+    .shinko-table .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .shinko-table .item-thumb {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      object-fit: cover;
+      border-radius: 3px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      display: block;
+    }
+
+    .shinko-table .item-cell span {
+      line-height: 1.2;
+    }
+
+    .shinko-table .item-thumb:hover {
+      opacity: 0.85;
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9999;
+    }
+
+    .image-modal.active {
+      display: block;
+    }
+
+    .image-modal .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .image-modal.active .modal-backdrop {
+      opacity: 1;
+    }
+
+    .image-modal .modal-wrapper {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .image-modal .modal-wrapper img {
+      position: absolute;
+      border-radius: 8px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+      transition: all 0.3s cubic-bezier(.2,.8,.2,1);
     }
 
     .expand-toggle-btn {
@@ -733,7 +781,14 @@
     }
 
     .expand-toggle-btn.no-children {
-      display: none;
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .expand-toggle-btn.no-children:hover {
+      background: var(--color-card);
+      border-color: var(--color-border);
+      color: var(--color-text);
     }
 
     /* モーダル背景 */
@@ -951,13 +1006,22 @@
     }
 
     /* 画面の幅が650px以下ならスマホ*/
-    @media (max-width: 650px) {
+    @media (max-width: 768px) {
       .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
         display: none;
       }
 
       .sp-only {
         display: block;
+      }
+
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
       }
 
       .header-title {
@@ -1007,11 +1071,81 @@
         width: 100%;
       }
 
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        min-height: 0;
+      }
+
+      .page-title {
+        font-size: 16px;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .search-toggle-sp-text {
+        font-size: 12pt;
+      }
+
+      .search-toggle-sp::after {
+        content: "＋";
+        font-size: 1.2em;
+        color: var(--color-text-muted);
+      }
+
       .search-box {
-        display: grid;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      .search-box .search-box-inner {
+        display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 16px;
+        padding: 12px 0 0;
         gap: 12px 16px;
+      }
+
+      .search-box.is-open .search-box-inner {
+        display: grid;
+      }
+
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
       }
 
       .search-row {
@@ -1022,7 +1156,7 @@
       }
 
       .search-row label {
-        font-size: var(--fs-sm);
+        font-size: var(--fs-xs);
         flex-shrink: 0;
       }
 
@@ -1042,7 +1176,7 @@
 
       .search-button {
         width: auto;
-        min-width: 120px;
+        min-width: 80px;
       }
 
       .content-section {
@@ -1271,9 +1405,11 @@
 
     <!--#region メインコンテンツ  -->
     <div class="content">
+      <div class="content-box">
       <h2 class="page-title">進行状況確認（仕様書別・商品別）</h2>
-      <div class="search-box">
-
+      <div class="search-box" id="searchBox">
+        <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel"><span class="search-toggle-sp-label"><img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20"><span class="search-toggle-sp-text">検索条件を開く</span></span></button>
+        <div class="search-box-inner" id="searchRowsPanel">
         <div class="search-row">
           <label>展示会</label>
           <select>
@@ -1332,6 +1468,7 @@
 
         <div class="search-button-area">
           <button class="search-button">検索</button>
+        </div>
         </div>
       </div>
       <!-- ▲ 検索条件エリアここまで ▲ -->
@@ -1414,12 +1551,12 @@
                     <td>定番（2026.01展示会）</td>
                     <td>
                       <div class="item-cell">
-                        <img src="images/sample.jpg"
+                        <img src="images/zuan001.png"
                              class="item-thumb"
                              onerror="this.src='images/noimage.png'">
                         <span>ダイカットミニタオル／ミッキー／ディズニー「ミッキータオル」</span>
                       </div>
-                    </td>                    
+                    </td>
                     <td>試作仕様書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1470,12 +1607,12 @@
                     <td>定番（2026.01展示会）</td>
                     <td>
                       <div class="item-cell">
-                        <img src="images/sample.jpg"
+                        <img src="images/zuan002.png"
                              class="item-thumb"
                              onerror="this.src='images/noimage.png'">
                         <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
                       </div>
-                    </td>                    
+                    </td>
                     <td>試作仕様書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1580,7 +1717,14 @@
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>丸眞花子</td>
                     <td>OEM</td>
-                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
+                    <td>
+                      <div class="item-cell">
+                        <img src="images/sample.jpg"
+                             class="item-thumb"
+                             onerror="this.src='images/noimage.png'">
+                        <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
+                      </div>
+                    </td>
                     <td>発注書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1631,7 +1775,14 @@
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>丸眞花子</td>
                     <td>定番加工</td>
-                    <td>フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br></td>
+                    <td>
+                      <div class="item-cell">
+                        <img src="images/sample.jpg"
+                             class="item-thumb"
+                             onerror="this.src='images/noimage.png'">
+                        <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
+                      </div>
+                    </td>
                     <td>初回入荷済み</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
@@ -1724,9 +1875,7 @@
                   <tr class="parent-row" onclick="toggleRows(this)">
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>
-                      <div class="delay-marker">
-                        <span><i class="dot-yellow"></i>2日遅れ</span>
-                      </div>
+                      2日遅れ<br>
                       丸眞花子　別注　フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br>
                       サンプル到着待ち
                     </td>
@@ -1751,11 +1900,11 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
     <!-- #endregion -->
 
   </div>
-
 
   <div id="imageModal" class="image-modal">
     <div class="modal-backdrop"></div>
@@ -1778,6 +1927,20 @@
         overlay.classList.remove('show'); // ← オーバーレイ非表示
       }
     }
+
+    // スマホ: 検索条件の折りたたみ開閉
+    (function() {
+      var btn = document.getElementById('searchToggleSp');
+      var box = document.getElementById('searchBox');
+      if (btn && box) {
+        btn.addEventListener('click', function() {
+          var isOpen = box.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', isOpen);
+          var textEl = btn.querySelector('.search-toggle-sp-text');
+          if (textEl) textEl.textContent = isOpen ? '検索条件を閉じる' : '検索条件を開く';
+        });
+      }
+    })();
 
     // メニュー開閉
     // document.querySelectorAll('.menu-title').forEach(title => {
@@ -1883,25 +2046,44 @@
       if (btn && !hasChildren) btn.classList.add("no-children");
     });
 
-    
-    //サムネイルのモーダル関連
-    document.addEventListener("DOMContentLoaded", function () {
+    // 親行に表示する画像：子行の先頭がnoimageの場合は次の子行の画像を使う
+    function applyParentThumbFromChildren() {
+      document.querySelectorAll(".parent-row").forEach(function (parentRow) {
+        var firstChild = parentRow.nextElementSibling;
+        if (!firstChild || !firstChild.classList.contains("child-row")) return;
+        var parentThumb = parentRow.querySelector(".item-thumb");
+        if (!parentThumb) return;
+        var row = firstChild;
+        while (row && row.classList.contains("child-row")) {
+          var childThumb = row.querySelector(".item-thumb");
+          if (childThumb && childThumb.src && childThumb.src.indexOf("noimage") === -1) {
+            parentThumb.src = childThumb.getAttribute("src") || childThumb.src;
+            break;
+          }
+          row = row.nextElementSibling;
+        }
+      });
+    }
+    // 画像読み込み・onerror反映後に実行
+    if (document.readyState === "complete") {
+      applyParentThumbFromChildren();
+    } else {
+      window.addEventListener("load", applyParentThumbFromChildren);
+    }
 
+    // アイテム列サムネイルクリックで画像をモーダル表示
+    (function() {
       const modal = document.getElementById("imageModal");
-      const backdrop = document.querySelector(".modal-backdrop");
-      const wrapper = document.querySelector(".modal-wrapper");
+      const backdrop = document.querySelector("#imageModal .modal-backdrop");
+      const wrapper = document.querySelector("#imageModal .modal-wrapper");
+      if (!modal || !backdrop || !wrapper) return;
 
-      let activeImg = null;
       let originalRect = null;
 
-      document.querySelectorAll(".item-thumb").forEach(img => {
-
-        img.addEventListener("click", function (e) {
-
+      document.querySelectorAll(".item-thumb").forEach(function(img) {
+        img.addEventListener("click", function(e) {
           e.stopPropagation();
           e.preventDefault();
-
-          activeImg = this;
           originalRect = this.getBoundingClientRect();
 
           const clone = this.cloneNode();
@@ -1912,51 +2094,37 @@
 
           wrapper.innerHTML = "";
           wrapper.appendChild(clone);
-
           modal.classList.add("active");
 
-          requestAnimationFrame(() => {
-
+          requestAnimationFrame(function() {
             const viewportWidth = window.innerWidth;
             const viewportHeight = window.innerHeight;
-
             const maxWidth = viewportWidth * 0.8;
             const maxHeight = viewportHeight * 0.8;
-
             const ratio = clone.naturalWidth / clone.naturalHeight;
-
             let targetWidth = maxWidth;
             let targetHeight = maxWidth / ratio;
-
             if (targetHeight > maxHeight) {
               targetHeight = maxHeight;
               targetWidth = maxHeight * ratio;
             }
-
             clone.style.top = (viewportHeight - targetHeight) / 2 + "px";
             clone.style.left = (viewportWidth - targetWidth) / 2 + "px";
             clone.style.width = targetWidth + "px";
             clone.style.height = targetHeight + "px";
-
           });
-
         });
-
       });
 
       function closeModal() {
-
         const clone = wrapper.querySelector("img");
         if (!clone) return;
-
         clone.style.top = originalRect.top + "px";
         clone.style.left = originalRect.left + "px";
         clone.style.width = originalRect.width + "px";
         clone.style.height = originalRect.height + "px";
-
         backdrop.style.opacity = 0;
-
-        setTimeout(() => {
+        setTimeout(function() {
           modal.classList.remove("active");
           wrapper.innerHTML = "";
           backdrop.style.opacity = "";
@@ -1964,17 +2132,12 @@
       }
 
       backdrop.addEventListener("click", closeModal);
-
       document.addEventListener("keydown", function(e) {
         if (e.key === "Escape") closeModal();
       });
-
-    });
-
+    })();
 
   </script>
-
-  
 </body>
 
 </html>
