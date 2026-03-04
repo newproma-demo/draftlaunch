@@ -1190,7 +1190,196 @@
         right: 20px;
       }
     }
+    /* スマホ表示した時の進行状況 */
+    /* ===============================
+      SP CARD UI (差分CSS)
+    =================================*/
 
+    .sp-card-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    /* カード */
+    .sp-card{
+      background:#fff;
+      border:1px solid var(--color-border);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:var(--shadow-sm);
+    }
+
+    /* ステータス帯 */
+    .sp-status{
+      padding:6px 12px;
+      font-size:12px;
+      font-weight:600;
+      color:#fff;
+    }
+
+    .status-warning{ background:#f9a825; }
+    .status-delay{ background:#e53935; }
+    .status-complete{ background:#008632; }
+    .status-onschedule{ background:#1e88e5; }
+    .status-default{ background:#9aa5a0; }
+
+    /* メイン行 */
+    .sp-card-main{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+    }
+
+    /* サムネ */
+    .sp-thumb{
+      width:56px;
+      height:56px;
+      object-fit:cover;
+      border-radius:6px;
+      border:1px solid #ddd;
+      cursor: pointer;
+    }
+
+    /* 情報 */
+    .sp-info{
+      flex:1;
+      min-width:0;
+    }
+
+    .sp-title{
+      font-weight:600;
+      font-size:14px;
+      line-height:1.3;
+    }
+
+    .sp-meta{
+      font-size:12px;
+      color:var(--color-text-muted);
+      margin-top:4px;
+    }
+
+    /* 展開ボタン */
+    .sp-expand{
+      font-size:20px;
+      color:var(--color-primary);
+    }
+
+    /* 詳細（初期非表示） */
+    .sp-detail{
+      display:none;
+      padding:12px 16px 16px;
+      border-top:1px solid var(--color-border);
+    }
+
+    /* 展開状態 */
+    .sp-card.open .sp-detail{
+      display:block;
+    }
+
+    .sp-card.open .sp-expand{
+      transform:rotate(45deg);
+    }
+
+    /* 子カードの＋／×は常に非表示（親カードのみ＋→×にする） */
+    .child-card .sp-expand-child{
+      display:none !important;
+    }
+
+    /* 子のいない親カードは＋／×を非表示 */
+    .sp-card.parent-card:not(:has(.child-card)) .sp-expand{
+      display:none !important;
+    }
+
+    /* ===============================
+      縦タイムライン
+    =================================*/
+
+    .sp-timeline{
+      position:relative;
+      margin-left:8px;
+      padding-left:18px;
+    }
+
+    .sp-timeline::before{
+      content:"";
+      position:absolute;
+      left:6px;
+      top:0;
+      bottom:0;
+      width:2px;
+      background:#d5dfd9;
+    }
+
+    .sp-step{
+      position:relative;
+      margin-bottom:14px;
+      font-size:13px;
+    }
+
+    .sp-step::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:4px;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#cfd8d3;
+    }
+
+    .sp-step.completed::before{
+      background:#1e88e5;
+    }
+
+    .sp-step.nearing::before{
+      background:#fdd835;
+    }
+
+    .sp-step.delay::before{
+      background:#e53935;
+    }
+
+    .sp-step small{
+      display:block;
+      font-size:11px;
+      color:var(--color-text-muted);
+    }
+    /* 子エリア */
+    .sp-children{
+      display:none;
+      padding:8px 8px 12px 8px;
+      background:#f8faf9;
+    }
+
+    .sp-card.open > .sp-children{
+      display:block;
+    }
+
+    /* 子カード */
+    .child-card{
+      margin-top:8px;
+      border:1px solid #e2e8e6;
+      border-radius:10px;
+      background:#fff;
+    }
+
+    /* 子は少しインデント */
+    .child-card .sp-card-main{
+      padding-left:12px;
+    }
+
+    /* 子展開 */
+    .child-card .sp-detail{
+      display:none;
+      padding:8px 12px 12px;
+      border-top:1px solid var(--color-border);
+    }
+
+    .child-card.open .sp-detail{
+      display:block;
+    }
     /* #endregion */
   </style>
 </head>
@@ -1538,7 +1727,7 @@
                       </div>
                     </td>
                   </tr>
-                  <tr class="child-row" onclick="toggleRow(this)">
+                  <tr class="child-row" onclick="toggleRow(this, event)">
                     <td class="tree-cell"></td>
                     <td>丸眞花子</td>
                     <td>定番（2026.01展示会）</td>
@@ -1594,7 +1783,7 @@
                       </div>
                     </td>
                   </tr>
-                  <tr class="child-row" onclick="toggleRow(this)">
+                  <tr class="child-row" onclick="toggleRow(this, event)">
                     <td class="tree-cell"></td>
                     <td>丸眞花子</td>
                     <td>定番（2026.01展示会）</td>
@@ -1706,7 +1895,7 @@
                       </div>
                     </td>
                   </tr>
-                  <tr class="parent-row" onclick="toggleRow(this)">
+                  <tr class="parent-row" onclick="toggleRows(this)">
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>丸眞花子</td>
                     <td>OEM</td>
@@ -1764,7 +1953,7 @@
                       </div>
                     </td>
                   </tr>
-                  <tr class="parent-row" onclick="toggleRow(this)">
+                  <tr class="parent-row" onclick="toggleRows(this)">
                     <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
                     <td>丸眞花子</td>
                     <td>定番加工</td>
@@ -1833,64 +2022,105 @@
       </div>
 
       <div class="sp-only">
-        <div class="content-section">
-          <div class="dashboard-box shinko-box">
-            <div class="shinko-table-wrapper">
-              <table class="shinko-table">
-                <thead>
-                  <tr>
-                    <th colspan="2">進行状況</th>
-                  </tr>
-                </thead>
-                <tbody>
-
-                  <tr class="parent-row" onclick="toggleRows(this)">
-                    <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
-                    <td>
-                      丸眞花子　定番（2026.01展示会）　ミッキー／ディズニー「ミッキータオル」<br>
-                      試作仕様書作成中
-                    </td>
-                  </tr>
-                  <tr class="child-row" onclick="toggleRow(this)">
-                    <td class="tree-cell"></td>
-                    <td>
-                      丸眞花子　定番（2026.01展示会）　ダイカットミニタオル／ミッキー／ディズニー「ミッキータオル」<br>
-                      試作仕様書作成中
-                    </td>
-                  </tr>
-                  <tr class="child-row" onclick="toggleRow(this)">
-                    <td class="tree-cell"></td>
-                    <td>
-                      丸眞花子　定番（2026.01展示会）　フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br>
-                      試作仕様書作成中
-                    </td>
-                  </tr>
-                  <tr class="parent-row" onclick="toggleRows(this)">
-                    <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
-                    <td>
-                      2日遅れ<br>
-                      丸眞花子　別注　フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br>
-                      サンプル到着待ち
-                    </td>
-                  </tr>
-                  <tr class="parent-row" onclick="toggleRows(this)">
-                    <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
-                    <td>
-                      丸眞花子　OEM　フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br>
-                      発注書作成中
-                    </td>
-                  </tr>
-                  <tr class="parent-row" onclick="toggleRows(this)">
-                    <td><button type="button" class="expand-toggle-btn" aria-expanded="false" aria-label="展開">＋</button></td>
-                    <td>
-                      丸眞花子　定番加工　フェイスタオル／ミッキー／ディズニー「ミッキータオル」<br>
-                      初回入荷済み
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+        <div class="sp-card-list">
+      
+          <!-- ===== 親 ===== -->
+          <div class="sp-card parent-card" onclick="toggleSpParent(this)">
+      
+            <div class="sp-status status-delay">
+              進行状況：試作仕様書作成中　2日遅れ
             </div>
+            <div class="sp-card-main">
+              <img src="images/zuan002.png"
+                   class="sp-thumb"
+                   onerror="this.src='images/noimage.png'">
+      
+              <div class="sp-info">
+                <div class="sp-title">
+                  ミッキータオル
+                </div>
+                <div class="sp-meta">
+                  丸眞花子｜定番（2026.01展示会）
+                </div>
+              </div>
+      
+              <div class="sp-expand">＋</div>
+            </div>
+      
+            <!-- ===== 子エリア ===== -->
+            <div class="sp-children">
+      
+              <!-- 子1 -->
+              <div class="sp-card child-card" onclick="event.stopPropagation(); toggleSpChild(this)">
+                <div class="sp-status status-delay">
+                  進行状況：試作仕様書作成中　2日遅れ
+                </div>
+                <div class="sp-card-main">
+                  <img src="images/zuan002.png"
+                       class="sp-thumb"
+                       onerror="this.src='images/noimage.png'">
+                  <div class="sp-info">
+                    <div class="sp-title">
+                      ダイカットミニタオル
+                    </div>
+                    <div class="sp-meta">
+                      丸眞花子｜定番（2026.01展示会）
+                    </div>
+                  </div>
+                  <div class="sp-expand sp-expand-child">＋</div>
+                </div>
+              </div>
+              <!-- /子1 -->
+              <!-- 子2 -->
+              <div class="sp-card child-card" onclick="event.stopPropagation(); toggleSpChild(this)">
+                <div class="sp-status status-onschedule">
+                  進行状況：試作仕様書作成中
+                </div>
+                <div class="sp-card-main">
+                  <img src="images/zuan001.png"
+                       class="sp-thumb"
+                       onerror="this.src='images/noimage.png'">
+                  <div class="sp-info">
+                    <div class="sp-title">
+                      フェイスタオル
+                    </div>
+                    <div class="sp-meta">
+                      丸眞太郎｜定番（2026.01展示会）
+                    </div>
+                  </div>
+                  <div class="sp-expand sp-expand-child">＋</div>
+                </div>
+              </div>
+              <!-- /子2 -->      
+            </div>
+            <!-- /子エリア -->
+      
           </div>
+          <!-- ===== /親 ===== -->
+
+          <!-- ===== 親 ===== -->
+          <div class="sp-card parent-card" onclick="toggleSpParent(this)">
+      
+            <div class="sp-status status-onschedule">
+              進行状況：試作仕様書作成
+            </div>
+            <div class="sp-card-main">
+              <img src="images/zuan001.png"
+                   class="sp-thumb"
+                   onerror="this.src='images/noimage.png'">
+              <div class="sp-info">
+                <div class="sp-title">
+                  ミッキータオル
+                </div>
+                <div class="sp-meta">
+                  丸眞花子｜定番（2026.01展示会）
+                </div>
+              </div>
+              <div class="sp-expand">＋</div>
+            </div>
+     
+          </div>
+          <!-- ===== /親 ===== -->          
         </div>
       </div>
       </div>
@@ -1945,19 +2175,20 @@
     // PCのとき、メニューの開閉ボタン
     const sidebar = document.querySelector('.sidebar');
     const toggle = document.querySelector('.sidebar-toggle');
-    const toggleImg = toggle.querySelector('img');
     const content = document.querySelector('.content');
-
-    toggle.addEventListener('click', () => {
+    if (toggle && sidebar && content) {
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
       sidebar.classList.toggle('closed');
       content.classList.toggle('expanded');
 
       if (sidebar.classList.contains('closed')) {
-        toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        if (toggleImg) toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
       } else {
-        toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+        if (toggleImg) toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
       }
     });
+    }
 
     // スマホのとき、開いたメニューを閉じる
     function closeSidebar() {
@@ -1981,28 +2212,31 @@
     //   menu.style.display = 'none';
     // });
 
-    // 通知リンクをすべて取得
-    document.querySelectorAll(".dashboard-list a").forEach(link => {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        // ▼ クリックしたリンクの data-title を取得
-        const title = this.dataset.title;
-
-        // ▼ モーダルにタイトルと本文をセット
-        document.getElementById("modal-title").textContent = title;
-
-        // ▼ モーダル表示
-        document.getElementById("modal-overlay").style.display = "block";
-        document.getElementById("modal-window").style.display = "block";
+    // 通知リンクをすべて取得（modal-title / modal-overlay / modal-window が存在する場合のみ）
+    var modalTitle = document.getElementById("modal-title");
+    var modalOverlay = document.getElementById("modal-overlay");
+    var modalWindow = document.getElementById("modal-window");
+    if (modalTitle && modalOverlay && modalWindow) {
+      document.querySelectorAll(".dashboard-list a").forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          var title = this.dataset.title;
+          modalTitle.textContent = title;
+          modalOverlay.style.display = "block";
+          modalWindow.style.display = "block";
+        });
       });
-    });
+    }
 
     // 閉じるボタン
 /*     document.getElementById("modal-close").addEventListener("click", function () {
       document.getElementById("modal-overlay").style.display = "none";
       document.getElementById("modal-window").style.display = "none";
     }); */
+
+    function toggleRow(row, e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+    }
 
     function toggleRows(parentRow) {
       const firstChild = parentRow.nextElementSibling;
@@ -2073,39 +2307,40 @@
 
       let originalRect = null;
 
-      document.querySelectorAll(".item-thumb").forEach(function(img) {
+      function openImageModal(img) {
+        originalRect = img.getBoundingClientRect();
+        const clone = img.cloneNode();
+        clone.style.top = originalRect.top + "px";
+        clone.style.left = originalRect.left + "px";
+        clone.style.width = originalRect.width + "px";
+        clone.style.height = originalRect.height + "px";
+        wrapper.innerHTML = "";
+        wrapper.appendChild(clone);
+        modal.classList.add("active");
+        requestAnimationFrame(function() {
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const maxWidth = viewportWidth * 0.8;
+          const maxHeight = viewportHeight * 0.8;
+          const ratio = clone.naturalWidth / clone.naturalHeight;
+          let targetWidth = maxWidth;
+          let targetHeight = maxWidth / ratio;
+          if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = maxHeight * ratio;
+          }
+          clone.style.top = (viewportHeight - targetHeight) / 2 + "px";
+          clone.style.left = (viewportWidth - targetWidth) / 2 + "px";
+          clone.style.width = targetWidth + "px";
+          clone.style.height = targetHeight + "px";
+        });
+      }
+
+      document.querySelectorAll(".item-thumb, .sp-thumb").forEach(function(img) {
         img.addEventListener("click", function(e) {
           e.stopPropagation();
           e.preventDefault();
-          originalRect = this.getBoundingClientRect();
-
-          const clone = this.cloneNode();
-          clone.style.top = originalRect.top + "px";
-          clone.style.left = originalRect.left + "px";
-          clone.style.width = originalRect.width + "px";
-          clone.style.height = originalRect.height + "px";
-
-          wrapper.innerHTML = "";
-          wrapper.appendChild(clone);
-          modal.classList.add("active");
-
-          requestAnimationFrame(function() {
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const maxWidth = viewportWidth * 0.8;
-            const maxHeight = viewportHeight * 0.8;
-            const ratio = clone.naturalWidth / clone.naturalHeight;
-            let targetWidth = maxWidth;
-            let targetHeight = maxWidth / ratio;
-            if (targetHeight > maxHeight) {
-              targetHeight = maxHeight;
-              targetWidth = maxHeight * ratio;
-            }
-            clone.style.top = (viewportHeight - targetHeight) / 2 + "px";
-            clone.style.left = (viewportWidth - targetWidth) / 2 + "px";
-            clone.style.width = targetWidth + "px";
-            clone.style.height = targetHeight + "px";
-          });
+          openImageModal(this);
         });
       });
 
@@ -2129,6 +2364,14 @@
         if (e.key === "Escape") closeModal();
       });
     })();
+
+    function toggleSpParent(card){
+      card.classList.toggle("open");
+    }
+
+    function toggleSpChild(card){
+      card.classList.toggle("open");
+    }
 
   </script>
 </body>
