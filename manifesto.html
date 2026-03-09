@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* style.css と重複する :root 変数は削除。ページ専用のみ */
+    :root {
+      --font-size-base: 16pt;
+      --fs-content: 14pt;
+    }
+
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+    /* margin, height は style.css の body と重複のため削除 */
+    body {
+      font-size: var(--font-size-base);
+      font-family: var(--font-sans);
+      background: var(--color-surface);
+      color: var(--color-text);
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* #region ヘッダー */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      font-size: var(--font-size-base);
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+
+    /* #endregion */
+
+    /* #region メニュー */
+    .sidebar {
+      width: 220px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 12px 0;
+      box-sizing: border-box;
+      overflow: visible;
+      position: relative;
+      z-index: 100;
+      transition: transform 0.3s ease;
+      box-shadow: 2px 0 12px rgba(0, 134, 50, 0.15);
+    }
+
+    .sidebar.closed {
+      transform: translateX(-220px);
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      left: 220px;
+      top: 12px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-left: none;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      cursor: pointer;
+      padding: 6px 8px;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s ease;
+    }
+
+    .sidebar-toggle:hover {
+      background: var(--color-surface);
+    }
+
+    .sidebar-toggle img {
+      width: 12px;
+      height: 13px;
+      padding-top: 0;
+      pointer-events: none;
+    }
+
+    .sidebar h2 {
+      margin: 8px 12px 12px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      text-transform: uppercase;
+    }
+
+    .sidebar-logo-proma {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .sidebar-logo-marushin {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1500;
+      backdrop-filter: blur(2px);
+    }
+
+    .menu-item {
+      margin: 2px 8px;
+      position: relative;
+      border-radius: var(--radius-sm);
+    }
+
+    .menu-title {
+      position: relative;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 16px;
+      transition: background 0.2s ease;
+    }
+
+    .menu-title img {
+      margin-right: 10px;
+      opacity: 0.9;
+    }
+
+    .menu-item:hover>.submenu {
+      display: block;
+    }
+
+    .menu-item:hover .menu-title {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .arrow {
+      transition: transform 0.2s ease;
+      margin-left: auto;
+      opacity: 0.8;
+    }
+
+    /* サブメニュー */
+    .submenu {
+      display: none;
+      position: absolute;
+      top: -13px;
+      left: 105%;
+      background: #008632;
+      padding: 0px 0px 0px 0px;
+      border-radius: 3px;
+      min-width: 330px;
+      list-style: none;
+      font-size: 16px;
+    }
+
+    /* 隙間を埋める透明のホバー領域 */
+    .submenu::before {
+      content: "";
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: -5%;
+      width: 5%;
+      height: 100%;
+      background: transparent;
+      display: block;
+    }
+
+    .submenu li {
+      padding: 8px 10px;
+      height: auto;
+    }
+
+    .submenu li:hover {
+      background: #006C29;
+      border-radius: 4px;
+    }
+
+    .submenu li a {
+      display: block;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.1;
+    }
+
+    .submenu a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      font-size: var(--fs-content);
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    /* サイドバー表示時はトグルボタンに被らないよう左余白を確保 */
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    .content > h2 {
+      margin: 0 0 20px 0;
+      font-size: var(--fs-lg);
+      font-weight: 600;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+    }
+
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .content-box .search-box {
+      flex-shrink: 0;
+      margin: 0 0 24px 0;
+    }
+
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* #region 検索条件ボックス（モダンカード） */
+    .search-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 24px;
+      margin: 0 0 24px 0;
+      padding: 20px 24px;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    /* スマホ用「検索条件を開く」ボタン（PCでは非表示） */
+    .search-toggle-sp {
+      display: none;
+    }
+
+    /* PCでは search-box-inner は常に表示（flexで検索行を並べる） */
+    .search-box .search-box-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 24px;
+      width: 100%;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .search-row label {
+      margin: 0;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .search-row select,
+    .search-row input {
+      min-width: 160px;
+      padding: 10px 12px;
+      font-size: var(--fs-xs);
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-row select:hover,
+    .search-row input:hover {
+      border-color: #b0bdb5;
+    }
+
+    .search-row select:focus,
+    .search-row input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .search-row input::placeholder {
+      color: #9ca89f;
+    }
+
+    /* 検索ボタン */
+    .search-button-area {
+      margin-left: auto;
+      margin-top: 0;
+    }
+
+    .search-button {
+      padding: 6px 14px;
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .search-button:hover { background: var(--color-primary-dark); }
+
+    .search-button:active {
+      transform: translateY(1px);
+    }
+
+    /* #endregion */
+
+    /* #region 進捗率グラフ（全期・年別・展示会別・商品別・タイムラインデザイン統一） */
+    .progress-chart-section {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px;
+    }
+    .progress-view-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .progress-view-tab {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .progress-view-tab:hover {
+      color: var(--color-text);
+    }
+    .progress-view-tab.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+    .progress-chart-area {
+      flex: 1;
+      min-height: 320px;
+      padding: 20px;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      overflow: auto;
+    }
+    .progress-chart-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 16px;
+    }
+    .timeline-chart-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .timeline-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+    .timeline-row-left {
+      flex: 0 0 200px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .timeline-icon-box {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: var(--color-card);
+    }
+    .timeline-icon-box img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    .timeline-meta {
+      min-width: 0;
+    }
+    .timeline-current {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 2px;
+    }
+    .timeline-category {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .timeline-row-right {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+    }
+    .timeline-bar-wrap {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      height: 36px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.06);
+      position: relative;
+    }
+    .timeline-bar-wrap > .segment-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 0;
+      border-radius: 6px 0 0 6px;
+      transition: width 0.3s ease;
+    }
+    .timeline-segment {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text);
+      position: relative;
+      z-index: 1;
+      border-right: 1px solid rgba(255,255,255,0.5);
+    }
+    .timeline-segment:last-child {
+      border-right: none;
+    }
+    .timeline-segment .segment-label {
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 0 2px #fff;
+    }
+    .timeline-segment .segment-label.is-100 {
+      font-weight: 700;
+      color: var(--color-primary-dark);
+    }
+    .timeline-year-labels {
+      display: flex;
+      align-items: center;
+      margin-top: 6px;
+      gap: 0;
+    }
+    .timeline-year-labels .year-labels-spacer {
+      flex: 0 0 216px;
+      min-width: 0;
+    }
+    .timeline-year-labels .year-labels-inner {
+      flex: 1;
+      display: flex;
+      min-width: 0;
+    }
+    .timeline-year-labels .year-cell {
+      flex: 1;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+    /* 行ごとの色（全期デザインに合わせたカラーパレット） */
+    .timeline-row[data-color="orange"] .segment-fill { background: #e65100; }
+    .timeline-row[data-color="blue"] .segment-fill { background: #1976d2; }
+    .timeline-row[data-color="cyan"] .segment-fill { background: #4dd0e1; }
+    .timeline-row[data-color="green"] .segment-fill { background: #81c784; }
+    .timeline-row[data-color="pink"] .segment-fill { background: #f48fb1; }
+    .timeline-row[data-color="purple"] .segment-fill { background: #7e57c2; }
+    /* #endregion */
+
+    .content-section {
+      flex: 1;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    .dashboard-box {
+      display: flex;
+      flex-direction: column;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+
+    .shinko-box {
+      max-height: 90vh;
+      height: auto;
+    }
+
+    .dashboard-box h2 {
+      margin: 0;
+      padding: 16px 20px;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+      background: #fafbfa;
+    }
+
+    .search-box h2 {
+      margin: 0 0 16px 0;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-border);
+      width: 100%;
+    }
+
+    .shinko-table-wrapper {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .shinko-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-card);
+      font-size: var(--fs-xs);
+    }
+
+    .shinko-table th {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .shinko-table th:first-child {
+      width: 40px;
+    }
+
+    .shinko-table th:last-child {
+      min-width: 480px;
+    }
+
+    .shinko-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: middle;
+    }
+
+    .shinko-table tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    .shinko-table tbody tr:nth-child(even) {
+      background: #fafbfa;
+    }
+
+    .shinko-table tbody tr:hover {
+      background: #e8f5e9;
+    }
+
+    .order-row td:first-child {
+      vertical-align: middle;
+    }
+
+    .shinko-table .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .shinko-table .item-thumb {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      object-fit: cover;
+      border-radius: 3px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      display: block;
+    }
+
+    .shinko-table .item-cell span {
+      line-height: 1.2;
+    }
+
+    .shinko-table .item-thumb:hover {
+      opacity: 0.85;
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9999;
+    }
+
+    .image-modal.active {
+      display: block;
+    }
+
+    .image-modal .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .image-modal.active .modal-backdrop {
+      opacity: 1;
+    }
+
+    .image-modal .modal-wrapper {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .image-modal .modal-wrapper img {
+      position: absolute;
+      border-radius: 8px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+      transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    }
+
+
+    /* モーダル背景 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      z-index: 2000;
+    }
+
+    /* モーダル本体 */
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      padding: 24px;
+      width: 85%;
+      max-width: 720px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2001;
+    }
+
+    .modal-window h3 {
+      margin: 0 0 16px 0;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--fs-lg);
+      font-weight: 600;
+    }
+
+    .modal-footer {
+      text-align: right;
+      margin-top: 20px;
+    }
+
+    .modal-close {
+      padding: 10px 20px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .modal-close:hover {
+      box-shadow: 0 4px 12px rgba(0, 134, 50, 0.25);
+    }
+
+    .modal-close:active {
+      transform: translateY(1px);
+    }
+
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--fs-sm);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .modal-table th {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .modal-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-table tbody tr:nth-child(even) {
+      background: #fafbfa;
+    }
+
+    .modal-table tbody tr:hover {
+      background: #e8f5e9;
+    }
+
+    .modal-table th,
+    .modal-table td {
+      border: 1px solid var(--color-border);
+    }
+
+    /* ガントチャート（モダン） */
+    .timeline-wrapper {
+      position: relative;
+      margin: 0;
+      width: 100%;
+      min-width: 520px;
+      padding: 8px 0;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 47%;
+      left: 32px;
+      right: 32px;
+      height: 4px;
+      background: linear-gradient(90deg, #e2e8e6 0%, #d0d8d4 50%, #e2e8e6 100%);
+      border-radius: 4px;
+      z-index: 1;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+      gap: 4px;
+    }
+
+    .step {
+      text-align: center;
+      width: auto;
+      max-width: 64px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .defaultnode-btn,
+    .completednode-btn,
+    .nearingnode-btn,
+    .notcompletednode-btn {
+      width: 44px;
+      height: 44px;
+      font-size: 12px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .defaultnode-btn:hover,
+    .completednode-btn:hover,
+    .nearingnode-btn:hover,
+    .notcompletednode-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .defaultnode-btn {
+      background: linear-gradient(145deg, #e8ecf0, #d0d6de);
+      color: #5c6f66;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+
+    .completednode-btn {
+      background: linear-gradient(145deg, #1e88e5, #1565c0);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(30, 136, 229, 0.4);
+    }
+
+    .nearingnode-btn {
+      background: linear-gradient(145deg, #fdd835, #f9a825);
+      color: #5d4200;
+      box-shadow: 0 2px 6px rgba(253, 216, 53, 0.35);
+    }
+
+    .notcompletednode-btn {
+      background: linear-gradient(145deg, #e53935, #c62828);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(229, 57, 53, 0.35);
+    }
+
+    .plan {
+      font-size: 11px;
+      margin-bottom: 2px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .actual {
+      font-size: 11px;
+      margin-top: 2px;
+      color: var(--color-text-muted);
+      opacity: 0.9;
+    }
+
+    /* #endregion */
+
+    /* #region レスポンシブ対応 */
+    /* 画面の高さが750px以下ならロゴを非表示 */
+    @media (max-height: 750px) {
+      .sidebar-logo-proma {
+        display: none;
+      }
+    }
+
+    /* 画面の高さが600px以下ならロゴを非表示 */
+    @media (max-height: 600px) {
+      .sidebar-logo-marushin {
+        display: none;
+      }
+    }
+
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 768px) {
+      .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* サイドバーを隠す */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+
+      /* 開いた状態 */
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-toggle {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        min-height: 0;
+      }
+
+      .page-title {
+        font-size: 16px;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .search-toggle-sp-text {
+        font-size: 12pt;
+      }
+
+      .search-toggle-sp::after {
+        content: "＋";
+        font-size: 1.2em;
+        color: var(--color-text-muted);
+      }
+
+      .search-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      .search-box .search-box-inner {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 12px 0 0;
+        gap: 12px 16px;
+      }
+
+      .search-box.is-open .search-box-inner {
+        display: grid;
+      }
+
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
+      }
+
+      .search-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+
+      .search-row label {
+        font-size: var(--fs-xs);
+        flex-shrink: 0;
+      }
+
+      .search-row select,
+      .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-button-area {
+        margin-left: 0;
+        margin-top: 0;
+        grid-column: 1 / -1;
+        text-align: right;
+      }
+
+      .search-button {
+        width: auto;
+        min-width: 80px;
+      }
+
+      .content-section {
+        display: flex;
+        gap: 30px;
+        margin-top: 0px;
+        width: 100%;
+        flex-direction: column;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+    /* スマホ表示した時の進行状況 */
+    /* ===============================
+      SP CARD UI (差分CSS)
+    =================================*/
+
+    .sp-card-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    /* カード */
+    .sp-card{
+      background:#fff;
+      border:1px solid var(--color-border);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:var(--shadow-sm);
+    }
+
+    /* ステータス帯 */
+    .sp-status{
+      padding:6px 12px;
+      font-size:12px;
+      font-weight:600;
+      color:#fff;
+    }
+
+    .status-warning{ background:#f9a825; }
+    .status-delay{ background:#e53935; }
+    .status-complete{ background:#008632; }
+    .status-onschedule{ background:#1e88e5; }
+    .status-default{ background:#9aa5a0; }
+
+    /* メイン行 */
+    .sp-card-main{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+    }
+
+    /* 情報 */
+    .sp-info{
+      flex:1;
+      min-width:0;
+    }
+
+    .sp-title{
+      font-weight:600;
+      font-size:14px;
+      line-height:1.3;
+    }
+
+    .sp-meta{
+      font-size:12px;
+      color:var(--color-text-muted);
+      margin-top:4px;
+    }
+
+    /* 展開ボタン */
+    .sp-expand{
+      font-size:20px;
+      color:var(--color-primary);
+    }
+
+    /* 詳細（初期非表示） */
+    .sp-detail{
+      display:none;
+      padding:12px 16px 16px;
+      border-top:1px solid var(--color-border);
+    }
+
+    /* 展開状態 */
+    .sp-card.open .sp-detail{
+      display:block;
+    }
+
+    .sp-card.open .sp-expand{
+      transform:rotate(45deg);
+    }
+
+    /* 子カードの＋／×は常に非表示（親カードのみ＋→×にする） */
+    .child-card .sp-expand-child{
+      display:none !important;
+    }
+
+    /* 子のいない親カードは＋／×を非表示 */
+    .sp-card.order-card:not(:has(.child-card)) .sp-expand{
+      display:none !important;
+    }
+
+    /* ===============================
+      縦タイムライン
+    =================================*/
+
+    .sp-timeline{
+      position:relative;
+      margin-left:8px;
+      padding-left:18px;
+    }
+
+    .sp-timeline::before{
+      content:"";
+      position:absolute;
+      left:6px;
+      top:0;
+      bottom:0;
+      width:2px;
+      background:#d5dfd9;
+    }
+
+    .sp-step{
+      position:relative;
+      margin-bottom:14px;
+      font-size:13px;
+    }
+
+    .sp-step::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:4px;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#cfd8d3;
+    }
+
+    .sp-step.completed::before{
+      background:#1e88e5;
+    }
+
+    .sp-step.nearing::before{
+      background:#fdd835;
+    }
+
+    .sp-step.delay::before{
+      background:#e53935;
+    }
+
+    .sp-step small{
+      display:block;
+      font-size:11px;
+      color:var(--color-text-muted);
+    }
+    /* #endregion */
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー  -->
+    <div class="sidebar">
+      <button class="sidebar-toggle">
+        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle">
+      </button>
+      <h2>メニュー</h2>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/linear_scale_20dp_F4F6F9.svg">
+          <span>進捗管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">進行状況確認（仕様書別・商品別）</a></li>
+          <li><a href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html">進行状況確認（担当者別入稿状況）</a></li>
+          <li><a href="hatchujokyokanri.html">発注状況管理</a></li>
+          <li><a href="#">マニフェスト管理</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/color_lens_20dp_F4F6F9.svg">
+          <span>図案管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">見積依頼入力・送信</a></li>
+          <li><a href="#">見積回答登録・メーカー決定</a></li>
+          <li><a href="#">別注図案作成依頼登録・申請</a></li>
+          <li><a href="#">別注図案作成依頼承認</a></li>
+          <li><a href="zuankensaku.html">図案情報登録</a></li>
+          <li><a href="#">図案振分け</a></li>
+          <li><a href="#">図案提出</a></li>
+          <li><a href="#">図案選定結果登録</a></li>
+          <li><a href="#">図案申請</a></li>
+          <li><a href="#">図案承認結果登録</a></li>
+          <li><a href="#">見積図案アップロード</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/edit_document_20dp_F4F6F9.svg">
+          <span>仕様書管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">仕様書情報登録</a></li>
+          <li><a href="#">仕様書情報決済</a></li>
+          <li><a href="#">仕様書情報入稿</a></li>
+          <li><a href="#">サンプル承認結果登録</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/smart_toy_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>サンプル管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">サンプル管理</a></li>
+          <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/high_quality_20dp_F4F6F9.svg">
+          <span>品質管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">品質検査合格書登録</a></li>
+          <li><a href="#">品質検査合格書決済</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/manufacturing_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>発注管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">契約書送付依頼</a></li>
+          <li><a href="#">契約書登録</a></li>
+          <li><a href="#">発注入力</a></li>
+          <li><a href="#">発注書決済</a></li>
+          <li><a href="#">証紙依頼書入力</a></li>
+          <li><a href="#">証紙依頼書決済</a></li>
+          <li><a href="#">契約書サイン</a></li>
+          <li><a href="#">契約書送信</a></li>
+          <li><a href="#">発注情報Mｼｽﾃﾑ連携</a></li>
+          <li><a href="#">発注履歴照会</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/directions_boat_filled_20dp_F4F6F9.svg">
+          <span>入荷管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">Ship依頼書/国内手配書登録</a></li>
+          <li><a href="#">Ship依頼書/国内手配書決済</a></li>
+          <li><a href="#">Ship依頼書送信</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/map_20dp_F4F6F9.svg">
+          <span>マップ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">商品マップ生成</a></li>
+          <li><a href="#">商品マップ公開</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/conversation_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>評価分析</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">人事考課用実績集計</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/factory_20dp_F4F6F9.svg">
+          <span>工場監査</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">ライセンス契約情報入力</a></li>
+          <li><a href="#">ライセンス契約チェック</a></li>
+          <li><a href="#">工場認定情報入力</a></li>
+          <li><a href="#">工場認定有効期限確認</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>マスタ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">コスト管理表</a></li>
+          <li><a href="#">商品情報照会</a></li>
+          <li><a href="#">システム設定マスタメンテナンス</a></li>
+          <li><a href="#">権限グループマスタメンテナンス</a></li>
+          <li><a href="#">ユーザーマスタメンテナンス</a></li>
+          <li><a href="#">ライセンスマスタメンテナンス</a></li>
+          <li><a href="#">ブランドマスタメンテナンス</a></li>
+          <li><a href="#">キャラクタマスタメンテナンス</a></li>
+          <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
+          <li><a href="#">資材マスタメンテナンス</a></li>
+        </ul>
+      </div>
+
+      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="120">
+      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="155">
+
+    </div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="content-box">
+      <h2 class="page-title">マニフェスト管理</h2>
+
+      <section class="progress-chart-section" aria-label="進捗率グラフ">
+        <div class="progress-view-tabs" role="tablist" aria-label="進捗率表示切替">
+          <button type="button" class="progress-view-tab active" role="tab" aria-selected="true" data-view="all">全期</button>
+          <button type="button" class="progress-view-tab" role="tab" aria-selected="false" data-view="year">年別</button>
+          <button type="button" class="progress-view-tab" role="tab" aria-selected="false" data-view="exhibition">展示会別</button>
+          <button type="button" class="progress-view-tab" role="tab" aria-selected="false" data-view="product">商品別</button>
+        </div>
+        <div class="progress-chart-area">
+          <h3 class="progress-chart-title" id="progressChartTitle">全期 進捗率</h3>
+          <div class="timeline-chart-rows" id="progressBarsContainer"></div>
+          <div class="timeline-year-labels" id="timelineYearLabels"></div>
+        </div>
+      </section>
+
+      </div>
+    </div>
+    <!-- #endregion -->
+
+  </div>
+
+  <div id="imageModal" class="image-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-wrapper"></div>
+  </div>
+
+  <script>
+    const NO_IMAGE = "images/noimage.png";
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');   // ← オーバーレイ表示
+      } else {
+
+        overlay.classList.remove('show'); // ← オーバーレイ非表示
+      }
+    }
+
+    // スマホ: 検索条件の折りたたみ開閉
+    (function() {
+      var btn = document.getElementById('searchToggleSp');
+      var box = document.getElementById('searchBox');
+      if (btn && box) {
+        btn.addEventListener('click', function() {
+          var isOpen = box.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', isOpen);
+          var textEl = btn.querySelector('.search-toggle-sp-text');
+          if (textEl) textEl.textContent = isOpen ? '検索条件を閉じる' : '検索条件を開く';
+        });
+      }
+    })();
+
+    // メニュー開閉
+    // document.querySelectorAll('.menu-title').forEach(title => {
+    //   title.addEventListener('click', () => {
+    //     title.parentElement.classList.toggle('open');
+    //   });
+    // });
+
+    // PCのとき、メニューの開閉ボタン
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.querySelector('.sidebar-toggle');
+    const content = document.querySelector('.content');
+    if (toggle && sidebar && content) {
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('closed');
+      content.classList.toggle('expanded');
+
+      if (sidebar.classList.contains('closed')) {
+        if (toggleImg) toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+      } else {
+        if (toggleImg) toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+      }
+    });
+    }
+
+    // スマホのとき、開いたメニューを閉じる
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // // 画面のどこかをクリックしたら閉じる
+    // document.addEventListener('click', () => {
+    //   menu.style.display = 'none';
+    // });
+
+    // 通知リンクをすべて取得（modal-title / modal-overlay / modal-window が存在する場合のみ）
+    var modalTitle = document.getElementById("modal-title");
+    var modalOverlay = document.getElementById("modal-overlay");
+    var modalWindow = document.getElementById("modal-window");
+    if (modalTitle && modalOverlay && modalWindow) {
+      document.querySelectorAll(".dashboard-list a").forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          var title = this.dataset.title;
+          modalTitle.textContent = title;
+          modalOverlay.style.display = "block";
+          modalWindow.style.display = "block";
+        });
+      });
+    }
+
+    // 閉じるボタン
+/*     document.getElementById("modal-close").addEventListener("click", function () {
+      document.getElementById("modal-overlay").style.display = "none";
+      document.getElementById("modal-window").style.display = "none";
+    }); */
+
+    // アイテム列サムネイルクリックで画像をモーダル表示
+    (function() {
+      const modal = document.getElementById("imageModal");
+      const backdrop = document.querySelector("#imageModal .modal-backdrop");
+      const wrapper = document.querySelector("#imageModal .modal-wrapper");
+      if (!modal || !backdrop || !wrapper) return;
+
+      let originalRect = null;
+
+      function openImageModal(img) {
+        originalRect = img.getBoundingClientRect();
+        const clone = img.cloneNode();
+        clone.style.top = originalRect.top + "px";
+        clone.style.left = originalRect.left + "px";
+        clone.style.width = originalRect.width + "px";
+        clone.style.height = originalRect.height + "px";
+        wrapper.innerHTML = "";
+        wrapper.appendChild(clone);
+        modal.classList.add("active");
+        requestAnimationFrame(function() {
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const maxWidth = viewportWidth * 0.8;
+          const maxHeight = viewportHeight * 0.8;
+          const ratio = clone.naturalWidth / clone.naturalHeight;
+          let targetWidth = maxWidth;
+          let targetHeight = maxWidth / ratio;
+          if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = maxHeight * ratio;
+          }
+          clone.style.top = (viewportHeight - targetHeight) / 2 + "px";
+          clone.style.left = (viewportWidth - targetWidth) / 2 + "px";
+          clone.style.width = targetWidth + "px";
+          clone.style.height = targetHeight + "px";
+        });
+      }
+
+      document.querySelectorAll(".item-thumb").forEach(function(img) {
+        img.addEventListener("click", function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          openImageModal(this);
+        });
+      });
+
+      function closeModal() {
+        const clone = wrapper.querySelector("img");
+        if (!clone) return;
+        clone.style.top = originalRect.top + "px";
+        clone.style.left = originalRect.left + "px";
+        clone.style.width = originalRect.width + "px";
+        clone.style.height = originalRect.height + "px";
+        backdrop.style.opacity = 0;
+        setTimeout(function() {
+          modal.classList.remove("active");
+          wrapper.innerHTML = "";
+          backdrop.style.opacity = "";
+        }, 300);
+      }
+
+      backdrop.addEventListener("click", closeModal);
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeModal();
+      });
+    })();
+
+    function toggleSpParent(card){
+      card.classList.toggle("open");
+    }
+
+    function toggleSpChild(card){
+      card.classList.toggle("open");
+    }
+
+    // 進捗率グラフ：全期・年別・展示会別・商品別（タイムラインデザイン統一）
+    (function() {
+      var ICONS = { product: "P", material: "M", process: "Q", year: "Y", exhibition: "E", item: "S" };
+
+      var progressData = {
+        all: {
+          yearLabels: ["2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"],
+          rows: [
+            { category: "PRODUCT", current: 17.2, color: "orange", icon: "P", segments: [6.5, 10, 17.2, 45, 60, 80, 90, 97, 100] },
+            { category: "PRODUCT", current: 39, color: "blue", icon: "P", segments: [33, 35, 39, 50, 60, 80, 85, 95, 100] },
+            { category: "PRODUCT", current: 0, color: "cyan", icon: "P", segments: [0, 0, 0, 10, 30, 70, 80, 90, 100] },
+            { category: "MATERIAL", current: 0, color: "green", icon: "M", segments: [0, 0, 0, 30, 50, 65, 80, 90, 100] },
+            { category: "MATERIAL", current: 6.9, color: "pink", icon: "M", segments: [0, 0, 6.9, 50, 60, 70, 80, 95, 100] },
+            { category: "PROCESS", current: 0, color: "purple", icon: "Q", segments: [0, 0, 0, 10, 30, 70, 85, 90, 100] }
+          ]
+        },
+        year: {
+          yearLabels: ["2024", "2025", "2026"],
+          rows: [
+            { category: "2024年度", current: 92, color: "orange", icon: "Y", segments: [92, 100, 100] },
+            { category: "2025年度", current: 78, color: "blue", icon: "Y", segments: [78, 100, 100] },
+            { category: "2026年度", current: 45, color: "cyan", icon: "Y", segments: [45, 80, 100] }
+          ]
+        },
+        exhibition: {
+          yearLabels: ["2026.01", "2026.03", "2026.06"],
+          rows: [
+            { category: "2026.01 展示会", current: 65, color: "orange", icon: "E", segments: [65, 90, 100] },
+            { category: "2026.03 展示会", current: 42, color: "blue", icon: "E", segments: [42, 75, 100] },
+            { category: "2026.06 展示会", current: 28, color: "green", icon: "E", segments: [28, 60, 100] }
+          ]
+        },
+        product: {
+          yearLabels: ["タオル", "雑貨", "衣料", "その他"],
+          rows: [
+            { category: "タオル類", current: 88, color: "orange", icon: "S", segments: [88, 100, 100, 100] },
+            { category: "雑貨類", current: 72, color: "blue", icon: "S", segments: [72, 95, 100, 100] },
+            { category: "衣料類", current: 55, color: "pink", icon: "S", segments: [55, 80, 95, 100] },
+            { category: "その他", current: 38, color: "purple", icon: "S", segments: [38, 65, 85, 100] }
+          ]
+        }
+      };
+
+      var titles = { all: "全期 進捗率", year: "年別 進捗率", exhibition: "展示会別 進捗率", product: "商品別 進捗率" };
+
+      function renderTimelineChart(view) {
+        var container = document.getElementById("progressBarsContainer");
+        var titleEl = document.getElementById("progressChartTitle");
+        var yearLabelsEl = document.getElementById("timelineYearLabels");
+        if (!container || !titleEl) return;
+        var data = progressData[view];
+        if (!data) return;
+        titleEl.textContent = titles[view] || "";
+        var yearLabels = data.yearLabels || [];
+        var rows = data.rows || [];
+
+        container.innerHTML = "";
+        yearLabelsEl.innerHTML = "";
+
+        rows.forEach(function(row) {
+          var rowEl = document.createElement("div");
+          rowEl.className = "timeline-row";
+          rowEl.setAttribute("data-color", row.color || "blue");
+
+          var currentVal = row.current != null ? row.current : 0;
+          var segments = row.segments || [];
+          var segCount = segments.length;
+          var fillPercent = segCount ? (currentVal / 100) * 100 : 0;
+
+          var leftHtml =
+            '<div class="timeline-row-left">' +
+            '<div class="timeline-icon-box">' + (row.icon || "") + '</div>' +
+            '<div class="timeline-meta">' +
+            '<div class="timeline-current">今期達成' + currentVal + '%</div>' +
+            '<div class="timeline-category">' + (row.category || "") + '</div>' +
+            '</div></div>';
+          var rightHtml = '<div class="timeline-row-right">' +
+            '<div class="timeline-bar-wrap">' +
+            '<div class="segment-fill" style="width:' + fillPercent + '%"></div>';
+          segments.forEach(function(val, i) {
+            var is100 = val === 100;
+            rightHtml +=
+              '<div class="timeline-segment">' +
+              '<span class="segment-label' + (is100 ? ' is-100' : '') + '">' + val + '%</span>' +
+              '</div>';
+          });
+          rightHtml += '</div></div>';
+          rowEl.innerHTML = leftHtml + rightHtml;
+          container.appendChild(rowEl);
+        });
+
+        var inner = document.createElement("div");
+        inner.className = "year-labels-inner";
+        yearLabels.forEach(function(y) {
+          var cell = document.createElement("div");
+          cell.className = "year-cell";
+          cell.textContent = y;
+          inner.appendChild(cell);
+        });
+        var spacer = document.createElement("div");
+        spacer.className = "year-labels-spacer";
+        yearLabelsEl.appendChild(spacer);
+        yearLabelsEl.appendChild(inner);
+      }
+
+      function setActiveTab(activeBtn) {
+        var tabs = document.querySelectorAll(".progress-view-tab");
+        tabs.forEach(function(t) {
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
+        });
+        if (activeBtn) {
+          activeBtn.classList.add("active");
+          activeBtn.setAttribute("aria-selected", "true");
+        }
+      }
+
+      var tabList = document.querySelector(".progress-view-tabs");
+      if (tabList) {
+        tabList.addEventListener("click", function(e) {
+          var btn = e.target.closest(".progress-view-tab");
+          if (!btn || !btn.dataset.view) return;
+          setActiveTab(btn);
+          renderTimelineChart(btn.dataset.view);
+        });
+      }
+
+      renderTimelineChart("all");
+    })();
+
+  </script>
+</body>
+
+</html>
