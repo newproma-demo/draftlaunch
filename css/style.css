@@ -1,3 +1,4 @@
+/* #region 変数 */
 :root {
   --fs-base: 16px;
   --fs-xs: 10px;
@@ -20,15 +21,14 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --font-sans: "Outfit", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
-  /* --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif; */
   --fw-base: 500;
-  /* 本文 */
   --fw-medium: 600;
-  /* UI（ボタン・フォーム） */
   --fw-bold: 700;
-  /* 見出し */
 }
 
+/* #endregion */
+
+/* #region 全体 */
 html {
   font-family: var(--font-sans);
   font-size: clamp(var(--fs-sm), 0.5vw + 8px, var(--fs-base));
@@ -43,7 +43,8 @@ input,
 select,
 button,
 label,
-textarea,table th {
+textarea,
+table th {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
@@ -74,8 +75,10 @@ select {
   border-radius: var(--radius-sm);
 }
 
-select option,table th ,table td {
-  font-size: clamp(var(--fs-xs), 0.5vw + 8px, var(--fs-sm));
+select option,
+table th,
+table td {
+  font-size: clamp(var(--fs-lg), 0.5vw + 8px, var(--fs-base));
 }
 
 :hover,
@@ -87,6 +90,261 @@ textarea:hover {
 textarea {
   resize: none;
 }
+
+/* #endregion */
+
+/* #region ヘッダー */
+.header {
+  position: relative;
+  height: 25px;
+  background: var(--color-card);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.hamburger {
+  display: none;
+}
+
+.header-title {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+}
+
+.header-user {
+  position: absolute;
+  right: 70px;
+  padding: 0;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.account-wrapper {
+  position: absolute;
+  right: 24px;
+}
+
+.account-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  min-height: 41px;
+  background: var(--color-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  display: none;
+  min-width: 120px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.account-menu {
+  padding: 12px 16px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.account-menu:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.header-account_circle {
+  width: 20px;
+  height: 20px;
+}
+
+/* #endregion */
+
+/* #region サードバー */
+.sidebar {
+  width: clamp(190px, 70vw, 220px);
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff;
+  padding: 12px 0;
+  box-sizing: border-box;
+  overflow: visible;
+  position: relative;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  box-shadow: 2px 0 12px rgba(0, 134, 50, 0.15);
+}
+
+.sidebar.closed {
+  transform: translateX(-220px);
+}
+
+.sidebar-toggle {
+  position: absolute;
+  left: clamp(190px, 70vw, 220px);
+  top: 5px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-left: none;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  cursor: pointer;
+  padding: 0px 0px;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background: var(--color-surface);
+}
+
+.sidebar-toggle img {
+  width: 12px;
+  height: 13px;
+  padding-top: 0;
+  pointer-events: none;
+}
+
+.sidebar h2 {
+  margin: 8px 12px 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  text-transform: uppercase;
+}
+
+.sidebar-logo-proma {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sidebar-logo-marushin {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.menu-item {
+  margin-left: clamp(6px, 0.5vw, 8px);
+  margin-right: clamp(6px, 0.5vw, 8px);
+  margin-top: clamp(8px, 0.5vw, 10px);
+  margin-bottom: clamp(8px, 0.5vw, 10px);
+  height: clamp(25px, 0.5vw + 8px, 38px);
+  position: relative;
+  border-radius: var(--radius-sm);
+}
+
+.arrow {
+  transition: transform 0.2s ease;
+  margin-left: auto;
+  opacity: 0.8;
+}
+
+.menu-title {
+  position: relative;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.menu-title img {
+  margin-right: 10px;
+  opacity: 0.9;
+}
+
+.menu-item:hover .menu-title {
+  background: var(--color-primary-dark);
+  /* 好きな色に変更 */
+  border-radius: 4px;
+  /* 角丸にしたい場合 */
+}
+
+.menu-item:hover>.submenu {
+  display: block;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  top: -13px;
+  left: 105%;
+  background: #008632;
+  padding: 0px 0px 0px 0px;
+  border-radius: 3px;
+  display: none;
+  width: clamp(260px, 70vw, 310px);
+  list-style: none;
+}
+
+.submenu::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: -5%;
+  width: 5%;
+  height: 100%;
+  background: transparent;
+  display: block;
+}
+
+.submenu li {
+  margin-left: clamp(6px, 0.5vw, 8px);
+  margin-right: clamp(6px, 0.5vw, 8px);
+  margin-top: clamp(8px, 0.5vw, 10px);
+  margin-bottom: clamp(8px, 0.5vw, 10px);
+  height: clamp(25px, 0.5vw + 8px, 38px);
+  position: relative;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.submenu li:hover {
+  background: var(--color-primary-dark);
+  /* 好きな色に変更 */
+  border-radius: 4px;
+  /* 角丸にしたい場合 */
+}
+
+/* .menu-item:hover .menu-title {
+  background: rgba(255, 255, 255, 0.15);
+} */
+
+
+.submenu li a {
+  display: block;
+  /* 折り返しを効かせる */
+  white-space: normal;
+  /* 折り返しOK */
+  word-break: break-word;
+  /* 日本語も途中で折れる */
+  line-height: 1.1;
+  /* 行間を少し広めに */
+}
+
+.submenu a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* #endregion */
 
 /* スマホ向けに全体を少しだけ小さくする例 */
 @media (max-width: 600px) {}
