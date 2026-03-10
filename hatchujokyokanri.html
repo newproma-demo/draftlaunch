@@ -374,18 +374,6 @@
       padding-left: 32px;
     }
 
-    .content h1 {
-      margin-top: 0;
-    }
-
-    .content > h2 {
-      margin: 0 0 20px 0;
-      font-size: var(--fs-lg);
-      font-weight: 600;
-      color: var(--color-text);
-      letter-spacing: 0.02em;
-    }
-
     /* ページタイトル（発注状況確認など）— .content-box 削除後も下線を付ける */
     .page-title h2 {
       font-size: var(--fs-base);
@@ -594,32 +582,6 @@
       vertical-align: middle;
     }
 
-    .shinko-table .item-cell {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .shinko-table .item-thumb {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      object-fit: cover;
-      border-radius: 3px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      cursor: pointer;
-      display: block;
-    }
-
-    .shinko-table .item-cell span {
-      line-height: 1.2;
-    }
-
-    .shinko-table .item-thumb:hover {
-      opacity: 0.85;
-    }
-
     .image-modal {
       position: fixed;
       inset: 0;
@@ -657,104 +619,6 @@
       transition: all 0.3s cubic-bezier(.2,.8,.2,1);
     }
 
-
-    /* モーダル背景 */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(2px);
-      z-index: 2000;
-    }
-
-    /* モーダル本体 */
-    .modal-window {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--color-card);
-      padding: 24px;
-      width: 85%;
-      max-width: 720px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--color-border);
-      z-index: 2001;
-    }
-
-    .modal-window h3 {
-      margin: 0 0 16px 0;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--color-border);
-      font-size: var(--fs-lg);
-      font-weight: 600;
-    }
-
-    .modal-footer {
-      text-align: right;
-      margin-top: 20px;
-    }
-
-    .modal-close {
-      padding: 10px 20px;
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: var(--fs-sm);
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
-    }
-
-    .modal-close:hover {
-      box-shadow: 0 4px 12px rgba(0, 134, 50, 0.25);
-    }
-
-    .modal-close:active {
-      transform: translateY(1px);
-    }
-
-    .modal-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--fs-sm);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-    }
-
-    .modal-table th {
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      padding: 12px 16px;
-      text-align: left;
-      font-weight: 600;
-    }
-
-    .modal-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    .modal-table tbody tr:nth-child(even) {
-      background: #fafbfa;
-    }
-
-    .modal-table tbody tr:hover {
-      background: #e8f5e9;
-    }
-
-    .modal-table th,
-    .modal-table td {
-      border: 1px solid var(--color-border);
-    }
 
     /* ガントチャート（モダン） */
     .timeline-wrapper {
@@ -872,10 +736,10 @@
       }
     }
 
-    /* 画面の幅が650px以下ならスマホ*/
+    /* 画面の幅が768px以下ならスマホ — PC用を隠しSP用を表示 */
     @media (max-width: 768px) {
       .pc-only {
-        display: block;
+        display: none;
       }
       .sp-only {
         display: flex;
@@ -1090,9 +954,7 @@
 
     .status-warning{ background:#f9a825; }
     .status-delay{ background:#e53935; }
-    .status-complete{ background:#008632; }
     .status-onschedule{ background:#1e88e5; }
-    .status-default{ background:#9aa5a0; }
 
     /* メイン行 */
     .sp-card-main{
@@ -1124,27 +986,12 @@
     .sp-expand{
       font-size:20px;
       color:var(--color-primary);
+      transition: transform 0.2s ease;
     }
 
-    /* 詳細（初期非表示） */
-    .sp-detail{
-      display:none;
-      padding:12px 16px 16px;
-      border-top:1px solid var(--color-border);
-    }
-
-    /* 展開状態 */
-    .sp-card.open .sp-detail{
-      display:block;
-    }
-
+    /* 展開状態（＋を回転）— sp-detail が無くてもトグル見た目用 */
     .sp-card.open .sp-expand{
       transform:rotate(45deg);
-    }
-
-    /* 子カードの＋／×は常に非表示（親カードのみ＋→×にする） */
-    .child-card .sp-expand-child{
-      display:none !important;
     }
 
     /* 子のいない親カードは＋／×を非表示 */
@@ -1152,60 +999,6 @@
       display:none !important;
     }
 
-    /* ===============================
-      縦タイムライン
-    =================================*/
-
-    .sp-timeline{
-      position:relative;
-      margin-left:8px;
-      padding-left:18px;
-    }
-
-    .sp-timeline::before{
-      content:"";
-      position:absolute;
-      left:6px;
-      top:0;
-      bottom:0;
-      width:2px;
-      background:#d5dfd9;
-    }
-
-    .sp-step{
-      position:relative;
-      margin-bottom:14px;
-      font-size:13px;
-    }
-
-    .sp-step::before{
-      content:"";
-      position:absolute;
-      left:-18px;
-      top:4px;
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:#cfd8d3;
-    }
-
-    .sp-step.completed::before{
-      background:#1e88e5;
-    }
-
-    .sp-step.nearing::before{
-      background:#fdd835;
-    }
-
-    .sp-step.delay::before{
-      background:#e53935;
-    }
-
-    .sp-step small{
-      display:block;
-      font-size:11px;
-      color:var(--color-text-muted);
-    }
     /* #endregion */
   </style>
 </head>
