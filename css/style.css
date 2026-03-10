@@ -68,6 +68,21 @@ table th {
   line-height: inherit;
 }
 
+input {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  color: var(--color-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+}
+
 select {
       padding: 10px 12px;
       font-family: inherit;
@@ -176,8 +191,9 @@ textarea {
 
 /* #endregion */
 
-/* #region サイドバー（zuanjohotoroku.html の .sidebar と同じ見た目） */
+/* #region サードバー */
 .sidebar {
+  width: clamp(190px, 70vw, 220px);
   width: 220px;
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: #fff;
@@ -196,14 +212,15 @@ textarea {
 
 .sidebar-toggle {
   position: absolute;
+  left: clamp(190px, 70vw, 220px);
   left: 220px;
-  top: 12px;
+  top: 5px;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-left: none;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   cursor: pointer;
-  padding: 6px 8px;
+  padding: 0px 0px;
   box-shadow: var(--shadow-sm);
   transition: background 0.2s ease;
 }
@@ -221,7 +238,6 @@ textarea {
 
 .sidebar h2 {
   margin: 8px 12px 12px;
-  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.05em;
   padding-bottom: 8px;
@@ -243,31 +259,24 @@ textarea {
   transform: translateX(-50%);
 }
 
-.overlay {
-  display: none;
-}
-
-.overlay.show {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.35);
-  z-index: 1500;
-  backdrop-filter: blur(2px);
-}
-
 .menu-item {
-  margin: 2px 8px;
+  margin-left: clamp(6px, 0.5vw, 8px);
+  margin-right: clamp(6px, 0.5vw, 8px);
+  margin-top: clamp(8px, 0.5vw, 10px);
+  margin-bottom: clamp(8px, 0.5vw, 10px);
+  height: clamp(25px, 0.5vw + 8px, 38px);
   position: relative;
   border-radius: var(--radius-sm);
 }
 
+.arrow {
+  transition: transform 0.2s ease;
+  margin-left: auto;
+  opacity: 0.8;
+}
+
 .menu-title {
   position: relative;
-  height: 38px;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -282,18 +291,15 @@ textarea {
   opacity: 0.9;
 }
 
-.menu-item:hover > .submenu {
-  display: block;
-}
-
 .menu-item:hover .menu-title {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-primary-dark);
+  /* 好きな色に変更 */
+  border-radius: 4px;
+  /* 角丸にしたい場合 */
 }
 
-.arrow {
-  transition: transform 0.2s ease;
-  margin-left: auto;
-  opacity: 0.8;
+.menu-item:hover>.submenu {
+  display: block;
 }
 
 .submenu {
@@ -302,15 +308,16 @@ textarea {
   top: -13px;
   left: 105%;
   background: #008632;
-  padding: 0;
+  padding: 0px 0px 0px 0px;
   border-radius: 3px;
-  min-width: 330px;
+  display: none;
+  width: clamp(260px, 70vw, 310px);
   list-style: none;
-  font-size: 16px;
 }
 
 .submenu::before {
   content: "";
+  display: flex;
   position: absolute;
   top: 0;
   left: -5%;
@@ -321,20 +328,41 @@ textarea {
 }
 
 .submenu li {
-  padding: 8px 10px;
-  height: auto;
+  margin-left: clamp(6px, 0.5vw, 8px);
+  margin-right: clamp(6px, 0.5vw, 8px);
+  margin-top: clamp(8px, 0.5vw, 10px);
+  margin-bottom: clamp(8px, 0.5vw, 10px);
+  height: clamp(25px, 0.5vw + 8px, 38px);
+  position: relative;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
 }
 
 .submenu li:hover {
-  background: #006C29;
+  background: var(--color-primary-dark);
+  /* 好きな色に変更 */
   border-radius: 4px;
+  /* 角丸にしたい場合 */
 }
+
+/* .menu-item:hover .menu-title {
+  background: rgba(255, 255, 255, 0.15);
+} */
+
 
 .submenu li a {
   display: block;
+  /* 折り返しを効かせる */
   white-space: normal;
+  /* 折り返しOK */
   word-break: break-word;
+  /* 日本語も途中で折れる */
   line-height: 1.1;
+  /* 行間を少し広めに */
 }
 
 .submenu a {
@@ -342,176 +370,255 @@ textarea {
   color: inherit;
 }
 
-/* スマホ：サイドバー全体を隠し、.active で表示（zuanjohotoroku と同じ挙動） */
-@media (max-width: 767px) {
-  .sidebar {
-    transform: translateX(-100%);
-    z-index: 2000;
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
-  }
-
-  .sidebar-toggle {
-    display: none;
-  }
-}
-
 /* #endregion */
-
-/* ===== style.css から移植：autocomplete（プルダウン入力・フィルタリング） ===== */
-.autocomplete {
-  position: relative;
-  width: 250px;
-}
-
-.autocomplete-input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-}
-
-.autocomplete-dropdown {
-  position: absolute;
-  font-size: var(--fs-xs);
-  top: 100%;
-  left: 0;
-  width: 100%;
-  border: 1px solid #ccc;
-  background: #fff;
-  max-height: 200px;
-  overflow-y: auto;
-  display: none;
-  z-index: 1000;
-  border-radius: var(--radius-sm);
-}
-
-.autocomplete-dropdown div {
-  padding: 8px;
-  cursor: pointer;
-}
-
-.autocomplete-dropdown div:hover {
-  background: #f0f0f0;
-}
-
-/* ===== style.css から移植：期間 From～To（yyyymmdd ＋ カレンダー補助） ===== */
-.period-range-row {
-  align-items: center;
-  flex: 0 1 auto;
-  max-width: fit-content;
-}
-
-.period-range-field {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  min-width: 0;
-}
-
-.period-range-picker {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.period-range-calendar-btn {
-  flex-shrink: 0;
-  padding: 6px 8px;
-  font-size: 0.95rem;
-  line-height: 1;
-  cursor: pointer;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-card);
-  color: var(--color-text);
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.period-range-calendar-btn:hover {
-  border-color: var(--color-primary);
-  background: var(--color-surface);
-}
-
-.period-range-input.period-range-yyyymmdd.period-range-invalid {
-  border-color: #c62828;
-  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.15);
-}
-
-.period-range-inputs {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  min-width: 0;
-}
-
-.period-range-input {
-  min-width: 160px;
-  padding: 10px 12px;
-  font-size: var(--fs-xs, 12px);
-  font-family: inherit;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-card);
-  color: var(--color-text);
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.period-range-input:hover {
-  border-color: #b0bdb5;
-}
-
-.period-range-input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
-}
-
-/* yyyymmdd 8桁幅＋ .period-range-input より後で min-width 上書き */
-.period-range-input.period-range-yyyymmdd {
-  box-sizing: border-box;
-  width: calc(8ch + 14px);
-  min-width: calc(8ch + 14px);
-  max-width: 100%;
-  padding: 6px 7px;
-  font-variant-numeric: tabular-nums;
-  overflow: visible;
-}
-
-.period-range-sep {
-  color: var(--color-text-muted);
-  font-weight: 500;
-  user-select: none;
-  flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  .period-range-row.period-range-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .period-range-inputs {
-    width: 100%;
-  }
-  .period-range-input {
-    min-width: 0;
-    width: 100%;
-  }
-}
 
 /* スマホ向けに全体を少しだけ小さくする例 */
 @media (max-width: 600px) {}
 
 /* 大きめ画面で読みやすさを優先する例 */
 @media (min-width: 1200px) {}
+
+/* #region 商品選択モーダル */
+/* z-index はハンバーガー(3000)・サイドバー(2000)より上に（レスポンシブで隠れないように） */
+.product-select-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 46, 38, 0.5);
+  z-index: 10000;
+  -webkit-overflow-scrolling: touch;
+}
+.product-select-modal-overlay.is-open {
+  display: block;
+  pointer-events: auto;
+}
+.product-select-modal-dialog {
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(96vw, 1200px);
+  height: min(90vh, 800px);
+  max-height: 90vh;
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  z-index: 10001;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+}
+.product-select-modal-dialog.is-open { display: flex; }
+.product-select-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 16px;
+  flex-shrink: 0;
+  font-weight: var(--fw-medium);
+  font-size: clamp(var(--fs-lg), 0.5vw + 8px, var(--fs-base));
+  border-bottom: 2px solid var(--color-primary);
+  background: var(--color-card);
+}
+.product-select-modal-header #productSelectModalTitle { color: var(--color-primary); }
+.product-select-modal-close {
+  padding: 6px 14px;
+  min-width: 80px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size: inherit;
+  transition: background 0.2s ease;
+}
+.product-select-modal-close:hover { background: var(--color-primary-dark); }
+.product-select-modal-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+}
+.product-select-modal-body iframe {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  min-height: 0;
+  background: var(--color-surface);
+}
+/* モーダル内に直接組み込んだコンテンツ用（iframe 代替） */
+.product-select-modal-body-inner {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--color-surface);
+}
+.product-select-modal-body-inner.modal-product-select-page {
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+.product-select-modal-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+.product-select-modal-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.product-select-modal-add {
+  padding: 8px 20px;
+  min-width: 100px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size: inherit;
+  transition: background 0.2s ease;
+}
+.product-select-modal-add:hover {
+  background: var(--color-primary-dark);
+}
+.product-select-modal-footer .product-select-modal-close {
+  min-width: 120px;
+  padding: 8px 20px;
+}
+.modal-product-select-page {
+  margin: 0;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  box-sizing: border-box;
+}
+.modal-product-select-page .filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.modal-product-select-page .filter-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.modal-product-select-page .filter-row .filter-label { margin-right: 4px; }
+.modal-product-select-page .modal-result-section-title {
+  margin: 12px 0 8px;
+  font-size: clamp(var(--fs-lg), 0.5vw + 8px, var(--fs-base));
+  font-weight: var(--fw-medium);
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 4px;
+}
+.modal-product-select-page .modal-result-table-wrap {
+  overflow: auto;
+  max-height: min(50vh, 400px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  box-shadow: var(--shadow-sm);
+}
+.modal-product-select-page .modal-result-table { width: 100%; border-collapse: collapse; }
+.modal-product-select-page .modal-result-table th,
+.modal-product-select-page .modal-result-table td {
+  border: 1px solid var(--color-border);
+  padding: 8px 10px;
+  text-align: left;
+}
+.modal-product-select-page .modal-result-table th {
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-weight: var(--fw-medium);
+}
+.modal-product-select-page .modal-result-table tbody tr:hover {
+  background: rgba(0, 134, 50, 0.06);
+}
+
+/* スマホ: モーダルを全画面にし transform 中央寄せをやめる（fixed のContaining blockずれ防止） */
+@media (max-width: 767px) {
+  .product-select-modal-overlay.is-open {
+    z-index: 10000;
+  }
+  .product-select-modal-dialog.is-open {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    transform: none;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    z-index: 10001;
+    /* iOS のアドレスバー等で inner 高さが取れない対策 */
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+}
+.modal-product-select-page .modal-result-toolbar .modal-result-section-title {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.modal-product-select-page .modal-result-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+.modal-product-select-page .modal-result-select-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-product-select-page .modal-result-select-all,
+.modal-product-select-page .modal-result-deselect-all {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: inherit;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.modal-product-select-page .modal-result-select-all:hover,
+.modal-product-select-page .modal-result-deselect-all:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+}
+.modal-product-select-page .modal-result-col-check {
+  width: 40px;
+  text-align: center;
+  vertical-align: middle;
+}
+.modal-product-select-page .modal-result-check-all,
+.modal-product-select-page .modal-result-row-check {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+/* #endregion */
