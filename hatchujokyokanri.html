@@ -187,9 +187,11 @@
       border-left: none;
       border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
       cursor: pointer;
-      padding: 6px 8px;
+      /* zuanfuriwake.html と同じ見え方（20dp アイコンに合わせた余白） */
+      padding: 8px 10px;
       box-shadow: var(--shadow-sm);
       transition: background 0.2s ease;
+      box-sizing: border-box;
     }
 
     .sidebar-toggle:hover {
@@ -197,9 +199,11 @@
     }
 
     .sidebar-toggle img {
-      width: 12px;
-      height: 13px;
-      padding-top: 0;
+      /* chevron_left_20dp_FFFFF.svg に合わせて zuanfuriwake と同スケール */
+      width: 10px;
+      height: 12px;
+      padding: 0;
+      display: block;
       pointer-events: none;
     }
 
@@ -367,52 +371,14 @@
       letter-spacing: 0.02em;
     }
 
-    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
-    .content-box {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      background: var(--color-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-      overflow: hidden;
-    }
-
-    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
-    .content-box .page-title {
+    /* ページタイトル（発注状況確認など）— .content-box 削除後も下線を付ける */
+    .page-title h2 {
       font-size: 18px;
       font-weight: 700;
       color: var(--color-primary);
       margin: 0 0 16px;
       padding-bottom: 8px;
       border-bottom: 2px solid var(--color-primary);
-      flex-shrink: 0;
-    }
-
-    .content-box .search-box {
-      flex-shrink: 0;
-      margin: 0 0 24px 0;
-    }
-
-    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
-    .content-box .pc-only {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .content-box .sp-only {
-      flex: 1;
-      min-height: 0;
-    }
-
-    .content-box .content-section {
-      flex: 1;
-      min-height: 0;
     }
 
     /* #region 検索条件ボックス（モダンカード） */
@@ -462,7 +428,7 @@
     .search-row input {
       min-width: 160px;
       padding: 10px 12px;
-      font-size: var(--fs-xs);
+      font-size: 16px;
       font-family: inherit;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
@@ -536,6 +502,10 @@
     .shinko-box {
       max-height: 90vh;
       height: auto;
+      min-height: 0;
+      /* 内側の wrapper が縦スクロールできるように */
+      display: flex;
+      flex-direction: column;
     }
 
     .dashboard-box h2 {
@@ -558,8 +528,12 @@
     }
 
     .shinko-table-wrapper {
+      flex: 1;
+      min-height: 0;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
+      /* 縦スクロール時にヘッダー固定のため、領域内でスクロールさせる */
+      max-height: calc(90vh - 24px);
     }
 
     .shinko-table {
@@ -570,6 +544,7 @@
     }
 
     .shinko-table th {
+      /* sticky 時も中身が透けないよう不透明度のある背景 */
       background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       color: #fff;
       padding: 14px 16px;
@@ -577,10 +552,16 @@
       font-weight: 600;
       letter-spacing: 0.02em;
       white-space: nowrap;
+      /* 縦スクロール時に表ヘッダーを固定 */
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
     }
 
     .shinko-table th:first-child {
-      width: 40px;
+      /* 作成日など表示用に幅は内容に任せる */
+      width: auto;
     }
 
     .shinko-table th:last-child {
@@ -812,8 +793,8 @@
     .completednode-btn,
     .nearingnode-btn,
     .notcompletednode-btn {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 12px;
       border-radius: 50%;
       border: none;
@@ -890,18 +871,9 @@
     /* 画面の幅が650px以下ならスマホ*/
     @media (max-width: 768px) {
       .pc-only {
-        display: none;
-      }
-
-      .content-box .pc-only {
-        display: none;
-      }
-
-      .sp-only {
         display: block;
       }
-
-      .content-box .sp-only {
+      .sp-only {
         display: flex;
         flex-direction: column;
       }
@@ -953,17 +925,17 @@
         width: 100%;
       }
 
-      .content-box {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 8px;
-        min-height: 0;
-      }
-
       .page-title {
         font-size: 16px;
       }
-
+      .page-title h2{
+        font-weight: 700;
+        color: var(--color-primary);
+        margin: 0 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--color-primary);
+        flex-shrink: 0;
+      }
       /* スマホ: 検索条件は折りたたみ式 */
       .search-toggle-sp {
         display: flex;
@@ -1254,8 +1226,8 @@
 
     <!--#region メニュー  -->
     <div class="sidebar">
-      <button class="sidebar-toggle">
-        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle">
+      <button type="button" class="sidebar-toggle">
+        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle" width="20" height="20">
       </button>
       <h2>メニュー</h2>
 
@@ -1432,12 +1404,13 @@
 
     <!--#region メインコンテンツ  -->
     <div class="content">
-      <div class="content-box">
-      <h2 class="page-title">発注状況確認</h2>
+      <div class="page-title">
+        <h2>発注状況確認</h2>
+      </div>
       <div class="search-box" id="searchBox">
         <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel"><span class="search-toggle-sp-label"><img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20"><span class="search-toggle-sp-text">検索条件を開く</span></span></button>
         <div class="search-box-inner" id="searchRowsPanel">
-          
+
           <div class="search-row">
             <label>カテゴリー</label>
             <div class="autocomplete">
@@ -1447,44 +1420,63 @@
           </div>
           
           <div class="search-row">
-            <label>展示会</label>
-            <select>
-              <option value="">選択してください</option>
-              <option value="1">2026.4月</option>
-              <option value="2">2026.7月</option>
-              <option value="3">2026.10月</option>
-            </select>
-          </div>
-
-          <div class="search-row">
             <label>仕入先</label>
-            <select>
-              <option value="">選択してください</option>
-              <option value="1">商品部１課</option>
-              <option value="2">商品部２課</option>
-              <option value="3">商品部３課</option>
-            </select>
+            <div class="autocomplete">
+              <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入先検索">
+              <div class="autocomplete-dropdown"></div>
+            </div>
           </div>
 
           <div class="search-row">
             <label>作成者</label>
+            <div class="autocomplete">
+              <input type="text" class="autocomplete-input" data-list="creator" placeholder="作成者検索">
+              <div class="autocomplete-dropdown"></div>
+            </div>
+          </div>
+
+          <div class="search-row">
+            <label>契約書No.</label>
+            <div class="autocomplete">
+              <input type="text" class="autocomplete-input" data-list="contractNo" placeholder="契約書No.検索">
+              <div class="autocomplete-dropdown"></div>
+            </div>
+          </div>
+
+          <div class="search-row">
+            <label>商品コード</label>
             <select>
               <option value="">選択してください</option>
-              <option value="1">丸眞花子</option>
-              <option value="2">丸眞幸子</option>
-              <option value="3">丸眞丸子</option>
+              <option value="1">999999</option>
+              <option value="2">999999</option>
+              <option value="3">999999</option>
             </select>
           </div>
 
           <div class="search-row">
-            <label>契約No.</label>
-            <select>
-              <option value="">選択してください</option>
-              <option value="1">定番</option>
-              <option value="2">定番加工</option>
-              <option value="3">別注</option>
-              <option value="4">OEM</option>
-            </select>
+            <label>商品名</label>
+            <div class="autocomplete">
+              <input type="text" class="autocomplete-input" data-list="productName" placeholder="商品名検索">
+              <div class="autocomplete-dropdown"></div>
+            </div>
+          </div>
+
+          <!-- 期間 From～To（表示・入力書式 yyyymmdd／カレンダーで選択可） -->
+          <div class="search-row period-range-row">
+            <label for="periodFrom">契約納期</label>
+            <div class="period-range-inputs">
+              <div class="period-range-field">
+                <input type="text" id="periodFrom" name="periodFrom" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="開始日 yyyymmdd" title="8桁で入力（例: 20250309）またはカレンダー">
+                <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                <button type="button" class="period-range-calendar-btn" aria-label="開始日をカレンダーで選択">📅</button>
+              </div>
+              <span class="period-range-sep" aria-hidden="true">～</span>
+              <div class="period-range-field">
+                <input type="text" id="periodTo" name="periodTo" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="終了日 yyyymmdd" title="8桁で入力（例: 20250309）またはカレンダー">
+                <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                <button type="button" class="period-range-calendar-btn" aria-label="終了日をカレンダーで選択">📅</button>
+              </div>
+            </div>
           </div>
 
           <div class="search-row">
@@ -1498,22 +1490,19 @@
             </select>
           </div>
 
-          <div class="search-row">
-            <label>品名</label>
-            <input type="text" placeholder="品名を入力">
-          </div>
-
-          <div class="search-row">
-            <label>営業担当</label>
-            <select>
-              <option value="">選択してください</option>
-              <option value="1">丸眞一郎</option>
-              <option value="2">丸眞二郎</option>
-              <option value="3">丸眞三郎</option>
-            </select>
-          </div>
+          <div class="search-row period-range-row period-range-row--from-only">
+            <label for="periodFromOnly">作成日</label>
+            <div class="period-range-inputs">
+              <div class="period-range-field">
+                <input type="text" id="periodFromOnly" name="periodFromOnly" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd" title="8桁で入力（例: 20250309）またはカレンダー">
+                <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+              </div>
+            </div>
+          </div>          
         </div>
       </div>
+      
       <!-- ▲ 検索条件エリアここまで ▲ -->
 
       <div class="pc-only">
@@ -1523,23 +1512,23 @@
               <table class="shinko-table">
                 <thead>
                   <tr>
-                    <th>デザイナー</th>
+                    <th>作成日</th>
+                    <th>契約書No</th>
+                    <th>仕入先</th>
+                    <th>契約納期</th>
+                    <th>カテゴリー</th>
                     <th>販売区分</th>
-                    <th>アイテム</th>
-                    <th>ステータス</th>
                     <th>進行状況</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="order-row">
-                    <td>丸眞花子</td>
+                    <td>2025/01/05</td>
+                    <td>1234567890</td>
+                    <td>今治ソフトパイル株式会社</td>
+                    <td>20260331</td>
+                    <td>タオル</td>
                     <td>定番（2026.01展示会）</td>
-                    <td>
-                      <div class="item-cell">
-                        <span>ミッキー／ディズニー「ミッキータオル」</span>
-                      </div>
-                    </td>
-                    <td>証紙依頼書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
                         <div class="timeline-line"></div>
@@ -1574,17 +1563,14 @@
                         </div>
                       </div>
                     </td>
-                    </td>
                   </tr>
                   <tr class="order-row">
-                    <td>丸眞花子</td>
+                    <td>2025/01/12</td>
+                    <td>1234567891</td>
+                    <td>南通華東紡績（Nantong Huadong）</td>
+                    <td>20260415</td>
+                    <td>フェイスタオル</td>
                     <td>別注</td>
-                    <td>
-                      <div class="item-cell">
-                        <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
-                      </div>
-                    </td>
-                    <td>手配中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
                         <div class="timeline-line"></div>
@@ -1622,14 +1608,12 @@
                     </td>
                   </tr>
                   <tr class="order-row">
-                    <td>丸眞花子</td>
+                    <td>2025/02/01</td>
+                    <td>1234567892</td>
+                    <td>泉州ガーゼ織物</td>
+                    <td>20260520</td>
+                    <td>フェイスタオル</td>
                     <td>OEM</td>
-                    <td>
-                      <div class="item-cell">
-                        <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
-                      </div>
-                    </td>
-                    <td>発注書作成中</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
                         <div class="timeline-line"></div>
@@ -1666,14 +1650,12 @@
                     </td>
                   </tr>
                   <tr class="order-row">
-                    <td>丸眞花子</td>
+                    <td>2024/11/20</td>
+                    <td>1234567888</td>
+                    <td>株式会社コットンロード</td>
+                    <td>20250228</td>
+                    <td>バスタオル</td>
                     <td>定番加工</td>
-                    <td>
-                      <div class="item-cell">
-                        <span>フェイスタオル／ミッキー／ディズニー「ミッキータオル」</span>
-                      </div>
-                    </td>
-                    <td>初回入荷済み</td>
                     <td>
                       <div class="timeline-wrapper small-timeline">
                         <div class="timeline-line"></div>
@@ -1806,7 +1788,7 @@
           <!-- ===== /親 ===== -->                                      
         </div>
       </div>
-      </div>
+      
     </div>
     <!-- #endregion -->
 
