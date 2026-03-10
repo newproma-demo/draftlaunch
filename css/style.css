@@ -191,9 +191,8 @@ textarea {
 
 /* #endregion */
 
-/* #region サードバー */
+/* #region サイドバー（shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html と統一） */
 .sidebar {
-  width: clamp(190px, 70vw, 220px);
   width: 220px;
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: #fff;
@@ -212,15 +211,14 @@ textarea {
 
 .sidebar-toggle {
   position: absolute;
-  left: clamp(190px, 70vw, 220px);
   left: 220px;
-  top: 5px;
+  top: 12px;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-left: none;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   cursor: pointer;
-  padding: 0px 0px;
+  padding: 6px 8px;
   box-shadow: var(--shadow-sm);
   transition: background 0.2s ease;
 }
@@ -238,6 +236,7 @@ textarea {
 
 .sidebar h2 {
   margin: 8px 12px 12px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.05em;
   padding-bottom: 8px;
@@ -259,30 +258,38 @@ textarea {
   transform: translateX(-50%);
 }
 
+.overlay {
+  display: none;
+}
+
+.overlay.show {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1500;
+  backdrop-filter: blur(2px);
+}
+
 .menu-item {
-  margin-left: clamp(6px, 0.5vw, 8px);
-  margin-right: clamp(6px, 0.5vw, 8px);
-  margin-top: clamp(8px, 0.5vw, 10px);
-  margin-bottom: clamp(8px, 0.5vw, 10px);
-  height: clamp(25px, 0.5vw + 8px, 38px);
+  margin: 2px 8px;
   position: relative;
   border-radius: var(--radius-sm);
 }
 
-.arrow {
-  transition: transform 0.2s ease;
-  margin-left: auto;
-  opacity: 0.8;
-}
-
 .menu-title {
   position: relative;
-  font-weight: 500;
+  height: 38px;
   display: flex;
   align-items: center;
   cursor: pointer;
   padding: 0 12px;
   border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 16px;
   transition: background 0.2s ease;
 }
 
@@ -291,15 +298,18 @@ textarea {
   opacity: 0.9;
 }
 
-.menu-item:hover .menu-title {
-  background: var(--color-primary-dark);
-  /* 好きな色に変更 */
-  border-radius: 4px;
-  /* 角丸にしたい場合 */
+.menu-item:hover > .submenu {
+  display: block;
 }
 
-.menu-item:hover>.submenu {
-  display: block;
+.menu-item:hover .menu-title {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.arrow {
+  transition: transform 0.2s ease;
+  margin-left: auto;
+  opacity: 0.8;
 }
 
 .submenu {
@@ -308,11 +318,11 @@ textarea {
   top: -13px;
   left: 105%;
   background: #008632;
-  padding: 0px 0px 0px 0px;
+  padding: 0;
   border-radius: 3px;
-  display: none;
-  width: clamp(260px, 70vw, 310px);
+  min-width: 330px;
   list-style: none;
+  font-size: 16px;
 }
 
 .submenu::before {
@@ -328,41 +338,20 @@ textarea {
 }
 
 .submenu li {
-  margin-left: clamp(6px, 0.5vw, 8px);
-  margin-right: clamp(6px, 0.5vw, 8px);
-  margin-top: clamp(8px, 0.5vw, 10px);
-  margin-bottom: clamp(8px, 0.5vw, 10px);
-  height: clamp(25px, 0.5vw + 8px, 38px);
-  position: relative;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: background 0.2s ease;
+  padding: 8px 10px;
+  height: auto;
 }
 
 .submenu li:hover {
-  background: var(--color-primary-dark);
-  /* 好きな色に変更 */
+  background: #006C29;
   border-radius: 4px;
-  /* 角丸にしたい場合 */
 }
-
-/* .menu-item:hover .menu-title {
-  background: rgba(255, 255, 255, 0.15);
-} */
-
 
 .submenu li a {
   display: block;
-  /* 折り返しを効かせる */
   white-space: normal;
-  /* 折り返しOK */
   word-break: break-word;
-  /* 日本語も途中で折れる */
   line-height: 1.1;
-  /* 行間を少し広めに */
 }
 
 .submenu a {
@@ -370,7 +359,208 @@ textarea {
   color: inherit;
 }
 
+/* ロゴ非表示（HTML と同じブレークポイント） */
+@media (max-height: 750px) {
+  .sidebar-logo-proma {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) {
+  .sidebar-logo-marushin {
+    display: none;
+  }
+}
+
+/* スマホ：サイドバー（768px・shinkojokyokakunin と同じ） */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 2000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
 /* #endregion */
+
+/* ===== style.css にあって stylegit に無かったものを追加 ===== */
+
+/* autocomplete（プルダウン入力・フィルタリング） */
+.autocomplete {
+  position: relative;
+  width: 250px;
+}
+
+.autocomplete-input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  font-size: var(--fs-xs);
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  background: #fff;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  z-index: 1000;
+  border-radius: var(--radius-sm);
+}
+
+.autocomplete-dropdown div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.autocomplete-dropdown div:hover {
+  background: #f0f0f0;
+}
+
+/* 期間 From～To（yyyymmdd ＋ カレンダー補助） */
+.period-range-row {
+  align-items: center;
+  flex: 0 1 auto;
+  max-width: fit-content;
+}
+
+.period-range-field {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  min-width: 0;
+}
+
+.period-range-picker {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.period-range-field .period-range-calendar-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  flex-shrink: 0;
+  padding: 4px 6px;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 134, 50, 0.06);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.period-range-field .period-range-calendar-btn:hover {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(0, 134, 50, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 134, 50, 0.1);
+}
+
+.period-range-input.period-range-yyyymmdd.period-range-invalid {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.15);
+}
+
+.period-range-inputs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
+}
+
+.period-range-input {
+  min-width: 160px;
+  padding: 10px 12px;
+  font-size: var(--fs-xs, 12px);
+  font-family: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  color: var(--color-text);
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.period-range-input:hover {
+  border-color: #b0bdb5;
+}
+
+.period-range-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+}
+
+.period-range-field .period-range-input.period-range-yyyymmdd {
+  --period-pad-left: 7px;
+  --period-btn-area: 2.6em;
+  box-sizing: border-box;
+  width: calc(8ch + var(--period-pad-left) + var(--period-btn-area) + 2px);
+  min-width: calc(8ch + var(--period-pad-left) + var(--period-btn-area) + 2px);
+  max-width: 100%;
+  padding: 6px var(--period-pad-left);
+  padding-right: var(--period-btn-area);
+  font-variant-numeric: tabular-nums;
+  overflow: visible;
+}
+
+.period-range-sep {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .period-range-row.period-range-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .period-range-inputs {
+    width: 100%;
+  }
+  .period-range-input {
+    min-width: 0;
+    width: 100%;
+  }
+  .period-range-field {
+    display: block;
+    width: 100%;
+  }
+  .period-range-field .period-range-input.period-range-yyyymmdd {
+    width: 100%;
+    min-width: 0;
+  }
+}
 
 /* スマホ向けに全体を少しだけ小さくする例 */
 @media (max-width: 600px) {}
