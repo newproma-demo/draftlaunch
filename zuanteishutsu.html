@@ -195,6 +195,17 @@
       .filter-item {
         flex: 1 1 100%;
       }
+
+      /* 商品を選択ボタンが他グリッドセルに隠れないように */
+      .content-area-1 {
+        position: relative;
+        z-index: 2;
+      }
+
+      .btn-sel-product {
+        position: relative;
+        z-index: 3;
+      }
     }
 
     .filter-row {
@@ -747,13 +758,6 @@
             </div>
           </div>
         </div>
-        <div class="modal-result-toolbar">
-          <h3 class="modal-result-section-title">検索結果</h3>
-          <div class="modal-result-select-actions">
-            <button type="button" class="modal-result-select-all" id="modalResultSelectAllBtn">全選択</button>
-            <button type="button" class="modal-result-deselect-all" id="modalResultDeselectAllBtn">全選択解除</button>
-          </div>
-        </div>
         <div class="modal-result-table-wrap">
           <table class="modal-result-table">
             <thead>
@@ -1086,6 +1090,11 @@
         dialog.classList.add('is-open');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
+        // レスポンシブで描画が遅れる端末向けに次フレームでも表示確定
+        requestAnimationFrame(function () {
+          overlay.classList.add('is-open');
+          dialog.classList.add('is-open');
+        });
       }
 
       function closeModal() {
