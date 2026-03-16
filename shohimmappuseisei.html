@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+  <style>
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 25px);
+    }
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 24px 24px 32px;
+      overflow: hidden;
+      transition: margin-left 0.3s ease;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 24px;
+    }
+
+    .content-area-2 {
+      flex: 1;
+    }
+
+    /* ガントチャート */
+    .timeline-wrapper {
+      position: relative;
+      margin-bottom: 0;
+      width: 450px;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 47%;
+      left: 50px;
+      right: 50px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* #region レスポンシブ対応 */
+    /* 画面の高さが750px以下ならロゴを非表示 */
+    @media (max-height: 750px) {
+      .sidebar-logo-proma {
+        display: none;
+      }
+    }
+
+    /* 画面の高さが600px以下ならロゴを非表示 */
+    @media (max-height: 600px) {
+      .sidebar-logo-marushin {
+        display: none;
+      }
+    }
+
+    /* 画面の幅が768px以下ならスマホ*/
+    @media (max-width: 767px) {
+      .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* サイドバーを隠す */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+
+      /* 開いた状態 */
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-toggle {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .dashboard-section {
+        display: flex;
+        gap: 24px;
+        margin-top: 0;
+        width: 100%;
+        flex-direction: column;
+        padding-bottom: 20px;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+    
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+
+    .filter-row input[type="text"] {
+      padding: 4px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+    }
+
+    /* 検索条件：アイテムオートコンプリート */
+    .filter-row .autocomplete {
+      position: relative;
+    }
+    .filter-row .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      display: none;
+    }
+    .filter-row .autocomplete-dropdown div {
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: var(--fs-base);
+    }
+    .filter-row .autocomplete-dropdown div:hover {
+      background: rgba(0, 134, 50, 0.08);
+    }
+
+    /* 承認通知／検索結果・ボックス共通 */
+    .content-area {
+
+      margin-bottom: 10px;
+    }
+
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group>.content-area:first-of-type {
+      margin-bottom: 5px;
+    }
+    
+    .content-area h3 {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+
+
+    /* 商品情報エリア：3行が1画面に収まるように高さを確保 */
+    #approvalNoticeArea {
+      width: 100%;
+      max-height: 92vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+    .btn-fab-new {
+      position: fixed;
+      right: 24px;
+      bottom: 12px;
+      z-index: 2001;
+      min-width: 120px;
+      width: clamp(80px, 5vw, 120px);
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .product-swiper {
+      position: relative;
+      width: 100%;
+      /* カード内でスクロールさせず、全体レイアウト側でスクロール */
+      overflow: visible;
+      touch-action: pan-y;
+    }
+
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin-bottom: 3px;
+      box-sizing: border-box;
+      background: #fff;
+      cursor: move;
+      user-select: none;
+    }
+
+    .product-card.dragging {
+      opacity: 0.6;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .product-nav {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .product-nav-btn {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: var(--color-card);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+
+    .product-nav-btn:hover:not(:disabled) {
+      background: var(--color-surface);
+    }
+
+    .product-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .product-image-block {
+      display: flex;
+
+      align-items: center;
+      align-self: center;
+    }
+
+    .product-image-wrapper {
+      width: 100%;
+      /* 画像が見切れないように高さを拡大 */
+      max-height: 140px;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: #f5f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .product-image-wrapper.drag-over {
+      border-color: var(--color-primary);
+      background: #e6f4ea;
+    }
+
+    .product-image-wrapper img.product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .product-table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: collapse;
+      order: 0;
+    }
+
+    .product-table th,
+    .product-table td {
+      font-size: clamp(var(--fs-xs), 0.5vw + 8px, var(--fs-sm));
+      border: 1px solid var(--color-border);
+      padding: 4px 6px;
+      vertical-align: middle;
+      text-align: left
+    }
+
+    .product-table th {
+      background: #f5f7fa;
+    }
+
+    .product-table input,
+    .product-table textarea {
+      box-sizing: border-box;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 4px 6px;
+    }
+
+    .product-table .half-field {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    @media (min-width: 900px) {
+      .product-swiper {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        /* 行の高さはカード内容に応じて自動伸長 */
+        grid-auto-rows: max-content;
+        gap: 10px 16px;
+        align-items: start;
+        max-height: none;
+        min-height: auto;
+        overflow: visible;
+      }
+
+      .product-card {
+        padding: 8px;
+        gap: 8px;
+        min-height: auto;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+      }
+
+      .product-table th,
+      .product-table td {
+        padding: 2px 4px;
+      }
+
+      .product-table input,
+      .product-table textarea,
+      .product-table select {
+        padding: 2px 4px;
+      }
+
+      .product-table textarea {
+        min-height: 32px;
+      }
+
+      .product-image-block {
+        max-width: 160px;
+      }
+
+      .product-image-wrapper {
+        /* PC 画面ではさらに高さを確保して見切れを防止 */
+        max-height: 160px;
+      }
+    }
+
+    .content-area {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー  -->
+    <div class="sidebar">
+      <button class="sidebar-toggle">
+        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle">
+      </button>
+      <h2>メニュー</h2>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/linear_scale_20dp_F4F6F9.svg">
+          <span>進捗管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">進行状況確認（仕様書別・商品別）</a></li>
+          <li><a href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html">進行状況確認（担当者別入稿状況）</a></li>
+          <li><a href="hatchujokyokanri.html">発注状況管理</a></li>
+          <li><a href="#">マニフェスト管理</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/color_lens_20dp_F4F6F9.svg">
+          <span>図案管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">見積依頼入力・送信</a></li>
+          <li><a href="#">見積回答登録・メーカー決定</a></li>
+          <li><a href="#">別注図案作成依頼登録・申請</a></li>
+          <li><a href="#">別注図案作成依頼承認</a></li>
+          <li><a href="zuankensaku.html">図案情報登録</a></li>
+          <li><a href="zuanfuriwake.html">図案振分け</a></li>
+          <li><a href="zuanteishutsu.html">図案提出</a></li>
+          <li><a href="#">図案選定結果登録</a></li>
+          <li><a href="#">図案申請</a></li>
+          <li><a href="#">図案承認結果登録</a></li>
+          <li><a href="#">見積図案アップロード</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/edit_document_20dp_F4F6F9.svg">
+          <span>仕様書管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">仕様書情報登録</a></li>
+          <li><a href="#">仕様書情報決済</a></li>
+          <li><a href="#">仕様書情報入稿</a></li>
+          <li><a href="#">サンプル承認結果登録</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/smart_toy_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>サンプル管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">サンプル管理</a></li>
+          <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/high_quality_20dp_F4F6F9.svg">
+          <span>品質管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">品質検査合格書登録</a></li>
+          <li><a href="#">品質検査合格書決済</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/manufacturing_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>発注管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">契約書送付依頼</a></li>
+          <li><a href="#">契約書登録</a></li>
+          <li><a href="#">発注入力</a></li>
+          <li><a href="#">発注書決済</a></li>
+          <li><a href="#">証紙依頼書入力</a></li>
+          <li><a href="#">証紙依頼書決済</a></li>
+          <li><a href="#">契約書サイン</a></li>
+          <li><a href="#">契約書送信</a></li>
+          <li><a href="#">発注情報Mｼｽﾃﾑ連携</a></li>
+          <li><a href="#">発注履歴照会</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/directions_boat_filled_20dp_F4F6F9.svg">
+          <span>入荷管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">Ship依頼書/国内手配書登録</a></li>
+          <li><a href="#">Ship依頼書/国内手配書決済</a></li>
+          <li><a href="#">Ship依頼書送信</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/map_20dp_F4F6F9.svg">
+          <span>マップ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">商品マップ生成</a></li>
+          <li><a href="#">商品マップ公開</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/conversation_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>評価分析</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">人事考課用実績集計</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/factory_20dp_F4F6F9.svg">
+          <span>工場監査</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">ライセンス契約情報入力</a></li>
+          <li><a href="#">ライセンス契約チェック</a></li>
+          <li><a href="#">工場認定情報入力</a></li>
+          <li><a href="#">工場認定有効期限確認</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>マスタ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">コスト管理表</a></li>
+          <li><a href="#">商品情報照会</a></li>
+          <li><a href="#">システム設定マスタメンテナンス</a></li>
+          <li><a href="#">権限グループマスタメンテナンス</a></li>
+          <li><a href="#">ユーザーマスタメンテナンス</a></li>
+          <li><a href="#">ライセンスマスタメンテナンス</a></li>
+          <li><a href="#">ブランドマスタメンテナンス</a></li>
+          <li><a href="#">キャラクタマスタメンテナンス</a></li>
+          <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
+          <li><a href="#">資材マスタメンテナンス</a></li>
+        </ul>
+      </div>
+
+      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="120">
+      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="155">
+
+    </div>
+
+    <!-- 画面右下固定 新規登録ボタン -->
+    <button type="button" class="btn-fab-new">マップ出力</button>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <!-- 画面タイトル -->
+      <h1>商品マップ生成</h1>
+      <!-- ========== : 検索条件・検索結果一覧 ========== -->
+
+      <!-- 利用区分ラジオボタン -->
+      <div class="content-area">
+        <div class="filter-row">
+          <div class="filter-item">
+            <label><input type="radio" name="useType" value="internal" checked> 社内用</label>
+            <label><input type="radio" name="useType" value="sales"> 営業用</label>
+            <label><input type="radio" name="useType" value="maker"> メーカー用</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 検索条件ボックス -->
+      <div class="content-area">
+        <div class="view-layout view-layout-1">
+          <div class="filter-row">
+            <div class="filter-item">
+              <span class="filter-label">アイテム</span>
+              <div class="autocomplete">
+                <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="searchItem">
+                <div class="autocomplete-dropdown"></div>
+              </div>
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">カテゴリー</span>
+              <select id="categorySelect">
+                <option value="" selected disabled>選択してください</option>
+                <option>単品タオル</option>
+                <option>企画物タオル</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">名称</span>
+              <input type="text" id="searchName" placeholder="名称を入力">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 検索結果一覧エリア -->
+      <div class="content-area-2" id="approvalNoticeArea">
+        <div class="view-layout view-layout-2">
+          <div class="product-swiper" id="productSwiper">
+            <div class="product-card is-active">
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
+                </div>
+              </div>
+              <table class="product-table">
+                <tbody>
+                  <tr>
+                    <th>展示会</th>
+                    <!-- <td><input type="text" name="tenjikai" class="half-field"></td> -->
+                    <td colspan="2"><input type="text" name="tenjikai" class="half-field" disabled></td>
+                    <th>品番</th>
+                    <td colspan="2"><input type="text" name="hinban" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>カテゴリ</th>
+                    <td colspan="5"><input type="text" name="category" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>品名</th>
+                    <td colspan="5"><input type="text" name="productName" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>アイテム</th>
+                    <td colspan="5"><input type="text" name="itemName" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>商品コード</th>
+                    <!-- <td><input type="text" name="shohinCode" class="half-field"></td> -->
+                    <td colspan="2">
+                      <select name="shohinCode" class="half-field">
+                        <option value="">選択してください</option>
+                        <option value="4900000001">4900000001</option>
+                        <option value="4900000002">4900000002</option>
+                        <option value="4900000003">4900000003</option>
+                        <option value="4900000004">4900000004</option>
+                        <option value="4900000005">4900000005</option>
+                        <option value="4900000006">4900000006</option>
+                      </select>
+                    </td>
+                    <th>JAN</th>
+                    <td colspan="2"><input type="text" name="jan" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>固定上代</th>
+                    <!-- <td><input type="text" name="koteiJodai" class="half-field"></td> -->
+                    <td colspan="2"><input type="text" name="koteiJodai" class="half-field" disabled></td>
+                    <th>入数</th>
+                    <td colspan="2"><input type="text" name="nyusu" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>新上代</th>
+                    <!-- <td><input type="text" name="shinJodai" class="half-field"></td> -->
+                    <td colspan="2"><input type="text" name="shinJodai" class="half-field" disabled></td>
+                    <th>予定下代</th>
+                    <td colspan="2"><input type="text" name="yoteiKadai" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>瀬戸在庫</th>
+                    <!-- <td><input type="text" name="setoZaiko" class="half-field"></td> -->
+                    <td colspan="2"><input type="text" name="setoZaiko" class="half-field" disabled></td>
+                    <th>手配可能数</th>
+                    <td colspan="2"><input type="text" name="tehaiKanouSuu" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>ロイヤリティ</th>
+                    <td><input type="text" name="royalty" class="half-field" disabled></td>
+                    <th>原価</th>
+                    <td><input type="text" name="genka" class="half-field" disabled></td>
+                    <th>原価率</th>
+                    <td><input type="text" name="genkaRate" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>ロイヤリティ率</th>
+                    <td><input type="text" name="royaltyRate" class="half-field" disabled></td>
+                    <th>経費率</th>
+                    <td><input type="text" name="keihiRate" class="half-field" disabled></td>
+                    <th>利益率</th>
+                    <td><input type="text" name="riekiRate" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>為替</th>
+                    <td><input type="text" name="kawase" class="half-field" disabled></td>
+                    <th>＄単価</th>
+                    <td><input type="text" name="dollarTanka" class="half-field" disabled></td>
+                    <th>￥単価</th>
+                    <td><input type="text" name="yenTanka" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>予定発注数</th>
+                    <td colspan="5"><input type="text" name="yoteiHatchuSuu" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>メーカー</th>
+                    <td colspan="5"><input type="text" name="maker" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>サイズ/重量</th>
+                    <td colspan="5"><input type="text" name="sizeWeight" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>カラー</th>
+                    <td colspan="5"><input type="text" name="color" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>原産国</th>
+                    <td colspan="5"><input type="text" name="gensankoku" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>組成</th>
+                    <td colspan="5"><input type="text" name="sosei" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>仕様</th>
+                    <td colspan="5"><input type="text" name="shiyo" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>JAN有無</th>
+                    <td colspan="5"><input type="text" name="janUmu" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>納品形態</th>
+                    <td colspan="5"><input type="text" name="nohinKeitai" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>備考</th>
+                    <td colspan="5"><input type="text" name="biko" class="half-field" disabled></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');   // ← オーバーレイ表示
+      } else {
+
+        overlay.classList.remove('show'); // ← オーバーレイ非表示
+      }
+    }
+
+    // メニュー開閉
+    // document.querySelectorAll('.menu-title').forEach(title => {
+    //   title.addEventListener('click', () => {
+    //     title.parentElement.classList.toggle('open');
+    //   });
+    // });
+
+    // PCのとき、メニューの開閉ボタン
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.querySelector('.sidebar-toggle');
+    const toggleImg = toggle.querySelector('img');
+    const content = document.querySelector('.content');
+
+    toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('closed');
+      content.classList.toggle('expanded');
+
+      if (sidebar.classList.contains('closed')) {
+        toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+      } else {
+        toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+      }
+    });
+
+    // スマホのとき、開いたメニューを閉じる
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // // 画面のどこかをクリックしたら閉じる
+    // document.addEventListener('click', () => {
+    //   menu.style.display = 'none';
+    // });
+
+    // 案①：展示会変更で全体・半円グラフを更新
+    // var tenjikaiData = {
+    //   "2026.01": {
+    //     total: 120,
+    //     phases: [
+    //       { name: "図案申請", done: 15 },
+    //       { name: "試作入稿", done: 18 },
+    //       { name: "サンプル申請", done: 20 },
+    //       { name: "最終入稿", done: 22 },
+    //       { name: "発注", done: 23 },
+    //       { name: "入荷", done: 22 }
+    //     ],
+    //     sample: { done: 50, total: 120, warn7: 8, delay: 3 },
+    //     nyuko: { done: 60, total: 120, warn7: 5, delay: 2 },
+    //     hatchu: { done: 40, total: 120, warn7: 4, delay: 1 },
+    //     status: { approval: 14, applying: 6, sendback: 2, done: 98 },
+    //     nyukoPersons: {
+    //       "担当者①": { total: 20, done: 10, section: "ka1" },
+    //       "担当者②": { total: 20, done: 10, section: "ka1" },
+    //       "担当者③": { total: 20, done: 10, section: "ka1" },
+
+    //       "担当者a": { total: 20, done: 10, section: "ka1" },
+    //       "担当者b": { total: 20, done: 10, section: "ka1" },
+    //       "担当者c": { total: 20, done: 10, section: "ka1" },
+    //       "担当者d": { total: 20, done: 10, section: "ka1" },
+    //       "担当者e": { total: 20, done: 10, section: "ka1" },
+    //       "担当者f": { total: 20, done: 10, section: "ka1" },
+    //       "担当者g": { total: 20, done: 10, section: "ka1" },
+    //       "担当者h": { total: 20, done: 10, section: "ka1" },
+    //       "担当者i": { total: 20, done: 10, section: "ka1" },
+    //       "担当者j": { total: 20, done: 10, section: "ka1" },
+    //       "担当者k": { total: 20, done: 10, section: "ka1" },
+    //       "担当者l": { total: 20, done: 10, section: "ka1" },
+    //       "担当者m": { total: 20, done: 10, section: "ka1" },
+    //       "担当者o": { total: 20, done: 10, section: "ka1" },
+    //       "担当者p": { total: 20, done: 10, section: "ka1" },
+    //       "担当者q": { total: 20, done: 10, section: "ka1" },
+    //       "担当者r": { total: 20, done: 10, section: "ka1" },
+    //       "担当者s": { total: 20, done: 10, section: "ka1" },
+    //       "担当者t": { total: 20, done: 10, section: "ka1" },
+    //       "担当者u": { total: 20, done: 10, section: "ka1" },
+    //       "担当者v": { total: 20, done: 10, section: "ka1" },
+    //       "担当者w": { total: 20, done: 10, section: "ka1" },
+    //       "担当者x": { total: 20, done: 10, section: "ka1" },
+    //       "担当者y": { total: 20, done: 10, section: "ka1" },
+    //       "担当者z": { total: 20, done: 10, section: "ka1" },
+    //       "担当者aa": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ab": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ac": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ad": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ae": { total: 20, done: 10, section: "ka1" },
+    //       "担当者af": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ag": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ah": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ai": { total: 20, done: 10, section: "ka1" },
+    //       "担当者aj": { total: 20, done: 10, section: "ka1" },
+    //       "担当者ak": { total: 20, done: 10, section: "ka1" },
+    //       "担当者al": { total: 20, done: 10, section: "ka1" },
+
+
+    //       "担当者④": { total: 20, done: 10, section: "ka2" },
+    //       "担当者⑤": { total: 20, done: 10, section: "ka2" },
+    //       "担当者⑥": { total: 10, done: 5, section: "ka3" },
+    //       "担当者⑦": { total: 10, done: 5, section: "ka3" }
+    //     }
+    //   },
+
+    //   "2026.03": {
+    //     total: 200,
+    //     phases: [
+    //       { name: "図案申請", done: 25 },
+    //       { name: "試作入稿", done: 18 },
+    //       { name: "サンプル申請", done: 160 },
+    //       { name: "最終入稿", done: 80 },
+    //       { name: "発注", done: 30 },
+    //       { name: "入荷", done: 2 }
+    //     ],
+    //     sample: { done: 180, total: 200, warn7: 15, delay: 5 },
+    //     nyuko: { done: 80, total: 200, warn7: 8, delay: 4 },
+    //     hatchu: { done: 30, total: 200, warn7: 6, delay: 3 },
+    //     status: { approval: 12, applying: 5, sendback: 2, done: 181 },
+    //     nyukoPersons: {
+    //       "苗字３４５ 名前８９０ ": { total: 40, done: 16, section: "ka1" },
+    //       "担当者②": { total: 40, done: 16, section: "ka1" },
+    //       "担当者③": { total: 40, done: 16, section: "ka1" },
+
+    //       "担当者④": { total: 30, done: 12, section: "ka2" },
+    //       "担当者⑤": { total: 30, done: 12, section: "ka2" },
+
+    //       "担当者⑥": { total: 10, done: 4, section: "ka3" },
+    //       "担当者⑦": { total: 10, done: 4, section: "ka3" }
+    //     }
+    //   },
+
+    //   "2026.06": {
+    //     total: 80,
+    //     phases: [
+    //       { name: "図案申請", done: 10 },
+    //       { name: "試作入稿", done: 12 },
+    //       { name: "サンプル申請", done: 14 },
+    //       { name: "最終入稿", done: 15 },
+    //       { name: "発注", done: 14 },
+    //       { name: "入荷", done: 15 }
+    //     ],
+    //     sample: { done: 60, total: 80, warn7: 4, delay: 2 },
+    //     nyuko: { done: 70, total: 80, warn7: 3, delay: 1 },
+    //     hatchu: { done: 75, total: 80, warn7: 2, delay: 0 },
+    //     status: { approval: 8, applying: 4, sendback: 1, done: 67 },
+    //     nyukoPersons: {
+    //       "担当者①": { total: 15, done: 13, section: "ka1" },
+    //       "担当者②": { total: 15, done: 13, section: "ka1" },
+    //       "担当者③": { total: 10, done: 9, section: "ka1" },
+
+    //       "担当者④": { total: 15, done: 13, section: "ka2" },
+    //       "担当者⑤": { total: 15, done: 13, section: "ka2" },
+
+    //       "担当者⑥": { total: 5, done: 5, section: "ka3" },
+    //       "担当者⑦": { total: 5, done: 4, section: "ka3" }
+    //     }
+    //   }
+    // };
+
+    var GAUGE_ARC_LENGTH = Math.PI * 40;
+    function setGaugeFillSegments(fillId, warn7Id, delayId, done, total, warn7, delay) {
+      var L = GAUGE_ARC_LENGTH;
+      var t = total > 0 ? total : 1;
+      var w7 = (warn7 != null ? warn7 : 0);
+      var dly = (delay != null ? delay : 0);
+      var lenDone = (done / t) * L;
+      var lenWarn7 = (w7 / t) * L;
+      var lenDelay = (dly / t) * L;
+      var el = document.getElementById(fillId);
+      if (el) {
+        el.setAttribute("stroke-dasharray", lenDone.toFixed(2) + " " + L.toFixed(2));
+        el.setAttribute("stroke-dashoffset", "0");
+      }
+      el = document.getElementById(warn7Id);
+      if (el) {
+        el.setAttribute("stroke-dasharray", lenWarn7.toFixed(2) + " " + L.toFixed(2));
+        el.setAttribute("stroke-dashoffset", (-lenDone).toFixed(2));
+      }
+      el = document.getElementById(delayId);
+      if (el) {
+        el.setAttribute("stroke-dasharray", lenDelay.toFixed(2) + " " + L.toFixed(2));
+        el.setAttribute("stroke-dashoffset", (-(lenDone + lenWarn7)).toFixed(2));
+      }
+    }
+
+    // 商品情報：商品カードの表示制御（商品コード選択／レイアウト切替）
+    (function () {
+      var swiper = document.getElementById("productSwiper");
+      var indexLabel = document.getElementById("productIndex");
+      var addBtn = document.getElementById("productAddBtn");
+      var prevBtn = document.getElementById("productPrevBtn");
+      var nextBtn = document.getElementById("productNextBtn");
+      if (!swiper) return;
+
+      var currentIndex = 0;
+
+      function getCards() {
+        return swiper.querySelectorAll(".product-card");
+      }
+
+      // 「営業用」選択時に表示する項目名
+      var SALES_VISIBLE_FIELDS = [
+        "品名",
+        "アイテム",
+        "商品コード",
+        "JAN",
+        "固定上代",
+        "入数",
+        "サイズ/重量",
+        "カラー",
+        "原産国",
+        "組成",
+        "仕様",
+        "JAN有無",
+        "納品形態",
+        "備考"
+      ];
+
+      // 「メーカー用」選択時に表示する項目名
+      var MAKER_VISIBLE_FIELDS = [
+        "品名",
+        "アイテム",
+        "商品コード",
+        "JAN",
+        "固定上代",
+        "入数",
+        "予定発注数",
+        "メーカー",
+        "サイズ/重量",
+        "カラー",
+        "原産国",
+        "組成",
+        "仕様",
+        "JAN有無",
+        "納品形態",
+        "備考"
+      ];
+
+      // 利用区分（社内用／営業用／メーカー用）に応じて、カード内の行表示を制御
+      function applyUseTypeToCard(card, useType) {
+        var rows = card.querySelectorAll(".product-table tbody tr");
+        if (!rows || !rows.length) return;
+
+        rows.forEach(function (row) {
+          var th = row.querySelector("th");
+          if (!th) return;
+          var label = th.textContent.trim();
+
+          if (useType === "sales") {
+            // 営業用：指定された項目のみ表示
+            if (SALES_VISIBLE_FIELDS.indexOf(label) !== -1) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          } else if (useType === "maker") {
+            // メーカー用：メーカー用リストに含まれる項目のみ表示
+            if (MAKER_VISIBLE_FIELDS.indexOf(label) !== -1) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          } else {
+            // 社内用など：全て表示
+            row.style.display = "";
+          }
+        });
+      }
+
+      function applyUseTypeToAllCards(useType) {
+        getCards().forEach(function (card) {
+          applyUseTypeToCard(card, useType);
+        });
+      }
+
+      // 商品コード選択に応じてカード内の項目と画像を設定
+      function applyProductData(card, code) {
+        var img = card.querySelector(".product-image");
+        var wrapper = card.querySelector(".product-image-wrapper");
+        var tenjikai = card.querySelector('input[name="tenjikai"]');
+        var category = card.querySelector('input[name="category"]');
+        var productName = card.querySelector('input[name="productName"]');
+        var itemName = card.querySelector('input[name="itemName"]');
+        var jan = card.querySelector('input[name="jan"]');
+        var koteiJodai = card.querySelector('input[name="koteiJodai"]');
+        var shinJodai = card.querySelector('input[name="shinJodai"]');
+        var yoteiKadai = card.querySelector('input[name="yoteiKadai"]');
+        var setoZaiko = card.querySelector('input[name="setoZaiko"]');
+        var tehaiKanouSuu = card.querySelector('input[name="tehaiKanouSuu"]');
+        var yoteiHatchuSuu = card.querySelector('input[name="yoteiHatchuSuu"]');
+        var maker = card.querySelector('input[name="maker"]');
+        var sizeWeight = card.querySelector('input[name="sizeWeight"]');
+        var gensankoku = card.querySelector('input[name="gensankoku"]');
+        var sosei = card.querySelector('input[name="sosei"]');
+        var shiyo = card.querySelector('input[name="shiyo"]');
+        var janUmu = card.querySelector('input[name="janUmu"]');
+        var nohinKeitai = card.querySelector('input[name="nohinKeitai"]');
+
+        // まず既存値をクリア
+        [tenjikai, category, productName, itemName, jan, koteiJodai, shinJodai, yoteiKadai,
+          setoZaiko, tehaiKanouSuu, yoteiHatchuSuu, maker, sizeWeight, gensankoku,
+          sosei, shiyo, janUmu, nohinKeitai
+        ].forEach(function (el) {
+          if (el) el.value = "";
+        });
+
+        // 画像も初期化（コード未選択時は非表示）
+        if (img) {
+          img.src = "images/noimage.png";
+        }
+        if (wrapper) {
+          wrapper.style.display = code ? "flex" : "none";
+        }
+
+        if (code === "4900000001") {
+          if (img) img.src = "images/zuan001.png";
+          if (tenjikai) tenjikai.value = "2026年4月";
+          if (category) category.value = "単品";
+          if (productName) productName.value = "ウォーリーをさがせ「シャツ①」";
+          if (itemName) itemName.value = "ミニタオル";
+          if (jan) jan.value = "4900000000001";
+          if (koteiJodai) koteiJodai.value = "500";
+          if (shinJodai) shinJodai.value = "0";
+          if (yoteiKadai) yoteiKadai.value = "0";
+          if (setoZaiko) setoZaiko.value = "0";
+          if (tehaiKanouSuu) tehaiKanouSuu.value = "0";
+          if (yoteiHatchuSuu) yoteiHatchuSuu.value = "3000";
+          if (maker) maker.value = "天福家紡有限公司";
+          if (sizeWeight) sizeWeight.value = "25×25cm／※25g";
+          if (gensankoku) gensankoku.value = "中国";
+          if (sosei) sosei.value = "綿100％";
+          if (shiyo) shiyo.value = "パイルジャカード・朱子ヘム・アップリケ刺繍・織ネーム";
+          if (janUmu) janUmu.value = "ネームにJANシール貼り";
+          if (nohinKeitai) nohinKeitai.value = "10枚袋入れ";
+        } else if (code === "4900000002") {
+          if (img) img.src = "images/zuan002.png";
+          if (tenjikai) tenjikai.value = "2026年5月";
+          if (category) category.value = "単品";
+          if (productName) productName.value = "ウォーリーをさがせ「シャツ②」";
+          if (itemName) itemName.value = "ミニタオル";
+          if (jan) jan.value = "4900000000002";
+          if (koteiJodai) koteiJodai.value = "500";
+          if (shinJodai) shinJodai.value = "0";
+          if (yoteiKadai) yoteiKadai.value = "0";
+          if (setoZaiko) setoZaiko.value = "0";
+          if (tehaiKanouSuu) tehaiKanouSuu.value = "0";
+          if (yoteiHatchuSuu) yoteiHatchuSuu.value = "3000";
+          if (maker) maker.value = "天福家紡有限公司";
+          if (sizeWeight) sizeWeight.value = "25×25cm／※25g";
+          if (gensankoku) gensankoku.value = "中国";
+          if (sosei) sosei.value = "綿100％";
+          if (shiyo) shiyo.value = "パイルジャカード・朱子ヘム・アップリケ刺繍・織ネーム";
+          if (janUmu) janUmu.value = "ネームにJANシール貼り";
+          if (nohinKeitai) nohinKeitai.value = "10枚袋入れ";
+        } else if (code === "4900000003") {
+          if (img) img.src = "images/zuan003.png";
+          if (tenjikai) tenjikai.value = "2025年6月";
+          if (category) category.value = "単品";
+          if (productName) productName.value = "ウォーリーをさがせ「シャツ③」";
+          if (itemName) itemName.value = "ミニタオル";
+          if (jan) jan.value = "4900000000003";
+          if (koteiJodai) koteiJodai.value = "500";
+          if (shinJodai) shinJodai.value = "0";
+          if (yoteiKadai) yoteiKadai.value = "0";
+          if (setoZaiko) setoZaiko.value = "0";
+          if (tehaiKanouSuu) tehaiKanouSuu.value = "0";
+          if (yoteiHatchuSuu) yoteiHatchuSuu.value = "3000";
+          if (maker) maker.value = "天福家紡有限公司";
+          if (sizeWeight) sizeWeight.value = "25×25cm／※25g";
+          if (gensankoku) gensankoku.value = "中国";
+          if (sosei) sosei.value = "綿100％";
+          if (shiyo) shiyo.value = "パイルジャカード・朱子ヘム・アップリケ刺繍・織ネーム";
+          if (janUmu) janUmu.value = "ネームにJANシール貼り";
+          if (nohinKeitai) nohinKeitai.value = "10枚袋入れ";
+        } else if (code === "4900000004") {
+          if (img) img.src = "images/zuan004.png";
+          if (tenjikai) tenjikai.value = "2025年7月";
+          if (category) category.value = "単品";
+          if (productName) productName.value = "ウォーリーをさがせ「シャツ④」";
+          if (itemName) itemName.value = "ミニタオル";
+          if (jan) jan.value = "4900000000004";
+          if (koteiJodai) koteiJodai.value = "500";
+          if (shinJodai) shinJodai.value = "0";
+          if (yoteiKadai) yoteiKadai.value = "0";
+          if (setoZaiko) setoZaiko.value = "0";
+          if (tehaiKanouSuu) tehaiKanouSuu.value = "0";
+          if (yoteiHatchuSuu) yoteiHatchuSuu.value = "3000";
+          if (maker) maker.value = "天福家紡有限公司";
+          if (sizeWeight) sizeWeight.value = "25×25cm／※25g";
+          if (gensankoku) gensankoku.value = "中国";
+          if (sosei) sosei.value = "綿100％";
+          if (shiyo) shiyo.value = "パイルジャカード・朱子ヘム・アップリケ刺繍・織ネーム";
+          if (janUmu) janUmu.value = "ネームにJANシール貼り";
+          if (nohinKeitai) nohinKeitai.value = "10枚袋入れ";
+        } else if (code === "4900000005") {
+          if (img) img.src = "images/zuan005.png";
+          if (tenjikai) tenjikai.value = "2025年8月";
+          if (category) category.value = "単品";
+          if (productName) productName.value = "ウォーリーをさがせ「シャツ⑤」";
+          if (itemName) itemName.value = "ミニタオル";
+          if (jan) jan.value = "4900000000005";
+          if (koteiJodai) koteiJodai.value = "500";
+          if (shinJodai) shinJodai.value = "0";
+          if (yoteiKadai) yoteiKadai.value = "0";
+          if (setoZaiko) setoZaiko.value = "0";
+          if (tehaiKanouSuu) tehaiKanouSuu.value = "0";
+          if (yoteiHatchuSuu) yoteiHatchuSuu.value = "3000";
+          if (maker) maker.value = "天福家紡有限公司";
+          if (sizeWeight) sizeWeight.value = "25×25cm／※25g";
+          if (gensankoku) gensankoku.value = "中国";
+          if (sosei) sosei.value = "綿100％";
+          if (shiyo) shiyo.value = "パイルジャカード・朱子ヘム・アップリケ刺繍・織ネーム";
+          if (janUmu) janUmu.value = "ネームにJANシール貼り";
+          if (nohinKeitai) nohinKeitai.value = "10枚袋入れ";
+        } else if (code === "4900000006") {
+          if (img) img.src = "images/zuan006.png";
+          if (tenjikai) tenjikai.value = "2025年9月";
+          if (category) category.value = "単品";
+          if (productName) productName.value = "ウォーリーをさがせ「シャツ⑥」";
+          if (itemName) itemName.value = "ミニタオル";
+          if (jan) jan.value = "4900000000006";
+          if (koteiJodai) koteiJodai.value = "500";
+          if (shinJodai) shinJodai.value = "0";
+          if (yoteiKadai) yoteiKadai.value = "0";
+          if (setoZaiko) setoZaiko.value = "0";
+          if (tehaiKanouSuu) tehaiKanouSuu.value = "0";
+          if (yoteiHatchuSuu) yoteiHatchuSuu.value = "3000";
+          if (maker) maker.value = "天福家紡有限公司";
+          if (sizeWeight) sizeWeight.value = "25×25cm／※25g";
+          if (gensankoku) gensankoku.value = "中国";
+          if (sosei) sosei.value = "綿100％";
+          if (shiyo) shiyo.value = "パイルジャカード・朱子ヘム・アップリケ刺繍・織ネーム";
+          if (janUmu) janUmu.value = "ネームにJANシール貼り";
+          if (nohinKeitai) nohinKeitai.value = "10枚袋入れ";
+        }
+      }
+
+      function resetCard(card) {
+        Array.prototype.forEach.call(card.querySelectorAll("input, textarea"), function (el) {
+          if (el.type === "file") {
+            el.value = "";
+          } else {
+            el.value = "";
+          }
+        });
+        var img = card.querySelector(".product-image");
+        if (img) {
+          img.src = "images/noimage.png";
+        }
+      }
+
+      // 各カードに商品コード選択時のイベントを設定
+      function attachProductCodeHandler(card) {
+        var select = card.querySelector('select[name="shohinCode"]');
+        if (!select) return;
+        select.addEventListener("change", function () {
+          applyProductData(card, this.value);
+        });
+      }
+
+      function updateIndex() {
+        var cards = getCards();
+        var total = cards.length;
+        if (total === 0) {
+          if (indexLabel) indexLabel.textContent = "";
+          if (prevBtn) prevBtn.disabled = true;
+          if (nextBtn) nextBtn.disabled = true;
+          return;
+        }
+        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex >= total) currentIndex = total - 1;
+        cards.forEach(function (card, idx) {
+          card.classList.toggle("is-active", idx === currentIndex);
+        });
+        if (indexLabel) {
+          indexLabel.textContent = (currentIndex + 1) + " / " + total;
+        }
+        if (prevBtn) prevBtn.disabled = (total <= 1 || currentIndex === 0);
+        if (nextBtn) nextBtn.disabled = (total <= 1 || currentIndex === total - 1);
+      }
+
+      // カードのドラッグ＆ドロップ並び替えを有効化
+      function enableCardDragAndDrop() {
+        var dragSrcEl = null;
+
+        function handleDragStart(e) {
+          dragSrcEl = this;
+          this.classList.add("dragging");
+          e.dataTransfer.effectAllowed = "move";
+          // Firefox 対策で何かしらのデータが必要
+          e.dataTransfer.setData("text/plain", "");
+        }
+
+        function handleDragOver(e) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          var target = e.target.closest(".product-card");
+          if (!target || target === dragSrcEl || !swiper.contains(target)) return;
+
+          var cardsArray = Array.prototype.slice.call(getCards());
+          var srcIndex = cardsArray.indexOf(dragSrcEl);
+          var targetIndex = cardsArray.indexOf(target);
+
+          if (srcIndex < 0 || targetIndex < 0) return;
+
+          // マウス位置に応じて前後どちらに挿入するか決定
+          var rect = target.getBoundingClientRect();
+          var insertBefore = e.clientY < rect.top + rect.height / 2;
+
+          if (insertBefore) {
+            swiper.insertBefore(dragSrcEl, target);
+          } else {
+            swiper.insertBefore(dragSrcEl, target.nextSibling);
+          }
+        }
+
+        function handleDrop(e) {
+          e.preventDefault();
+        }
+
+        function handleDragEnd() {
+          this.classList.remove("dragging");
+        }
+
+        getCards().forEach(function (card) {
+          card.setAttribute("draggable", "true");
+          card.addEventListener("dragstart", handleDragStart);
+          card.addEventListener("dragover", handleDragOver);
+          card.addEventListener("drop", handleDrop);
+          card.addEventListener("dragend", handleDragEnd);
+        });
+      }
+
+      // 初期カードに商品コードハンドラを付与＋ドラッグ＆ドロップ有効化
+      getCards().forEach(function (card) {
+        attachProductCodeHandler(card);
+      });
+      enableCardDragAndDrop();
+
+      // カードを12件になるまで複製（商品数は12個固定）
+      var desiredTotal = 12;
+      var cards = getCards();
+      if (cards.length) {
+        var baseCard = cards[0];
+        for (var i = cards.length; i < desiredTotal; i++) {
+          var newCard = baseCard.cloneNode(true);
+          resetCard(newCard);
+          swiper.appendChild(newCard);
+          attachProductCodeHandler(newCard);
+        }
+        // 追加後にもドラッグ＆ドロップを再設定
+        enableCardDragAndDrop();
+      }
+
+      // 利用区分ラジオボタンの変更に応じて表示項目を切替
+      var useTypeRadios = document.querySelectorAll('input[name="useType"]');
+      if (useTypeRadios && useTypeRadios.length) {
+        var initialChecked = Array.prototype.find.call(useTypeRadios, function (r) { return r.checked; });
+        var initialType = initialChecked ? initialChecked.value : "internal";
+        applyUseTypeToAllCards(initialType);
+
+        useTypeRadios.forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            if (!this.checked) return;
+            applyUseTypeToAllCards(this.value);
+          });
+        });
+      }
+
+      // 前後ナビゲーション・スワイプは固定表示のため無効化
+    })();
+
+  </script>
+</body>
+
+</html>
