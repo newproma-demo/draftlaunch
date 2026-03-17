@@ -5,15 +5,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Proma</title>
-  <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* style.css と重複する :root 変数は削除。ページ専用のみ */
+  <link rel="stylesheet" href="css/style.css">
+<style>
     :root {
       --font-size-base: 16pt;
-      --fs-content: 14pt;
+      --fs-base: 16pt;
+      --fs-sm: 14pt;
+      --fs-xs: 12pt;
+      --fs-lg: 18pt;
+      --fs-xl: 20pt;
+      --fs-content:14pt;
+      --color-primary: #008632;
+      --color-primary-dark: #006C29;
+      --color-primary-light: #00a840;
+      --color-surface: #f8faf9;
+      --color-tanto-hover: #47bdc5;
+      --color-card: #ffffff;
+      --color-border: #e2e8e6;
+      --color-text: #1a2e26;
+      --color-text-muted: #5c6f66;
+      --shadow-sm: 0 1px 3px rgba(0, 134, 50, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 134, 50, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 134, 50, 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-sans: "Outfit", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
     }
 
     .pc-only {
@@ -24,12 +44,13 @@
       display: none;
     }
 
-    /* margin, height は style.css の body と重複のため削除 */
     body {
+      margin: 0;
       font-size: var(--font-size-base);
       font-family: var(--font-sans);
       background: var(--color-surface);
       color: var(--color-text);
+      height: 100vh;
       display: flex;
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
@@ -138,178 +159,6 @@
 
     /* #endregion */
 
-    /* #region メニュー */
-    .sidebar {
-      width: 220px;
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      padding: 12px 0;
-      box-sizing: border-box;
-      overflow: visible;
-      position: relative;
-      z-index: 100;
-      transition: transform 0.3s ease;
-      box-shadow: 2px 0 12px rgba(0, 134, 50, 0.15);
-    }
-
-    .sidebar.closed {
-      transform: translateX(-220px);
-    }
-
-    .sidebar-toggle {
-      position: absolute;
-      left: 220px;
-      top: 12px;
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-left: none;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      cursor: pointer;
-      padding: 6px 8px;
-      box-shadow: var(--shadow-sm);
-      transition: background 0.2s ease;
-    }
-
-    .sidebar-toggle:hover {
-      background: var(--color-surface);
-    }
-
-    .sidebar-toggle img {
-      width: 12px;
-      height: 13px;
-      padding-top: 0;
-      pointer-events: none;
-    }
-
-    .sidebar h2 {
-      margin: 8px 12px 12px;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.25);
-      text-transform: uppercase;
-    }
-
-    .sidebar-logo-proma {
-      position: absolute;
-      bottom: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .sidebar-logo-marushin {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .overlay {
-      display: none;
-    }
-
-    .overlay.show {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.35);
-      z-index: 1500;
-      backdrop-filter: blur(2px);
-    }
-
-    .menu-item {
-      margin: 2px 8px;
-      position: relative;
-      border-radius: var(--radius-sm);
-    }
-
-    .menu-title {
-      position: relative;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      padding: 0 12px;
-      border-radius: var(--radius-sm);
-      font-weight: 500;
-      font-size: 16px;
-      transition: background 0.2s ease;
-    }
-
-    .menu-title img {
-      margin-right: 10px;
-      opacity: 0.9;
-    }
-
-    .menu-item:hover>.submenu {
-      display: block;
-    }
-
-    .menu-item:hover .menu-title {
-      background: rgba(255,255,255,0.15);
-    }
-
-    .arrow {
-      transition: transform 0.2s ease;
-      margin-left: auto;
-      opacity: 0.8;
-    }
-
-    /* サブメニュー */
-    .submenu {
-      display: none;
-      position: absolute;
-      top: -13px;
-      left: 105%;
-      background: #008632;
-      padding: 0px 0px 0px 0px;
-      border-radius: 3px;
-      min-width: 330px;
-      list-style: none;
-      font-size: 16px;
-    }
-
-    /* 隙間を埋める透明のホバー領域 */
-    .submenu::before {
-      content: "";
-      display: flex;
-      position: absolute;
-      top: 0;
-      left: -5%;
-      width: 5%;
-      height: 100%;
-      background: transparent;
-      display: block;
-    }
-
-    .submenu li {
-      padding: 8px 10px;
-      height: auto;
-    }
-
-    .submenu li:hover {
-      background: #006C29;
-      border-radius: 4px;
-    }
-
-    .submenu li a {
-      display: block;
-      white-space: normal;
-      word-break: break-word;
-      line-height: 1.1;
-    }
-
-    .submenu a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* #endregion */
-
     /* #region メインコンテンツ */
     .content {
       font-size: var(--fs-content);
@@ -391,6 +240,18 @@
     .content-box .content-section {
       flex: 1;
       min-height: 0;
+    }
+
+    .page-title {
+        font-size: 16px;
+      }
+    .page-title h2 {
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
     }
 
     /* #region 検索条件ボックス（モダンカード） */
@@ -491,185 +352,460 @@
 
     /* #endregion */
 
-    /* #region 進捗率グラフ（全期・年別・展示会別・商品別・タイムラインデザイン統一） */
+    /* #region 進捗率グラフ（全期 円グラフ） */
     .progress-chart-section {
+      margin-top: 8px;
       flex: 1;
       min-height: 0;
       display: flex;
-      flex-direction: column;
-      margin-top: 8px;
     }
-    .progress-view-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 20px;
-      border-bottom: 2px solid var(--color-border);
-      flex-shrink: 0;
-    }
-    .progress-view-tab {
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--color-text-muted);
-      background: transparent;
-      border: none;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
-      cursor: pointer;
-      font-family: var(--font-sans);
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .progress-view-tab:hover {
-      color: var(--color-text);
-    }
-    .progress-view-tab.active {
-      color: var(--color-primary);
-      border-bottom-color: var(--color-primary);
-    }
+
     .progress-chart-area {
       flex: 1;
-      min-height: 320px;
-      padding: 20px;
-      background: var(--color-surface);
+      min-height: 0;
+      padding: 24px;
+      background: var(--color-card);
       border-radius: var(--radius-md);
       border: 1px solid var(--color-border);
-      overflow: auto;
-    }
-    .progress-chart-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--color-text);
-      margin: 0 0 16px;
-    }
-    .timeline-chart-rows {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
+      box-sizing: border-box;
     }
-    .timeline-row {
+
+    .progress-chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .progress-chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .progress-chart-sub {
       display: flex;
       align-items: center;
       gap: 16px;
-      min-width: 0;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      white-space: nowrap;
     }
-    .timeline-row-left {
-      flex: 0 0 200px;
-      display: flex;
+
+    .progress-last-updated {
+      color: var(--color-text-muted);
+    }
+
+    .overall-badge {
+      background: #1d3557;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-      min-width: 0;
+      gap: 8px;
     }
-    .timeline-icon-box {
-      flex-shrink: 0;
-      width: 44px;
-      height: 44px;
+
+    .overall-badge span {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .timeline-chart-rows {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 20px;
+      width: 100%;
+      margin-top: 8px;
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+      grid-auto-rows: 1fr;
+      align-content: stretch;
+    }
+
+    .pie-card {
+      background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      padding: 12px 14px 16px;
+      box-sizing: border-box;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .pie-card-header {
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 6px;
+    }
+
+    .pie-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .pie-card-body {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      background: var(--color-card);
+      padding-top: 2px;
     }
-    .timeline-icon-box img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
+
+    .pie-card-body-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 10px;
     }
-    .timeline-meta {
-      min-width: 0;
+
+    .pie-chart-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 170px;
+      aspect-ratio: 1;
     }
-    .timeline-current {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: 2px;
-    }
-    .timeline-category {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--color-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-    }
-    .timeline-row-right {
-      flex: 1;
-      min-width: 0;
+
+    .pie-center-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 50%;
+      height: 50%;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      box-shadow: none;
       display: flex;
       align-items: center;
-    }
-    .timeline-bar-wrap {
-      flex: 1;
-      display: flex;
-      align-items: stretch;
-      height: 36px;
-      border-radius: 6px;
+      justify-content: center;
       overflow: hidden;
-      background: rgba(0,0,0,0.06);
-      position: relative;
+      pointer-events: none;
     }
-    .timeline-bar-wrap > .segment-fill {
+
+    .pie-center-icon img {
+      width: 85%;
+      height: 85%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .pie-chart-wrap svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .pie-bg {
+      fill: none;
+      stroke: #e5e7eb;
+      stroke-width: 14;
+    }
+
+    .pie-fill {
+      fill: none;
+      stroke: var(--color-primary);
+      stroke-width: 14;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .pie-metric {
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .pie-metric-percent {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-primary);
+    }
+
+    .pie-metric-caption {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    .pie-metric-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+    }
+
+    .pie-metric-hint::before {
+      content: "⏱";
+      font-size: 12px;
+      line-height: 1;
+      opacity: 0.85;
+    }
+
+    /* --- 詳細モーダル（グラフカード用） --- */
+    .manifest-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 12000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    .manifest-modal-overlay.open {
+      display: flex;
+    }
+
+    .manifest-modal {
+      width: min(1100px, 98vw);
+      max-height: min(92vh, 1040px);
+      overflow: auto;
+      overflow-x: hidden;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .manifest-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .manifest-modal-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .manifest-modal-close {
+      appearance: none;
+      border: 1px solid var(--color-border);
+      background: var(--color-card);
+      color: var(--color-text-muted);
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .manifest-modal-close:hover {
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .manifest-modal-body {
+      padding: 18px 20px 22px;
+      display: grid;
+      grid-template-columns: 140px minmax(90px, auto) 1fr;
+      gap: 12px 14px; /* 行間, 列間 */
+      align-items: start;
+    }
+
+    .manifest-modal-icon {
+      width: 140px;
+      height: 140px;
+      border-radius: 18px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .manifest-modal-icon img {
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .manifest-modal-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+      align-self: center; /* 説明エリアと上下中央揃え */
+    }
+
+    .manifest-modal-percent {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .manifest-modal-caption {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    .manifest-modal-desc {
+      grid-column: 3 / 4;
+      margin-top: 0;
+      padding-top: 0;
+      color: var(--color-text);
+      font-size: 14px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
+    .manifest-yearbox {
+      grid-column: 1 / -1;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .manifest-yearbar-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 28px; /* マーカー行分 */
+      box-sizing: border-box;
+    }
+
+    .manifest-yearbar {
+      position: relative;
+      display: flex;
+      width: 100%;
+      height: 42px;
+      border: 3px solid var(--color-primary);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-sizing: border-box;
+    }
+
+    .manifest-yearbar-fill {
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
+      width: 0%;
+      background: rgba(0, 134, 50, 0.18);
       z-index: 0;
-      border-radius: 6px 0 0 6px;
-      transition: width 0.3s ease;
+      transition: width 0.6s ease;
     }
-    .timeline-segment {
-      flex: 1;
-      min-width: 0;
+
+    .manifest-yearcell {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
-      font-weight: 600;
-      color: var(--color-text);
-      position: relative;
-      z-index: 1;
-      border-right: 1px solid rgba(255,255,255,0.5);
+      font-weight: 800;
+      color: var(--color-text-muted);
+      border-right: 2px solid rgba(0,0,0,0.08);
+      min-width: 0;
+      user-select: none;
+      background: transparent;
+      padding: 0 2px;
     }
-    .timeline-segment:last-child {
+
+    .manifest-yearcell:last-child {
       border-right: none;
     }
-    .timeline-segment .segment-label {
-      position: relative;
-      z-index: 1;
-      text-shadow: 0 0 2px #fff;
+
+    .manifest-markers {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 0;
+      pointer-events: none;
     }
-    .timeline-segment .segment-label.is-100 {
-      font-weight: 700;
-      color: var(--color-primary-dark);
-    }
-    .timeline-year-labels {
-      display: flex;
-      align-items: center;
-      margin-top: 6px;
-      gap: 0;
-    }
-    .timeline-year-labels .year-labels-spacer {
-      flex: 0 0 216px;
-      min-width: 0;
-    }
-    .timeline-year-labels .year-labels-inner {
-      flex: 1;
-      display: flex;
-      min-width: 0;
-    }
-    .timeline-year-labels .year-cell {
-      flex: 1;
+
+    .manifest-marker {
+      position: absolute;
+      transform: translateX(-100%);
+      text-align: right;
       font-size: 11px;
-      color: var(--color-text-muted);
-      text-align: center;
+      font-weight: 800;
+      color: var(--color-primary);
+      white-space: nowrap;
     }
-    /* 行ごとの色（全期デザインに合わせたカラーパレット） */
-    .timeline-row[data-color="orange"] .segment-fill { background: #e65100; }
-    .timeline-row[data-color="blue"] .segment-fill { background: #1976d2; }
-    .timeline-row[data-color="cyan"] .segment-fill { background: #4dd0e1; }
-    .timeline-row[data-color="green"] .segment-fill { background: #81c784; }
-    .timeline-row[data-color="pink"] .segment-fill { background: #f48fb1; }
-    .timeline-row[data-color="purple"] .segment-fill { background: #7e57c2; }
+
+    .manifest-marker.is-crowded {
+      transform: translateX(-100%) translateY(-10px);
+    }
+
+    .manifest-marker.is-crowded::after {
+      height: 12px;
+    }
+
+    .manifest-marker::after {
+      content: "";
+      display: block;
+      width: 2px;
+      height: 16px;
+      background: currentColor;
+      margin: 3px 0 0 auto;
+      border-radius: 2px;
+      opacity: 0.9;
+    }
+
+    .manifest-marker.is-100::after {
+      display: none;
+    }
+
+    /* 100% は年別バー右端の横位置（バー内）に表示 */
+    .manifest-marker.is-100-outside {
+      transform: translate(-100%, -50%);
+      text-align: right;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .manifest-current {
+      position: absolute;
+      top: 10px;
+      transform: translateX(-50%);
+      font-size: 16px;
+      color: var(--color-primary);
+      font-weight: 900;
+      pointer-events: none;
+    }
     /* #endregion */
 
     .content-section {
@@ -1385,6 +1521,52 @@
       color:var(--color-text-muted);
     }
     /* #endregion */
+/* スマホ（幅 768px 以下）のときのモーダル・グラフ配置 */
+@media (max-width: 768px) {
+  .manifest-modal {
+    width: 100vw;
+    max-width: 100vw;
+    border-radius: 0;
+  }
+
+  .manifest-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px 14px 20px;
+    gap: 12px;
+  }
+
+  .manifest-modal-icon {
+    align-self: center;
+    width: 120px;
+    height: 120px;
+  }
+
+  .manifest-modal-meta {
+    align-self: center;
+    text-align: center;
+  }
+
+  .manifest-modal-desc {
+    grid-column: auto;
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .manifest-yearbox {
+    grid-column: auto;
+    margin-top: 8px;
+  }
+
+  .timeline-chart-rows {
+    grid-template-columns: 1fr; /* 円グラフは1列で縦並び */
+  }
+
+  .pie-card {
+    max-width: 100%;
+  }
+}    
   </style>
 </head>
 
@@ -1591,24 +1773,23 @@
 
     <!--#region メインコンテンツ  -->
     <div class="content">
-      <div class="content-box">
-      <h2 class="page-title">マニフェスト管理</h2>
+      <div class="page-title"><h2>マニフェスト管理</h2></div>
 
       <section class="progress-chart-section" aria-label="進捗率グラフ">
-        <div class="progress-view-tabs" role="tablist" aria-label="進捗率表示切替">
-          <button type="button" class="progress-view-tab active" role="tab" aria-selected="true" data-view="all">全期</button>
-          <button type="button" class="progress-view-tab" role="tab" aria-selected="false" data-view="year">年別</button>
-          <button type="button" class="progress-view-tab" role="tab" aria-selected="false" data-view="exhibition">展示会別</button>
-          <button type="button" class="progress-view-tab" role="tab" aria-selected="false" data-view="product">商品別</button>
-        </div>
         <div class="progress-chart-area">
-          <h3 class="progress-chart-title" id="progressChartTitle">全期 進捗率</h3>
-          <div class="timeline-chart-rows" id="progressBarsContainer"></div>
-          <div class="timeline-year-labels" id="timelineYearLabels"></div>
+          <div class="progress-chart-header">
+            <h3 class="progress-chart-title">MARUSHIN MANIFESTO 6
+              CORPORATE SOCIAL RESPONSIBILITY — FOR 2030</h3>
+            <div class="progress-chart-sub" aria-label="更新情報と全体達成率">
+              <span class="progress-last-updated">最終更新：2025年2月3日</span>
+              <span class="overall-badge">全体達成率 <span id="overallPercent">0%</span></span>
+            </div>
+          </div>
+          <div class="timeline-chart-rows" id="manifestPieContainer"></div>
         </div>
       </section>
 
-      </div>
+
     </div>
     <!-- #endregion -->
 
@@ -1617,6 +1798,36 @@
   <div id="imageModal" class="image-modal">
     <div class="modal-backdrop"></div>
     <div class="modal-wrapper"></div>
+  </div>
+
+  <!-- 詳細モーダル（グラフカード用） -->
+  <div class="manifest-modal-overlay" id="manifestModalOverlay" aria-hidden="true">
+    <div class="manifest-modal" role="dialog" aria-modal="true" aria-labelledby="manifestModalTitle">
+      <div class="manifest-modal-header">
+        <h3 class="manifest-modal-title" id="manifestModalTitle"></h3>
+        <button type="button" class="manifest-modal-close" id="manifestModalClose" aria-label="閉じる">✕</button>
+      </div>
+      <div class="manifest-modal-body">
+        <div class="manifest-modal-icon" id="manifestModalIconBox">
+          <img id="manifestModalIcon" alt="">
+        </div>
+        <div class="manifest-modal-meta">
+          <div class="manifest-modal-percent" id="manifestModalPercent">0%</div>
+          <div class="manifest-modal-caption">今期達成率</div>
+        </div>
+        <!-- 説明エリア（赤枠部分） -->
+        <div class="manifest-modal-desc" id="manifestModalDesc"></div>
+        <div class="manifest-yearbox" id="manifestModalYearBox" aria-label="年別の達成状況">
+          <div class="manifest-yearbar-wrap">
+            <div class="manifest-markers" id="manifestModalYearMarkers"></div>
+            <div class="manifest-current" id="manifestModalYearCurrent">▲</div>
+            <div class="manifest-yearbar" id="manifestModalYearBar">
+              <div class="manifest-yearbar-fill" id="manifestModalYearFill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1794,134 +2005,356 @@
       card.classList.toggle("open");
     }
 
-    // 進捗率グラフ：全期・年別・展示会別・商品別（タイムラインデザイン統一）
-    (function() {
-      var ICONS = { product: "P", material: "M", process: "Q", year: "Y", exhibition: "E", item: "S" };
-
-      var progressData = {
-        all: {
-          yearLabels: ["2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"],
-          rows: [
-            { category: "PRODUCT", current: 17.2, color: "orange", icon: "P", segments: [6.5, 10, 17.2, 45, 60, 80, 90, 97, 100] },
-            { category: "PRODUCT", current: 39, color: "blue", icon: "P", segments: [33, 35, 39, 50, 60, 80, 85, 95, 100] },
-            { category: "PRODUCT", current: 0, color: "cyan", icon: "P", segments: [0, 0, 0, 10, 30, 70, 80, 90, 100] },
-            { category: "MATERIAL", current: 0, color: "green", icon: "M", segments: [0, 0, 0, 30, 50, 65, 80, 90, 100] },
-            { category: "MATERIAL", current: 6.9, color: "pink", icon: "M", segments: [0, 0, 6.9, 50, 60, 70, 80, 95, 100] },
-            { category: "PROCESS", current: 0, color: "purple", icon: "Q", segments: [0, 0, 0, 10, 30, 70, 85, 90, 100] }
+    // 進捗率グラフ：全期（表示項目のみ）
+    (function () {
+      var data = [
+        {
+          label: "タオル製品をすべてサステナブル・コットンの素材へ",
+          percent: 17.2,
+          color: "#faaf18",
+          Image: "images/mnf-cotton.svg",
+          detail: "私たちは、コットンを素材とする商品開発を行うプロフェッショナルとして、地球環境に配慮した綿花を使用しています。 綿花は一見すると環境に良い原料に思えますが、その裁断過程で農薬や肥料の過度な使用など様々な問題があります。 私たちは、サステナブル・コットンを使用して商品を企画・開発し、2028年までに90%のタオル製品を、2030年までにすべてのタオル製品においてサステナブル・コットンを使用します。"
+        },
+        {
+          label: "すべてのポリエステル素材を再生ポリエステル素材、もしくは天然繊維へ",
+          percent: 39.0,
+          color: "#0a97d1",
+          Image: "images/mnf-polyester.svg",
+          detail: "私たちは、商品に使用するポリエステルを再生ポリエステル、もしくは天然繊維へ切り替えます。 世界中のプラスチックごみは年間約800万トンが海に流し込まれていると言われています。 私たちは、ポリエステル商品の企画・開発において、2028年までに85%の製品を、2030年までにすべてのポリエステル製品において、再生ポリエステルの素材もしくは天然繊維に代え、地球環境に配慮した商品を企画・開発します。",
+          YEAR_SEGMENTS: [
+            // ★2番目のグラフ用の年別幅（合計100になるように自由に編集してください）
+            { year: "2022", width: 33 },   // 例: 5%
+            { year: "2023", width: 2 },   // 例: 5%
+            { year: "2024", width: 4 },  // 例: 10%
+            { year: "2025", width: 11 },  // 例: 30%
+            { year: "2026", width: 10 },  // 例: 15%
+            { year: "2027", width: 20 },  // 例: 15%
+            { year: "2028", width: 5 },  // 例: 10%
+            { year: "2029", width: 10 },   // 例: 5%
+            { year: "2030", width: 5 }    // 例: 5%
           ]
         },
-        year: {
-          yearLabels: ["2024", "2025", "2026"],
-          rows: [
-            { category: "2024年度", current: 92, color: "orange", icon: "Y", segments: [92, 100, 100] },
-            { category: "2025年度", current: 78, color: "blue", icon: "Y", segments: [78, 100, 100] },
-            { category: "2026年度", current: 45, color: "cyan", icon: "Y", segments: [45, 80, 100] }
-          ]
+        {
+          label: "MARUSHINブランドラベルを100%サステナブル・コットン及び再生素材へ",
+          percent: 0,
+          color: "#8bc63e",
+          Image: "images/mnf-recycled.svg",
+          detail: "私たちは商品だけでなく、それに付属するブランドネーム・ラベルやその他のラベルの素材にも環境に配慮した素材に代え、サステナブルな商品を企画・開発しています。 現在のラベルの素材は、ポリエステルなどの化学繊維の素材が中心でした。化学繊維は、原料調達の段階にある石油などの限りある資源を必要とするため、過度な資源利用の削減や不要になった廃の資源還圈に貢献することが期待されます。 私たちは、2030年までにすべてのラベルをサステナブル・コットン及び再生素材のものへ代え、サステナブルなMARUSHINブランドであり続けます。",
+          YEAR_SEGMENTS: [
+            { year: "2025", width: 30 },  // 例: 10%
+            { year: "2026", width: 20 },  // 例: 15%
+            { year: "2027", width: 15 },  // 例: 15%
+            { year: "2028", width: 15 },  // 例: 10%
+            { year: "2029", width: 10 },   // 例: 5%
+            { year: "2030", width: 10 }    // 例: 5%
+          ]        
         },
-        exhibition: {
-          yearLabels: ["2026.01", "2026.03", "2026.06"],
-          rows: [
-            { category: "2026.01 展示会", current: 65, color: "orange", icon: "E", segments: [65, 90, 100] },
-            { category: "2026.03 展示会", current: 42, color: "blue", icon: "E", segments: [42, 75, 100] },
-            { category: "2026.06 展示会", current: 28, color: "green", icon: "E", segments: [28, 60, 100] }
-          ]
-        },
-        product: {
-          yearLabels: ["タオル", "雑貨", "衣料", "その他"],
-          rows: [
-            { category: "タオル類", current: 88, color: "orange", icon: "S", segments: [88, 100, 100, 100] },
-            { category: "雑貨類", current: 72, color: "blue", icon: "S", segments: [72, 95, 100, 100] },
-            { category: "衣料類", current: 55, color: "pink", icon: "S", segments: [55, 80, 95, 100] },
-            { category: "その他", current: 38, color: "purple", icon: "S", segments: [38, 65, 85, 100] }
-          ]
+        {
+          label: "資材を天然素材もしくは再生素材へ",
+          percent: 6.9,
+          color: "#f3829c",
+          Image: "images/mnf-natural.svg",
+          detail: "私たちは、ハンガーやフォークなどの資材についても脱プラスチックを目標とし、地球環境に配慮した商品を企画・開発しています。 商品をお届けする際に付随するハンガーやフォーク、アンビタッチは多くが플ラスチック製の資材です。プラスチック製の資材の再利用率が24%であるのに対し、紙製の資材の再利用率は72%です。 私たちは、2028年までに80%の商品の資材を、2030年までにすべての商品の資材を「脱プラスチック化」し、地球環境に配慮した商品を企画・開発します。",
+          YEAR_SEGMENTS: [
+            { year: "2024", width: 6.9 },   // 例: 10%
+            { year: "2025", width: 43.1 },  // 例: 10%
+            { year: "2026", width: 10 },  // 例: 15%
+            { year: "2027", width: 10 },  // 例: 15%
+            { year: "2028", width: 10 },  // 例: 10%
+            { year: "2029", width: 15 },   // 例: 5%
+            { year: "2030", width: 15 }    // 例: 5%
+          ]            
         }
-      };
+      ];
 
-      var titles = { all: "全期 進捗率", year: "年別 進捗率", exhibition: "展示会別 進捗率", product: "商品別 進捗率" };
+      var modalOverlay = document.getElementById("manifestModalOverlay");
+      var modalCloseBtn = document.getElementById("manifestModalClose");
+      var modalTitleEl = document.getElementById("manifestModalTitle");
+      var modalPercentEl = document.getElementById("manifestModalPercent");
+      var modalDescEl = document.getElementById("manifestModalDesc");
+      var modalIconImg = document.getElementById("manifestModalIcon");
+      var modalIconBox = document.getElementById("manifestModalIconBox");
+      var modalYearBar = document.getElementById("manifestModalYearBar");
+      var modalYearFill = document.getElementById("manifestModalYearFill");
+      var modalYearMarkers = document.getElementById("manifestModalYearMarkers");
+      var modalYearCurrent = document.getElementById("manifestModalYearCurrent");
 
-      function renderTimelineChart(view) {
-        var container = document.getElementById("progressBarsContainer");
-        var titleEl = document.getElementById("progressChartTitle");
-        var yearLabelsEl = document.getElementById("timelineYearLabels");
-        if (!container || !titleEl) return;
-        var data = progressData[view];
-        if (!data) return;
-        titleEl.textContent = titles[view] || "";
-        var yearLabels = data.yearLabels || [];
-        var rows = data.rows || [];
+      function renderYearBox(item) {
+        if (!modalYearBar || !modalYearFill || !modalYearMarkers || !modalYearCurrent) return;
 
-        container.innerHTML = "";
-        yearLabelsEl.innerHTML = "";
+        var p = item && item.percent != null ? Number(item.percent) : 0;
+        var color = item && item.color ? item.color : "var(--color-primary)";
 
-        rows.forEach(function(row) {
-          var rowEl = document.createElement("div");
-          rowEl.className = "timeline-row";
-          rowEl.setAttribute("data-color", row.color || "blue");
+        modalYearBar.style.borderColor = color;
+        modalYearMarkers.style.color = color;
+        modalYearCurrent.style.color = color;
+        modalYearFill.style.background = "rgba(0, 0, 0, 0.06)";
+        modalYearFill.style.backgroundColor = color;
+        modalYearFill.style.opacity = "0.18";
+        // 幅は後段でpx計算して、区切り線とズレないようにする
+        modalYearFill.style.width = "0px";
 
-          var currentVal = row.current != null ? row.current : 0;
-          var segments = row.segments || [];
-          var segCount = segments.length;
-          var fillPercent = segCount ? (currentVal / 100) * 100 : 0;
+        // 使用する YEAR_SEGMENTS（グラフごとに変えたい場合は item.YSEGMENTS を定義）
+        var YEAR_SEGMENTS = (item && item.YEAR_SEGMENTS && Array.isArray(item.YEAR_SEGMENTS))
+          ? item.YEAR_SEGMENTS
+          : [
+              { year: "2022", width: 6.5 },
+              { year: "2023", width: 3.5 },
+              { year: "2024", width: 7.2 },
+              { year: "2025", width: 27.8 },
+              { year: "2026", width: 15.0 },
+              { year: "2027", width: 20.0 },
+              { year: "2028", width: 10.0 },
+              { year: "2029", width: 7.0 },
+              { year: "2030", width: 3.0 }
+            ];
 
-          var leftHtml =
-            '<div class="timeline-row-left">' +
-            '<div class="timeline-icon-box">' + (row.icon || "") + '</div>' +
-            '<div class="timeline-meta">' +
-            '<div class="timeline-current">今期達成' + currentVal + '%</div>' +
-            '<div class="timeline-category">' + (row.category || "") + '</div>' +
-            '</div></div>';
-          var rightHtml = '<div class="timeline-row-right">' +
-            '<div class="timeline-bar-wrap">' +
-            '<div class="segment-fill" style="width:' + fillPercent + '%"></div>';
-          segments.forEach(function(val, i) {
-            var is100 = val === 100;
-            rightHtml +=
-              '<div class="timeline-segment">' +
-              '<span class="segment-label' + (is100 ? ' is-100' : '') + '">' + val + '%</span>' +
-              '</div>';
-          });
-          rightHtml += '</div></div>';
-          rowEl.innerHTML = leftHtml + rightHtml;
-          container.appendChild(rowEl);
-        });
-
-        var inner = document.createElement("div");
-        inner.className = "year-labels-inner";
-        yearLabels.forEach(function(y) {
+        // year cells
+        // 既に入っていればクリア（fill は残す）
+        Array.from(modalYearBar.querySelectorAll(".manifest-yearcell")).forEach(function (n) { n.remove(); });
+        YEAR_SEGMENTS.forEach(function (seg) {
           var cell = document.createElement("div");
-          cell.className = "year-cell";
-          cell.textContent = y;
-          inner.appendChild(cell);
+          cell.className = "manifest-yearcell";
+          cell.style.width = seg.width + "%";
+          cell.textContent = seg.year;
+          modalYearBar.appendChild(cell);
         });
-        var spacer = document.createElement("div");
-        spacer.className = "year-labels-spacer";
-        yearLabelsEl.appendChild(spacer);
-        yearLabelsEl.appendChild(inner);
+
+        // markers
+        // markers（年セルの境界にピクセルでぴったり合わせる）
+        modalYearMarkers.innerHTML = "";
+        var boundaries = [];
+        var cum = 0;
+        YEAR_SEGMENTS.forEach(function (seg) {
+          cum += seg.width;
+          boundaries.push({ value: cum, year: seg.year });
+        });
+
+        boundaries.forEach(function (b, idx) {
+          var val = Math.round(b.value * 10) / 10; // 表示用（小数1桁まで）
+          var isLast = idx === boundaries.length - 1;
+          var m = document.createElement("div");
+          m.className = "manifest-marker" + (isLast ? " is-100 is-100-outside" : "");
+          m.setAttribute("data-boundary-index", String(idx));
+          m.textContent = (val % 1 === 0 ? String(val.toFixed(0)) : String(val.toFixed(1))) + "%";
+          // left は後で実測値（px）でセット
+          modalYearMarkers.appendChild(m);
+        });
+
+        // 実測して、緑線（マーカー）とグレー線（年区切り）を完全一致させる
+        requestAnimationFrame(function () {
+          var barRect = modalYearBar.getBoundingClientRect();
+          var markersRect = modalYearMarkers.getBoundingClientRect();
+          if (!barRect.width || !markersRect.width) return;
+
+          var yearCells = Array.from(modalYearBar.querySelectorAll(".manifest-yearcell"));
+          var markerEls = Array.from(modalYearMarkers.querySelectorAll(".manifest-marker"));
+          var boundaryPixels = new Array(boundaries.length);
+
+          markerEls.forEach(function (el) {
+            var bi = Number(el.getAttribute("data-boundary-index"));
+            if (!Number.isFinite(bi)) return;
+
+            var x;
+            if (bi >= 0 && bi < yearCells.length) {
+              // 各年セルの右端（= 区切り線の位置）に合わせる
+              var cellRect = yearCells[bi].getBoundingClientRect();
+              x = cellRect.right;
+            } else {
+              x = barRect.right;
+            }
+
+            // markers 用の境界座標を記録（%→pxへ正確にスナップさせるため）
+            if (bi >= 0 && bi < boundaryPixels.length) {
+              boundaryPixels[bi] = x;
+            }
+
+            // 100% はバー右端の横位置（バー内）に表示
+            if (el.classList.contains("is-100-outside")) {
+              el.style.left = (barRect.right - markersRect.left) + "px";
+              el.style.top = (barRect.top - markersRect.top + (modalYearBar.clientHeight / 2)) + "px";
+            } else {
+              el.style.left = (x - markersRect.left) + "px";
+              el.style.top = "0px";
+            }
+          });
+
+          // 末尾(例: 97% と 100%)の重なりを自動回避
+          // 隣接ラベルが近すぎる場合、左側ラベルを少し上に逃がす
+          for (var i = 1; i < markerEls.length; i++) {
+            var prev = markerEls[i - 1];
+            var cur = markerEls[i];
+            if (!prev || !cur) continue;
+            prev.classList.remove("is-crowded");
+            if (cur.classList.contains("is-100-outside")) continue;
+            var prevRect = prev.getBoundingClientRect();
+            var curRect = cur.getBoundingClientRect();
+            // 同じ行で重なる or 近い場合
+            if (prevRect.right > curRect.left - 4) {
+              prev.classList.add("is-crowded");
+            }
+          }
+
+          // current marker（%はバー内の実幅で計算してズレを回避）
+          var clamped = Math.max(0, Math.min(100, p));
+          var xCur;
+
+          // 年別マーカー値（6.5,10,17.2,...,100）のいずれかにほぼ等しければ、
+          // 対応する境界線のpx位置にスナップさせてぴったり合わせる
+          var snapped = false;
+          var snappedIndex = -1;
+          for (var j = 0; j < boundaries.length; j++) {
+            if (Math.abs(boundaries[j].value - clamped) < 0.15 && boundaryPixels[j] != null) {
+              xCur = boundaryPixels[j];
+              snapped = true;
+              snappedIndex = j;
+              break;
+            }
+          }
+          if (!snapped) {
+            // それ以外の値は連続値として%ベースで配置
+            xCur = barRect.left + (barRect.width * (clamped / 100));
+          }
+
+          // サブピクセルのはみ出しを防ぐため整数pxに丸める
+          xCur = Math.round(xCur);
+          var cursorLeft = Math.round(xCur - markersRect.left);
+          modalYearCurrent.style.left = cursorLeft + "px";
+
+          // fillも同じ基準でpx指定
+          // スナップしている境界線がある場合は、その境界線の「少し左側」までにして
+          // グレーの境界線からはみ出さないようにする
+          var fillPx;
+          if (snapped && snappedIndex >= 0 && snappedIndex < yearCells.length) {
+            var snappedRect = yearCells[snappedIndex].getBoundingClientRect();
+            var snappedRight = snappedRect.right;
+            fillPx = Math.round(Math.max(0, Math.min(snappedRight - barRect.left - 1, barRect.width)));
+          } else {
+            fillPx = Math.round(Math.max(0, Math.min(barRect.width, xCur - barRect.left - 1)));
+          }
+          modalYearFill.style.width = fillPx + "px";
+        });
       }
 
-      function setActiveTab(activeBtn) {
-        var tabs = document.querySelectorAll(".progress-view-tab");
-        tabs.forEach(function(t) {
-          t.classList.remove("active");
-          t.setAttribute("aria-selected", "false");
-        });
-        if (activeBtn) {
-          activeBtn.classList.add("active");
-          activeBtn.setAttribute("aria-selected", "true");
+      function openManifestModal(item) {
+        if (!modalOverlay || !modalTitleEl || !modalPercentEl || !modalDescEl || !modalIconImg || !modalIconBox) return;
+        modalTitleEl.textContent = item && item.label ? item.label : "";
+        var p = item && item.percent != null ? item.percent : 0;
+        modalPercentEl.textContent = Number(p).toFixed(1) + "%";
+        modalPercentEl.style.color = item && item.color ? item.color : "";
+        modalIconBox.style.borderColor = item && item.color ? item.color : "var(--color-border)";
+        if (item && item.Image) {
+          modalIconImg.src = item.Image;
+          modalIconImg.style.display = "";
+        } else {
+          modalIconImg.style.display = "none";
         }
+        modalDescEl.textContent = item && item.detail ? item.detail : "";
+        renderYearBox(item);
+        modalOverlay.classList.add("open");
+        modalOverlay.setAttribute("aria-hidden", "false");
       }
 
-      var tabList = document.querySelector(".progress-view-tabs");
-      if (tabList) {
-        tabList.addEventListener("click", function(e) {
-          var btn = e.target.closest(".progress-view-tab");
-          if (!btn || !btn.dataset.view) return;
-          setActiveTab(btn);
-          renderTimelineChart(btn.dataset.view);
+      function closeManifestModal() {
+        if (!modalOverlay) return;
+        modalOverlay.classList.remove("open");
+        modalOverlay.setAttribute("aria-hidden", "true");
+      }
+
+      if (modalOverlay && modalCloseBtn) {
+        modalCloseBtn.addEventListener("click", closeManifestModal);
+        modalOverlay.addEventListener("click", function (e) {
+          if (e.target === modalOverlay) closeManifestModal();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") closeManifestModal();
         });
       }
 
-      renderTimelineChart("all");
+      var overallEl = document.getElementById("overallPercent");
+      if (overallEl) {
+        var avg = Math.round(
+          data.reduce(function (sum, item) { return sum + (item.percent || 0); }, 0) / (data.length || 1)
+        );
+        overallEl.textContent = avg + "%";
+      }
+
+      var container = document.getElementById("manifestPieContainer");
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      data.forEach(function (item, index) {
+        var card = document.createElement("div");
+        card.className = "pie-card";
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("aria-label", (item.label || "") + " の詳細を見る");
+        card.innerHTML =
+          '<div class="pie-card-header">' +
+          '  <div class="pie-card-title">' + item.label + '</div>' +
+          '</div>' +
+          '<div class="pie-card-body">' +
+          '  <div class="pie-card-body-inner">' +
+          '    <div class="pie-chart-wrap">' +
+          '      <svg viewBox="0 0 100 100" role="img" aria-label="' + item.label + ' 進捗率円グラフ">' +
+          '        <circle class="pie-bg" cx="50" cy="50" r="38"></circle>' +
+          '        <circle class="pie-fill" id="manifestPieFill-' + index + '" cx="50" cy="50" r="38"></circle>' +
+          '      </svg>' +
+          '      <div class="pie-center-icon" aria-hidden="true">' +
+          '        <img id="manifestPieIcon-' + index + '" alt="" />' +
+          '      </div>' +
+          '    </div>' +
+          '    <div class="pie-metric" aria-label="進捗率表示">' +
+          '      <div class="pie-metric-percent" id="manifestPieLabel-' + index + '">0%</div>' +
+          '      <div class="pie-metric-caption">今期達成率</div>' +
+          '      <div class="pie-metric-hint">詳細を見る</div>' +
+          '    </div>' +
+          '  </div>' +
+          '</div>';
+        container.appendChild(card);
+
+        var fill = document.getElementById("manifestPieFill-" + index);
+        var label = document.getElementById("manifestPieLabel-" + index);
+        var iconImg = document.getElementById("manifestPieIcon-" + index);
+        var iconWrap = iconImg ? iconImg.parentElement : null;
+        if (!fill || !label) return;
+
+        var r = 38;
+        var circumference = 2 * Math.PI * r;
+        fill.style.strokeDasharray = circumference;
+        fill.style.strokeDashoffset = circumference;
+        if (item.color) fill.style.stroke = item.color;
+        label.textContent = item.percent.toFixed(1) + "%";
+        if (item.color) label.style.color = item.color;
+        if (iconWrap && item.color) {
+          iconWrap.style.borderColor = item.color;
+          iconWrap.style.backgroundColor = "#ffffff";
+        }
+        if (iconImg) {
+          if (item.Image) {
+            iconImg.src = item.Image;
+          } else {
+            iconImg.style.display = "none";
+          }
+        }
+
+        card.addEventListener("click", function () {
+          openManifestModal(item);
+        });
+
+        card.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openManifestModal(item);
+          }
+        });
+
+        requestAnimationFrame(function () {
+          var offset = circumference - (item.percent / 100) * circumference;
+          fill.style.strokeDashoffset = offset;
+        });
+      });
     })();
 
   </script>
