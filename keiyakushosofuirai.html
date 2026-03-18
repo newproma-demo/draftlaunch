@@ -555,8 +555,7 @@
       }
       .search-box-inner {
         display: grid;
-        /* 左列（メーカー検索等）を広く、右列（登録ボタン等）を狭く */
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px 20px;
       }
       .search-box.is-open .search-box-inner {
@@ -576,6 +575,29 @@
       }
       .manufacturer-row.input-actions .btn-blue-small {
         white-space: nowrap;
+      }
+
+      /* 右列の登録ボタンを右端＆テキストボックスと同じ高さに寄せる */
+      .search-box-inner .filter-item.mobile-register {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      #inputPC {
+        display: none;
+      }
+      #inputMobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
+        padding: 8px 12px; /* テキストボックスと高さを揃える */
+        min-height: 36px;
+        justify-self: end;
+      }
+      .search-box-inner .filter-item.mobile-register .btn-blue-small {
+        margin-left: 0; /* 右端からズレないように */
+        align-self: flex-end;
       }
 
       /* 検索条件エリア：参照画面と同じ余白・レイアウト */
@@ -727,9 +749,18 @@
       background-color: #0069d9;
     }
 
-    /* スマホ以外ではモバイル用ボタンを非表示 */
+    /* スマホ時以外ではモバイル用登録ボタンを非表示 */
     #inputMobile {
       display: none;
+    }
+
+    #inputMobileRow {
+      display: none;
+    }
+
+    /* スマホ時以外ではPC用登録ボタンを表示 */
+    #inputPC {
+      display: inline-block;
     }
 
     /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
@@ -1119,29 +1150,33 @@
                     <label><input type="radio" name="RegType" value="add"> 追加</label>
                   </div>
                 </div> 
-                <div class="filter-row">
-                  <div class="filter-item">
-                    <label class="filter-label">メーカー：</label>
-                    <div class="manufacturer-row input-actions">
-                      <div class="autocomplete">
-                        <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
-                        <div class="autocomplete-dropdown"></div>
-                      </div>
-                      <button id="inputPC" type="button" class="btn-blue-small">登録</button>
+              <div class="filter-row">
+                <div class="filter-item">
+                  <label class="filter-label">メーカー：</label>
+                  <div class="manufacturer-row input-actions">
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
+                      <div class="autocomplete-dropdown"></div>
                     </div>
                   </div>
                   <div class="filter-item">
-                    <label class="filter-label">&nbsp;</label>
-                    <button id="inputMobile" type="button" class="btn-blue-small">登録</button>
+                    <button id="inputPC" type="button" class="btn-blue-small">登録</button>
                   </div>
                 </div>
+                <div class="filter-row" id="inputMobileRow">
+                <div class="filter-item mobile-register">
+                  <label class="filter-label">&nbsp;</label>
+                  <button id="inputMobile" type="button" class="btn-blue-small">登録</button>
+                </div>
+                </div>
+              </div>
               </div>
             </div>
           </div>        
         </div>
       </div>
     </div>
-  <!-- #endregion -->
+    <!-- #endregion -->
 
     <!--#region モーダル(通知のリンク)  -->
     <div id="modal-window" class="modal-window"> 
