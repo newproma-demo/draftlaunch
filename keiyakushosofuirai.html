@@ -512,9 +512,9 @@
         min-height: 0;
       }
 
-      /* スマホ: 検索条件は常に表示（開閉ボタンは非表示） */
+      /* スマホ: 検索条件は折りたたみ式 */
       .search-toggle-sp {
-        display: none;
+        display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
@@ -555,11 +555,27 @@
       }
       .search-box-inner {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        /* 左列（メーカー検索等）を広く、右列（登録ボタン等）を狭く */
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
         gap: 16px 20px;
+      }
+      .search-box.is-open .search-box-inner {
+        content: "ー";
       }
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
+      }
+
+      /* メーカー検索の隣に登録ボタン（スマホ時） */
+      .manufacturer-row.input-actions {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+        width: 100%;
+      }
+      .manufacturer-row.input-actions .btn-blue-small {
+        white-space: nowrap;
       }
 
       /* 検索条件エリア：参照画面と同じ余白・レイアウト */
@@ -597,12 +613,6 @@
       .search-box-inner .filter-item .autocomplete input {
         width: 100%;
         box-sizing: border-box;
-      }
-      /* スマホ時も登録ボタンのサイズは変更しない */
-      .search-box-inner .filter-item .btn-blue-small {
-        width: auto;
-        min-width: auto;
-        flex-shrink: 0;
       }
 
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
@@ -702,6 +712,26 @@
       border-bottom: none;
     }
 
+    .btn-blue-small {
+      margin-left: 8px;
+      padding: 6px 12px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-blue-small:hover {
+      background-color: #0069d9;
+    }
+
+    /* スマホ以外ではモバイル用ボタンを非表示 */
+    #inputMobile {
+      display: none;
+    }
+
     /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
     .view-layout-1 { padding: 0; }
 
@@ -733,21 +763,6 @@
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       min-width: 160px;
-    }
-
-    .btn-blue-small {
-      margin-left: 8px;
-      padding: 6px 12px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .btn-blue-small:hover {
-      background-color: #0069d9;
     }
 
     /* 承認通知／検索結果・ボックス共通 */
@@ -1061,6 +1076,13 @@
 
     </div>
 
+    <!-- 画面右下固定 新規登録・修正ボタン -->
+    <!--<div class="fab-buttons-wrap">
+      <a href="gaisanmitsumoriirainyuryoku.html" class="btn-fab-new">概算見積登録</a>
+      <a href="seishikimitsumoriirainyuryoku.html" class="btn-fab-new">正式見積登録</a>
+    </div>
+  -->
+
     <!-- 画像モーダル -->
     <div id="imageModal" class="image-modal">
       <div class="modal-backdrop"></div>
@@ -1073,20 +1095,12 @@
       <div class="content-box">
         <h2 class="page-title">契約書送付依頼</h2>
 
-        <!-- ========== 条件・一覧 ========== -->
+        <!-- ========== 検索条件・検索結果一覧 ========== -->
         <div class="view-layout view-layout-1-group">
           <!-- 条件ボックス -->
           <div class="content-area">
             <div class="content-box" id="searchBox">
-              <!--
-              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
-               <span class="search-toggle-sp-label">
-                  <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
-                  <span class="search-toggle-sp-text">検索条件を開く</span>
-                </span>
-              </button>
-            -->
-              <div class="search-box-inner">
+              <div class="search-box-inner" id="searchRowsPanel">
                 <div class="filter-row">
                   <!-- 発注区分ラジオボタン -->
                   <div class="filter-item">
@@ -1104,25 +1118,30 @@
                     <label><input type="radio" name="RegType" value="new" checked> 新規</label>
                     <label><input type="radio" name="RegType" value="add"> 追加</label>
                   </div>
-                </div>
-              </div>  
-              <div class="filter-row">
+                </div> 
+                <div class="filter-row">
                   <div class="filter-item">
                     <label class="filter-label">メーカー：</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
-                      <div class="autocomplete-dropdown"></div>
+                    <div class="manufacturer-row input-actions">
+                      <div class="autocomplete">
+                        <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
+                        <div class="autocomplete-dropdown"></div>
+                      </div>
+                      <button id="inputPC" type="button" class="btn-blue-small">登録</button>
                     </div>
-                    <button type="button" href="" class="btn-blue-small">登録</button>
+                  </div>
+                  <div class="filter-item">
+                    <label class="filter-label">&nbsp;</label>
+                    <button id="inputMobile" type="button" class="btn-blue-small">登録</button>
                   </div>
                 </div>
               </div>
-           </div>
-          </div>
+            </div>
+          </div>        
         </div>
       </div>
     </div>
-    <!-- #endregion -->
+  <!-- #endregion -->
 
     <!--#region モーダル(通知のリンク)  -->
     <div id="modal-window" class="modal-window"> 
