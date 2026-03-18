@@ -584,9 +584,6 @@
         align-items: flex-end;
       }
       #inputPC {
-        display: none;
-      }
-      #inputMobile {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -594,6 +591,13 @@
         padding: 8px 12px; /* テキストボックスと高さを揃える */
         min-height: 36px;
         justify-self: end;
+      }
+      #inputMobile {
+        display: none;
+      }
+
+      #inputMobileRow {
+        display: flex;
       }
       .search-box-inner .filter-item.mobile-register .btn-blue-small {
         margin-left: 0; /* 右端からズレないように */
@@ -749,6 +753,11 @@
       background-color: #0069d9;
     }
 
+    /* 「メーカー：」は改行しない */
+    .filter-label.manufacturer-label {
+      white-space: nowrap;
+    }
+
     /* スマホ時以外ではモバイル用登録ボタンを非表示 */
     #inputMobile {
       display: none;
@@ -761,6 +770,21 @@
     /* スマホ時以外ではPC用登録ボタンを表示 */
     #inputPC {
       display: inline-block;
+    }
+
+    /* スマホ以外: メーカー検索の隣に登録ボタン */
+    .manufacturer-row.input-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .manufacturer-row.input-actions .autocomplete {
+      flex: 1;
+      min-width: 0;
+    }
+    .manufacturer-row.input-actions .btn-blue-small {
+      margin-left: 0; /* 共通のmargin-left:8pxを打ち消す */
     }
 
     /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
@@ -1151,23 +1175,19 @@
                   </div>
                 </div> 
               <div class="filter-row">
+                <!-- 左列：発注区分と同じ列（メーカー＋メーカー検索） -->
                 <div class="filter-item">
-                  <label class="filter-label">メーカー：</label>
+                  <label class="filter-label manufacturer-label">メーカー：</label>
                   <div class="manufacturer-row input-actions">
                     <div class="autocomplete">
                       <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
                       <div class="autocomplete-dropdown"></div>
                     </div>
                   </div>
-                  <div class="filter-item">
-                    <button id="inputPC" type="button" class="btn-blue-small">登録</button>
-                  </div>
                 </div>
-                <div class="filter-row" id="inputMobileRow">
                 <div class="filter-item mobile-register">
                   <label class="filter-label">&nbsp;</label>
-                  <button id="inputMobile" type="button" class="btn-blue-small">登録</button>
-                </div>
+                  <button id="inputPC" type="button" class="btn-blue-small">登録</button>
                 </div>
               </div>
               </div>
