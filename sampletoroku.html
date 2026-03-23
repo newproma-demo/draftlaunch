@@ -372,6 +372,40 @@
       box-sizing: border-box;
     }
 
+    /* 商品コード行：選択と商品名（PCは横並び） */
+    .entry-form .product-code-inputs {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .entry-form .product-code-inputs select {
+      min-width: 160px;
+      max-width: 220px;
+      box-sizing: border-box;
+    }
+
+    .entry-form .product-name-label {
+      color: var(--color-text-muted);
+      font-weight: 500;
+      display: inline-block;
+      transform: translateY(2mm);
+      min-width: 0;
+    }
+
+    /* 動的追加行の商品コード（ラベル＋入力ブロック） */
+    .entry-form .product-code-dynamic-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
     .entry-form label {
       font-weight: 500;
       width: 180px;
@@ -532,6 +566,30 @@
       /* サンプル登録フォーム：スマホ時はラベルと入力項目の間隔を詰める */
       .entry-form .form-row {
         gap: 1px;
+      }
+
+      /* 商品名はセレクトの下に表示・折り返さない（長い場合は横スクロール） */
+      .entry-form .product-code-inputs {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .entry-form .product-code-inputs select {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .entry-form .product-name-label {
+        white-space: nowrap;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        transform: none;
+        display: block;
       }
 
       .pc-only {
@@ -1425,18 +1483,14 @@
             </div>
             <div class="form-row">
               <label class="filter-label">商品コード</label>
-              <div style="flex: 1; min-width: 0; display: flex; align-items: flex-start; gap: 12px;">
-                <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex-shrink: 0;">
-                  <select id="productCodeSelect">
-                    <option value="">選択してください</option>
-                    <option value="1" data-product-name="商品名1">999991</option>
-                    <option value="2" data-product-name="商品名2">999992</option>
-                    <option value="3" data-product-name="商品名3">999993</option>
-                  </select>
-                </div>
-                <div style="flex: 1; min-width: 0;">
-                  <span id="productNameLabel" style="color: var(--color-text-muted); font-weight: 500; display: inline-block; transform: translateY(2mm);"></span>
-                </div>
+              <div class="product-code-inputs">
+                <select id="productCodeSelect">
+                  <option value="">選択してください</option>
+                  <option value="1" data-product-name="商品名1">999991</option>
+                  <option value="2" data-product-name="商品名2">999992</option>
+                  <option value="3" data-product-name="商品名3">999993</option>
+                </select>
+                <span id="productNameLabel" class="product-name-label"></span>
               </div>
             </div>
             <div class="form-row" style="flex: 0 0 100%;">
@@ -1659,21 +1713,18 @@
 
           // 商品コード
           var productCodeRow = document.createElement("div");
-          productCodeRow.style.display = "flex";
-          productCodeRow.style.alignItems = "center";
-          productCodeRow.style.gap = "8px";
-          productCodeRow.style.flexWrap = "nowrap";
+          productCodeRow.className = "product-code-dynamic-row";
 
           var productCodeLabel = document.createElement("label");
           productCodeLabel.textContent = "商品コード";
-          productCodeLabel.style.fontWeight = "500";
-          productCodeLabel.style.whiteSpace = "nowrap";
+          productCodeLabel.className = "filter-label";
+
+          var productCodeInputsWrap = document.createElement("div");
+          productCodeInputsWrap.className = "product-code-inputs";
 
           var productCodeSelect = document.createElement("select");
           productCodeSelect.name = "productCode[]";
           productCodeSelect.id = "productCodeSelectRow_" + rowIndex;
-          productCodeSelect.style.minWidth = "160px";
-          productCodeSelect.style.maxWidth = "220px";
 
           var emptyOpt = document.createElement("option");
           emptyOpt.value = "";
@@ -1692,15 +1743,12 @@
           addOption("2", "商品名2", "999992");
           addOption("3", "商品名3", "999993");
 
-          productCodeRow.appendChild(productCodeLabel);
-          productCodeRow.appendChild(productCodeSelect);
+          productCodeInputsWrap.appendChild(productCodeSelect);
 
-          // 商品コード選択時に、右側へ商品名を表示
+          // 商品コード選択時に商品名を表示（スマホはセレクト下・折り返しなしはCSS）
           var productNameSpan = document.createElement("span");
           productNameSpan.id = "productNameLabelRow_" + rowIndex;
-          productNameSpan.style.color = "var(--color-text-muted)";
-          productNameSpan.style.fontWeight = "500";
-          productNameSpan.style.whiteSpace = "nowrap";
+          productNameSpan.className = "product-name-label";
 
           function updateProductNameLabel() {
             var opt = productCodeSelect.options[productCodeSelect.selectedIndex];
@@ -1712,7 +1760,9 @@
           productCodeSelect.addEventListener("change", updateProductNameLabel);
           updateProductNameLabel();
 
-          productCodeRow.appendChild(productNameSpan);
+          productCodeInputsWrap.appendChild(productNameSpan);
+          productCodeRow.appendChild(productCodeLabel);
+          productCodeRow.appendChild(productCodeInputsWrap);
 
           // 「到着日」
           var arrivalDateRow = document.createElement("div");
