@@ -21,22 +21,42 @@ window.SHARED_SIDEBAR_HTML = `
 
   <div class="menu-item">
     <div class="menu-title">
+      <img src="images/co_present_20dp_FFFFFF.svg">
+      <span>MD</span>
+      <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+    </div>
+    <ul class="submenu">
+      <li><a href="zuankensaku.html">図案情報登録</a></li>
+      <li><a href="zuanfuriwake.html">図案振分け</a></li>
+    </ul>
+  </div>
+
+  <div class="menu-item">
+    <div class="menu-title">
       <img src="images/color_lens_20dp_F4F6F9.svg">
       <span>図案管理</span>
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="mitsumoriiraikensaku.html">見積依頼入力・送信</a></li>
-      <li><a href="#">見積回答登録・メーカー決定</a></li>
       <li><a href="betchuzuansakuseiiraitorokushinsei.html">別注図案作成依頼登録・申請</a></li>
       <li><a href="betchuzuansakuseiiraishonin.html">別注図案作成依頼承認</a></li>
-      <li><a href="zuankensaku.html">図案情報登録</a></li>
-      <li><a href="zuanfuriwake.html">図案振分け</a></li>
       <li><a href="zuanteishutsu.html">図案提出</a></li>
       <li><a href="zuansenteikekkatoroku.html">図案選定結果登録</a></li>
       <li><a href="zuanshinsei.html">図案申請</a></li>
       <li><a href="zuanshoninkekkatoroku.html">図案承認結果登録</a></li>
       <li><a href="mitsumorizuanupload.html">見積図案アップロード</a></li>
+    </ul>
+  </div>
+
+  <div class="menu-item">
+    <div class="menu-title">
+      <img src="images/file_present_20dp_FFFFFF.svg">
+      <span>見積管理</span>
+      <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+    </div>
+    <ul class="submenu">
+      <li><a href="mitsumoriiraikensaku.html">見積依頼入力・送信</a></li>
+      <li><a href="#">見積回答登録・メーカー決定</a></li>
     </ul>
   </div>
 
