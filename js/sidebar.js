@@ -15,7 +15,7 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">進行状況確認（仕様書別・商品別）</a></li>
       <li><a href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html">進行状況確認（担当者別入稿状況）</a></li>
       <li><a href="hatchujokyokanri.html">発注状況管理</a></li>
-      <li><a href="#">マニフェスト管理</a></li>
+      <li><a href="manifesto.html">マニフェスト管理</a></li>
     </ul>
   </div>
 
@@ -26,17 +26,17 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">見積依頼入力・送信</a></li>
+      <li><a href="mitsumoriiraikensaku.html">見積依頼入力・送信</a></li>
       <li><a href="#">見積回答登録・メーカー決定</a></li>
-      <li><a href="#">別注図案作成依頼登録・申請</a></li>
-      <li><a href="#">別注図案作成依頼承認</a></li>
+      <li><a href="betchuzuansakuseiiraitorokushinsei.html">別注図案作成依頼登録・申請</a></li>
+      <li><a href="betchuzuansakuseiiraishonin.html">別注図案作成依頼承認</a></li>
       <li><a href="zuankensaku.html">図案情報登録</a></li>
-      <li><a href="#">図案振分け</a></li>
-      <li><a href="#">図案提出</a></li>
-      <li><a href="#">図案選定結果登録</a></li>
-      <li><a href="#">図案申請</a></li>
-      <li><a href="#">図案承認結果登録</a></li>
-      <li><a href="#">見積図案アップロード</a></li>
+      <li><a href="zuanfuriwake.html">図案振分け</a></li>
+      <li><a href="zuanteishutsu.html">図案提出</a></li>
+      <li><a href="zuansenteikekkatoroku.html">図案選定結果登録</a></li>
+      <li><a href="zuanshinsei.html">図案申請</a></li>
+      <li><a href="zuanshoninkekkatoroku.html">図案承認結果登録</a></li>
+      <li><a href="mitsumorizuanupload.html">見積図案アップロード</a></li>
     </ul>
   </div>
 
@@ -61,7 +61,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">サンプル管理</a></li>
+      <li><a href="sampleshinseikensaku.html">サンプル管理</a></li>
       <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
     </ul>
   </div>
@@ -85,7 +85,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">契約書送付依頼</a></li>
+      <li><a href="keiyakushosofuirai.html">契約書送付依頼</a></li>
       <li><a href="#">契約書登録</a></li>
       <li><a href="#">発注入力</a></li>
       <li><a href="#">発注書決済</a></li>
@@ -93,7 +93,7 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="#">証紙依頼書決済</a></li>
       <li><a href="#">契約書サイン</a></li>
       <li><a href="#">契約書送信</a></li>
-      <li><a href="#">発注情報Mｼｽﾃﾑ連携</a></li>
+      <li><a href="hatchujohoMsysemrenkei.html">発注情報Mｼｽﾃﾑ連携</a></li>
       <li><a href="#">発注履歴照会</a></li>
     </ul>
   </div>
@@ -118,8 +118,8 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">商品マップ生成</a></li>
-      <li><a href="#">商品マップ公開</a></li>
+      <li><a href="shohimmappuseisei.html">商品マップ生成</a></li>
+      <li><a href="shohinMAPkokai.html">商品マップ公開</a></li>
     </ul>
   </div>
 
