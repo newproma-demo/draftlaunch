@@ -1588,6 +1588,66 @@
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       });
 
+      // 到着日（Fromのみ）：テキスト⇔カレンダー同期とカレンダーボタン表示
+      function bindFromOnlyCalendar(textInput, pickerInput, openBtn) {
+        if (!textInput || !pickerInput || !openBtn) return;
+
+        function syncPickerFromText() {
+          if (typeof normalizeYyyymmddInput !== "function" || typeof yyyymmddToIsoDate !== "function") return;
+          var iso = yyyymmddToIsoDate(normalizeYyyymmddInput(textInput.value));
+          if (iso) pickerInput.value = iso;
+          else pickerInput.value = "";
+        }
+
+        function openPicker() {
+          syncPickerFromText();
+          if (typeof pickerInput.showPicker === "function") {
+            try {
+              pickerInput.showPicker();
+            } catch (_) {
+              pickerInput.focus();
+              pickerInput.click();
+            }
+          } else {
+            pickerInput.focus();
+            pickerInput.click();
+          }
+        }
+
+        function onPickerChange() {
+          if (!pickerInput.value || typeof toYyyymmdd !== "function") return;
+          textInput.value = toYyyymmdd(pickerInput.value);
+          textInput.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        function onTextInput() {
+          if (typeof normalizeYyyymmddInput !== "function") return;
+          textInput.value = normalizeYyyymmddInput(textInput.value);
+          if (typeof isValidYyyymmdd === "function") {
+            textInput.classList.toggle(
+              "period-range-invalid",
+              textInput.value.length === 8 && !isValidYyyymmdd(textInput.value)
+            );
+          }
+        }
+
+        textInput.addEventListener("input", onTextInput);
+        textInput.addEventListener("blur", onTextInput);
+        openBtn.addEventListener("click", openPicker);
+        pickerInput.addEventListener("change", onPickerChange);
+        syncPickerFromText();
+      }
+
+      // 固定行の「到着日」
+      (function () {
+        var textInput = document.getElementById("periodFromOnly");
+        var periodField = textInput ? textInput.closest(".period-range-field") : null;
+        if (!periodField) return;
+        var pickerInput = periodField.querySelector(".period-range-picker");
+        var openBtn = periodField.querySelector(".period-range-calendar-btn");
+        bindFromOnlyCalendar(textInput, pickerInput, openBtn);
+      })();
+
       // 参考画像：追加・削除（画像クリックでファイル選択）
       (function () {
         var container = document.getElementById("referenceImagesContainer");
@@ -1817,54 +1877,7 @@
           arrivalDateRow.appendChild(arrivalPeriodRow);
 
           // 追加行用：テキスト⇔カレンダーの同期をその場で有効化
-          (function initPeriodFromOnlyForRow() {
-            if (!arrivalTextInput) return;
-
-            function syncPickerFromText() {
-              if (typeof normalizeYyyymmddInput !== "function" || typeof yyyymmddToIsoDate !== "function") return;
-              var iso = yyyymmddToIsoDate(normalizeYyyymmddInput(arrivalTextInput.value));
-              if (iso) arrivalPicker.value = iso;
-              else arrivalPicker.value = "";
-            }
-
-            function openPicker() {
-              syncPickerFromText();
-              if (typeof arrivalPicker.showPicker === "function") {
-                try {
-                  arrivalPicker.showPicker();
-                } catch (_) {
-                  arrivalPicker.focus();
-                  arrivalPicker.click();
-                }
-              } else {
-                arrivalPicker.focus();
-              }
-            }
-
-            function onPickerChange() {
-              if (!arrivalPicker || !arrivalPicker.value) return;
-              if (typeof toYyyymmdd !== "function") return;
-              arrivalTextInput.value = toYyyymmdd(arrivalPicker.value);
-              arrivalTextInput.dispatchEvent(new Event("change", { bubbles: true }));
-            }
-
-            function onTextInput() {
-              if (typeof normalizeYyyymmddInput !== "function") return;
-              arrivalTextInput.value = normalizeYyyymmddInput(arrivalTextInput.value);
-              if (typeof isValidYyyymmdd === "function") {
-                arrivalTextInput.classList.toggle(
-                  "period-range-invalid",
-                  arrivalTextInput.value.length === 8 && !isValidYyyymmdd(arrivalTextInput.value)
-                );
-              }
-            }
-
-            arrivalTextInput.addEventListener("input", onTextInput);
-            arrivalTextInput.addEventListener("blur", onTextInput);
-            arrivalBtn.addEventListener("click", openPicker);
-            arrivalPicker.addEventListener("change", onPickerChange);
-            syncPickerFromText();
-          })();
+          bindFromOnlyCalendar(arrivalTextInput, arrivalPicker, arrivalBtn);
 
           // 「個数」
           var qtyRow = document.createElement("div");
