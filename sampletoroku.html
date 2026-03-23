@@ -346,6 +346,8 @@
       /* 種類～個数のブロック間（1行目と動的行の supplier-input-row の gap と同じ値） */
       --entry-form-section-gap: 8px;
       --entry-form-label-width: 180px;
+      /* .form-row と動的「種類」行の横方向 gap（スマホは下のメディアクエリで上書き） */
+      --entry-form-row-gap: 5px;
       margin-top: 16px;
       max-height: calc(100vh - 200px);
       overflow-y: auto;
@@ -367,7 +369,7 @@
       flex-direction: row;
       align-items: flex-start;
       margin-bottom: 0;
-      gap: 5px;
+      gap: var(--entry-form-row-gap);
       width: 100%;
       min-width: 0;
       box-sizing: border-box;
@@ -458,6 +460,28 @@
       line-height: 1.35;
       margin: 0;
       white-space: nowrap;
+    }
+
+    /* 動的行の flex 内で、ラジオ同士の &nbsp; が潰れないようにする */
+    .entry-form .entry-form-radio-option-gap {
+      flex: 0 0 1ch;
+      min-width: 1ch;
+      white-space: pre;
+      font-size: inherit;
+      line-height: 1.35;
+      padding-top: 4px;
+      box-sizing: border-box;
+    }
+
+    /* 動的行の「種類」＋ラジオ：1行目 .form-row と同じ横 gap */
+    .entry-form .entry-form-type-radio-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--entry-form-row-gap);
+      flex: 0 0 auto;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     .entry-form .form-row-hinshu .hinshu-inputs {
@@ -567,11 +591,8 @@
       .entry-form {
         /* 既定(180px)より約1cm左に寄せる */
         --entry-form-label-width: 100px;
-      }
-
-      /* サンプル登録フォーム：スマホ時はラベルと入力項目の間隔を詰める */
-      .entry-form .form-row {
-        gap: 1px;
+        /* 1行目 .form-row と動的「種類」行の横 gap を同一に */
+        --entry-form-row-gap: 1px;
       }
 
       /* 商品名はセレクトの下に表示・折り返さない（長い場合は横スクロール） */
@@ -1515,7 +1536,7 @@
             <!-- サンプル選択ラジオボタン -->
             <div class="form-row">
               <label class="filter-label">種類</label>
-              <label class="entry-form-radio-option"><input type="radio" name="sampleType" value="sample" checked>サンプル </label>
+              <label class="entry-form-radio-option"><input type="radio" name="sampleType" value="sample" checked>サンプル</label>&nbsp;&nbsp;
               <label class="entry-form-radio-option"><input type="radio" name="sampleType" value="finalsample">最終サンプル</label>
             </div>
             <div class="form-row">
@@ -1774,13 +1795,7 @@
 
           // 種類（1行目の .form-row と同じ：ラベル幅180px + gap でラジオ左端を揃える）
           var typeRadioWrap = document.createElement("div");
-          typeRadioWrap.style.display = "flex";
-          typeRadioWrap.style.alignItems = "flex-start";
-          typeRadioWrap.style.gap = "5px";
-          typeRadioWrap.style.flex = "0 0 auto";
-          typeRadioWrap.style.width = "100%";
-          typeRadioWrap.style.minWidth = "0";
-          typeRadioWrap.style.boxSizing = "border-box";
+          typeRadioWrap.className = "entry-form-type-radio-row";
 
           var typeLabel = document.createElement("span");
           typeLabel.textContent = "種類";
@@ -1805,8 +1820,13 @@
             radioWrap.appendChild(document.createTextNode(labelText));
             return radioWrap;
           }
+          var radioOptionGap = document.createElement("span");
+          radioOptionGap.className = "entry-form-radio-option-gap";
+          radioOptionGap.setAttribute("aria-hidden", "true");
+          radioOptionGap.textContent = "\u00A0";
+
           typeRadioWrap.appendChild(createTypeRadio("sample", "サンプル", true));
-          typeRadioWrap.appendChild(document.createTextNode(" "));
+          typeRadioWrap.appendChild(radioOptionGap);
           typeRadioWrap.appendChild(createTypeRadio("finalsample", "最終サンプル", false));
 
           // 商品コード
