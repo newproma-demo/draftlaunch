@@ -755,6 +755,22 @@
         display: none;
       }
 
+      /* スクロールは .content のみに閉じ、ヘッダー／ハンバーガーをビューポートに固定 */
+      .main-wrapper {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* ドロワー表示中は背面のスクロールを止める */
+      body.sidebar-open {
+        overflow: hidden;
+      }
+
+      body.sidebar-open .content {
+        overflow: hidden;
+      }
+
       /* サイドバーを隠す */
       .sidebar {
         transform: translateX(-100%);
@@ -771,11 +787,13 @@
         display: none;
       }
 
-      /* ハンバーガーボタン */
+      /* ハンバーガーボタン（座標指定で常にビューポート左上基準に固定） */
       .hamburger {
         display: block;
         position: fixed;
-        margin: 6px 10px 0px 0px;
+        top: 6px;
+        left: 10px;
+        margin: 0;
         cursor: pointer;
         z-index: 3000;
       }
@@ -789,6 +807,7 @@
         flex-direction: column;
         flex: 1;
         min-width: 0;
+        min-height: 0;
         max-width: 100%;
         padding: 20px;
         padding-right: max(20px, env(safe-area-inset-right, 0px));
@@ -796,6 +815,9 @@
         width: 100%;
         box-sizing: border-box;
         overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
       }
 
       .page-title {
@@ -932,7 +954,7 @@
     .sp-card-list{
       display:flex;
       flex-direction:column;
-      gap:24px;
+      gap:16px;
     }
 
     /* カード */
@@ -942,7 +964,7 @@
       border-radius:12px;
       overflow:hidden;
       box-shadow:var(--shadow-sm);
-      margin-top:12px;
+      margin-top:8px;
     }
 
     /* ステータス帯 */
@@ -1506,90 +1528,68 @@
       <div class="sp-only">
         <div class="sp-card-list">
       
-          <!-- ===== 親 ===== -->
-          <div class="sp-card order-card">
-      
-            <div class="sp-status status-delay">
-              進行状況：証紙依頼書作成中　2日遅れ
-            </div>
-            <div class="sp-card-main">
-              <div class="sp-info">
-                <div class="sp-title">作成日｜2025/01/05</div>
-                <div class="sp-title">契約書No.｜1234567890</div>
-                <div class="sp-meta">仕入先｜今治ソフトパイル株式会社</div>
-                <div class="sp-meta">契約納期｜20260331</div>
-                <div class="sp-meta">カテゴリー｜タオル</div>
-                <div class="sp-meta">販売区分｜定番（2026.01展示会）</div>
-              </div>
-              
-              </div>
-      
-              <div class="sp-expand">＋</div>
-            </div>
-      
-          </div>
-          <!-- ===== /親 ===== -->
 
-          <!-- ===== 親 ===== -->
           <div class="sp-card order-card">
+            <div class="sp-status status-delay">進行状況：証紙依頼書作成中　2日遅れ</div>
+              <div class="sp-card-main">
+                <div class="sp-info">
+                  <div class="sp-title">作成日｜2025/01/05</div>
+                  <div class="sp-title">契約書No.｜1234567890</div>
+                  <div class="sp-meta">仕入先｜今治ソフトパイル株式会社</div>
+                  <div class="sp-meta">契約納期｜20260331</div>
+                  <div class="sp-meta">カテゴリー｜タオル</div>
+                  <div class="sp-meta">販売区分｜定番（2026.01展示会）</div>
+                </div>              
+              </div>
+            <div class="sp-expand">＋</div>
+         </div>
       
-            <div class="sp-status status-warning">
-              進行状況：手配中
-            </div>
+         <div class="sp-card order-card">
+          <div class="sp-status status-warning">進行状況：手配中</div>
             <div class="sp-card-main">
               <div class="sp-info">
-                <div class="sp-title">
-                  ミッキータオル
-                </div>
-                <div class="sp-meta">
-                  丸眞花子｜別注
-                </div>
-              </div>
-              <div class="sp-expand">＋</div>
+                <div class="sp-title">作成日｜2025/01/12</div>
+                <div class="sp-title">契約書No.｜1234567891</div>
+                <div class="sp-meta">仕入先｜南通華東紡績（Nantong Huadong）</div>
+                <div class="sp-meta">契約納期｜20260415</div>
+                <div class="sp-meta">カテゴリー｜フェイスタオル</div>
+                <div class="sp-meta">販売区分｜別注</div>
+              </div>              
             </div>
-     
+            <div class="sp-expand">＋</div>
           </div>
-          <!-- ===== /親 ===== --> 
-          <!-- ===== 親 ===== -->
+
+
           <div class="sp-card order-card">
-      
-            <div class="sp-status status-warning">
-              進行状況：発注書作成中
-            </div>
-            <div class="sp-card-main">
-              <div class="sp-info">
-                <div class="sp-title">
-                  ミッキータオル
-                </div>
-                <div class="sp-meta">
-                  丸眞花子｜OEM
-                </div>
+            <div class="sp-status status-warning">進行状況：手配中</div>
+              <div class="sp-card-main">
+                <div class="sp-info">
+                  <div class="sp-title">作成日｜2025/02/01</div>
+                  <div class="sp-title">契約書No.｜1234567892</div>
+                  <div class="sp-meta">仕入先｜泉州ガーゼ織物</div>
+                  <div class="sp-meta">契約納期｜20260520</div>
+                  <div class="sp-meta">カテゴリー｜フェイスタオル</div>
+                  <div class="sp-meta">販売区分｜OEM</div>
+                </div>              
               </div>
-              <div class="sp-expand">＋</div>
-            </div>
-     
+            <div class="sp-expand">＋</div>
           </div>
-          <!-- ===== /親 ===== -->
-          <!-- ===== 親 ===== -->
+
           <div class="sp-card order-card">
-      
-            <div class="sp-status status-onschedule">
-              進行状況：初回入荷済み
-            </div>
-            <div class="sp-card-main">
-              <div class="sp-info">
-                <div class="sp-title">
-                  ミッキータオル
-                </div>
-                <div class="sp-meta">
-                  丸眞花子｜定番加工
-                </div>
+            <div class="sp-status status-onschedule">進行状況：初回入荷済み</div>
+              <div class="sp-card-main">
+                <div class="sp-info">
+                  <div class="sp-title">作成日｜2024/11/20</div>
+                  <div class="sp-title">契約書No.｜1234567888</div>
+                  <div class="sp-meta">仕入先｜株式会社コットンロード</div>
+                  <div class="sp-meta">契約納期｜20250228</div>
+                  <div class="sp-meta">カテゴリー｜バスタオル</div>
+                  <div class="sp-meta">販売区分｜定番加工</div>
+                </div>              
               </div>
-              <div class="sp-expand">＋</div>
-            </div>
-     
+            <div class="sp-expand">＋</div>
           </div>
-          <!-- ===== /親 ===== -->                                      
+
         </div>
       </div>
       
@@ -1614,9 +1614,12 @@
 
       if (sidebar.classList.contains('active')) {
         overlay.classList.add('show');   // ← オーバーレイ表示
+        if (window.matchMedia('(max-width: 768px)').matches) {
+          document.body.classList.add('sidebar-open');
+        }
       } else {
-
         overlay.classList.remove('show'); // ← オーバーレイ非表示
+        document.body.classList.remove('sidebar-open');
       }
     }
 
@@ -1666,6 +1669,7 @@
 
       sidebar.classList.remove('active');
       overlay.classList.remove('show');
+      document.body.classList.remove('sidebar-open');
     }
 
     const icon = document.querySelector('.header-account_circle');
