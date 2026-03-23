@@ -139,6 +139,11 @@
       border: 1px solid var(--color-border);
     }
 
+    /* スマホ用「検索条件を開く」ボタン（PCでは非表示） */
+    .search-toggle-sp {
+      display: none;
+    }
+
     .search-box .search-box-inner {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -568,6 +573,47 @@
         font-size: 16px;
       }
 
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .search-toggle-sp-text {
+        font-size: 12pt;
+      }
+
+      .search-toggle-sp::after {
+        content: "＋";
+        font-size: 1.2em;
+        color: var(--color-text-muted);
+      }
+
       .search-box {
         display: flex;
         flex-direction: column;
@@ -579,10 +625,18 @@
       }
 
       .search-box .search-box-inner {
-        display: grid;
+        display: none;
         grid-template-columns: 1fr;
         padding: 12px 0 0;
         gap: 12px 16px;
+      }
+
+      .search-box.is-open .search-box-inner {
+        display: grid;
+      }
+
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
       }
 
 
@@ -922,7 +976,8 @@
 
       <section class="tanto-wrap" aria-label="担当者別のフェーズ別達成率">
         <div class="search-box" id="searchBox" aria-label="検索条件">
-          <div class="search-box-inner">
+          <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel"><span class="search-toggle-sp-label"><img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20"><span class="search-toggle-sp-text">検索条件を開く</span></span></button>
+          <div class="search-box-inner" id="searchRowsPanel">
             <div class="search-row search-row-inline">
               <label for="deptInput">所属課</label>
               <div class="autocomplete">
@@ -1359,6 +1414,20 @@
         sidebar.classList.remove('active');
         overlay.classList.remove('show');
       }
+
+      // スマホ: 検索条件の折りたたみ開閉
+      (function() {
+        var btn = document.getElementById('searchToggleSp');
+        var box = document.getElementById('searchBox');
+        if (btn && box) {
+          btn.addEventListener('click', function() {
+            var isOpen = box.classList.toggle('is-open');
+            btn.setAttribute('aria-expanded', isOpen);
+            var textEl = btn.querySelector('.search-toggle-sp-text');
+            if (textEl) textEl.textContent = isOpen ? '検索条件を閉じる' : '検索条件を開く';
+          });
+        }
+      })();
 
       loadSharedSidebar();
       bindSearch();
