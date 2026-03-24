@@ -631,22 +631,30 @@
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(5)::before {
-        content: "品名：";
+        content: "商品コード：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "アイテム：";
+        content: "品名：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(7)::before {
-        content: "ブランド・キャラ：";
+        content: "アイテム：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(8)::before {
-        content: "承認結果：";
+        content: "ブランド・キャラ：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(9)::before {
+        content: "デザイナー：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(10)::before {
+        content: "承認結果：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(11)::before {
         content: "結果登録日：";
         font-weight: 600;
       }
@@ -654,6 +662,14 @@
       /* 2段目は販売区分・展示会を横並びで表示（チェック列を除いて2・3列目） */
       #approvalListArea .result-table tbody td:nth-child(2),
       #approvalListArea .result-table tbody td:nth-child(3) {
+        display: inline-block;
+        width: auto;
+        margin-right: 12px;
+      }
+
+      /* 2段目は承認結果・結果登録日を横並びで表示（チェック列を除いて2・3列目） */
+      #approvalListArea .result-table tbody td:nth-child(10),
+      #approvalListArea .result-table tbody td:nth-child(11) {
         display: inline-block;
         width: auto;
         margin-right: 12px;
@@ -1154,12 +1170,13 @@
                       <option value="差戻し">差戻し</option>
                     </select>
                   </div>
-                  <div class="search-row">
-                    <label>カテゴリー</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="category" placeholder="カテゴリー検索" id="searchCategory">
-                      <div class="autocomplete-dropdown"></div>
-                    </div>
+                  <div class="filter-item">
+                    <span class="filter-label">カテゴリー</span>
+                    <select id="searchCategory">
+                      <option value="">すべて</option>
+                      <option value="tanpin">単品タオル</option>
+                      <option value="kikaku">企画物タオル</option>
+                    </select>
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">商品コード</label>
@@ -1174,19 +1191,347 @@
                     <span class="filter-label">品名</span>
                     <input type="text" id="searchHinmei" placeholder="品名を入力">
                   </div>
-                  <div class="search-row">
-                    <label>アイテム</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="searchItem">
-                      <div class="autocomplete-dropdown"></div>
-                    </div>
+                  <div class="filter-item" id="tenjikaiFilterItem">
+                    <span class="filter-label">アイテム</span>
+                    <select id="tenjikaiSelect">
+                      <option value="">すべて</option>
+                      <option>ミニタオル</option>
+                      <option>ウォッシュタオル</option>
+                      <option>フェイスタオル</option>
+                      <option>バスタオル</option>
+                      <option>マフラータオル</option>
+                      <option>お出かけタオル</option>
+                      <option>ビックバスタオル</option>
+                      <option>ループタオル</option>
+                      <option>ポケット2P</option>
+                      <option>ミニタオル３Ｐ</option>
+                      <option>ファスナー付き</option>
+                      <option>ポケット付き</option>
+                      <option>ドレスタオル</option>
+                      <option>タオルバスマット</option>
+                      <option>ヘアーバンド</option>
+                      <option>3色ミニハンカチ</option>
+                      <option>ガーゼハンカチ</option>
+                      <option>タオル枕カバー</option>
+                      <option>手ぬぐい</option>
+                      <option>マキタオル６０</option>
+                      <option>マキタオル８０</option>
+                      <option>マキタオル１００</option>
+                      <option>その他マキタオル</option>
+                      <option>バスローブ</option>
+                      <option>Dビーチタオル</option>
+                      <option>ビーチスティック</option>
+                      <option>フード付きタオル</option>
+                      <option>フード付きポンチョ</option>
+                      <option>タオルケープ</option>
+                      <option>レジャーバスタオル</option>
+                      <option>スポーツタオル</option>
+                      <option>ジュニアバスタオル</option>
+                      <option>お昼寝ケット</option>
+                      <option>タオルケット</option>
+                      <option>ラウンドビーチ</option>
+                      <option>キャップタオル</option>
+                      <option>ビーチバック</option>
+                      <option>ひざ掛け</option>
+                      <option>ハーフ毛布</option>
+                      <option>毛布</option>
+                      <option>敷きパット</option>
+                      <option>ラップ毛布</option>
+                      <option>ジュニア毛布</option>
+                      <option>着る毛布</option>
+                      <option>ケープ</option>
+                      <option>スリーパー</option>
+                      <option>お昼寝セット</option>
+                      <option>ジュニア枕</option>
+                      <option>ラウンド毛布</option>
+                      <option>ネックウォーマー</option>
+                      <option>ポーチ</option>
+                      <option>バック</option>
+                      <option>巾着</option>
+                      <option>口金ポーチ</option>
+                      <option>ランチョンマット</option>
+                      <option>ストール</option>
+                      <option>ハンカチーフ</option>
+                      <option>ランチーフ</option>
+                      <option>キッチンタオル</option>
+                      <option>マルチクロス</option>
+                      <option>キッチンミトン</option>
+                      <option>鍋敷き</option>
+                      <option>お風呂タオル</option>
+                      <option>エプロン</option>
+                      <option>作務衣・甚平・はんてん</option>
+                      <option>ポンチョ</option>
+                      <option>クッションカバー</option>
+                      <option>クッション（綿入り）</option>
+                      <option>スクールクッション</option>
+                      <option>シートクッション</option>
+                      <option>トイレタリー</option>
+                      <option>ペーパーホルダー</option>
+                      <option>バスマット</option>
+                      <option>キッチンマット</option>
+                      <option>ティッシュＢＯＸカバー</option>
+                      <option>ラグマット</option>
+                      <option>マルチカバー</option>
+                      <option>スリッパ</option>
+                      <option>ルームシューズ</option>
+                      <option>掛けカバー</option>
+                      <option>敷きカバー</option>
+                      <option>ピロケース</option>
+                      <option>こたつ</option>
+                      <option>その他ギフト</option>
+                      <option>とじものWT1P</option>
+                      <option>とじものWT2P</option>
+                      <option>とじものWT3P</option>
+                      <option>とじものFT1P</option>
+                      <option>とじものFT2P</option>
+                      <option>とじものBT1P</option>
+                      <option>マーメイドB/K</option>
+                      <option>B/Kinポーチ</option>
+                      <option>玄関マット</option>
+                      <option>マルチケース</option>
+                      <option>ベビー雑貨</option>
+                      <option>ベビー寝装</option>
+                      <option>ベビータオル</option>
+                      <option>ベビーインテリア</option>
+                      <option>キッチン雑貨</option>
+                      <option>その他タオル</option>
+                      <option>その他サマー</option>
+                      <option>その他寝装</option>
+                      <option>その他インテリア</option>
+                      <option>その他雑貨</option>
+                      <option>その他新入学</option>
+                      <option>パックタオル</option>
+                      <option>ぞうきん</option>
+                      <option>カバーリング</option>
+                      <option>ギフト（タオル）</option>
+                      <option>ギフト（寝装）</option>
+                      <option>ギフト（インテリア）</option>
+                      <option>パーソナルギフト</option>
+                      <option>オーナメントギフト</option>
+                      <option>バンダナ・風呂敷</option>
+                      <option>チェアシート</option>
+                      <option>刺繍ブローチ</option>
+                      <option>コースター</option>
+                      <option>ランドリーバッグ</option>
+                      <option>頭巻きタオル</option>
+                      <option>新入学ミニタオル</option>
+                      <option>腹巻き</option>
+                      <option>収納ボックス</option>
+                      <option>マスコットネックピロ</option>
+                      <option>タオルエプロン</option>
+                      <option>カレンダーギフト</option>
+                      <option>ジュニアエコバック</option>
+                      <option>ナップサック</option>
+                      <option>シューズバッグ</option>
+                      <option>レッスンバッグ</option>
+                      <option>ポケットポーチ</option>
+                      <option>レジャーシート</option>
+                      <option>お出かけシート</option>
+                      <option>ピクニックマット</option>
+                      <option>新入学ハンカチーフ</option>
+                      <option>新入学ランチーフ</option>
+                      <option>背当てタオル</option>
+                      <option>湯上げタオル</option>
+                      <option>新入学リュックサック</option>
+                      <option>レジャーバッグ</option>
+                      <option>キャリータオル</option>
+                      <option>スキニータオル</option>
+                      <option>スカジャン</option>
+                      <option>エコバッグ</option>
+                      <option>腰あてクッション</option>
+                      <option>文房具</option>
+                      <option>氷のう</option>
+                      <option>ゴルフ企画</option>
+                      <option>水野商品</option>
+                      <option>スポンジ</option>
+                      <option>トラベル商品</option>
+                      <option>湯たんぽ</option>
+                      <option>タブレットケース</option>
+                      <option>スタジャン</option>
+                      <option>アロハシャツ</option>
+                      <option>Tシャツ</option>
+                      <option>ジージャン</option>
+                      <option>ジャージ</option>
+                      <option>ペットボトルカバー</option>
+                      <option>ネームタグ</option>
+                      <option>エアタグ</option>
+                      <option>靴下</option>
+                      <option>ペット商品</option>
+                      <option>カー用品</option>
+                      <option>その他</option>
+                    </select>
                   </div>
-                  <div class="search-row">
-                    <label>ブランド・キャラ</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
-                      <div class="autocomplete-dropdown"></div>
-                    </div>
+                  <div class="filter-item">
+                    <span class="filter-label">ブランド・キャラ</span>
+                    <select id="searchCategory">
+                      <option value="">すべて</option>
+                      <option>ジブリ</option>
+                      <option>ムーミン</option>
+                      <option>ディズニー</option>
+                      <option>マーベル</option>
+                      <option>スターウォーズ</option>
+                      <option>サンリオ</option>
+                      <option>ミッフィー</option>
+                      <option>トーマス</option>
+                      <option>くまのがっこう</option>
+                      <option>オサムグッズ</option>
+                      <option>スタジオ地図</option>
+                      <option>スタジオポノック</option>
+                      <option>ＪＡＬ</option>
+                      <option>Wendy's</option>
+                      <option>いないいないばあ</option>
+                      <option>バービー</option>
+                      <option>ピーターラビット</option>
+                      <option>リサ＆ガスパール</option>
+                      <option>カレルチャペック</option>
+                      <option>リサ・ラーソン</option>
+                      <option>ドラえもん</option>
+                      <option>ベイビーシャーク</option>
+                      <option>クマーバ</option>
+                      <option>ユニバーサル</option>
+                      <option>ペッパピッグ</option>
+                      <option>名探偵コナン</option>
+                      <option>ウォーリーをさがせ</option>
+                      <option>ミニオンズ</option>
+                      <option>オブチアキコ</option>
+                      <option>おさるのジョージ</option>
+                      <option>もふさんど</option>
+                      <option>マイリトルポニー</option>
+                      <option>コウペンちゃん</option>
+                      <option>ポテトヘッド</option>
+                      <option>スイマー</option>
+                      <option>シンプソンズ</option>
+                      <option>エヴァンゲリオン</option>
+                      <option>星のカービィー</option>
+                      <option>バーバパパ</option>
+                      <option>ケアベア</option>
+                      <option>エルマー</option>
+                      <option>HALEIWA</option>
+                      <option>ドラゴンボール</option>
+                      <option>fantti</option>
+                      <option>100日後に死ぬワニ</option>
+                      <option>インゲラ</option>
+                      <option>フィンレイソン</option>
+                      <option>ピンクリボン</option>
+                      <option>アアリッカ</option>
+                      <option>SOUSOU</option>
+                      <option>ベネトン</option>
+                      <option>ちいかわ</option>
+                      <option>オリンピック</option>
+                      <option>ＳＵＮ　ＨＥＡＲＴ</option>
+                      <option>北斎</option>
+                      <option>鳥獣戯画</option>
+                      <option>アノラック</option>
+                      <option>チャンピオン</option>
+                      <option>アドミラル</option>
+                      <option>イーストボーイ</option>
+                      <option>しままる</option>
+                      <option>porukkapattern</option>
+                      <option>piccolino</option>
+                      <option>polku</option>
+                      <option>yup!</option>
+                      <option>キキプリ</option>
+                      <option>ガッツ</option>
+                      <option>今治タオル・ギフト</option>
+                      <option>泉州タオル・ギフト</option>
+                      <option>高級カラータオル</option>
+                      <option>輸入ギフト</option>
+                      <option>平安閣・互助会</option>
+                      <option>一般マキタオル</option>
+                      <option>一般サマー</option>
+                      <option>タオルケット</option>
+                      <option>ポルトガル</option>
+                      <option>トルコ</option>
+                      <option>その他ＥＵ</option>
+                      <option>LINEクリエイターズ</option>
+                      <option>寝装</option>
+                      <option>ぐっこすぱ</option>
+                      <option>インテリア</option>
+                      <option>わんだふるぴーす</option>
+                      <option>雑貨</option>
+                      <option>エコットン</option>
+                      <option>メニーメニー</option>
+                      <option>ベビー</option>
+                      <option>ライセンス終了</option>
+                      <option>輸入タオル別注</option>
+                      <option>国内タオル別注</option>
+                      <option>ＯＬＣ別注</option>
+                      <option>輸入タオル単品</option>
+                      <option>輸入組タオル</option>
+                      <option>輸入寝装・ｲﾝﾃﾘｱ別注</option>
+                      <option>その他キャラクター</option>
+                      <option>過去商品用</option>
+                      <option>資材（箱・雑品）</option>
+                      <option>証紙</option>
+                      <option>その他</option>
+                      <option>テスト</option>
+                      <option>リラックマ</option>
+                      <option>すみっコぐらし</option>
+                      <option>マリオ</option>
+                      <option>スプラトゥーン</option>
+                      <option>どうぶつの森</option>
+                      <option>LINE</option>
+                      <option>BT21</option>
+                      <option>TRUZ</option>
+                      <option>ハリーポッター</option>
+                      <option>トムとジェリー</option>
+                      <option>DC</option>
+                      <option>ルーニー・テューンズ</option>
+                      <option>パワーパフガールズ</option>
+                      <option>その他ワーナー</option>
+                      <option>アンパンマン</option>
+                      <option>鬼滅の刃</option>
+                      <option>呪術廻戦</option>
+                      <option>ワンピース</option>
+                      <option>セーラームーン</option>
+                      <option>ウルトラマン</option>
+                      <option>仮面ライダー</option>
+                      <option>僕のﾋｰﾛｰｱｶﾃﾞﾐｱ</option>
+                      <option>その他バンダイ</option>
+                      <option>ケロッグ</option>
+                      <option>モコモカ</option>
+                      <option>チロルチョコ</option>
+                      <option>珈琲関係</option>
+                      <option>マウントレーニア</option>
+                      <option>プリッとチャンネル</option>
+                      <option>八木春</option>
+                      <option>スパイファミリー</option>
+                      <option>ガーフィールド</option>
+                      <option>ウルポとトゥルポ</option>
+                      <option>水野(売)</option>
+                      <option>WDZY</option>
+                      <option>ねずみのアンディ</option>
+                      <option>umao</option>
+                      <option>アリス</option>
+                      <option>オリオンビール</option>
+                      <option>スパム</option>
+                      <option>助六の日常</option>
+                      <option>可愛い嘘のカワウソ</option>
+                      <option>ネパール</option>
+                      <option>SWEDY</option>
+                      <option>あにまるバス</option>
+                      <option>ﾑｰﾐﾝｱﾆﾒｰｼｮﾝ</option>
+                      <option>みいつけた</option>
+                      <option>星の王子さま</option>
+                      <option>シナぷしゅ</option>
+                      <option>to:alla</option>
+                      <option>ピクミン</option>
+                      <option>その他任天堂</option>
+                      <option>大阪万博</option>
+                      <option>パンダのおさじ</option>
+                      <option>ガチャピン</option>
+                      <option>パンどろぼう</option>
+                      <option>カンボジア</option>
+                      <option>しまじろう</option>
+                      <option>たまごっち</option>
+                      <option>なんでもいきもの</option>
+                      <option>ドナ・ウィルソン</option>
+                      <option>ｻﾝｴｯｸｽﾚｼﾞｪﾝﾄﾞｷｬﾗ</option>
+                      <option>ピンクパンサー</option>
+                      <option>ﾌｼﾞﾃﾚﾋﾞｷｬﾗｸﾀｰ</option>
+                      <option>ソニック</option>
+                      <option>水野(買)</option>
+                    </select>
                   </div>
                   <div class="filter-item">
                     <span class="filter-label">デザイナー</span>
@@ -1241,7 +1586,7 @@
                     <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999906</td><td>秋限定チェックセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
 
                     <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888802</td><td>OEMミッキーAタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/05</td></tr>
-888801                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888803</td><td>OEM無地タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888803</td><td>OEM無地タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
                     <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999907</td><td>OEMギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/17</td></tr>
                     <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999908</td><td>OEMギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/22</td></tr>
 
@@ -1334,17 +1679,10 @@
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       });
 
-      // 初期表示（承認待ち）
+      // 展示会プルダウン初期値（ダッシュボード用の updateLayout1 は本ページにないため未使用）
       var sel = document.getElementById("tenjikaiSelect");
-
       if (sel) {
         sel.value = "";
-
-        updateLayout1("2026.03");
-
-        sel.addEventListener("change", function () {
-          updateLayout1(this.value);
-        });
       }
 
       // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
