@@ -1372,8 +1372,10 @@
 
       // 検索結果一覧: 行クリックで先頭チェックボックスをON/OFF
       (function () {
+        var table = document.querySelector("#approvalListArea .result-table");
         var tbody = document.querySelector("#approvalListArea .result-table tbody");
-        if (!tbody) return;
+        if (!table || !tbody) return;
+        var headerCheckbox = table.querySelector("thead th:first-child input[type='checkbox']");
 
         // 連携済み行はチェック不可（チェックボックス非表示）
         Array.prototype.forEach.call(tbody.rows, function (row) {
@@ -1386,6 +1388,18 @@
             checkbox.style.display = "none";
           }
         });
+
+        // ヘッダーのチェックボックスで明細行を一括ON/OFF
+        if (headerCheckbox) {
+          headerCheckbox.addEventListener("change", function () {
+            var checked = !!headerCheckbox.checked;
+            Array.prototype.forEach.call(tbody.rows, function (row) {
+              var checkbox = row.querySelector("td:first-child input[type='checkbox']");
+              if (!checkbox || checkbox.disabled || row.style.display === "none") return;
+              checkbox.checked = checked;
+            });
+          });
+        }
 
         tbody.addEventListener("click", function (e) {
           // フォーム要素やリンクを直接クリックした時は既定動作を優先
