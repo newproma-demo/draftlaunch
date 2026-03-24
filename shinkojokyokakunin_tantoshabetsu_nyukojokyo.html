@@ -13,6 +13,8 @@
   <script src="js/autocomplete.js"></script>
   <style>
     :root {
+      /* 「例: 80」＋パディング＋ number スピンボタン分（7rem 未満だと iPad 等で潰れる） */
+      --rate-input-w: 7rem;
       --font-size-base: 16pt;
       --fs-base: 16pt;
       --fs-sm: 14pt;
@@ -123,6 +125,7 @@
       padding: 6px 0;
       font-size: 13px;
       color: var(--color-text);
+      min-width: 0;
     }
 
     /* --- 検索条件（hatchujokyokanri.html 風） --- */
@@ -130,13 +133,18 @@
       display: flex;
       flex-wrap: wrap;
       align-items: flex-end;
-      gap: 16px 24px;
-      margin: 0 0 16px 0;
-      padding: 16px 18px;
+      gap: 10px 14px;
+      margin: 0 0 12px 0;
+      padding: 12px 14px;
       background: var(--color-card);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--color-border);
+      min-width: 0;
+      box-sizing: border-box;
+      /* 拡大時のみ @container で補正（100％で十分広いときは既定のまま） */
+      container-type: inline-size;
+      container-name: searchbar;
     }
 
     /* スマホ用「検索条件を開く」ボタン（PCでは非表示） */
@@ -144,52 +152,93 @@
       display: none;
     }
 
+    /* 横並びは内容幅で詰める（1fr グリッドだと所属課〜担当者の間に空白が空く） */
     .search-box .search-box-inner {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px 18px;
-      align-items: start;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      flex: 1 1 100%;
       width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .search-box .search-box-inner > .search-row {
+      flex: 0 1 auto;
+      width: fit-content;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .search-row {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      min-width: 220px;
+      gap: 4px;
+      min-width: 0;
     }
 
     .search-row-inline {
       display: grid;
-      grid-template-columns: 110px 1fr;
-      align-items: start;
-      column-gap: 12px;
-      row-gap: 8px;
+      grid-template-columns: max-content max-content;
+      align-items: center;
+      column-gap: 6px;
+      row-gap: 4px;
       min-width: 0;
+      width: max-content;
+      max-width: 100%;
     }
 
     .search-row-inline > label {
       padding-top: 0;
-      align-self: start;
     }
 
     .search-row-inline > .autocomplete,
-    .search-row-inline > .rate-filter-row {
+    .search-row-inline > .rate-filter-cell {
       grid-column: 2 / 3;
+    }
+
+    /* 達成率の「入力列」幅だけを計測し、狭いとき（拡大・細い列）だけ折り返す */
+    .rate-filter-cell {
+      container-type: inline-size;
+      container-name: ratefilter;
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: visible;
     }
 
     .search-row-inline .rate-filter-row {
       justify-content: flex-start;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      flex-wrap: nowrap;
     }
 
     .search-row-inline .autocomplete {
+      /* style.css の固定幅 250px を上書き */
       min-width: 0;
+      box-sizing: border-box;
     }
 
-    /* チップは入力の下に固定 */
+    .search-row-inline:not(.search-row-dept) .autocomplete {
+      width: 20rem;
+      max-width: min(20rem, 100%);
+    }
+
+    /* 所属課は担当者より狭め。「所属課を入力」が切れない幅を確保 */
+    .search-row-inline.search-row-dept .autocomplete {
+      width: 13rem;
+      max-width: min(13rem, 100%);
+    }
+
+    /* チップは入力の下に固定。align-items:center でもチップブロックは上寄せ（1行目はラベル↔入力が中央揃え） */
     .search-row-inline .multi-chips {
       grid-column: 2 / 3;
-      margin-top: 8px;
+      margin-top: 0;
+      align-self: start;
     }
 
     .search-row label {
@@ -202,9 +251,39 @@
 
     .rate-filter-row {
       display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 6px 8px;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    .rate-filter-row .rate-input {
+      flex: 0 0 var(--rate-input-w);
+      min-width: var(--rate-input-w);
+      max-width: var(--rate-input-w);
+    }
+
+    /* 入力＋％＋トグルが横に収まらない幅のときだけ縦積み（極端に狭いときのみ） */
+    @container ratefilter (max-width: 220px) {
+      .rate-filter-row {
+        flex-wrap: wrap;
+      }
+
+      .rate-filter-row .rate-input {
+        flex: 0 1 var(--rate-input-w);
+        max-width: 100%;
+      }
+    }
+
+    /* ％＋トグルはまとめて1アイテムにし、狭いときは入力の下へ折り返す */
+    .rate-inline-tail {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
     .rate-toggle-group {
@@ -226,18 +305,25 @@
       user-select: none;
     }
 
+    .search-box .rate-toggle {
+      padding: 6px 8px;
+    }
+
     .rate-toggle.is-active {
       background: var(--color-primary);
       color: #fff;
     }
 
     .rate-input {
-      width: 110px;
-      padding: 10px 12px;
+      width: var(--rate-input-w);
+      min-width: var(--rate-input-w);
+      max-width: 100%;
+      padding: 6px 8px;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       background: var(--color-card);
       font-weight: 800;
+      box-sizing: border-box;
     }
 
     .rate-suffix {
@@ -249,15 +335,15 @@
     .multi-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
+      gap: 4px 6px;
+      margin-top: 0;
     }
 
     .chip {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      gap: 4px;
+      padding: 4px 8px;
       border-radius: 999px;
       border: 1px solid var(--color-border);
       background: var(--color-surface);
@@ -265,6 +351,13 @@
       font-weight: 800;
       color: var(--color-text);
       user-select: none;
+    }
+
+    /* autocomplete-input と同じフォントサイズ・ウェイト（tanto-wrap から継承） */
+    .search-box .multi-chips .chip {
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: 1.35;
     }
 
     .chip button {
@@ -278,12 +371,98 @@
       padding: 0;
     }
 
+    .search-box .multi-chips .chip button {
+      font-size: inherit;
+      font-weight: 700;
+    }
+
     .search-actions {
-      grid-column: 1 / -1;
-      justify-content: flex-end;
       display: flex;
-      gap: 10px;
+      flex: 0 0 auto;
+      margin-left: auto;
+      align-self: center;
+      justify-content: flex-end;
+      gap: 8px;
       align-items: center;
+    }
+
+    /* ---------- 検索バーが狭いときだけ（拡大表示など）：間隔調整（rate幅は既定のまま） ---------- */
+    @container searchbar (max-width: 1100px) {
+      .search-box .search-box-inner {
+        gap: 4px 6px;
+        align-items: flex-start;
+      }
+
+      .search-box .search-box-inner > .search-row {
+        flex: 0 1 auto;
+        min-width: 0;
+      }
+
+      .search-row-inline.search-row-dept .autocomplete {
+        width: min(13rem, 100%);
+        max-width: 100%;
+      }
+
+      .search-row-inline:not(.search-row-dept) .autocomplete {
+        width: min(17rem, 100%);
+        max-width: 100%;
+      }
+    }
+
+    /* かなり狭いときだけ一括クリアを次行へ（iPad 横 1024px 付近では同じ行を維持） */
+    @container searchbar (max-width: 600px) {
+      .search-actions {
+        flex: 0 0 100%;
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        order: 99;
+        align-self: stretch;
+        justify-content: flex-end;
+      }
+    }
+
+    /* ---------- タブレット（iPad 等 769–1199px）：達成率・％・トグル・一括を 1 行に、必要なら横スクロール ---------- */
+    @media (min-width: 769px) and (max-width: 1199px) {
+      .search-box .search-box-inner {
+        flex-wrap: nowrap;
+        align-items: center;
+        overflow-x: auto;
+        overflow-y: visible;
+        gap: 8px;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .search-box .search-box-inner > .search-row {
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        width: auto;
+        max-width: none;
+      }
+
+      .search-actions {
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        margin-left: auto;
+        order: 0;
+        width: auto;
+      }
+
+      .search-row-inline:not(.search-row-dept) .autocomplete {
+        width: 14rem;
+        max-width: 14rem;
+      }
+
+      .search-row-inline.search-row-dept .autocomplete {
+        width: 11.5rem;
+        max-width: 11.5rem;
+      }
+
+      .rate-filter-cell {
+        min-width: 16rem;
+      }
     }
 
     .search-button {
@@ -626,13 +805,31 @@
 
       .search-box .search-box-inner {
         display: none;
-        grid-template-columns: 1fr;
-        padding: 12px 0 0;
-        gap: 12px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 8px 0 0;
+        gap: 8px 12px;
       }
 
       .search-box.is-open .search-box-inner {
-        display: grid;
+        display: flex;
+      }
+
+      .search-box .search-box-inner > .search-row {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .search-box .search-box-inner .search-row-inline {
+        width: 100%;
+        max-width: 100%;
+        grid-template-columns: max-content 1fr;
+      }
+
+      .search-box .search-box-inner .search-row-inline:not(.search-row-dept) .autocomplete,
+      .search-box .search-box-inner .search-row-inline.search-row-dept .autocomplete {
+        width: 100%;
+        max-width: 100%;
       }
 
       .search-box.is-open .search-toggle-sp::after {
@@ -644,26 +841,44 @@
         min-width: 0;
       }
 
-      .search-row-inline {
-        grid-template-columns: 96px 1fr;
-      }
-
       .search-row label {
         font-size: var(--fs-xs);
         flex-shrink: 0;
       }
 
       .search-row select,
-      .search-row input,
-      .search-row .autocomplete,
-      .search-row-inline .rate-filter-row {
+      .search-row input:not(.rate-input),
+      .search-row .autocomplete {
         min-width: 0;
         width: 100%;
         box-sizing: border-box;
       }
 
+      .search-row-inline .rate-filter-cell {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-row-inline .rate-filter-row {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-row-inline .rate-filter-row .rate-input {
+        width: var(--rate-input-w);
+        min-width: 0;
+        max-width: min(var(--rate-input-w), 100%);
+        flex: 0 1 auto;
+      }
+
       .search-actions {
-        grid-column: 1 / -1;
+        margin-left: 0;
+        width: 100%;
+        align-self: stretch;
         justify-content: flex-end;
       }
 
@@ -978,7 +1193,7 @@
         <div class="search-box" id="searchBox" aria-label="検索条件">
           <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel"><span class="search-toggle-sp-label"><img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20"><span class="search-toggle-sp-text">検索条件を開く</span></span></button>
           <div class="search-box-inner" id="searchRowsPanel">
-            <div class="search-row search-row-inline">
+            <div class="search-row search-row-inline search-row-dept">
               <label for="deptInput">所属課</label>
               <div class="autocomplete">
                 <input type="text" id="deptInput" class="autocomplete-input" data-list="department" placeholder="所属課を入力">
@@ -998,12 +1213,16 @@
 
             <div class="search-row search-row-inline">
               <label for="rateValue">達成率（合計）</label>
-              <div class="rate-filter-row">
-                <input type="number" id="rateValue" class="rate-input" min="0" max="100" step="0.1" placeholder="例: 80">
-                <span class="rate-suffix">%</span>
-                <div class="rate-toggle-group" role="group" aria-label="達成率の条件">
-                  <button type="button" class="rate-toggle is-active" id="rateGte" aria-pressed="true">以上</button>
-                  <button type="button" class="rate-toggle" id="rateLte" aria-pressed="false">以下</button>
+              <div class="rate-filter-cell">
+                <div class="rate-filter-row">
+                  <input type="number" id="rateValue" class="rate-input" min="0" max="100" step="0.1" placeholder="例: 80">
+                  <span class="rate-inline-tail">
+                    <span class="rate-suffix">%</span>
+                    <div class="rate-toggle-group" role="group" aria-label="達成率の条件">
+                      <button type="button" class="rate-toggle is-active" id="rateGte" aria-pressed="true">以上</button>
+                      <button type="button" class="rate-toggle" id="rateLte" aria-pressed="false">以下</button>
+                    </div>
+                  </span>
                 </div>
               </div>
             </div>
