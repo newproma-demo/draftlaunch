@@ -69,9 +69,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">仕様書情報登録</a></li>
-      <li><a href="#">仕様書情報決済</a></li>
-      <li><a href="#">仕様書情報入稿</a></li>
+      <li><a href="shiyoshokensaku.html">仕様書作成</a></li>
       <li><a href="sampleshinseikensaku.html">サンプル承認結果登録</a></li>
     </ul>
   </div>
@@ -84,7 +82,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="sampleshokai.html">サンプル管理</a></li>
-      <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
+      <li><a href="saishusampleteishutsujokyokanri.html">最終サンプル提出状況管理（重点解除）</a></li>
     </ul>
   </div>
 
@@ -95,8 +93,8 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">品質検査合格書登録</a></li>
-      <li><a href="#">品質検査合格書決済</a></li>
+      <li><a href="hinshitsukensazuankensaku.html">品質検査合格書登録</a></li>
+      <li><a href="hinshitsukensagokakushokensaku.html">品質検査合格書決済</a></li>
     </ul>
   </div>
 
@@ -108,13 +106,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="keiyakushosofuirai.html">契約書送付依頼</a></li>
-      <li><a href="#">契約書登録</a></li>
-      <li><a href="#">発注入力</a></li>
-      <li><a href="#">発注書決済</a></li>
-      <li><a href="#">証紙依頼書入力</a></li>
-      <li><a href="#">証紙依頼書決済</a></li>
-      <li><a href="#">契約書サイン</a></li>
-      <li><a href="#">契約書送信</a></li>
+      <li><a href="keiyakushosofuiraikakunin.html">注文書作成</a></li>
       <li><a href="hatchujohoMsysemrenkei.html">発注情報Mｼｽﾃﾑ連携</a></li>
       <li><a href="#">発注履歴照会</a></li>
     </ul>
