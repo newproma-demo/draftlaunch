@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+  <style>
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+     body {
+      display: flex;
+      flex-direction: column;
+    } 
+
+    /* #region ヘッダー */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+    /* #endregion */
+
+    /* #region メニュー */
+    .sidebar {
+      width: 220px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 12px 0;
+      box-sizing: border-box;
+      overflow: visible;
+      position: relative;
+      z-index: 100;
+      transition: transform 0.3s ease;
+      box-shadow: 2px 0 12px rgba(0, 134, 50, 0.15);
+    }
+
+    .sidebar.closed {
+      transform: translateX(-220px);
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      left: 220px;
+      top: 12px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-left: none;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      cursor: pointer;
+      padding: 6px 8px;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s ease;
+    }
+
+    .sidebar-toggle:hover {
+      background: var(--color-surface);
+    }
+
+    .sidebar-toggle img {
+      width: 12px;
+      height: 13px;
+      padding-top: 0;
+      pointer-events: none;
+    }
+
+    .sidebar h2 {
+      margin: 8px 12px 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      text-transform: uppercase;
+    }
+
+    .sidebar-logo-proma {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .sidebar-logo-marushin {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1500;
+      backdrop-filter: blur(2px);
+    }
+
+    .menu-item {
+      margin: 2px 8px;
+      position: relative;
+      border-radius: var(--radius-sm);
+    }
+
+    .menu-title {
+      position: relative;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s ease;
+    }
+
+    .menu-title img {
+      margin-right: 10px;
+      opacity: 0.9;
+    }
+
+    .menu-item:hover>.submenu {
+      display: block;
+    }
+
+    .menu-item:hover .menu-title {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .arrow {
+      transition: transform 0.2s ease;
+      margin-left: auto;
+      opacity: 0.8;
+    }
+
+    /* サブメニュー */
+    .submenu {
+      display: none;
+      position: absolute;
+      /* 右側に出すために絶対配置 */
+      top: -13px;
+      left: 105%;
+      background: #008632;
+      padding: 0px 0px 0px 0px;
+      border-radius: 3px;
+      display: none;
+      min-width: 330px;
+      list-style: none;
+    }
+
+    /* 隙間を埋める透明のホバー領域 */
+    .submenu::before {
+      content: "";
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: -5%;
+      width: 5%;
+      height: 100%;
+      background: transparent;
+      display: block;
+    }
+
+    .submenu li {
+      padding: 8px 10px;
+      height: auto;
+      /* ←折り返し対応 */
+    }
+
+    .submenu li:hover {
+      background: #006C29;
+      /* 好きな色に変更 */
+      border-radius: 4px;
+      /* 角丸にしたい場合 */
+    }
+
+    .submenu li a {
+      display: block;
+      /* 折り返しを効かせる */
+      white-space: normal;
+      /* 折り返しOK */
+      word-break: break-word;
+      /* 日本語も途中で折れる */
+      line-height: 1.1; 
+      /* 行間を少し広めに */
+    }
+
+    .submenu a {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 24px 56px 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .content-box .search-box {
+      flex-shrink: 0;
+    }
+
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      padding: 28px;
+      width: 85%;
+      max-width: 900px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2001;
+    }
+
+    /* #region レスポンシブ対応 */
+    /* 画面の高さが750px以下ならロゴを非表示 */
+    @media (max-height: 750px) {
+      .sidebar-logo-proma {
+        display: none;
+      }
+    }
+
+    /* 画面の高さが600px以下ならロゴを非表示 */
+    @media (max-height: 600px) {
+      .sidebar-logo-marushin {
+        display: none;
+      }
+    }
+
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 768px) {
+      .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* サイドバーを隠す */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+
+      /* 開いた状態 */
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-toggle {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px 20px 56px 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        min-height: 0;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+      .search-toggle-sp::after {
+        content: "＋";
+        color: var(--color-text-muted);
+      }
+      .search-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+       .search-box-inner {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 16px;
+      }
+      .search-box.is-open .search-box-inner {
+        display: grid;
+      }
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
+      }
+
+      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
+      .view-layout-1-group > .content-box:first-of-type {
+        padding: 8px;
+      }
+      .view-layout-1-group > .content-box:first-of-type .view-layout-title {
+        margin: 0 0 12px;
+        padding: 0 0 8px;
+      }
+      .search-box-inner .filter-row {
+        display: contents;
+      }
+      .search-box-inner .filter-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+      }
+      .search-box-inner .filter-item .filter-label {
+        margin-right: 0;
+      }
+      .search-box-inner .filter-item select,
+      .search-box-inner .filter-item input[type="text"] {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .search-box-inner .search-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+      }
+      .search-box-inner .search-row label {
+        /* font-size: var(--fs-base);  */
+        flex-shrink: 0;
+      }
+      .search-box-inner .search-row select,
+      .search-box-inner .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        margin-left: 0;
+      }
+
+      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
+      #approvalListArea {
+        overflow-x: visible;
+        max-height: none;
+      }
+      #approvalListArea .result-table {
+        min-width: 0;
+      }
+      #approvalListArea .result-table thead {
+        display: none;
+      }
+      #approvalListArea .result-table tbody tr {
+        display: block;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        background: var(--color-card);
+      }
+      #approvalListArea .result-table tbody tr::before {
+
+        display: block;
+        color: var(--color-primary);
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      #approvalListArea .result-table tbody td {
+        display: block;
+        border: none;
+        padding: 8px 0;
+        white-space: normal;
+      }
+      /* 先頭列はチェックボックスのため、2列目以降にラベルを付与 */
+      #approvalListArea .result-table tbody td:nth-child(2)::before {
+        content: "販売区分：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(3)::before {
+        content: "展示会：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(4)::before {
+        content: "カテゴリー：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(5)::before {
+        content: "品名：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(6)::before {
+        content: "アイテム：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(7)::before {
+        content: "ブランド・キャラ：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
+        content: "承認結果：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(9)::before {
+        content: "結果登録日：";
+        font-weight: 600;
+      }
+
+      /* 2段目は販売区分・展示会を横並びで表示（チェック列を除いて2・3列目） */
+      #approvalListArea .result-table tbody td:nth-child(2),
+      #approvalListArea .result-table tbody td:nth-child(3) {
+        display: inline-block;
+        width: auto;
+        margin-right: 12px;
+      }
+
+      /* イメージ案②: スマホ用 */
+      .view-layout-2 .status-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+
+    #tenjikaiSelect:hover,
+    .dashboard-box select:hover {
+      border-color: var(--color-primary);
+    }
+
+    #tenjikaiSelect:focus,
+    .dashboard-box select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+    }
+
+    /* ========== イメージ案：3つとも一括表示 ========== */
+    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout-1-group,
+    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
+
+    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
+    h1.view-layout-title {
+      margin: 4px 0 8px 12px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
+    .view-layout-1 { padding: 0; }
+
+    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
+    @media (min-width: 769px) {
+      .search-toggle-sp {
+        display: none;
+      }
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+    .filter-row input[type="text"], .filter-row select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+    }
+
+    /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
+    .search-box-inner .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .search-box-inner .search-row label {
+      margin: 0;
+      /* font-size: var(--fs-base); */
+      /* font-weight: 500; */
+      /* color: var(--color-text-muted); */
+      white-space: nowrap;
+    }
+    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
+    .search-box-inner .search-row .autocomplete-dropdown,
+    .search-box-inner .search-row .autocomplete-dropdown div {
+      font-size: var(--fs-base);
+      font-weight: 500;
+    }
+    .search-box-inner .search-row select,
+    .search-box-inner .search-row input {
+      /* font-size: var(--fs-base); */
+      min-width: 160px;
+      padding: 10px 12px;
+      /* font-family: inherit; */
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      /* color: var(--color-text); */
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-box-inner .search-row select:hover,
+    .search-box-inner .search-row input:hover {
+      border-color: #b0bdb5;
+    }
+    .search-box-inner .search-row select:focus,
+    .search-box-inner .search-row input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+    .search-box-inner .search-row input::placeholder {
+      color: #9ca89f;
+    }
+
+    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .btn-search-cancel {
+      display: inline-block;
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-search-cancel:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* 承認通知／検索結果・ボックス共通 */
+    .content-box {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group > .content-box:first-of-type {
+      margin-bottom: 5px;
+    }
+    .content-box h3 {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+    /* 検索結果一覧テーブル（スクロール対応） */
+    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
+    #approvalListArea {
+      width: 100%;
+      max-height: 70vh;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      table-layout: fixed;
+    }
+    .result-table th,
+    .result-table td {
+      padding: 16px 10px;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .result-table th {
+      padding: 8px 10px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      font-weight: 600;
+      border-top: none;
+    }
+    .result-table tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+    .result-table tr:hover {
+      background: rgba(0, 134, 50, 0.06);
+    }
+    /* 図案管理番号リンク */
+    .result-table a {
+      color: #0066cc;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .result-table a:hover {
+      opacity: 0.9;
+    }
+
+    /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
+    .view-layout-2 { padding: 0; }
+    .view-layout-2 .status-buttons { margin-bottom: 20px; }
+    .view-layout-2 .list-section-title {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー  -->
+    <div class="sidebar">
+      <button class="sidebar-toggle">
+        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle">
+      </button>
+      <h2>メニュー</h2>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/linear_scale_20dp_F4F6F9.svg">
+          <span>進捗管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">進行状況確認（仕様書別・商品別）</a></li>
+          <li><a href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html">進行状況確認（担当者別入稿状況）</a></li>
+          <li><a href="hatchujokyokanri.html">発注状況管理</a></li>
+          <li><a href="#">マニフェスト管理</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/color_lens_20dp_F4F6F9.svg">
+          <span>図案管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">見積依頼入力・送信</a></li>
+          <li><a href="#">見積回答登録・メーカー決定</a></li>
+          <li><a href="#">別注図案作成依頼登録・申請</a></li>
+          <li><a href="#">別注図案作成依頼承認</a></li>
+          <li><a href="zuankensaku.html">図案情報登録</a></li>
+          <li><a href="zuanfuriwake.html">図案振分け</a></li>
+          <li><a href="#">図案提出</a></li>
+          <li><a href="#">図案選定結果登録</a></li>
+          <li><a href="#">図案申請</a></li>
+          <li><a href="#">図案承認結果登録</a></li>
+          <li><a href="#">見積図案アップロード</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/edit_document_20dp_F4F6F9.svg">
+          <span>仕様書管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">仕様書情報登録</a></li>
+          <li><a href="#">仕様書情報決済</a></li>
+          <li><a href="#">仕様書情報入稿</a></li>
+          <li><a href="#">サンプル承認結果登録</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/smart_toy_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>サンプル管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">サンプル管理</a></li>
+          <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/high_quality_20dp_F4F6F9.svg">
+          <span>品質管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">品質検査合格書登録</a></li>
+          <li><a href="#">品質検査合格書決済</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/manufacturing_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>発注管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">契約書送付依頼</a></li>
+          <li><a href="#">契約書登録</a></li>
+          <li><a href="#">発注入力</a></li>
+          <li><a href="#">発注書決済</a></li>
+          <li><a href="#">証紙依頼書入力</a></li>
+          <li><a href="#">証紙依頼書決済</a></li>
+          <li><a href="#">契約書サイン</a></li>
+          <li><a href="#">契約書送信</a></li>
+          <li><a href="#">発注情報Mｼｽﾃﾑ連携</a></li>
+          <li><a href="#">発注履歴照会</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/directions_boat_filled_20dp_F4F6F9.svg">
+          <span>入荷管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">Ship依頼書/国内手配書登録</a></li>
+          <li><a href="#">Ship依頼書/国内手配書決済</a></li>
+          <li><a href="#">Ship依頼書送信</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/map_20dp_F4F6F9.svg">
+          <span>マップ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">商品マップ生成</a></li>
+          <li><a href="#">商品マップ公開</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/conversation_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>評価分析</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">人事考課用実績集計</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/factory_20dp_F4F6F9.svg">
+          <span>工場監査</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">ライセンス契約情報入力</a></li>
+          <li><a href="#">ライセンス契約チェック</a></li>
+          <li><a href="#">工場認定情報入力</a></li>
+          <li><a href="#">工場認定有効期限確認</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>マスタ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">コスト管理表</a></li>
+          <li><a href="#">商品情報照会</a></li>
+          <li><a href="#">システム設定マスタメンテナンス</a></li>
+          <li><a href="#">権限グループマスタメンテナンス</a></li>
+          <li><a href="#">ユーザーマスタメンテナンス</a></li>
+          <li><a href="#">ライセンスマスタメンテナンス</a></li>
+          <li><a href="#">ブランドマスタメンテナンス</a></li>
+          <li><a href="#">キャラクタマスタメンテナンス</a></li>
+          <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
+          <li><a href="#">資材マスタメンテナンス</a></li>
+        </ul>
+      </div>
+
+      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="120">
+      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="155">
+
+    </div>
+
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">品質検査合格書検索</h2>
+
+        <!-- ========== 検索条件・検索結果一覧 ========== -->
+        <div class="view-layout view-layout-1-group">
+          <!-- 検索条件ボックス -->
+          <div class="content-area">
+            <div class="search-box" id="searchBox">
+              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
+                <span class="search-toggle-sp-label">
+                  <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                  <span class="search-toggle-sp-text">検索条件を開く</span>
+                </span>
+              </button>
+              <div class="search-box-inner" id="searchRowsPanel">
+                <div class="filter-row">
+                  <div class="filter-item">
+                    <span class="filter-label">販売区分</span>
+                    <select id="searchHanbaiKubun">
+                      <option value="">すべて</option>
+                      <option value="teiban">定番</option>
+                      <option value="teibankako">定番加工</option>
+                      <option value="betchu">別注</option>
+                      <option value="oem">OEM</option>
+                    </select>
+                  </div>
+                  <div class="filter-item" id="tenjikaiFilterItem">
+                    <span class="filter-label">展示会</span>
+                    <select id="tenjikaiSelect">
+                      <option value="">すべて</option>
+                      <option value="2026.06">2026.06 展示会</option>
+                      <option value="2026.03">2026.03 展示会</option>
+                      <option value="2026.01">2026.01 展示会</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">ステータス</span>
+                    <select id="searchStatus">
+                      <option value="">すべて</option>
+                      <option value="申請中">申請中</option>
+                      <option value="承認済">承認済</option>
+                      <option value="差戻し">差戻し</option>
+                    </select>
+                  </div>
+                  <div class="search-row">
+                    <label>カテゴリー</label>
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="category" placeholder="カテゴリー検索" id="searchCategory">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="filter-item">
+                    <label class="filter-label">商品コード</label>
+                    <select id="productCodeSelect">
+                      <option value="">選択してください</option>
+                      <option value="1" data-product-name="商品名1">999991</option>
+                      <option value="2" data-product-name="商品名2">999992</option>
+                      <option value="3" data-product-name="商品名3">999993</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">品名</span>
+                    <input type="text" id="searchHinmei" placeholder="品名を入力">
+                  </div>
+                  <div class="search-row">
+                    <label>アイテム</label>
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="searchItem">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="search-row">
+                    <label>ブランド・キャラ</label>
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">デザイナー</span>
+                    <select id="tenjikaiSelect">
+                      <option value="">すべて</option>
+                      <option value="">丸眞太郎</option>
+                      <option value="">丸眞花子</option>
+                      <option value="">丸眞桜子</option>
+                    </select>
+                  </div>
+                  <div class="search-cancel-wrapper">
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 検索結果一覧エリア -->
+          <div class="content-area" id="approvalNoticeArea">
+            <div class="view-layout view-layout-2">
+              <!-- テーブル用スクロールコンテナ -->
+              <div id="approvalListArea">
+                <table class="result-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%;"></th>
+                      <th style="width: 5%;">販売区分</th>
+                      <th style="width: 10%;">展示会</th>
+                      <th style="width: 8%;">カテゴリー</th>
+                      <th style="width: 8%;">商品コード</th>
+                      <th style="width: 14%;">品名</th>
+                      <th style="width: 14%;">アイテム</th>
+                      <th style="width: 14%;">ブランド・キャラ</th>
+                      <th style="width: 10%;">デザイナー</th>
+                      <th style="width: 5%;">承認結果</th>
+                      <th style="width: 7%;">結果登録日</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- 35行のサンプルデータ -->
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>999991</td><td>商品名1</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番加工</td><td></td><td>単品タオル</td><td>999992</td><td>商品名2</td><td>ウォッシュタオル</td><td>サンリオ</td><td>丸眞花子</td><td>承認済</td><td>2025/01/10</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>999993</td><td>商品名3</td><td>フェイスタオル</td><td>ムーミン</td><td>丸眞桜子</td><td>差戻し</td><td>2025/01/13</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番加工</td><td></td><td>単品タオル</td><td>999901</td><td>無地カラフルタオル</td><td>バスタオル</td><td>サンリオ</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>999902</td><td>春限定フラワータオル</td><td>マフラータオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/22</td></tr>
+
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999903</td><td>別注ミッキーAセット</td><td>ミニタオル</td><td>ムーミン</td><td>丸眞桜子</td><td>差戻し</td><td>2025/01/05</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999904</td><td>別注ミッキーBセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>単品タオル</td><td>888801</td><td>別注無地タオル</td><td>ミニタオル</td><td>ドラえもん</td><td>丸眞桜子</td><td>承認済</td><td>2025/01/13</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999905</td><td>夏限定マリンセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/17</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999906</td><td>秋限定チェックセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888802</td><td>OEMミッキーAタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/05</td></tr>
+888801                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888803</td><td>OEM無地タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999907</td><td>OEMギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/17</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999908</td><td>OEMギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/22</td></tr>
+
+                    <!-- 以降は番号だけ変えたダミー行 -->
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>888804</td><td>ミッキーD柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>888805</td><td>無地ベーシックタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/10</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>999909</td><td>シーズンタオルA</td><td>ミニタオル</td><td>すみっコぐらし</td><td>丸眞花子</td><td>差戻し</td><td>2025/01/13</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>999910</td><td>シーズンタオルB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>999911</td><td>シーズンタオルC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/22</td></tr>
+
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999912</td><td>別注ミッキーCセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/05</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>単品タオル</td><td>888806</td><td>別注無地カラー</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999913</td><td>別注ギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/13</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999914</td><td>別注ギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/17</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999915</td><td>別注ギフトセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999916</td><td>OEMタオルセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/05</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999917</td><td>OEMタオルセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/10</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999918</td><td>OEMタオルセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888807</td><td>OEM無地タオルセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/17</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999919</td><td>OEMギフトボックスA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/22</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999920</td><td>OEMギフトボックスB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>888808</td><td>ミッキーE柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>888809</td><td>ミッキーF柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/13</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999921</td><td>別注キャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/17</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999922</td><td>OEMキャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888810</td><td>OEM無地カラーセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/05</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- #endregion -->
+        </div>
+      </div>
+    </div>
+
+    <!--#region モーダル(通知のリンク)  -->
+    <div id="modal-window" class="modal-window"> 
+    </div>
+    <!-- #endregion -->
+
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        sidebar.classList.toggle('active');
+
+        if (sidebar.classList.contains('active')) {
+          overlay.classList.add('show');   // ← オーバーレイ表示
+        } else {
+
+          overlay.classList.remove('show'); // ← オーバーレイ非表示
+        }
+      }
+
+      // PCのとき、メニューの開閉ボタン
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const toggleImg = toggle.querySelector('img');
+      const content = document.querySelector('.content');
+
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        } else {
+          toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+        }
+      });
+
+      // スマホのとき、開いたメニューを閉じる
+      function closeSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        sidebar.classList.remove('active');
+        overlay.classList.remove('show');
+      }
+
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation(); // クリックが外側に伝播しないように
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // 初期表示（承認待ち）
+      var sel = document.getElementById("tenjikaiSelect");
+
+      if (sel) {
+        sel.value = "";
+
+        updateLayout1("2026.03");
+
+        sel.addEventListener("change", function () {
+          updateLayout1(this.value);
+        });
+      }
+
+      // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
+      (function () {
+        var selHanbai = document.getElementById("searchHanbaiKubun");
+        var selTenjikai = document.getElementById("tenjikaiSelect");
+        var selStatus = document.getElementById("searchStatus");
+        var selCategory = document.getElementById("searchCategory");
+        var inpHinmei = document.getElementById("searchHinmei");
+        var selItem = document.getElementById("searchItem");
+        var selBrandChara = document.getElementById("searchBrandChara");
+        var tbody = document.querySelector("#approvalListArea .result-table tbody");
+        if (!tbody) return;
+
+        // ステータス列は表示しないため、デモでは各行へdata-statusを付与して絞り込み可能にする
+        (function ensureRowStatuses() {
+          var statuses = ["申請中", "承認済", "差戻し"];
+          Array.prototype.forEach.call(tbody.rows, function (row, idx) {
+            if (!row.getAttribute("data-status")) {
+              row.setAttribute("data-status", statuses[idx % statuses.length]);
+            }
+          });
+        })();
+
+        function mapHanbai(value) {
+          return {
+            teiban: "定番",
+            teibankako: "定番加工",
+            betchu: "別注",
+            oem: "OEM"
+          }[value] || "";
+        }
+
+        function mapCategory(value) {
+          return {
+            tanpin: "単品タオル",
+            kikaku: "企画物タオル"
+          }[value] || "";
+        }
+
+        function applyFilter() {
+          var condHanbai = selHanbai ? selHanbai.value : "";
+          var condTenjikai = selTenjikai ? selTenjikai.value : "";
+          var condStatus = selStatus ? selStatus.value : "";
+          var condCategory = selCategory ? selCategory.value : "";
+          var condHinmei = inpHinmei ? inpHinmei.value.trim() : "";
+          var condItem = selItem ? (selItem.tagName === "SELECT" ? selItem.value : selItem.value.trim()) : "";
+          var condBrandChara = selBrandChara ? (selBrandChara.tagName === "SELECT" ? selBrandChara.value : selBrandChara.value.trim()) : "";
+          var hanbaiLabel = mapHanbai(condHanbai);
+          var categoryLabel = selCategory && selCategory.tagName === "SELECT" ? mapCategory(condCategory) : (condCategory || "").trim();
+
+          Array.prototype.forEach.call(tbody.rows, function (row) {
+            // 先頭セルはチェックボックス列のため、各項目は1つ後ろのインデックス
+            var cellHanbai = row.cells[1] ? row.cells[1].textContent.trim() : "";
+            var cellTenjikai = row.cells[2] ? row.cells[2].textContent.trim() : "";
+            var cellCategory = row.cells[3] ? row.cells[3].textContent.trim() : "";
+            var cellHinmei = row.cells[4] ? row.cells[4].textContent.trim() : "";
+            var cellItem = row.cells[5] ? row.cells[5].textContent.trim() : "";
+            var cellBrandChara = row.cells[6] ? row.cells[6].textContent.trim() : "";
+            var rowStatus = (row.getAttribute("data-status") || "").trim();
+            var match = true;
+
+            if (condHanbai === "teiban_else") {
+              if (cellHanbai === "定番") match = false;
+            } else if (condHanbai && cellHanbai !== hanbaiLabel) {
+              match = false;
+            }
+
+            if (condTenjikai) {
+              if (!cellTenjikai || cellTenjikai.indexOf(condTenjikai) !== 0) match = false;
+            }
+            if (condStatus && rowStatus !== condStatus) match = false;
+            if (condCategory && cellCategory !== categoryLabel) match = false;
+
+            if (condHinmei && cellHinmei.indexOf(condHinmei) === -1) match = false;
+
+            if (condItem && cellItem !== condItem) match = false;
+
+            if (condBrandChara && cellBrandChara !== condBrandChara) match = false;
+
+            row.style.display = match ? "" : "none";
+          });
+        }
+
+        [selHanbai, selTenjikai, selStatus].forEach(function (el) {
+          if (el) el.addEventListener("change", applyFilter);
+        });
+        if (selCategory) {
+          selCategory.addEventListener("change", applyFilter);
+          if (selCategory.tagName === "INPUT") selCategory.addEventListener("input", applyFilter);
+        }
+        if (selItem) {
+          selItem.addEventListener("change", applyFilter);
+          if (selItem.tagName === "INPUT") selItem.addEventListener("input", applyFilter);
+        }
+        if (selBrandChara) {
+          selBrandChara.addEventListener("change", applyFilter);
+          if (selBrandChara.tagName === "INPUT") selBrandChara.addEventListener("input", applyFilter);
+        }
+        if (inpHinmei) {
+          inpHinmei.addEventListener("input", applyFilter);
+          inpHinmei.addEventListener("change", applyFilter);
+        }
+
+        var cancelAllBtn = document.getElementById("searchCancelAllBtn");
+        if (cancelAllBtn) {
+          cancelAllBtn.addEventListener("click", function () {
+            // 初期表示へ戻す（リフレッシュ）
+            window.location.reload();
+          });
+        }
+        applyFilter();
+      })();
+
+      // スマホ: 検索条件の折りたたみ開閉
+      (function () {
+        var btn = document.getElementById("searchToggleSp");
+        var box = document.getElementById("searchBox");
+        if (btn && box) {
+          btn.addEventListener("click", function () {
+            var isOpen = box.classList.toggle("is-open");
+            btn.setAttribute("aria-expanded", isOpen);
+            var textEl = btn.querySelector(".search-toggle-sp-text");
+            if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+          });
+        }
+      })();
+    </script>
+</body>
+
+</html>
