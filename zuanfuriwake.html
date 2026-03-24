@@ -5,35 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
   <style>
-    :root {
-      --font-size-base: 16pt;
-      --fs-base: 16pt;
-      --fs-sm: 14pt;
-      --fs-xs: 12pt;
-      --fs-lg: 18pt;
-      --fs-xl: 20pt;
-      --color-primary: #008632;
-      --color-primary-dark: #006C29;
-      --color-primary-light: #00a840;
-      --color-surface: #f8faf9;
-      --color-tanto-hover: #47bdc5;
-      --color-card: #ffffff;
-      --color-border: #e2e8e6;
-      --color-text: #1a2e26;
-      --color-text-muted: #5c6f66;
-      --shadow-sm: 0 1px 3px rgba(0, 134, 50, 0.06);
-      --shadow-md: 0 4px 12px rgba(0, 134, 50, 0.08);
-      --shadow-lg: 0 8px 24px rgba(0, 134, 50, 0.1);
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --font-sans: "Outfit", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
-    }
-
     .pc-only {
       display: block;
     }
@@ -42,17 +19,10 @@
       display: none;
     }
 
-    body {
-      margin: 0;
-      font-size: var(--font-size-base);
-      font-family: var(--font-sans);
-      background: var(--color-surface);
-      color: var(--color-text);
-      height: 100vh;
+     body {
       display: flex;
       flex-direction: column;
-      -webkit-font-smoothing: antialiased;
-    }
+    } 
 
     /* #region ヘッダー */
     .header {
@@ -61,7 +31,7 @@
       left: 0;
       right: 0;
       height: 48px;
-      font-size: var(--font-size-base); /* ヘッダーのフォントサイズ */
+
       background: var(--color-card);
       color: var(--color-text);
       display: flex;
@@ -74,7 +44,6 @@
     .header a {
       text-decoration: none;
       color: inherit;
-      font-weight: 600;
       letter-spacing: 0.02em;
     }
 
@@ -143,7 +112,6 @@
     .header-account_circle:hover {
       opacity: 0.85;
     }
-
     /* #endregion */
 
     /* #region ヘッダー下のメニューとメインコンテンツ */
@@ -154,7 +122,6 @@
       margin-top: 0;
       min-height: calc(100vh - 48px);
     }
-
     /* #endregion */
 
     /* #region メニュー */
@@ -202,9 +169,6 @@
 
     .sidebar h2 {
       margin: 8px 12px 12px;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
       padding-bottom: 8px;
       border-bottom: 1px solid rgba(255,255,255,0.25);
       text-transform: uppercase;
@@ -254,8 +218,6 @@
       cursor: pointer;
       padding: 0 12px;
       border-radius: var(--radius-sm);
-      font-weight: 500;
-      font-size: 16px;
       transition: background 0.2s ease;
     }
 
@@ -285,14 +247,12 @@
       /* 右側に出すために絶対配置 */
       top: -13px;
       left: 105%;
-      /* margin-left: 10px; */
       background: #008632;
       padding: 0px 0px 0px 0px;
       border-radius: 3px;
       display: none;
       min-width: 330px;
       list-style: none;
-      font-size: 16px;
     }
 
     /* 隙間を埋める透明のホバー領域 */
@@ -328,7 +288,7 @@
       /* 折り返しOK */
       word-break: break-word;
       /* 日本語も途中で折れる */
-      line-height: 1.1;
+      line-height: 1.1; 
       /* 行間を少し広めに */
     }
 
@@ -336,7 +296,6 @@
       text-decoration: none;
       color: inherit;
     }
-
     /* #endregion */
 
     /* #region メインコンテンツ */
@@ -346,166 +305,68 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      padding: 12px 24px 24px 32px;
+      padding: 24px 24px 56px 24px;
       overflow-y: auto;
-      transition: margin-left 0.3s ease;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 32px;
     }
 
     .content.expanded {
       margin-left: -220px;
-      padding-left: 24px;
+      padding-left: 32px;
     }
 
     .content h1 {
       margin-top: 0;
     }
 
-    .dashboard-section {
-      flex: 1 1 auto;
-      min-height: min-content;
-      padding: 0 0 24px;
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
       display: flex;
       flex-direction: column;
-      gap: 32px;
-      width: 100%;
-      max-width: none; 
-    }
-
-    .dashboard-box {
-      display: flex;
-      flex-direction: column;
+      flex: 1;
       background: var(--color-card);
-      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: 20px 24px;
+      border: 1px solid var(--color-border);
       box-shadow: var(--shadow-sm);
-      transition: box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-
-    .dashboard-box:hover {
-      box-shadow: var(--shadow-md);
-      border-color: rgba(0, 134, 50, 0.15);
-    }
-
-    .info-box {
-      max-height: 30vh;
-      width: auto;
-      height: auto;
-    }
-
-    .notice-box {
-      max-height: 60vh;
-      height: auto;
-    }
-
-    .shinko-box {
-      max-height: 90vh;
-      height: auto;
-    }
-
-    .dashboard-box h2 {
-      margin: 0 0 16px;
-      font-size: var(--fs-base);
-      font-weight: 600;
-      border-bottom: 2px solid var(--color-primary);
-      padding-bottom: 10px;
-      color: var(--color-text);
-    }
-
-    .dashboard-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      overflow-y: auto;
-    }
-
-    .dashboard-list li {
-      padding: 12px 0;
-      border-bottom: 1px solid var(--color-border);
-      transition: background 0.15s ease;
-    }
-
-    .dashboard-list li:last-child {
-      border-bottom: none;
-    }
-
-    .dashboard-list li:hover {
-      background: var(--color-surface);
-    }
-
-    .dashboard-list a {
-      text-decoration: none;
-      color: var(--color-text);
-      font-weight: 500;
-      display: block;
-      padding: 2px 0;
-      transition: color 0.15s ease;
-    }
-
-    .dashboard-list a:hover {
-      color: var(--color-primary);
-    }
-
-    .shinko-table-wrapper {
-      overflow-y: auto;
-      border-radius: var(--radius-md);
+      padding: 24px;
       overflow: hidden;
-      border: 1px solid var(--color-border);
     }
 
-    .shinko-table thead th {
-      position: sticky;
-      top: 0;
-      color: #fff;
-      font-weight: 600;
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
     }
 
-    .shinko-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--color-card);
-      margin-top: 0;
+    .content-box .search-box {
+      flex-shrink: 0;
     }
 
-    .shinko-table th {
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      padding: 12px 14px;
-      text-align: left;
-      font-size: 16px;
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
-    .shinko-table tr:nth-child(even) {
-      background: var(--color-surface);
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
     }
 
-    .shinko-table tr:hover {
-      background: rgba(0, 134, 50, 0.06);
-    }
-
-    .shinko-table td {
-      padding: 12px 14px;
-      font-size: 16px;
-      border-color: var(--color-border);
-    }
-
-    .shinko-table,
-    .shinko-table th,
-    .shinko-table td {
-      border: 1px solid var(--color-border);
-    }
-
-    /* モーダル */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 2000;
-      backdrop-filter: blur(3px);
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
     }
 
     .modal-window {
@@ -524,215 +385,6 @@
       z-index: 2001;
     }
 
-    .modal-window h3 {
-      margin: 0 0 20px;
-      font-size: 18px;
-      font-weight: 600;
-      border-bottom: 2px solid var(--color-primary);
-      padding-bottom: 12px;
-      color: var(--color-text);
-    }
-
-    .modal-footer {
-      text-align: right;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--color-border);
-    }
-
-    .modal-close {
-      padding: 10px 24px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-      transition: background 0.2s ease;
-    }
-
-    .modal-close:hover {
-      background: var(--color-primary-dark);
-    }
-
-    .modal-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--color-card);
-      margin-top: 0;
-      overflow-y: auto;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-border);
-    }
-
-    .modal-table th {
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      padding: 12px 14px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    .modal-table td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--color-border);
-      font-size: 14px;
-    }
-
-    .modal-table tr:nth-child(even) {
-      background: var(--color-surface);
-    }
-
-    .modal-table tr:hover {
-      background: rgba(0, 134, 50, 0.06);
-    }
-
-    .modal-table,
-    .modal-table th,
-    .modal-table td {
-      border: 1px solid var(--color-border);
-    }
-
-    /* ガントチャート */
-    .timeline-wrapper {
-      position: relative;
-      margin-bottom: 0;
-      width: 450px;
-    }
-
-    .timeline-line {
-      position: absolute;
-      top: 47%;
-      left: 50px;
-      right: 50px;
-      height: 4px;
-      background: var(--color-border);
-      border-radius: 2px;
-      z-index: 1;
-    }
-
-    .timeline {
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-      z-index: 2;
-    }
-
-    .step {
-      text-align: center;
-      width: 120px;
-      position: relative;
-    }
-
-    .completednode-btn {
-      width: 32px;
-      height: 32px;
-      font-size: var(--fs-xs);
-      border-radius: 50%;
-      border: none;
-      background: var(--color-primary);
-      color: #fff;
-      cursor: pointer;
-      margin: 0 auto;
-      display: block;
-      box-shadow: 0 0 0 3px var(--color-card), 0 0 0 5px var(--color-primary);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .completednode-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 0 3px var(--color-card), 0 0 0 6px var(--color-primary);
-    }
-
-    .notcompletednode-btn {
-      width: 32px;
-      height: 32px;
-      font-size: var(--fs-xs);
-      border-radius: 50%;
-      border: none;
-      background: var(--color-border);
-      color: var(--color-text-muted);
-      cursor: pointer;
-      margin: 0 auto;
-      display: block;
-      box-shadow: 0 0 0 3px var(--color-card), 0 0 0 5px var(--color-border);
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
-
-    .notcompletednode-btn:hover {
-      background: var(--color-text-muted);
-      transform: scale(1.05);
-    }
-
-    .plan {
-      font-size: 16px;
-      margin-bottom: 6px;
-      color: var(--color-text-muted);
-      font-weight: 500;
-    }
-
-    .actual {
-      font-size: 12px;
-      margin-top: 6px;
-      color: var(--color-primary);
-      font-weight: 600;
-    }
-    /* ===== 個別入稿状況（カード） ===== */
-
-    #kobetsuNyukoArea {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(5, 1fr);
-    }
-
-    .nyuko-card {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .nyuko-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    .nyuko-name {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .nyuko-count {
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .nyuko-persons {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 8px;
-    }
-    .person-card {
-      background: #f7f9fc;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 13px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .person-name {
-      font-weight: 600;
-    }
-    .person-rate {
-      font-weight: bold;
-    }
-    /* #endregion */
-
     /* #region レスポンシブ対応 */
     /* 画面の高さが750px以下ならロゴを非表示 */
     @media (max-height: 750px) {
@@ -748,9 +400,13 @@
       }
     }
 
-    /* 画面の幅が768px以下ならスマホ*/
+    /* 画面の幅が650px以下ならスマホ*/
     @media (max-width: 768px) {
       .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
         display: none;
       }
 
@@ -758,7 +414,12 @@
         display: block;
       }
 
-    .header-title {
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header-title {
         margin: 5px 0px 0px 35px;
         font-size: var(--fs-xl);
       }
@@ -800,18 +461,16 @@
         background: var(--color-surface);
         flex-direction: column;
         flex: 1;
-        padding: 20px;
+        padding: 20px 20px 56px 20px;
         margin-left: -220px;
         width: 100%;
       }
 
-      .dashboard-section {
-        display: flex;
-        gap: 24px;
-        margin-top: 0;
+      .content-box {
         width: 100%;
-        flex-direction: column;
-        padding-bottom: 20px;
+        box-sizing: border-box;
+        padding: 8px;
+        min-height: 0;
       }
 
       /* イメージ案①: スマホ用 */
@@ -850,12 +509,8 @@
         flex-shrink: 0;
         vertical-align: middle;
       }
-      .search-toggle-sp-text {
-        font-size: 12pt;
-      }
       .search-toggle-sp::after {
         content: "＋";
-        font-size: 1.2em;
         color: var(--color-text-muted);
       }
       .search-box {
@@ -867,10 +522,9 @@
         border: none;
         box-shadow: none;
       }
-      .search-box .search-box-inner {
+       .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 12px 0 0;
         gap: 12px 16px;
       }
       .search-box.is-open .search-box-inner {
@@ -881,10 +535,10 @@
       }
 
       /* 検索条件エリア：参照画面と同じ余白・レイアウト */
-      .view-layout-1-group > .content-area:first-of-type {
+      .view-layout-1-group > .content-box:first-of-type {
         padding: 8px;
       }
-      .view-layout-1-group > .content-area:first-of-type .view-layout-title {
+      .view-layout-1-group > .content-box:first-of-type .view-layout-title {
         margin: 0 0 12px;
         padding: 0 0 8px;
       }
@@ -899,13 +553,35 @@
       }
       .search-box-inner .filter-item .filter-label {
         margin-right: 0;
-        font-size: var(--fs-xs);
       }
       .search-box-inner .filter-item select,
       .search-box-inner .filter-item input[type="text"] {
         min-width: 0;
         width: 100%;
         box-sizing: border-box;
+      }
+      .search-box-inner .search-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+      }
+      .search-box-inner .search-row label {
+        /* font-size: var(--fs-base);  */
+        flex-shrink: 0;
+      }
+      .search-box-inner .search-row select,
+      .search-box-inner .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        margin-left: 0;
       }
 
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
@@ -928,10 +604,8 @@
         background: var(--color-card);
       }
       #approvalListArea .result-table tbody tr::before {
-        content: "図案情報";
+
         display: block;
-        font-size: 15px;
-        font-weight: 700;
         color: var(--color-primary);
         padding-bottom: 8px;
         margin-bottom: 8px;
@@ -940,9 +614,10 @@
       #approvalListArea .result-table tbody td {
         display: block;
         border: none;
-        padding: 4px 0;
+        padding: 8px 0;
         white-space: normal;
       }
+      /* 各列にラベルを付与 */
       #approvalListArea .result-table tbody td:nth-child(1)::before {
         content: "販売区分：";
         font-weight: 600;
@@ -971,88 +646,13 @@
         content: "デザイナー：";
         font-weight: 600;
       }
-      /* 2段目は販売区分・展示会・商品分類を横並びで表示 */
+
+      /* 2段目は販売区分・展示会を横並びで表示 */
       #approvalListArea .result-table tbody td:nth-child(1),
-      #approvalListArea .result-table tbody td:nth-child(2),
-      #approvalListArea .result-table tbody td:nth-child(3) {
+      #approvalListArea .result-table tbody td:nth-child(2) {
         display: inline-block;
         width: auto;
         margin-right: 12px;
-      }
-      /* gauge-card: 1つ表示・3つを横スクロール（横スクロールバー表示） */
-      .gauges-row {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 16px;
-        overflow-x: scroll;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        padding-bottom: 12px;
-        margin-bottom: 24px;
-        scrollbar-width: thin;
-        scrollbar-color: var(--color-border) var(--color-surface);
-      }
-      .gauges-row::-webkit-scrollbar {
-        height: 8px;
-      }
-      .gauges-row::-webkit-scrollbar-track {
-        background: var(--color-surface);
-        border-radius: 4px;
-      }
-      .gauges-row::-webkit-scrollbar-thumb {
-        background: var(--color-border);
-        border-radius: 4px;
-      }
-      .gauges-row::-webkit-scrollbar-thumb:hover {
-        background: var(--color-text-muted);
-      }
-      .gauges-row .gauge-card {
-        flex: 0 0 auto;
-        min-width: min(280px, 85vw);
-        scroll-snap-align: start;
-      }
-      .gauge-semicircle {
-        width: 100%;
-        max-width: 200px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      /* zenkai-tabs-wrap: 2段（上段 図案申請・試作入稿・サンプル申請、下段 最終入稿・発注・入荷） */
-      .zenkai-tabs-wrap .zenkai-flow {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: auto auto;
-        grid-auto-flow: row;
-      }
-      .zenkai-tabs-wrap .zenkai-item .name { font-size: 11px; }
-
-      /* 個別入稿状況: スマホでヘッダ固定（スクロール時に上部に固定・他ヘッダーと統一） */
-      #kobetsuArea #kobetsuTitle {
-        position: sticky;
-        top: -20px;
-        z-index: 20;
-        background: var(--color-card);
-        margin-left: -20px;
-        margin-right: -20px;
-        margin-bottom: 16px;
-        padding: 20px 20px 12px 20px;
-        transition: box-shadow 0.15s ease;
-        border-bottom: none;
-      }
-      /* 下線だけコンテンツ幅に揃える（他セクションのタイトルと同じ長さ） */
-      #kobetsuArea #kobetsuTitle::after {
-        content: "";
-        display: block;
-        position: absolute;
-        left: 20px;
-        right: 20px;
-        bottom: 0;
-        border-bottom: 2px solid var(--color-primary);
-      }
-      /* スクロールで固定されているときだけ影を付ける */
-      #kobetsuArea #kobetsuTitle.is-stuck {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       }
 
       /* イメージ案②: スマホ用 */
@@ -1060,28 +660,6 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px;
-      }
-      .status-btn {
-        padding: 10px 14px;
-        font-size: 13px;
-      }
-      .case-list li {
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      /* イメージ案③: スマホ用 */
-      .tantosha-header {
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .tantosha-summary {
-        width: 100%;
-        order: 3;
-        font-size: 12px;
-      }
-      .view-layout-title {
-        font-size: 16px;
       }
 
       /* ガントチャート */
@@ -1096,9 +674,6 @@
       }
     }
 
-
-
-
     #tenjikaiSelect:hover,
     .dashboard-box select:hover {
       border-color: var(--color-primary);
@@ -1111,39 +686,11 @@
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
     }
 
-    .tenjikai-summary,
-    #tenjikaiSummary {
-      margin: 14px 0;
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--color-text);
-    }
-
-    .tenjikai-select-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .tenjikai-label {
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--color-text);
-    }
-
     /* ========== イメージ案：3つとも一括表示 ========== */
     .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
     .view-layout-1-group,
     .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
-    .dashboard-section { width: 100%; display: flex; flex-direction: column; gap: 0; align-items: stretch; }
-    .view-layout-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--color-primary);
-      margin: 0 0 16px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid var(--color-primary);
-    }
+
     /* 図案情報検索（ページタイトル）専用の余白・線調整 */
     h1.view-layout-title {
       margin: 4px 0 8px 12px;
@@ -1175,104 +722,101 @@
       flex-wrap: nowrap;
     }
     .filter-row .filter-label {
-      font-weight: 600;
-      font-size: 16px;
-      color: var(--color-text-muted);
       margin-right: 4px;
     }
     .filter-row input[type="text"], .filter-row select {
       padding: 8px 12px;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
-      font-family: var(--font-sans);
-      font-size: 16px;
       min-width: 160px;
     }
-    /* 半円グラフ（サンプル着・最終入稿・発注） */
-    .gauges-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-    .gauge-card {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .gauge-card .gauge-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: 12px;
-    }
-    .gauge-semicircle {
-      width: 160px;
-      height: 90px;
-      margin: 0 auto 8px;
-      position: relative;
-    }
-    .gauge-semicircle svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    /* 半円の軌道（背景）: 左→右の半円、半径40・中心(50,50) */
-    .gauge-track {
-      fill: none;
-      stroke: var(--color-border);
-      stroke-width: 10;
-      stroke-linecap: round;
-    }
-    /* 進捗: 完了(青)・7日前(黄)・遅延(赤)を重ねて表示 */
-    .gauge-fill, .gauge-fill-warn7, .gauge-fill-delay {
-      fill: none;
-      stroke-width: 10;
-      stroke-linecap: round;
-      transition: stroke-dasharray 0.3s ease, stroke-dashoffset 0.3s ease;
-    }
-    .gauge-fill { stroke: #1976d2; }
-    .gauge-fill-warn7 { stroke: #f9a825; }
-    .gauge-fill-delay { stroke: #c62828; }
-    .gauge-count {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--color-text);
-    }
-    .gauge-legend {
+
+    /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
+    .search-box-inner .search-row {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      align-items: center;
       gap: 8px;
-      margin-top: 8px;
-      font-size: 16px;
-      color: var(--color-text-muted);
+      min-width: 0;
     }
-    .gauge-legend span { display: inline-flex; align-items: center; gap: 4px; }
-    .gauge-legend .dot-blue { width: 12px; height: 12px; border-radius: 50%; background: #1976d2; }
-    .gauge-legend .dot-yellow { width: 12px; height: 12px; border-radius: 50%; background: #f9a825; }
-    .gauge-legend .dot-red { width: 12px; height: 12px; border-radius: 50%; background: #c62828; }
+    .search-box-inner .search-row label {
+      margin: 0;
+      /* font-size: var(--fs-base); */
+      /* font-weight: 500; */
+      /* color: var(--color-text-muted); */
+      white-space: nowrap;
+    }
+    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
+    .search-box-inner .search-row .autocomplete-dropdown,
+    .search-box-inner .search-row .autocomplete-dropdown div {
+      font-size: var(--fs-base);
+      font-weight: 500;
+    }
+    .search-box-inner .search-row select,
+    .search-box-inner .search-row input {
+      /* font-size: var(--fs-base); */
+      min-width: 160px;
+      padding: 10px 12px;
+      /* font-family: inherit; */
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      /* color: var(--color-text); */
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-box-inner .search-row select:hover,
+    .search-box-inner .search-row input:hover {
+      border-color: #b0bdb5;
+    }
+    .search-box-inner .search-row select:focus,
+    .search-box-inner .search-row input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+    .search-box-inner .search-row input::placeholder {
+      color: #9ca89f;
+    }
+
+    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .btn-search-cancel {
+      display: inline-block;
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-search-cancel:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
 
     /* 承認通知／検索結果・ボックス共通 */
-    .content-area {
+    .content-box {
       background: var(--color-card);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: 10px 20px;
+      padding: 20px 24px;
       margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
     }
     /* 検索条件と検索結果一覧の間の余白（5px） */
-    .view-layout-1-group > .content-area:first-of-type {
+    .view-layout-1-group > .content-box:first-of-type {
       margin-bottom: 5px;
     }
-    .content-area h3 {
+    .content-box h3 {
       margin: 0 0 12px;
-      font-size: 15px;
-      font-weight: 600;
       border-bottom: 2px solid var(--color-primary);
       padding-bottom: 8px;
     }
@@ -1280,47 +824,29 @@
     /* PC/タブレット共通：テーブルエリアに縦横スクロール */
     #approvalListArea {
       width: 100%;
-      max-height: 55vh;
+      max-height: 70vh;
       overflow-x: auto;
       overflow-y: auto;
     }
     .result-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 16px;
       margin-top: 8px;
       table-layout: fixed;
     }
     .result-table th,
     .result-table td {
-      padding: 8px 10px;
+      padding: 16px 10px;
       border-top: 1px solid var(--color-border);
       border-bottom: 1px solid var(--color-border);
       border-left: none;
       border-right: none;
       text-align: left;
-      white-space: nowrap;
-    }
-    /* 一覧のデザイナーセレクト：検索条件と同じデザイン */
-    .result-table td select.result-designer-select {
-      width: 100%;
-      min-width: 160px;
-      padding: 8px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      font-family: var(--font-sans);
-      font-size: 16px;
-      background: var(--color-card);
-    }
-    .result-table td select.result-designer-select:hover {
-      border-color: var(--color-primary);
-    }
-    .result-table td select.result-designer-select:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+      white-space: normal;
+      word-wrap: break-word;
     }
     .result-table th {
+      padding: 8px 10px;
       background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       color: #fff;
       font-weight: 600;
@@ -1343,274 +869,61 @@
       opacity: 0.9;
     }
 
-    /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
-    .btn-fab-new {
-      display: inline-block;
-      text-decoration: none;
+    /* 一覧：デザイナー列のプルダウンをヘッダ列幅（セル幅）いっぱいに */
+    #approvalListArea .result-table td:last-child {
+      vertical-align: middle;
+    }
+    #approvalListArea .result-table td:last-child .row-designer-select {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    /* 画面右下固定 アクションボタン（登録など） */
+    .btn-fab-bar {
       position: fixed;
       right: 24px;
       bottom: 24px;
       z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
       min-width: 140px;
       padding: 6px 14px;
-      font-size: 16px;
-      font-weight: 600;
       background: var(--color-primary);
       color: #fff;
       border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      font-family: var(--font-sans);
       text-align: center;
     }
     .btn-fab-new:hover {
       background: var(--color-primary-dark);
       color: #fff;
     }
-    /* 画面右下固定ボタン群（デザイナー一括設定・振分け） */
-    .fab-buttons {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 2001;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .fab-buttons .btn-fab-new,
-    .fab-buttons .btn-fab-bulk {
-      position: static;
-    }
-    .btn-fab-bulk {
-      display: inline-block;
-      text-decoration: none;
-      min-width: 140px;
-      padding: 6px 14px;
-      font-size: 16px;
-      font-weight: 600;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: var(--font-sans);
-      text-align: center;
-    }
-    .btn-fab-bulk:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-    }
-    .status-buttons {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .status-btn {
-      padding: 12px 20px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-card);
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      font-family: var(--font-sans);
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .status-btn:hover, .status-btn.active {
-      background: var(--color-primary);
-      color: #fff;
-      border-color: var(--color-primary);
-    }
-    .status-btn .count { margin-left: 4px; color: var(--color-text-muted); }
-    .status-btn:hover .count, .status-btn.active .count { color: rgba(255,255,255,0.9); }
-    .approval-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      font-size: 14px;
-    }
-    .approval-list li {
-      padding: 8px 0;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .approval-list li:last-child { border-bottom: none; }
-
-    /* 全体・課別（タブ） */
-    .zenkai-tabs-wrap {
-      margin-bottom: 24px;
-    }
-    .zenkai-tab-list {
-      font-size: 16px;
-      display: flex;
-      gap: 0;
-      margin: 0 0 0;
-      padding: 0;
-      list-style: none;
-      border-bottom: 2px solid var(--color-border);
-    }
-    .zenkai-tab-list li {
-      margin: 0;
-    }
-    .zenkai-tab-list button {
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: 600;
-      font-family: inherit;
-      border: none;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
-      background: transparent;
-      color: var(--color-text-muted);
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .zenkai-tab-list button:hover {
-      color: var(--color-text);
-    }
-    .zenkai-tab-list button.active {
-      color: var(--color-primary);
-      border-bottom-color: var(--color-primary);
-    }
-    .zenkai-panel {
-      display: none;
-      padding-top: 12px;
-    }
-    .zenkai-panel.is-active {
-      display: block;
-    }
-    .zenkai-area {
-      margin-bottom: 0;
-    }
-    .zenkai-flow {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-    }
-    .zenkai-item {
-      font-size: 16px;
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      text-align: center;
-    }
-    .zenkai-item .name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-    .zenkai-item .count { font-size: 18px; font-weight: 700; color: var(--color-primary); }
-    .kabei-list { display: none; }
-    .kabei-item { display: none; }
 
     /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
     .view-layout-2 { padding: 0; }
     .view-layout-2 .status-buttons { margin-bottom: 20px; }
     .view-layout-2 .list-section-title {
-      font-size: 16px;
-      font-weight: 600;
       margin-bottom: 12px;
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border);
     }
-    .category-block {
-      margin-bottom: 24px;
-    }
-    .category-block h4 {
-      margin: 0 0 8px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .case-list { list-style: none; padding: 0; margin: 0; }
-    .case-list li {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .case-list li:hover { background: var(--color-surface); }
-    .btn-detail {
-      padding: 6px 14px;
-      font-size: 16px;
-      font-weight: 600;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: var(--font-sans);
-    }
-    .btn-detail:hover { background: var(--color-primary-dark); }
-
-    /* ========== 案③: 担当者別入稿状況 ========== */
-    .view-layout-3 { padding: 0 0 24px; }
-    
-
-    .content-area {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .nyuko-wrapper {
-      background: #fff;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      height: 70vh; 
-    }
-
-    .nyuko-header {
-      padding: 12px 16px;
-      font-weight: bold;
-      background: #f5f7fa;
-      border-bottom: 1px solid #ddd;
-      flex-shrink: 0; 
-    }
-
-    .nyuko-scroll {
-      flex: 1;        
-      overflow-y: auto;
-      padding: 10px;
-    }
-    .nyuko-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .badge {
-      padding: 6px 12px;
-      border-radius: 999px;   
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    /* 未入稿（赤系） */
-    .badge-undone {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    /* 入稿済み（緑系） */
-    .badge-done {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    /* 全体（グレー系） */
-    .badge-total {
-      background: #f1f5f9;
-      color: #475569;
-    }    
-    /* #endregion */
-    @media (max-width: 768px) {
-      #kobetsuNyukoArea {
-        grid-template-columns: 1fr;
-      }
-    }
-    @media (max-width: 768px) {
-      .nyuko-scroll {
-        max-height: 65vh;
-      }
-    }    
   </style>
 </head>
 
@@ -1814,247 +1127,83 @@
 
     </div>
 
-    <!-- 画面右下固定 デザイナー一括設定・振分けボタン -->
-    <div class="fab-buttons">
-      <button type="button" class="btn-fab-bulk">デザイナー一括設定</button>
+    <!-- 画面右下固定 登録・一括設定 -->
+    <div class="btn-fab-bar">
+      <a class="btn-fab-new">デザイナー一括設定</a>
       <a href="zuanjohotoroku.html" class="btn-fab-new">振分け</a>
     </div>
     <!-- #endregion -->
 
     <!--#region メインコンテンツ  -->
     <div class="content">
-      <div class="dashboard-section" id="dashboardSection">
+      <div class="content-box">
+        <h2 class="page-title">図案振分け</h2>
 
-        <!-- 画面タイトル -->
-        <h1 class="view-layout-title">図案振分け</h1>
-
-        <!-- ========== : 検索条件・検索結果一覧 ========== -->
+        <!-- ========== 検索条件・検索結果一覧 ========== -->
         <div class="view-layout view-layout-1-group">
           <!-- 検索条件ボックス -->
           <div class="content-area">
-            <div class="view-layout view-layout-1">
-              <h2 class="view-layout-title">検索条件</h2>
-              <div class="search-box" id="searchBox">
-                <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel"><span class="search-toggle-sp-label"><img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20"><span class="search-toggle-sp-text">検索条件を開く</span></span></button>
-                <div class="search-box-inner" id="searchRowsPanel">
-              <div class="filter-row">
-                <div class="filter-item">
-                  <span class="filter-label">販売区分</span>
-                  <select id="searchHanbaiKubun">
-                    <option value="">すべて</option>
-                    <option value="teiban">定番</option>
-                    <option value="teibankako">定番加工</option>
-                    <option value="betchu">別注</option>
-                    <option value="oem">OEM</option>
-                  </select>
-                </div>
-                <div class="filter-item" id="tenjikaiFilterItem">
-                  <span class="filter-label">展示会</span>
-                  <select id="tenjikaiSelect">
-                    <option value="">すべて</option>
-                    <option value="2026.06">2026.06 展示会</option>
-                    <option value="2026.03">2026.03 展示会</option>
-                    <option value="2026.01">2026.01 展示会</option>
-                  </select>
-                </div>
-                <div class="filter-item">
-                  <span class="filter-label">商品部類</span>
-                  <select id="searchShohinBurui">
-                    <option value="">すべて</option>
-                    <option value="minitowel">ミニタオル</option>
-                  </select>
-                </div>
-                <div class="filter-item">
-                  <span class="filter-label">カテゴリー</span>
-                  <select id="searchCategory">
-                    <option value="">すべて</option>
-                    <option value="tanpin">単品タオル</option>
-                    <option value="kikaku">企画物タオル</option>
-                  </select>
-                </div>
-                <div class="filter-item">
-                  <span class="filter-label">ブランド・キャラ</span>
-                  <select id="searchBrandChar">
-                    <option value="">すべて</option>
-                    <option value="gibli">ジブリ</option>
-                    <option value="moomin">ムーミン</option>
-                    <option value="disney">ディズニー</option>
-                    <option value="marvel">マーベル</option>
-                    <option value="starwars">スターウォーズ</option>
-                    <option value="sanrio">サンリオ</option>
-                    <option value="miffy">ミッフィー</option>
-                    <option value="thomas">トーマス</option>
-                    <option value="kumanogakko">くまのがっこう</option>
-                    <option value="osamugoods">オサムグッズ</option>
-                    <option value="studiochizu">スタジオ地図</option>
-                    <option value="studioponoc">スタジオポノック</option>
-                    <option value="jal">ＪＡＬ</option>
-                    <option value="wendys">Wendy's</option>
-                    <option value="inaiinaibaa">いないいないばあ</option>
-                    <option value="barbie">バービー</option>
-                    <option value="peterrabbit">ピーターラビット</option>
-                    <option value="lisagaspar">リサ＆ガスパール</option>
-                    <option value="karelcapek">カレルチャペック</option>
-                    <option value="lisalarson">リサ・ラーソン</option>
-                    <option value="doraemon">ドラえもん</option>
-                    <option value="babyshark">ベイビーシャーク</option>
-                    <option value="kumaba">クマーバ</option>
-                    <option value="universal">ユニバーサル</option>
-                    <option value="peppapig">ペッパピッグ</option>
-                    <option value="conan">名探偵コナン</option>
-                    <option value="wally">ウォーリーをさがせ</option>
-                    <option value="minions">ミニオンズ</option>
-                    <option value="obuchiakiko">オブチアキコ</option>
-                    <option value="curiousgeorge">おさるのジョージ</option>
-                    <option value="mofusando">もふさんど</option>
-                    <option value="mylittlepony">マイリトルポニー</option>
-                    <option value="koupenchan">コウペンちゃん</option>
-                    <option value="potatohead">ポテトヘッド</option>
-                    <option value="swimmer">スイマー</option>
-                    <option value="simpsons">シンプソンズ</option>
-                    <option value="evangelion">エヴァンゲリオン</option>
-                    <option value="kirby">星のカービィー</option>
-                    <option value="barbapapa">バーバパパ</option>
-                    <option value="carebears">ケアベア</option>
-                    <option value="elmer">エルマー</option>
-                    <option value="haleiwa">HALEIWA</option>
-                    <option value="dragonball">ドラゴンボール</option>
-                    <option value="fantti">fantti</option>
-                    <option value="wani100">100日後に死ぬワニ</option>
-                    <option value="ingela">インゲラ</option>
-                    <option value="finlayson">フィンレイソン</option>
-                    <option value="pinkribbon">ピンクリボン</option>
-                    <option value="aarikka">アアリッカ</option>
-                    <option value="sousou">SOUSOU</option>
-                    <option value="benetton">ベネトン</option>
-                    <option value="chiikawa">ちいかわ</option>
-                    <option value="olympic">オリンピック</option>
-                    <option value="sunheart">ＳＵＮ　ＨＥＡＲＴ</option>
-                    <option value="hokusai">北斎</option>
-                    <option value="chojugiga">鳥獣戯画</option>
-                    <option value="anorak">アノラック</option>
-                    <option value="champion">チャンピオン</option>
-                    <option value="admiral">アドミラル</option>
-                    <option value="eastboy">イーストボーイ</option>
-                    <option value="shimamaru">しままる</option>
-                    <option value="porukkapattern">porukkapattern</option>
-                    <option value="piccolino">piccolino</option>
-                    <option value="polku">polku</option>
-                    <option value="yup">yup!</option>
-                    <option value="kikipuri">キキプリ</option>
-                    <option value="guts">ガッツ</option>
-                    <option value="imabori">今治タオル・ギフト</option>
-                    <option value="senshu">泉州タオル・ギフト</option>
-                    <option value="kotoa">高級カラータオル</option>
-                    <option value="yunyuugift">輸入ギフト</option>
-                    <option value="heiankaku">平安閣・互助会</option>
-                    <option value="ippanmaki">一般マキタオル</option>
-                    <option value="ippansummer">一般サマー</option>
-                    <option value="towelket">タオルケット</option>
-                    <option value="portugal">ポルトガル</option>
-                    <option value="turkey">トルコ</option>
-                    <option value="sonotaeu">その他ＥＵ</option>
-                    <option value="linecreators">LINEクリエイターズ</option>
-                    <option value="shinsou">寝装</option>
-                    <option value="gukkospa">ぐっこすぱ</option>
-                    <option value="interior">インテリア</option>
-                    <option value="wonderfulpeace">わんだふるぴーす</option>
-                    <option value="zakka">雑貨</option>
-                    <option value="ecoton">エコットン</option>
-                    <option value="manymany">メニーメニー</option>
-                    <option value="baby">ベビー</option>
-                    <option value="licenseend">ライセンス終了</option>
-                    <option value="yunyuubetchu">輸入タオル別注</option>
-                    <option value="kokunaibetchu">国内タオル別注</option>
-                    <option value="olcbetchu">ＯＬＣ別注</option>
-                    <option value="yunyuatanpin">輸入タオル単品</option>
-                    <option value="yunyuukumitori">輸入組タオル</option>
-                    <option value="yunyuubetchu2">輸入寝装・ｲﾝﾃﾘｱ別注</option>
-                    <option value="sonota chara">その他キャラクター</option>
-                    <option value="kako">過去商品用</option>
-                    <option value="shizai">資材（箱・雑品）</option>
-                    <option value="shoshi">証紙</option>
-                    <option value="sonota">その他</option>
-                    <option value="test">テスト</option>
-                    <option value="rilakkuma">リラックマ</option>
-                    <option value="sumikkogurashi">すみっコぐらし</option>
-                    <option value="mario">マリオ</option>
-                    <option value="splatoon">スプラトゥーン</option>
-                    <option value="animalcrossing">どうぶつの森</option>
-                    <option value="line">LINE</option>
-                    <option value="bt21">BT21</option>
-                    <option value="truz">TRUZ</option>
-                    <option value="harrypotter">ハリーポッター</option>
-                    <option value="tomjerry">トムとジェリー</option>
-                    <option value="dc">DC</option>
-                    <option value="looney">ルーニー・テューンズ</option>
-                    <option value="powerpuff">パワーパフガールズ</option>
-                    <option value="sonota warner">その他ワーナー</option>
-                    <option value="anpanman">アンパンマン</option>
-                    <option value="kimetsu">鬼滅の刃</option>
-                    <option value="jujutsu">呪術廻戦</option>
-                    <option value="onepiece">ワンピース</option>
-                    <option value="sailormoon">セーラームーン</option>
-                    <option value="ultraman">ウルトラマン</option>
-                    <option value="kamenrider">仮面ライダー</option>
-                    <option value="heroacademia">僕のﾋｰﾛｰｱｶﾃﾞﾐｱ</option>
-                    <option value="sonota bandai">その他バンダイ</option>
-                    <option value="kellogg">ケロッグ</option>
-                    <option value="mokomoka">モコモカ</option>
-                    <option value="tirol">チロルチョコ</option>
-                    <option value="coffee">珈琲関係</option>
-                    <option value="mountrainier">マウントレーニア</option>
-                    <option value="pritchannel">プリッとチャンネル</option>
-                    <option value="yagihara">八木春</option>
-                    <option value="spyfamily">スパイファミリー</option>
-                    <option value="garfield">ガーフィールド</option>
-                    <option value="urupo">ウルポとトゥルポ</option>
-                    <option value="mizunouri">水野(売)</option>
-                    <option value="wdzy">WDZY</option>
-                    <option value="andy">ねずみのアンディ</option>
-                    <option value="umao">umao</option>
-                    <option value="alice">アリス</option>
-                    <option value="orionbeer">オリオンビール</option>
-                    <option value="spam">スパム</option>
-                    <option value="sukeroku">助六の日常</option>
-                    <option value="kawaiiuso">可愛い嘘のカワウソ</option>
-                    <option value="nepal">ネパール</option>
-                    <option value="swedy">SWEDY</option>
-                    <option value="animalbus">あにまるバス</option>
-                    <option value="moominanime">ﾑｰﾐﾝｱﾆﾒｰｼｮﾝ</option>
-                    <option value="miitsuketa">みいつけた</option>
-                    <option value="littleprince">星の王子さま</option>
-                    <option value="sinapushu">シナぷしゅ</option>
-                    <option value="toalla">to:alla</option>
-                    <option value="pikmin">ピクミン</option>
-                    <option value="sonota nintendo">その他任天堂</option>
-                    <option value="osakaexpo">大阪万博</option>
-                    <option value="panda">パンダのおさじ</option>
-                    <option value="gachapin">ガチャピン</option>
-                    <option value="pandorobou">パンどろぼう</option>
-                    <option value="cambodia">カンボジア</option>
-                    <option value="shimajiro">しまじろう</option>
-                    <option value="tamagotchi">たまごっち</option>
-                    <option value="nandemo">なんでもいきもの</option>
-                    <option value="donawilson">ドナ・ウィルソン</option>
-                    <option value="sanex">ｻﾝｴｯｸｽﾚｼﾞｪﾝﾄﾞｷｬﾗ</option>
-                    <option value="pinkpanther">ピンクパンサー</option>
-                    <option value="fujitv">ﾌｼﾞﾃﾚﾋﾞｷｬﾗｸﾀｰ</option>
-                    <option value="sonic">ソニック</option>
-                    <option value="mizunokai">水野(買)</option>
-                  </select>
-                </div>
-                <div class="filter-item">
-                  <span class="filter-label">デザイナー</span>
-                  <select id="searchDesigner">
-                    <option value="">すべて</option>
-                    <option value="mifuriwake">未振分け</option>
-                    <option value="丸眞太郎">丸眞太郎</option>
-                    <option value="丸眞花子">丸眞花子</option>
-                    <option value="丸眞桜子">丸眞桜子</option>
-                  </select>
-                </div>
-              </div>
+            <div class="search-box" id="searchBox">
+              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
+                <span class="search-toggle-sp-label">
+                  <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                  <span class="search-toggle-sp-text">検索条件を開く</span>
+                </span>
+              </button>
+              <div class="search-box-inner" id="searchRowsPanel">
+                <div class="filter-row">
+                  <div class="filter-item">
+                    <span class="filter-label">販売区分</span>
+                    <select id="searchHanbaiKubun">
+                      <option value="">すべて</option>
+                      <option value="teiban">定番</option>
+                      <option value="teibankako">定番加工</option>
+                      <option value="betchu">別注</option>
+                      <option value="oem">OEM</option>
+                    </select>
+                  </div>
+                  <div class="filter-item" id="tenjikaiFilterItem">
+                    <span class="filter-label">展示会</span>
+                    <select id="tenjikaiSelect">
+                      <option value="">すべて</option>
+                      <option value="2026.06">2026.06 展示会</option>
+                      <option value="2026.03">2026.03 展示会</option>
+                      <option value="2026.01">2026.01 展示会</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">商品分類</span>
+                    <select id="searchShohinBunrui">
+                      <option value="">すべて</option>
+                      <option value="ミニタオル">ミニタオル</option>
+                    </select>
+                  </div>
+                  <div class="search-row">
+                    <label>カテゴリー</label>
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="category" placeholder="カテゴリー検索" id="searchCategory">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="search-row">
+                    <label>ブランド・キャラ</label>
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">デザイナー</span>
+                    <select id="searchDesigner">
+                      <option value="">すべて</option>
+                      <option value="丸眞太郎">丸眞太郎</option>
+                      <option value="丸眞花子">丸眞花子</option>
+                      <option value="丸眞桜子">丸眞桜子</option>
+                    </select>
+                    </div>
+                  <div class="search-cancel-wrapper">
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2063,324 +1212,95 @@
           <!-- 検索結果一覧エリア -->
           <div class="content-area" id="approvalNoticeArea">
             <div class="view-layout view-layout-2">
-              <h2 class="view-layout-title">検索結果一覧</h2>
               <!-- テーブル用スクロールコンテナ -->
               <div id="approvalListArea">
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 10%;">販売区分</th>
-                      <th style="width: 10%;">展示会</th>
-                      <th style="width: 10%;">商品分類</th>
-                      <th style="width: 10%;">カテゴリー</th>
-                      <th style="width: 22%;">品名</th>
-                      <th style="width: 22%;">ブランド・キャラ</th>
-                      <th style="width: 16%;">デザイナー</th>
+                      <th style="width: 11%;">販売区分</th>
+                      <th style="width: 11%;">展示会</th>
+                      <th style="width: 12%;">商品分類</th>
+                      <th style="width: 14%;">カテゴリー</th>
+                      <th style="width: 23%;">品名</th>
+                      <th style="width: 12%;">ブランド・キャラ</th>
+                      <th style="width: 15%;">デザイナー</th>
                     </tr>
                   </thead>
                   <tbody>
                     <!-- 50行のサンプルデータ -->
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーA柄タオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーB柄タオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーC柄タオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>無地カラフルタオル</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春限定フラワータオル</td><td data-brandchar="sanrio">サンリオ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
+                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーA柄タオル</td><td>ディズニー</td></tr>
+                    <tr><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーB柄タオル</td><td>ムーミン</td></tr>
+                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーC柄タオル</td><td>ディズニー</td></tr>
+                    <tr><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>無地カラフルタオル</td><td>サンリオ</td></tr>
+                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春限定フラワータオル</td><td>ディズニー</td></tr>
 
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーAセット</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーBセット</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオル</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>夏限定マリンセット</td><td data-brandchar="rilakkuma">リラックマ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>秋限定チェックセット</td><td data-brandchar="sumikkogurashi">すみっコぐらし</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーAセット</td><td>ムーミン</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーBセット</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオル</td><td>ドラえもん</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>夏限定マリンセット</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>秋限定チェックセット</td><td>ディズニー</td></tr>
 
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーAタオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーBタオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオル</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットA</td><td data-brandchar="chiikawa">ちいかわ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットB</td><td data-brandchar="kimetsu">鬼滅の刃</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーAタオル</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーBタオル</td><td>リラックマ</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオル</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットA</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットB</td><td>ディズニー</td></tr>
 
                     <!-- 以降は番号だけ変えたダミー行 -->
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーD柄タオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>無地ベーシックタオル</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルA</td><td data-brandchar="sanrio">サンリオ</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルB</td><td data-brandchar="rilakkuma">リラックマ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルC</td><td data-brandchar="sumikkogurashi">すみっコぐらし</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
+                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーD柄タオル</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>無地ベーシックタオル</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルA</td><td>すみっコぐらし</td></tr>
+                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルB</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルC</td><td>ディズニー</td></tr>
 
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーCセット</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地カラー</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットA</td><td data-brandchar="chiikawa">ちいかわ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットB</td><td data-brandchar="kimetsu">鬼滅の刃</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットC</td><td data-brandchar="doraemon">ドラえもん</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーCセット</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地カラー</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットA</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットB</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットC</td><td>ディズニー</td></tr>
 
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットA</td><td data-brandchar="anpanman">アンパンマン</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットB</td><td data-brandchar="minions">ミニオンズ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットC</td><td data-brandchar="sanrio">サンリオ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーCタオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地ベーシック</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットA</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットB</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットC</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーCタオル</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地ベーシック</td><td>ディズニー</td></tr>
 
                     <!-- 31〜50行目 -->
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春企画フラワーセット</td><td data-brandchar="sanrio">サンリオ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>夏企画マリンセット</td><td data-brandchar="rilakkuma">リラックマ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>秋企画チェックセット</td><td data-brandchar="sumikkogurashi">すみっコぐらし</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>冬企画スノーセット</td><td data-brandchar="gibli">ジブリ</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキー総柄タオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
+                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春企画フラワーセット</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>夏企画マリンセット</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>秋企画チェックセット</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>冬企画スノーセット</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキー総柄タオル</td><td>ディズニー</td></tr>
 
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットA</td><td data-brandchar="kimetsu">鬼滅の刃</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットB</td><td data-brandchar="chiikawa">ちいかわ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオルセット</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスA</td><td data-brandchar="doraemon">ドラえもん</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスB</td><td data-brandchar="anpanman">アンパンマン</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットA</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットB</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオルセット</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスA</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスB</td><td>ディズニー</td></tr>
 
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットA</td><td data-brandchar="minions">ミニオンズ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットB</td><td data-brandchar="sonota chara">その他キャラクター</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオルセット</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスA</td><td data-brandchar="rilakkuma">リラックマ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスB</td><td data-brandchar="sumikkogurashi">すみっコぐらし</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットA</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットB</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオルセット</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスA</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスB</td><td>ディズニー</td></tr>
 
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーE柄タオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎" selected>丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーF柄タオル</td><td data-brandchar="disney">ディズニー</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターコラボ</td><td data-brandchar="chiikawa">ちいかわ</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子" selected>丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターコラボ</td><td data-brandchar="kimetsu">鬼滅の刃</td><td><select class="result-designer-select"><option value="" selected></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子">丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地カラーセット</td><td data-brandchar="sonota">その他</td><td><select class="result-designer-select"><option value=""></option><option value="丸眞太郎">丸眞太郎</option><option value="丸眞花子" selected>丸眞花子</option><option value="丸眞桜子">丸眞桜子</option></select></td></tr>
+                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーE柄タオル</td><td>ディズニー</td></tr>
+                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーF柄タオル</td><td>ディズニー</td></tr>
+                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターコラボ</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターコラボ</td><td>ディズニー</td></tr>
+                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地カラーセット</td><td>ディズニー</td></tr>
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
-
-          <!-- #endregion -->            
-          </div>
+          <!-- #endregion -->
         </div>
+      </div>
     </div>
 
     <!--#region モーダル(通知のリンク)  -->
-    <div id="modal-overlay" class="modal-overlay"></div>
-
-    <div id="modal-window" class="modal-window">
-      <h3 id="modal-title"></h3>
-      <div class="modal-list" id="modal-list">
-        <table class="modal-table">
-          <thead>
-            <tr>
-              <th>販売区分</th>
-              <th>展示会</th>
-              <th>担当</th>
-              <th>品名</th>
-              <th>カテゴリー</th>
-              <th>キャラクター</th>
-              <th>進行状況</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>定番</td>
-              <td>2026.01</td>
-              <td>丸眞花子(商品部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="notcompletednode-btn">図申</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="notcompletednode-btn">試入</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="notcompletednode-btn">サ申</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="notcompletednode-btn">最入</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="notcompletednode-btn">発注</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="notcompletednode-btn">手配</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>別注</td>
-              <td></td>
-              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="completednode-btn">図申</button>
-                      <div class="actual">1月16日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="completednode-btn">試入</button>
-                      <div class="actual">1月22日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="notcompletednode-btn">サ申</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="notcompletednode-btn">最入</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="notcompletednode-btn">発注</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="notcompletednode-btn">手配</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>OEM</td>
-              <td></td>
-              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="completednode-btn">図申</button>
-                      <div class="actual">1月16日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="completednode-btn">試入</button>
-                      <div class="actual">1月22日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="completednode-btn">サ申</button>
-                      <div class="actual">1月25日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="completednode-btn">最入</button>
-                      <div class="actual">2月1日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="notcompletednode-btn">発注</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="notcompletednode-btn">手配</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>定番加工</td>
-              <td></td>
-              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="completednode-btn">図申</button>
-                      <div class="actual">1月16日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="completednode-btn">試入</button>
-                      <div class="actual">1月22日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="completednode-btn">サ申</button>
-                      <div class="actual">1月25日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="completednode-btn">最入</button>
-                      <div class="actual">2月1日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="completednode-btn">発注</button>
-                      <div class="actual">2月6日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="completednode-btn">手配</button>
-                      <div class="actual">2月6日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button id="modal-close" class="modal-close">閉じる</button>
-      </div>
+    <div id="modal-window" class="modal-window"> 
     </div>
     <!-- #endregion -->
 
@@ -2398,13 +1318,6 @@
           overlay.classList.remove('show'); // ← オーバーレイ非表示
         }
       }
-
-      // メニュー開閉
-      // document.querySelectorAll('.menu-title').forEach(title => {
-      //   title.addEventListener('click', () => {
-      //     title.parentElement.classList.toggle('open');
-      //   });
-      // });
 
       // PCのとき、メニューの開閉ボタン
       const sidebar = document.querySelector('.sidebar');
@@ -2440,290 +1353,16 @@
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       });
 
-      // // 画面のどこかをクリックしたら閉じる
-      // document.addEventListener('click', () => {
-      //   menu.style.display = 'none';
-      // });
-
-      // 閉じるボタン（モーダル）
-      document.getElementById("modal-close").addEventListener("click", function () {
-        document.getElementById("modal-overlay").style.display = "none";
-        document.getElementById("modal-window").style.display = "none";
-      });
-
-      // 案①②のステータスボタン：押すと active 切り替え（同じブロック内のみ）
-      document.querySelectorAll(".status-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var parent = this.closest(".view-layout");
-          if (!parent) return;
-          parent.querySelectorAll(".status-btn").forEach(function (b) { 
-            b.classList.remove("active"); 
-          });
-          this.classList.add("active");
-        });
-      });
-
-      // 案①：展示会変更で全体・半円グラフを更新
-      var tenjikaiData = {
-        "2026.01": {
-          total: 120,
-          phases: [
-            { name: "図案申請", done: 15 },
-            { name: "試作入稿", done: 18 },
-            { name: "サンプル申請", done: 20 },
-            { name: "最終入稿", done: 22 },
-            { name: "発注", done: 23 },
-            { name: "入荷", done: 22 }
-          ],
-          sample: { done: 50, total: 120, warn7: 8, delay: 3 },
-          nyuko: { done: 60, total: 120, warn7: 5, delay: 2 },
-          hatchu: { done: 40, total: 120, warn7: 4, delay: 1 },
-          status: { approval: 14, applying: 6, sendback: 2, done: 98 },
-          nyukoPersons: {
-            "担当者①": { total: 20, done: 10, section: "ka1" },
-            "担当者②": { total: 20, done: 10, section: "ka1" },
-            "担当者③": { total: 20, done: 10, section: "ka1" },
-            
-            "担当者a": { total: 20, done: 10, section: "ka1" },
-            "担当者b": { total: 20, done: 10, section: "ka1" },
-            "担当者c": { total: 20, done: 10, section: "ka1" },
-            "担当者d": { total: 20, done: 10, section: "ka1" },
-            "担当者e": { total: 20, done: 10, section: "ka1" },
-            "担当者f": { total: 20, done: 10, section: "ka1" },
-            "担当者g": { total: 20, done: 10, section: "ka1" },
-            "担当者h": { total: 20, done: 10, section: "ka1" },
-            "担当者i": { total: 20, done: 10, section: "ka1" },
-            "担当者j": { total: 20, done: 10, section: "ka1" },
-            "担当者k": { total: 20, done: 10, section: "ka1" },
-            "担当者l": { total: 20, done: 10, section: "ka1" },
-            "担当者m": { total: 20, done: 10, section: "ka1" },
-            "担当者o": { total: 20, done: 10, section: "ka1" },
-            "担当者p": { total: 20, done: 10, section: "ka1" },
-            "担当者q": { total: 20, done: 10, section: "ka1" },
-            "担当者r": { total: 20, done: 10, section: "ka1" },
-            "担当者s": { total: 20, done: 10, section: "ka1" },
-            "担当者t": { total: 20, done: 10, section: "ka1" },
-            "担当者u": { total: 20, done: 10, section: "ka1" },
-            "担当者v": { total: 20, done: 10, section: "ka1" },
-            "担当者w": { total: 20, done: 10, section: "ka1" },
-            "担当者x": { total: 20, done: 10, section: "ka1" },
-            "担当者y": { total: 20, done: 10, section: "ka1" },
-            "担当者z": { total: 20, done: 10, section: "ka1" },
-            "担当者aa": { total: 20, done: 10, section: "ka1" },
-            "担当者ab": { total: 20, done: 10, section: "ka1" },
-            "担当者ac": { total: 20, done: 10, section: "ka1" },
-            "担当者ad": { total: 20, done: 10, section: "ka1" },
-            "担当者ae": { total: 20, done: 10, section: "ka1" },
-            "担当者af": { total: 20, done: 10, section: "ka1" },
-            "担当者ag": { total: 20, done: 10, section: "ka1" },
-            "担当者ah": { total: 20, done: 10, section: "ka1" },
-            "担当者ai": { total: 20, done: 10, section: "ka1" },
-            "担当者aj": { total: 20, done: 10, section: "ka1" },
-            "担当者ak": { total: 20, done: 10, section: "ka1" },
-            "担当者al": { total: 20, done: 10, section: "ka1" },
-
-
-            "担当者④": { total: 20, done: 10, section: "ka2" },
-            "担当者⑤": { total: 20, done: 10, section: "ka2" },
-            "担当者⑥": { total: 10, done: 5, section: "ka3" },
-            "担当者⑦": { total: 10, done: 5, section: "ka3" }
-          }
-        },
-
-        "2026.03": {
-          total: 200,
-          phases: [
-            { name: "図案申請", done: 25 },
-            { name: "試作入稿", done: 18 },
-            { name: "サンプル申請", done: 160 },
-            { name: "最終入稿", done: 80 },
-            { name: "発注", done: 30 },
-            { name: "入荷", done: 2 }
-          ],
-          sample: { done: 180, total: 200, warn7: 15, delay: 5 },
-          nyuko: { done: 80, total: 200, warn7: 8, delay: 4 },
-          hatchu: { done: 30, total: 200, warn7: 6, delay: 3 },
-          status: { approval: 12, applying: 5, sendback: 2, done: 181 },
-          nyukoPersons: {
-            "苗字３４５ 名前８９０ ": { total: 40, done: 16, section: "ka1" },
-            "担当者②": { total: 40, done: 16, section: "ka1" },
-            "担当者③": { total: 40, done: 16, section: "ka1" },
-
-            "担当者④": { total: 30, done: 12, section: "ka2" },
-            "担当者⑤": { total: 30, done: 12, section: "ka2" },
-
-            "担当者⑥": { total: 10, done: 4, section: "ka3" },
-            "担当者⑦": { total: 10, done: 4, section: "ka3" }
-          }
-        },
-
-        "2026.06": {
-          total: 80,
-          phases: [
-            { name: "図案申請", done: 10 },
-            { name: "試作入稿", done: 12 },
-            { name: "サンプル申請", done: 14 },
-            { name: "最終入稿", done: 15 },
-            { name: "発注", done: 14 },
-            { name: "入荷", done: 15 }
-          ],
-          sample: { done: 60, total: 80, warn7: 4, delay: 2 },
-          nyuko: { done: 70, total: 80, warn7: 3, delay: 1 },
-          hatchu: { done: 75, total: 80, warn7: 2, delay: 0 },
-          status: { approval: 8, applying: 4, sendback: 1, done: 67 },
-          nyukoPersons: {
-            "担当者①": { total: 15, done: 13, section: "ka1" },
-            "担当者②": { total: 15, done: 13, section: "ka1" },
-            "担当者③": { total: 10, done: 9, section: "ka1" },
-
-            "担当者④": { total: 15, done: 13, section: "ka2" },
-            "担当者⑤": { total: 15, done: 13, section: "ka2" },
-
-            "担当者⑥": { total: 5, done: 5, section: "ka3" },
-            "担当者⑦": { total: 5, done: 4, section: "ka3" }
-          }
-        }
-      };
-
-      var GAUGE_ARC_LENGTH = Math.PI * 40;
-      function setGaugeFillSegments(fillId, warn7Id, delayId, done, total, warn7, delay) {
-        var L = GAUGE_ARC_LENGTH;
-        var t = total > 0 ? total : 1;
-        var w7 = (warn7 != null ? warn7 : 0);
-        var dly = (delay != null ? delay : 0);
-        var lenDone = (done / t) * L;
-        var lenWarn7 = (w7 / t) * L;
-        var lenDelay = (dly / t) * L;
-        var el = document.getElementById(fillId);
-        if (el) {
-          el.setAttribute("stroke-dasharray", lenDone.toFixed(2) + " " + L.toFixed(2));
-          el.setAttribute("stroke-dashoffset", "0");
-        }
-        el = document.getElementById(warn7Id);
-        if (el) {
-          el.setAttribute("stroke-dasharray", lenWarn7.toFixed(2) + " " + L.toFixed(2));
-          el.setAttribute("stroke-dashoffset", (-lenDone).toFixed(2));
-        }
-        el = document.getElementById(delayId);
-        if (el) {
-          el.setAttribute("stroke-dasharray", lenDelay.toFixed(2) + " " + L.toFixed(2));
-          el.setAttribute("stroke-dashoffset", (-(lenDone + lenWarn7)).toFixed(2));
-        }
-      }
-      var ZENKAI_NAMES = ["図案申請","試作入稿","サンプル申請","最終入稿","発注","入荷"];
-      var KA_RATIO = [67/200, 66/200, 67/200];
-      function updateLayout1(key) {
-        var data = tenjikaiData[key];
-        if (!data) return;
-        var total = data.total;
-        // 全体（完了数/総数）
-        var zenkai = document.getElementById("zenkaiFlow");
-        if (zenkai) {
-          zenkai.innerHTML = data.phases.map(function (p, i) {
-            return '<div class="zenkai-item"><div class="name">' + (ZENKAI_NAMES[i] || p.name) + '</div><div class="count">' + p.done + '件/' + total + '件</div></div>';
-          }).join("");
-        }
-        // 1課・2課・3課を全体から按分（割合 67:66:67）
-        var kaTotals = [
-          Math.round(total * KA_RATIO[0]),
-          Math.round(total * KA_RATIO[1]),
-          total - Math.round(total * KA_RATIO[0]) - Math.round(total * KA_RATIO[1])
-        ];
-        ["zenkaiFlowKa1", "zenkaiFlowKa2", "zenkaiFlowKa3"].forEach(function (flowId, ki) {
-          var el = document.getElementById(flowId);
-          if (!el) return;
-          var kaTotal = kaTotals[ki];
-          el.innerHTML = data.phases.map(function (p, i) {
-            var d = p.done;
-            var ka1 = Math.round(d * KA_RATIO[0]);
-            var ka2 = Math.round(d * KA_RATIO[1]);
-            var ka3 = d - ka1 - ka2;
-            var done = [ka1, ka2, ka3][ki];
-            return '<div class="zenkai-item"><div class="name">' + (ZENKAI_NAMES[i] || p.name) + '</div><div class="count">' + done + '件/' + kaTotal + '件</div></div>';
-          }).join("");
-        });
-        if (data.sample) {
-          var el = document.getElementById("gaugeSampleDone"); if (el) el.textContent = data.sample.done;
-          el = document.getElementById("gaugeSampleTotal"); if (el) el.textContent = data.sample.total;
-          setGaugeFillSegments("gaugeSampleFill", "gaugeSampleFillWarn7", "gaugeSampleFillDelay", data.sample.done, data.sample.total, data.sample.warn7, data.sample.delay);
-          el = document.getElementById("gaugeSampleWarn7"); if (el) el.textContent = (data.sample.warn7 != null ? data.sample.warn7 : 0);
-          el = document.getElementById("gaugeSampleDelay"); if (el) el.textContent = (data.sample.delay != null ? data.sample.delay : 0);
-          el = document.getElementById("gaugeSampleDoneLegend"); if (el) el.textContent = data.sample.done;
-        }
-        if (data.nyuko) {
-          var el = document.getElementById("gaugeNyukoDone"); if (el) el.textContent = data.nyuko.done;
-          el = document.getElementById("gaugeNyukoTotal"); if (el) el.textContent = data.nyuko.total;
-          setGaugeFillSegments("gaugeNyukoFill", "gaugeNyukoFillWarn7", "gaugeNyukoFillDelay", data.nyuko.done, data.nyuko.total, data.nyuko.warn7, data.nyuko.delay);
-          el = document.getElementById("gaugeNyukoWarn7"); if (el) el.textContent = (data.nyuko.warn7 != null ? data.nyuko.warn7 : 0);
-          el = document.getElementById("gaugeNyukoDelay"); if (el) el.textContent = (data.nyuko.delay != null ? data.nyuko.delay : 0);
-          el = document.getElementById("gaugeNyukoDoneLegend"); if (el) el.textContent = data.nyuko.done;
-        }
-        if (data.hatchu) {
-          var el = document.getElementById("gaugeHatchuDone"); if (el) el.textContent = data.hatchu.done;
-          el = document.getElementById("gaugeHatchuTotal"); if (el) el.textContent = data.hatchu.total;
-          setGaugeFillSegments("gaugeHatchuFill", "gaugeHatchuFillWarn7", "gaugeHatchuFillDelay", data.hatchu.done, data.hatchu.total, data.hatchu.warn7, data.hatchu.delay);
-          el = document.getElementById("gaugeHatchuWarn7"); if (el) el.textContent = (data.hatchu.warn7 != null ? data.hatchu.warn7 : 0);
-          el = document.getElementById("gaugeHatchuDelay"); if (el) el.textContent = (data.hatchu.delay != null ? data.hatchu.delay : 0);
-          el = document.getElementById("gaugeHatchuDoneLegend"); if (el) el.textContent = data.hatchu.done;
-        }
-        if (data.status) {
-          var area = document.getElementById("approvalNoticeArea");
-          if (area) {
-            var btns = area.querySelectorAll(".status-btn");
-            if (btns.length >= 4) {
-              btns[0].querySelector(".count").textContent = data.status.approval + "件";
-              btns[1].querySelector(".count").textContent = data.status.applying + "件";
-              btns[2].querySelector(".count").textContent = data.status.sendback + "件";
-              btns[3].querySelector(".count").textContent = data.status.done + "件";
-            }
-          }
-        }
-      }
-      // 全体・1課・2課・3課タブ
-      document.querySelectorAll(".zenkai-tab").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-
-          var view = this.getAttribute("data-view");
-
-          document.querySelectorAll(".zenkai-tab").forEach(function (b) {
-            b.classList.remove("active");
-            b.setAttribute("aria-selected", "false");
-          });
-
-          this.classList.add("active");
-          this.setAttribute("aria-selected", "true");
-
-          document.querySelectorAll(".zenkai-panel").forEach(function (panel) {
-            var isActive = panel.getAttribute("data-view") === view;
-            panel.classList.toggle("is-active", isActive);
-          });
-
-          currentSection = view === "zenkai" ? "all" : view;
-
-          updateLayout1(sel.value); 
-        });
-      });
-
       // 初期表示（承認待ち）
       var sel = document.getElementById("tenjikaiSelect");
-
-      if (sel) {
-        sel.value = "";
-
-        updateLayout1("2026.03");
-
-        sel.addEventListener("change", function () {
-          updateLayout1(this.value);
-        });
-      }
 
       // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
       (function () {
         var selHanbai = document.getElementById("searchHanbaiKubun");
         var selTenjikai = document.getElementById("tenjikaiSelect");
         var selCategory = document.getElementById("searchCategory");
-        var selBrandChar = document.getElementById("searchBrandChar");
         var selDesigner = document.getElementById("searchDesigner");
+        var selBrandChara = document.getElementById("searchBrandChara");
         var tbody = document.querySelector("#approvalListArea .result-table tbody");
         if (!tbody) return;
 
@@ -2747,17 +1386,18 @@
           var condHanbai = selHanbai ? selHanbai.value : "";
           var condTenjikai = selTenjikai ? selTenjikai.value : "";
           var condCategory = selCategory ? selCategory.value : "";
-          var condBrandChar = selBrandChar ? selBrandChar.value : "";
           var condDesigner = selDesigner ? selDesigner.value : "";
+          var condBrandChara = selBrandChara ? (selBrandChara.tagName === "SELECT" ? selBrandChara.value : selBrandChara.value.trim()) : "";
           var hanbaiLabel = mapHanbai(condHanbai);
-          var categoryLabel = mapCategory(condCategory);
+          var categoryLabel = selCategory && selCategory.tagName === "SELECT" ? mapCategory(condCategory) : (condCategory || "").trim();
 
           Array.prototype.forEach.call(tbody.rows, function (row) {
             var cellHanbai = row.cells[0] ? row.cells[0].textContent.trim() : "";
             var cellTenjikai = row.cells[1] ? row.cells[1].textContent.trim() : "";
             var cellCategory = row.cells[3] ? row.cells[3].textContent.trim() : "";
-            var cellBrandChar = row.cells[5] ? (row.cells[5].getAttribute("data-brandchar") || row.cells[5].textContent.trim()) : "";
-            var cellDesigner = row.cells[6] ? (function () { var c = row.cells[6]; var sel = c.querySelector && c.querySelector("select.result-designer-select"); return sel ? sel.value.trim() : c.textContent.trim(); })() : "";
+            var designerSelect = row.cells[6] ? row.cells[6].querySelector("select") : null;
+            var cellDesigner = designerSelect ? designerSelect.value : (row.cells[6] ? row.cells[6].textContent.trim() : "");
+            var cellBrandChara = row.cells[5] ? row.cells[5].textContent.trim() : "";
             var match = true;
 
             if (condHanbai === "teiban_else") {
@@ -2770,20 +1410,49 @@
               if (!cellTenjikai || cellTenjikai.indexOf(condTenjikai) !== 0) match = false;
             }
             if (condCategory && cellCategory !== categoryLabel) match = false;
-            if (condBrandChar && cellBrandChar !== condBrandChar) match = false;
-            if (condDesigner === "mifuriwake") {
-              if (cellDesigner !== "") match = false;
-            } else if (condDesigner && cellDesigner !== condDesigner) {
-              match = false;
-            }
+            if (condDesigner && cellDesigner !== condDesigner) match = false;
+
+            if (condBrandChara && cellBrandChara !== condBrandChara) match = false;
 
             row.style.display = match ? "" : "none";
           });
         }
 
-        [selHanbai, selTenjikai, selCategory, selBrandChar, selDesigner].forEach(function (el) {
+        [selHanbai, selTenjikai, selDesigner].forEach(function (el) {
           if (el) el.addEventListener("change", applyFilter);
         });
+        if (selCategory) {
+          selCategory.addEventListener("change", applyFilter);
+          if (selCategory.tagName === "INPUT") selCategory.addEventListener("input", applyFilter);
+        }
+        if (selBrandChara) {
+          selBrandChara.addEventListener("change", applyFilter);
+          if (selBrandChara.tagName === "INPUT") selBrandChara.addEventListener("input", applyFilter);
+        }
+
+        var cancelAllBtn = document.getElementById("searchCancelAllBtn");
+        if (cancelAllBtn) {
+          cancelAllBtn.addEventListener("click", function () {
+            // 初期表示へ戻す（リフレッシュ）
+            window.location.reload();
+          });
+        }
+        (function insertDesignerColumn() {
+          var rows = tbody.rows;
+          var designerOptionsHtml = ''
+            + '<option value=""></option>'
+            + '<option value="丸眞太郎">丸眞太郎</option>'
+            + '<option value="丸眞花子">丸眞花子</option>'
+            + '<option value="丸眞桜子">丸眞桜子</option>';
+          Array.prototype.forEach.call(rows, function (row) {
+            if (!row || row.cells.length !== 6) return;
+            var designerCell = row.insertCell(6);
+            designerCell.innerHTML = '<select class="row-designer-select">' + designerOptionsHtml + '</select>';
+            var rowSel = designerCell.querySelector("select");
+            if (rowSel) rowSel.addEventListener("change", applyFilter);
+          });
+        })();
+
         applyFilter();
       })();
 
@@ -2804,3 +1473,5 @@
 </body>
 
 </html>
+
+
