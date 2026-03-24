@@ -46,7 +46,6 @@ window.SHARED_SIDEBAR_HTML = `
           <li><a href="teishutsuzuankensaku.html">図案選定結果登録</a></li>
           <li><a href="zuanshinsei.html">図案申請</a></li>
           <li><a href="zuanshinseikensaku.html">図案承認結果登録</a></li>
-          <li><a href="mitsumorizuankensaku.html">見積図案アップロード</a></li>
     </ul>
   </div>
 
@@ -108,7 +107,7 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="keiyakushosofuirai.html">契約書送付依頼</a></li>
       <li><a href="keiyakushosofuiraikakunin.html">注文書作成</a></li>
       <li><a href="hatchujohoMsysemrenkei.html">発注情報Mｼｽﾃﾑ連携</a></li>
-      <li><a href="#">発注履歴照会</a></li>
+      <li><a href="hatchurirekikensaku.html">発注履歴照会</a></li>
     </ul>
   </div>
 
