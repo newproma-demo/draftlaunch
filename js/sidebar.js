@@ -154,7 +154,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">ライセンス契約情報入力</a></li>
+      <li><a href="licensekeiyakujohokensaku.html">ライセンス契約情報入力</a></li>
       <li><a href="#">ライセンス契約チェック</a></li>
       <li><a href="#">工場認定情報入力</a></li>
       <li><a href="#">工場認定有効期限確認</a></li>
