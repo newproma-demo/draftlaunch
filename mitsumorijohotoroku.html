@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 25px);
+    }
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 24px 24px 32px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 24px;
+    }
+
+    .content-area-2 {
+      flex: 1;
+    }
+
+    /* ガントチャート */
+    .timeline-wrapper {
+      position: relative;
+      margin-bottom: 0;
+      width: 450px;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 47%;
+      left: 50px;
+      right: 50px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* #region レスポンシブ対応 */
+    /* 画面の高さが750px以下ならロゴを非表示 */
+    @media (max-height: 750px) {
+      .sidebar-logo-proma {
+        display: none;
+      }
+    }
+
+    /* 画面の高さが600px以下ならロゴを非表示 */
+    @media (max-height: 600px) {
+      .sidebar-logo-marushin {
+        display: none;
+      }
+    }
+
+    /* 画面の幅が768px以下ならスマホ*/
+    @media (max-width: 767px) {
+      .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* サイドバーを隠す */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+
+      /* 開いた状態 */
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-toggle {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .dashboard-section {
+        display: flex;
+        gap: 24px;
+        margin-top: 0;
+        width: 100%;
+        flex-direction: column;
+        padding-bottom: 20px;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+    
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+
+    .filter-row input[type="text"] {
+      padding: 4px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+    }
+
+    /* 承認通知／検索結果・ボックス共通 */
+    .content-area {
+
+      margin-bottom: 10px;
+    }
+
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group>.content-area:first-of-type {
+      margin-bottom: 5px;
+    }
+    
+    .content-area h3 {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+
+
+    /* 商品情報エリア：3行が1画面に収まるように高さを確保 */
+    #approvalNoticeArea {
+      width: 100%;
+      max-height: none;
+      /* 商品パネル横スクロールを隠さない（hidden だと子の overflow-x が効かない） */
+      overflow-x: visible;
+      overflow-y: visible;
+    }
+
+    /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+    .btn-fab-new {
+      position: fixed;
+      right: 24px;
+      bottom: 12px;
+      z-index: 2001;
+      min-width: 100px;
+      width: clamp(80px, 5vw, 120px);
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+    }
+
+    /* 追加ボタン共通 */
+    .btn-add-image {
+      align-self: flex-start;
+      padding: 8px 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .btn-add-image:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+
+    .btn-add-image--small {
+      transform: scale(0.75);
+      transform-origin: left top;
+    }
+
+    .product-swiper {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-y: visible;
+      overflow-x: auto;
+      touch-action: pan-x pan-y;
+      -webkit-overflow-scrolling: touch;
+      /* 横スクロールバーを常に確保（パネル複製時にスクロール可能に見せる） */
+      scrollbar-gutter: stable;
+    }
+
+    .product-swiper.product-swiper--horizontal-scroll {
+      overflow-x: scroll;
+      -ms-overflow-style: scrollbar;
+    }
+
+    /* パネル複数時：メイン .content で横スクロール（画面＝コンテンツ列の横スクロールバーを表示） */
+    body.product-panels-multi .content {
+      overflow-x: scroll;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      -ms-overflow-style: scrollbar;
+    }
+
+    body.product-panels-multi #approvalNoticeArea {
+      align-self: flex-start;
+      width: max-content;
+      max-width: none;
+      min-width: 100%;
+      box-sizing: border-box;
+    }
+
+    body.product-panels-multi .view-layout.view-layout-2 {
+      overflow: visible;
+    }
+
+    body.product-panels-multi .product-swiper {
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+    }
+
+    .product-panel-section {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .product-panel-toolbar {
+      margin-bottom: 12px;
+    }
+
+    .btn-add-product-panel {
+      padding: 8px 18px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: var(--fs-base);
+    }
+
+    .btn-add-product-panel:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .product-panels-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 16px;
+      /* 子パネル合計幅で横方向に伸ばし、親の .product-swiper で横スクロール */
+      width: max-content;
+      min-width: 100%;
+      min-height: 0;
+      box-sizing: border-box;
+    }
+
+    /* パネル横幅 縮小（元 920px 基準） */
+    .product-panels-row .product-card {
+      flex: 0 0 auto;
+      width: min(calc(769px), calc(100vw - 120px - 151px));
+      min-width: min(calc(769px), 100%);
+      max-width: calc(769px);
+      margin-bottom: 0;
+      min-height: auto;
+      position: relative;
+    }
+
+    /* 動的追加パネル削除（参考画像の×に近い見た目） */
+    .product-panels-row .product-card .btn-delete-product-panel {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 5;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .product-panels-row .product-card .btn-delete-product-panel:hover {
+      background: rgba(200, 0, 0, 0.9);
+    }
+
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin-bottom: 3px;
+      box-sizing: border-box;
+      background: #fff;
+      min-height: 120vh;
+    }
+
+    .product-nav {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .product-nav-btn {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: var(--color-card);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+
+    .product-nav-btn:hover:not(:disabled) {
+      background: var(--color-surface);
+    }
+
+    .product-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .product-image-block {
+      display: flex;
+      align-items: center;
+      align-self: center;
+      /* 参考画像スロット（.image-preview の最大 200×150）と同じ表示枠 */
+      max-width: 200px;
+    }
+
+    .product-image-wrapper {
+      width: 200px;
+      max-width: 200px;
+      height: 150px;
+      max-height: 150px;
+      box-sizing: border-box;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .product-image-wrapper.drag-over {
+      border-color: var(--color-primary);
+      background: #e6f4ea;
+    }
+
+    .product-image-wrapper img.product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .product-table {
+      width: 100%;
+      max-width: 100%;
+      order: 0;
+    }
+
+    .product-table .form-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .product-table .form-row > label {
+      width: 180px;
+      flex-shrink: 0;
+      padding-top: 8px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* ヘム：種類テキストボックスのすぐ横に長さ（ラベル＋入力）を並べる */
+    .product-table .hem-type-length-inline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      flex: 1;
+      min-width: 0;
+      padding-top: 8px;
+      box-sizing: border-box;
+    }
+
+    .product-table .hem-type-length-inline > label {
+      width: auto;
+      flex-shrink: 0;
+      padding-top: 0;
+      margin: 0;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .product-table .hem-type-length-inline .hem-field {
+      flex: 0 1 200px;
+      min-width: 140px;
+      max-width: 280px;
+    }
+
+    .product-table .hem-type-length-inline .hem-field input {
+      width: 100%;
+      flex: none;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .product-table .form-row > div,
+    .product-table .form-row > select,
+    .product-table .form-row > .autocomplete,
+    .product-table .form-row > .supplier-inputs-wrapper,
+    .product-table .form-row > .reference-images-wrapper {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-table input,
+    .product-table textarea,
+    .product-table select {
+      flex: 1;
+      min-width: 0;
+      box-sizing: border-box;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: var(--fs-base);
+    }
+
+    .product-table textarea {
+      resize: none;
+    }
+
+    .product-table select {
+      flex: 0 0 20% !important;
+      width: 40% !important;
+      max-width: 20% !important;
+      min-width: 0 !important;
+    }
+
+    /* セレクト幅 */
+    .product-table .form-row-select-wide > select {
+      flex: 0 0 25% !important;
+      width: 45% !important;
+      max-width: 25% !important;
+    }
+
+    .product-table .date-wide-row .period-range-input.period-range-yyyymmdd {
+      width: 170px !important;
+      min-width: 170px !important;
+    }
+
+    .product-table .btn-add-image {
+      background: var(--color-primary) !important;
+      border-color: var(--color-primary) !important;
+      color: #fff !important;
+    }
+
+    .product-table .btn-add-image:hover {
+      background: var(--color-primary-dark) !important;
+      border-color: var(--color-primary-dark) !important;
+    }
+
+    .product-table .half-field {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .product-table .form-row > .autocomplete .autocomplete-input {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    /* グローバル .autocomplete { width:250px } を打ち消し、値列内でレイアウト可能に */
+    .product-table .autocomplete {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    /* 副資材：有/無コンボは通常の select 制限（20%）を外して広げる */
+    .product-table .fukushizai-block > select {
+      width: 30% !important;
+      max-width: 30% !important;
+      min-width: 0 !important;
+      flex: 1 1 auto !important;
+    }
+
+    /* 本人希望納期：値列の 40% 幅（通常の select 20% 制限は行内で解除） */
+    .product-table .desired-delivery-fields {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      flex: 0 0 40%;
+      width: 40%;
+      max-width: 40%;
+      min-width: 0;
+    }
+
+    .product-table .desired-delivery-row select {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+    }
+
+    .product-table .desired-delivery-fields input[type="text"] {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      flex: none !important;
+      box-sizing: border-box;
+    }
+
+    .product-table .label-with-button {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      /* ネーム等の label（180px）と同じ左端～入力開始位置に揃える（中身の最小幅で列が広がらないよう固定） */
+      flex: 0 0 180px;
+      width: 180px;
+      max-width: 180px;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .product-table .label-with-button > label {
+      display: block;
+      padding-top: 8px;
+    }
+
+    .reference-images-wrapper {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 仕入得意先：静的・動的で同一行レイアウト（入力幅は値列に対する 40% で統一） */
+    .product-table .supplier-input-item {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .product-table .supplier-input-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .product-table .supplier-input-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+      min-width: 0;
+      flex-wrap: nowrap;
+    }
+
+    .product-table .supplier-input-row .autocomplete {
+      flex: 0 0 40%;
+      width: 40%;
+      max-width: 40%;
+      min-width: 0;
+    }
+
+    .product-table .supplier-input-row .autocomplete .autocomplete-input {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .reference-images-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+
+    .reference-image-item {
+      position: relative;
+      display: inline-block;
+      padding: 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      cursor: pointer;
+    }
+
+    .reference-image-item input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      font-size: 0;
+    }
+
+    .reference-image-item .image-preview {
+      display: block;
+      max-width: 200px;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      /* vertical-align: top; */
+      /* vertical-align: left; */
+    }
+
+    /* 参考画像・仕入得意先削除：同一の丸型×ボタン */
+    .reference-image-item .btn-delete-image,
+    .product-table .supplier-input-row .btn-delete-supplier {
+      z-index: 2;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reference-image-item .btn-delete-image {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+    }
+
+    .product-table .supplier-input-row .btn-delete-supplier {
+      flex-shrink: 0;
+    }
+
+    .reference-image-item .btn-delete-image:hover,
+    .product-table .supplier-input-row .btn-delete-supplier:hover {
+      background: rgba(200, 0, 0, 0.9);
+    }
+
+    @media (min-width: 900px) {
+      .product-swiper {
+        display: block;
+        max-height: none;
+        /* 横並びパネル用の横スクロールを維持（visible だとスクロールバーが出ない） */
+        overflow-x: auto;
+        overflow-y: visible;
+      }
+
+      body.product-panels-multi .product-swiper {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+      }
+
+      .product-card {
+        padding: 8px;
+        gap: 8px;
+        min-height: 120vh;
+        overflow: visible;
+      }
+
+      .product-table input,
+      .product-table textarea,
+      .product-table select {
+        padding: 6px 8px;
+      }
+
+      .product-table textarea {
+        min-height: 32px;
+      }
+
+      .product-image-block {
+        max-width: 200px;
+      }
+
+      .product-image-wrapper {
+        width: 200px;
+        max-width: 200px;
+        height: 150px;
+        max-height: 150px;
+      }
+
+    }
+
+    .content-area {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .top-filter-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .top-filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .top-filter-item .filter-label {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* 見積依頼日のカレンダーを大きく表示 */
+    #periodFromOnly.period-range-input.period-range-yyyymmdd {
+      width: 170px;
+      min-width: 170px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー  -->
+    <div class="sidebar">
+      <button class="sidebar-toggle">
+        <img src="images/chevron_left_20dp_FFFFF.svg" alt="toggle">
+      </button>
+      <h2>メニュー</h2>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/linear_scale_20dp_F4F6F9.svg">
+          <span>進捗管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">進行状況確認（仕様書別・商品別）</a></li>
+          <li><a href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html">進行状況確認（担当者別入稿状況）</a></li>
+          <li><a href="hatchujokyokanri.html">発注状況管理</a></li>
+          <li><a href="#">マニフェスト管理</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/color_lens_20dp_F4F6F9.svg">
+          <span>図案管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">見積依頼入力・送信</a></li>
+          <li><a href="#">見積回答登録・メーカー決定</a></li>
+          <li><a href="#">別注図案作成依頼登録・申請</a></li>
+          <li><a href="#">別注図案作成依頼承認</a></li>
+          <li><a href="zuankensaku.html">図案情報登録</a></li>
+          <li><a href="zuanfuriwake.html">図案振分け</a></li>
+          <li><a href="zuanteishutsu.html">図案提出</a></li>
+          <li><a href="#">図案選定結果登録</a></li>
+          <li><a href="#">図案申請</a></li>
+          <li><a href="#">図案承認結果登録</a></li>
+          <li><a href="#">見積図案アップロード</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/edit_document_20dp_F4F6F9.svg">
+          <span>仕様書管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">仕様書情報登録</a></li>
+          <li><a href="#">仕様書情報決済</a></li>
+          <li><a href="#">仕様書情報入稿</a></li>
+          <li><a href="#">サンプル承認結果登録</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/smart_toy_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>サンプル管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">サンプル管理</a></li>
+          <li><a href="#">最終サンプル提出状況管理（重点解除）</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/high_quality_20dp_F4F6F9.svg">
+          <span>品質管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">品質検査合格書登録</a></li>
+          <li><a href="#">品質検査合格書決済</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/manufacturing_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>発注管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">契約書送付依頼</a></li>
+          <li><a href="#">契約書登録</a></li>
+          <li><a href="#">発注入力</a></li>
+          <li><a href="#">発注書決済</a></li>
+          <li><a href="#">証紙依頼書入力</a></li>
+          <li><a href="#">証紙依頼書決済</a></li>
+          <li><a href="#">契約書サイン</a></li>
+          <li><a href="#">契約書送信</a></li>
+          <li><a href="#">発注情報Mｼｽﾃﾑ連携</a></li>
+          <li><a href="#">発注履歴照会</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/directions_boat_filled_20dp_F4F6F9.svg">
+          <span>入荷管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">Ship依頼書/国内手配書登録</a></li>
+          <li><a href="#">Ship依頼書/国内手配書決済</a></li>
+          <li><a href="#">Ship依頼書送信</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/map_20dp_F4F6F9.svg">
+          <span>マップ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">商品マップ生成</a></li>
+          <li><a href="#">商品マップ公開</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/conversation_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>評価分析</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">人事考課用実績集計</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/factory_20dp_F4F6F9.svg">
+          <span>工場監査</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">ライセンス契約情報入力</a></li>
+          <li><a href="#">ライセンス契約チェック</a></li>
+          <li><a href="#">工場認定情報入力</a></li>
+          <li><a href="#">工場認定有効期限確認</a></li>
+        </ul>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-title">
+          <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
+          <span>マスタ管理</span>
+          <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+        </div>
+        <ul class="submenu">
+          <li><a href="#">コスト管理表</a></li>
+          <li><a href="#">商品情報照会</a></li>
+          <li><a href="#">システム設定マスタメンテナンス</a></li>
+          <li><a href="#">権限グループマスタメンテナンス</a></li>
+          <li><a href="#">ユーザーマスタメンテナンス</a></li>
+          <li><a href="#">ライセンスマスタメンテナンス</a></li>
+          <li><a href="#">ブランドマスタメンテナンス</a></li>
+          <li><a href="#">キャラクタマスタメンテナンス</a></li>
+          <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
+          <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
+          <li><a href="#">資材マスタメンテナンス</a></li>
+        </ul>
+      </div>
+
+      <img class="sidebar-logo-proma" src="images/logo_proma.bmp" width="120">
+      <img class="sidebar-logo-marushin" src="images/logo_white.png" width="155">
+
+    </div>
+
+    <!-- 画面右下固定 送信ボタン -->
+    <button type="button" class="btn-fab-new">送信</button>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <!-- 画面タイトル -->
+      <h1>見積情報登録</h1>
+      <!-- ========== : ヘッダ部 ========== -->
+      <div class="content-area">
+        <div class="view-layout view-layout-1">
+          <div class="top-filter-row">
+            <div class="top-filter-item">
+              <label for="periodFromOnly" class="filter-label">見積依頼日</label>
+              <div class="period-range-row--from-only">
+                <div class="period-range-field">
+                  <input type="text" id="periodFromOnly" name="periodFromOnly"
+                    class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                    placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー">
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+            <div class="top-filter-item">
+              <span class="filter-label">定番/別注</span>
+              <select id="teibanBetchuSelect">
+                <option value="" selected disabled>選択してください</option>
+                <option value="teiban">定番</option>
+                <option value="betchu">別注</option>
+              </select>
+            </div>
+            <div class="top-filter-item">
+              <span class="filter-label">概算/正式</span>
+              <select id="gaisanSeishikiSelect">
+                <option value="" selected disabled>選択してください</option>
+                <option value="teiban">概算</option>
+                <option value="betchu">正式</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 検索結果一覧エリア -->
+      <div class="content-area-2" id="approvalNoticeArea">
+        <div class="view-layout view-layout-2">
+          <div class="product-panel-section">
+            <div class="product-panel-toolbar">
+              <button type="button" id="addProductPanelBtn" class="btn-add-product-panel">追加</button>
+            </div>
+            <div class="product-swiper" id="productSwiper">
+              <div class="product-panels-row" id="productPanelsRow">
+            <div class="product-card is-active">
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+              <div class="product-table">
+                  <div class="form-row">
+                    <label>アイテム</label>
+                    <div class="autocomplete">
+                      <input type="text"  placeholder="アイテムを入力" id="searchItem">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>商品サイズ</label>
+                    <div>
+                      <input type="text" placeholder="商品サイズを入力">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>生産数量</label>
+                    <div>
+                      <input type="text" placeholder="生産数量を入力">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>重量(目付け)</label>
+                    <div>
+                      <input type="text" placeholder="重量(目付け)を入力">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>柄数</label>
+                    <div>
+                      <input type="text" placeholder="柄数を入力">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>配色</label>
+                    <div class="autocomplete">
+                      <input type="text" placeholder="配色を入力" id="searchItem">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>糸番手</label>
+                    <div>
+                      <input type="text" placeholder="糸番手を入力">
+                    </div>
+                  </div>
+                  <div class="form-row form-row-select-wide">
+                    <label>仕様</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>プリント</option>
+                      <option>ジャガード</option>
+                      <option>SVS</option>
+                      <option>無</option>
+                    </select>
+                  </div>
+                  <div class="form-row form-row-select-wide">
+                    <label>Pt方法</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>顔料Pt</option>
+                      <option>染料Pt</option>
+                      <option>インクジェットPt</option>
+                    </select>
+                    <select>
+                      <option>選択してください</option>
+                      <option>色１</option>
+                      <option>色２</option>
+                      <option>色３</option>
+                      <option>色４</option>
+                    </select>
+                  </div>
+                  <div class="form-row form-row-select-wide">
+                    <label>シャーリング</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>全シャーリング</option>
+                      <option>半シャーリング</option>
+                      <option>SVS</option>
+                      <option>無</option>
+                    </select>
+                  </div>
+                  <div class="form-row form-row-select-wide">
+                    <label>刺繡</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>針数</option>
+                      <option>サイズ(5×8cm)</option>
+                    </select>
+                    <div>
+                      <input type="text" placeholder="針数を入力">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>その他</label>
+                    <div>
+                      <textarea rows="3" placeholder="その他仕様を入力" style="resize:none; width:500px;"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>ヘム</label>
+                    <div class="hem-type-length-inline">
+                      <label>種類</label>
+                      <div class="hem-field">
+                        <input type="text" placeholder="種類を入力">
+                      </div>
+                      <label>長さ</label>
+                      <div class="hem-field">
+                        <input type="text" placeholder="長さを入力">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>耳</label>
+                    <div>
+                      <input type="text" placeholder="耳を入力">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label>ネーム</label>
+                    <div>
+                      <input type="text" placeholder="ネームを入力">
+                    </div>
+                  </div>
+                  <div id="betchuOnlyFieldsAfterKensa" class="betchu-only-after-kensa">
+                  <div class="form-row form-row-select-wide">
+                    <label>検査基準</label>
+                    <label style="width: auto;">生地・製品検査</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>必要</option>
+                      <option>不要</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label></label>
+                    <label style="width: auto;">指定検査基準名</label>
+                    <div>
+                      <input type="text" placeholder="指定検査基準名を入力">
+                    </div>
+                  </div>
+                  <div class="form-row form-row-select-wide">
+                    <label></label>
+                    <label style="width: auto;">ホルマリン検査</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>必要</option>
+                      <option>不要</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label>副資材(ハンガー等)<br>指定の場合は品番・<br>手配先・請求先も記入</label>
+                    <div class="fukushizai-block">
+                      <select>
+                        <option>選択してください</option>
+                        <option>有（指定 有）</option>
+                        <option>有（指定 無）</option>
+                        <option>無</option>
+                      </select>
+                      <div><input type="text" style="margin-top: 10px; min-width: 500px;" placeholder=""></div>
+                      <div><input type="text" style="margin-top: 10px; min-width: 500px;" placeholder=""></div>
+                    </div>
+                  </div>
+                  <div class="form-row form-row-select-wide">
+                    <label></label>
+                    <label style="width: auto;">手配先</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>工場</option>
+                      <option>丸眞</option>
+                      <option>支給</option>
+                    </select>
+                    <label style="width: auto;">請求先</label>
+                    <select>
+                      <option>選択してください</option>
+                      <option>工場</option>
+                      <option>丸眞</option>
+                      <option>支給</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label>ケース仕様</label>
+                    <div>
+                      <input type="text" placeholder="ケース仕様を入力">
+                    </div>
+                  </div>
+                  <div class="form-row date-wide-row">
+                    <label>試作データ入稿予定</label>
+                    <div class="period-range-row--from-only">
+                      <div class="period-range-field">
+                        <input type="text" id="periodFromOnly" name="periodFromOnly"
+                          class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                          placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                          title="8桁で入力（例: 20250309）またはカレンダー">
+                        <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                        <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row date-wide-row">
+                    <label>希望サンプル納期</label>
+                    <div class="period-range-row--from-only">
+                      <div class="period-range-field">
+                        <input type="text" id="periodFromOnly" name="periodFromOnly"
+                          class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                          placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                          title="8桁で入力（例: 20250309）またはカレンダー">
+                        <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                        <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row desired-delivery-row">
+                    <label>本人希望納期</label>
+                    <div class="desired-delivery-fields">
+                      <select>
+                        <option>選択してください</option>
+                        <option>一括</option>
+                        <option>分納(分納の場合希望を下段に記入↓)</option>
+                      </select>
+                      <div><input type="text" placeholder=""></div>
+                    </div>
+                  </div>
+                  <div class="form-row remarks-row">
+                    <label>備考<br>(FOB or C&F等)<br>(第三者検品等)</label>
+                    <div>
+                      <div><input type="text" style="min-width: 500px;" placeholder=""></div>
+                      <div><input type="text" style="margin-top: 10px; min-width: 500px;" placeholder=""></div>
+                      <div><input type="text" style="margin-top: 10px; min-width: 500px;" placeholder=""></div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="label-with-button">
+                      <label>参考画像</label>
+                      <button type="button" id="addImageBtn" class="btn-add-image btn-add-image--small js-add-reference-image" title="参考画像追加">追加</button>
+                    </div>
+                    <div class="reference-images-wrapper">
+                      <div id="referenceImagesContainer" class="reference-images-container js-reference-images-container"></div>
+                    </div>
+                  </div>                  
+                  <div class="form-row">
+                    <div class="label-with-button">
+                      <label>仕入得意先</label>
+                      <button type="button" id="addShiireTokuisakiBtn" class="btn-add-image btn-add-image--small js-add-shiire-tokuisaki" title="仕入得意先追加">追加</button>
+                    </div>
+                    <div class="supplier-inputs-wrapper">
+                      <div id="shiireTokuisakiInputsContainer" class="js-shiire-tokuisaki-container">
+                        <div class="supplier-input-item">
+                          <div class="supplier-input-row">
+                            <div class="autocomplete">
+                              <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入得意先を入力" name="shiireTokuisaki[]">
+                              <div class="autocomplete-dropdown"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="label-with-button">
+                      <label>得意先</label>
+                    </div>
+                    <div class="supplier-inputs-wrapper">
+                      <div id="shiireTokuisakiInputsContainer" class="js-shiire-tokuisaki-container">
+                        <div class="supplier-input-item">
+                          <div class="supplier-input-row">
+                            <div class="autocomplete">
+                              <input type="text" class="autocomplete-input" data-list="supplier" placeholder="得意先を入力" name="shiireTokuisaki[]">
+                              <div class="autocomplete-dropdown"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div id="shiiresakiTeibanOnlyBlock" class="shiiresaki-teiban-only">
+                    <div class="form-row form-row-select-wide">
+                      <div class="label-with-button">
+                        <label>仕入先</label>
+                        <button type="button" id="addShiiresakiBtn" class="btn-add-image btn-add-image--small js-add-shiiresaki" title="仕入先を追加">追加</button>
+                      </div>
+                      <div class="supplier-inputs-wrapper">
+                        <div id="shiiresakiInputsContainer" class="js-shiiresaki-container">
+                          <div class="supplier-input-item">
+                            <div class="supplier-input-row">
+                              <div class="autocomplete">
+                                <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入先を入力" name="shiiresaki[]">
+                                <div class="autocomplete-dropdown"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');   // ← オーバーレイ表示
+      } else {
+
+        overlay.classList.remove('show'); // ← オーバーレイ非表示
+      }
+    }
+
+    // メニュー開閉
+    // document.querySelectorAll('.menu-title').forEach(title => {
+    //   title.addEventListener('click', () => {
+    //     title.parentElement.classList.toggle('open');
+    //   });
+    // });
+
+    // PCのとき、メニューの開閉ボタン
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.querySelector('.sidebar-toggle');
+    const toggleImg = toggle.querySelector('img');
+    const content = document.querySelector('.content');
+
+    toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('closed');
+      content.classList.toggle('expanded');
+
+      if (sidebar.classList.contains('closed')) {
+        toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+      } else {
+        toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+      }
+    });
+
+    // スマホのとき、開いたメニューを閉じる
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // 見積依頼日・各種日付: カレンダーボタン押下で日付ピッカーを開く（root 以下に対して付与可能）
+    function attachPeriodRangeFields(root) {
+      var scope = root || document;
+      var fields = scope.querySelectorAll('.period-range-row--from-only .period-range-field');
+      fields.forEach(function (field) {
+        if (field.getAttribute('data-period-bound') === '1') return;
+        field.setAttribute('data-period-bound', '1');
+        var textInput = field.querySelector('.period-range-yyyymmdd');
+        var picker = field.querySelector('.period-range-picker');
+        var btn = field.querySelector('.period-range-calendar-btn');
+        if (!picker || !btn || !textInput) return;
+
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          try {
+            if (typeof picker.showPicker === 'function') {
+              picker.showPicker();
+            } else {
+              picker.focus();
+              picker.click();
+            }
+          } catch (_) {
+            picker.focus();
+            picker.click();
+          }
+        });
+
+        picker.addEventListener('change', function () {
+          if (!picker.value) return;
+          textInput.value = picker.value.replace(/-/g, '');
+          textInput.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      });
+    }
+
+    (function () {
+      attachPeriodRangeFields(document);
+    })();
+
+    // // 画面のどこかをクリックしたら閉じる
+    // document.addEventListener('click', () => {
+    //   menu.style.display = 'none';
+    // });
+
+    // 案①：展示会変更で全体・半円グラフを更新
+    var tenjikaiData = {
+      "2026.01": {
+        total: 120,
+        phases: [
+          { name: "図案申請", done: 15 },
+          { name: "試作入稿", done: 18 },
+          { name: "サンプル申請", done: 20 },
+          { name: "最終入稿", done: 22 },
+          { name: "発注", done: 23 },
+          { name: "入荷", done: 22 }
+        ],
+        sample: { done: 50, total: 120, warn7: 8, delay: 3 },
+        nyuko: { done: 60, total: 120, warn7: 5, delay: 2 },
+        hatchu: { done: 40, total: 120, warn7: 4, delay: 1 },
+        status: { approval: 14, applying: 6, sendback: 2, done: 98 },
+        nyukoPersons: {
+          "担当者①": { total: 20, done: 10, section: "ka1" },
+          "担当者②": { total: 20, done: 10, section: "ka1" },
+          "担当者③": { total: 20, done: 10, section: "ka1" },
+
+          "担当者a": { total: 20, done: 10, section: "ka1" },
+          "担当者b": { total: 20, done: 10, section: "ka1" },
+          "担当者c": { total: 20, done: 10, section: "ka1" },
+          "担当者d": { total: 20, done: 10, section: "ka1" },
+          "担当者e": { total: 20, done: 10, section: "ka1" },
+          "担当者f": { total: 20, done: 10, section: "ka1" },
+          "担当者g": { total: 20, done: 10, section: "ka1" },
+          "担当者h": { total: 20, done: 10, section: "ka1" },
+          "担当者i": { total: 20, done: 10, section: "ka1" },
+          "担当者j": { total: 20, done: 10, section: "ka1" },
+          "担当者k": { total: 20, done: 10, section: "ka1" },
+          "担当者l": { total: 20, done: 10, section: "ka1" },
+          "担当者m": { total: 20, done: 10, section: "ka1" },
+          "担当者o": { total: 20, done: 10, section: "ka1" },
+          "担当者p": { total: 20, done: 10, section: "ka1" },
+          "担当者q": { total: 20, done: 10, section: "ka1" },
+          "担当者r": { total: 20, done: 10, section: "ka1" },
+          "担当者s": { total: 20, done: 10, section: "ka1" },
+          "担当者t": { total: 20, done: 10, section: "ka1" },
+          "担当者u": { total: 20, done: 10, section: "ka1" },
+          "担当者v": { total: 20, done: 10, section: "ka1" },
+          "担当者w": { total: 20, done: 10, section: "ka1" },
+          "担当者x": { total: 20, done: 10, section: "ka1" },
+          "担当者y": { total: 20, done: 10, section: "ka1" },
+          "担当者z": { total: 20, done: 10, section: "ka1" },
+          "担当者aa": { total: 20, done: 10, section: "ka1" },
+          "担当者ab": { total: 20, done: 10, section: "ka1" },
+          "担当者ac": { total: 20, done: 10, section: "ka1" },
+          "担当者ad": { total: 20, done: 10, section: "ka1" },
+          "担当者ae": { total: 20, done: 10, section: "ka1" },
+          "担当者af": { total: 20, done: 10, section: "ka1" },
+          "担当者ag": { total: 20, done: 10, section: "ka1" },
+          "担当者ah": { total: 20, done: 10, section: "ka1" },
+          "担当者ai": { total: 20, done: 10, section: "ka1" },
+          "担当者aj": { total: 20, done: 10, section: "ka1" },
+          "担当者ak": { total: 20, done: 10, section: "ka1" },
+          "担当者al": { total: 20, done: 10, section: "ka1" },
+
+
+          "担当者④": { total: 20, done: 10, section: "ka2" },
+          "担当者⑤": { total: 20, done: 10, section: "ka2" },
+          "担当者⑥": { total: 10, done: 5, section: "ka3" },
+          "担当者⑦": { total: 10, done: 5, section: "ka3" }
+        }
+      },
+
+      "2026.03": {
+        total: 200,
+        phases: [
+          { name: "図案申請", done: 25 },
+          { name: "試作入稿", done: 18 },
+          { name: "サンプル申請", done: 160 },
+          { name: "最終入稿", done: 80 },
+          { name: "発注", done: 30 },
+          { name: "入荷", done: 2 }
+        ],
+        sample: { done: 180, total: 200, warn7: 15, delay: 5 },
+        nyuko: { done: 80, total: 200, warn7: 8, delay: 4 },
+        hatchu: { done: 30, total: 200, warn7: 6, delay: 3 },
+        status: { approval: 12, applying: 5, sendback: 2, done: 181 },
+        nyukoPersons: {
+          "苗字３４５ 名前８９０ ": { total: 40, done: 16, section: "ka1" },
+          "担当者②": { total: 40, done: 16, section: "ka1" },
+          "担当者③": { total: 40, done: 16, section: "ka1" },
+
+          "担当者④": { total: 30, done: 12, section: "ka2" },
+          "担当者⑤": { total: 30, done: 12, section: "ka2" },
+
+          "担当者⑥": { total: 10, done: 4, section: "ka3" },
+          "担当者⑦": { total: 10, done: 4, section: "ka3" }
+        }
+      },
+
+      "2026.06": {
+        total: 80,
+        phases: [
+          { name: "図案申請", done: 10 },
+          { name: "試作入稿", done: 12 },
+          { name: "サンプル申請", done: 14 },
+          { name: "最終入稿", done: 15 },
+          { name: "発注", done: 14 },
+          { name: "入荷", done: 15 }
+        ],
+        sample: { done: 60, total: 80, warn7: 4, delay: 2 },
+        nyuko: { done: 70, total: 80, warn7: 3, delay: 1 },
+        hatchu: { done: 75, total: 80, warn7: 2, delay: 0 },
+        status: { approval: 8, applying: 4, sendback: 1, done: 67 },
+        nyukoPersons: {
+          "担当者①": { total: 15, done: 13, section: "ka1" },
+          "担当者②": { total: 15, done: 13, section: "ka1" },
+          "担当者③": { total: 10, done: 9, section: "ka1" },
+
+          "担当者④": { total: 15, done: 13, section: "ka2" },
+          "担当者⑤": { total: 15, done: 13, section: "ka2" },
+
+          "担当者⑥": { total: 5, done: 5, section: "ka3" },
+          "担当者⑦": { total: 5, done: 4, section: "ka3" }
+        }
+      }
+    };
+
+    var GAUGE_ARC_LENGTH = Math.PI * 40;
+    function setGaugeFillSegments(fillId, warn7Id, delayId, done, total, warn7, delay) {
+      var L = GAUGE_ARC_LENGTH;
+      var t = total > 0 ? total : 1;
+      var w7 = (warn7 != null ? warn7 : 0);
+      var dly = (delay != null ? delay : 0);
+      var lenDone = (done / t) * L;
+      var lenWarn7 = (w7 / t) * L;
+      var lenDelay = (dly / t) * L;
+      var el = document.getElementById(fillId);
+      if (el) {
+        el.setAttribute("stroke-dasharray", lenDone.toFixed(2) + " " + L.toFixed(2));
+        el.setAttribute("stroke-dashoffset", "0");
+      }
+      el = document.getElementById(warn7Id);
+      if (el) {
+        el.setAttribute("stroke-dasharray", lenWarn7.toFixed(2) + " " + L.toFixed(2));
+        el.setAttribute("stroke-dashoffset", (-lenDone).toFixed(2));
+      }
+      el = document.getElementById(delayId);
+      if (el) {
+        el.setAttribute("stroke-dasharray", lenDelay.toFixed(2) + " " + L.toFixed(2));
+        el.setAttribute("stroke-dashoffset", (-(lenDone + lenWarn7)).toFixed(2));
+      }
+    }
+
+    // 定番選択時は検査基準以降を非表示（未選択・別注で表示）— 全パネルに適用
+    (function () {
+      var sel = document.getElementById("teibanBetchuSelect");
+      if (!sel) return;
+
+      function toggleBetchuOnlyFields() {
+        var hide = sel.value === "teiban";
+        document.querySelectorAll(".betchu-only-after-kensa").forEach(function (block) {
+          block.style.display = hide ? "none" : "";
+          block.setAttribute("aria-hidden", hide ? "true" : "false");
+        });
+      }
+
+      toggleBetchuOnlyFields();
+      sel.addEventListener("change", toggleBetchuOnlyFields);
+    })();
+
+    // 定番のときだけ「仕入先」を表示（未選択・別注では非表示）— 全パネルに適用
+    (function () {
+      var sel = document.getElementById("teibanBetchuSelect");
+      if (!sel) return;
+
+      function toggleShiiresakiForTeiban() {
+        var show = sel.value === "teiban";
+        document.querySelectorAll(".shiiresaki-teiban-only").forEach(function (block) {
+          block.style.display = show ? "" : "none";
+          block.setAttribute("aria-hidden", show ? "false" : "true");
+        });
+      }
+
+      toggleShiiresakiForTeiban();
+      sel.addEventListener("change", toggleShiiresakiForTeiban);
+    })();
+
+    // 共通項目「展示会」は販売区分が「定番」のときだけ表示
+    (function () {
+      var selHanbaiCommon = document.getElementById("teibanBetchuSelect");
+      var tenjikaiField = document.getElementById("commonTenjikaiField");
+      var tenjikaiSelect = document.getElementById("tenjikaiSelect");
+      if (!selHanbaiCommon || !tenjikaiField) return;
+
+      function toggleTenjikaiByHanbai() {
+        if (selHanbaiCommon.value === "teiban") {
+          tenjikaiField.style.display = "";
+        } else {
+          tenjikaiField.style.display = "none";
+          if (tenjikaiSelect) {
+            tenjikaiSelect.value = "";
+          }
+        }
+      }
+
+      // 初期表示と変更時の制御
+      toggleTenjikaiByHanbai();
+      selHanbaiCommon.addEventListener("change", toggleTenjikaiByHanbai);
+    })();
+
+    // 商品情報：商品カードの画像アップロード制御
+    (function () {
+      var swiper = document.getElementById("productSwiper");
+      if (!swiper) return;
+
+      function getCards() {
+        return swiper.querySelectorAll(".product-card");
+      }
+
+      function attachImageHandler(card) {
+        var fileInput = card.querySelector(".product-image-input");
+        var img = card.querySelector(".product-image");
+        var wrapper = card.querySelector(".product-image-wrapper");
+        if (!fileInput || !img || !wrapper) return;
+
+        function loadFile(file) {
+          if (!file || !file.type || !file.type.match(/^image\//)) return;
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+
+        // ファイル選択（ボタン・ラベル）
+        fileInput.addEventListener("change", function () {
+          if (!this.files || !this.files[0]) return;
+          loadFile(this.files[0]);
+        });
+
+        // 画像クリックでファイル選択
+        wrapper.addEventListener("click", function () {
+          fileInput.click();
+        });
+
+        // ドラッグ＆ドロップ
+        ["dragenter", "dragover"].forEach(function (ev) {
+          wrapper.addEventListener(ev, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            wrapper.classList.add("drag-over");
+          });
+        });
+        ["dragleave", "dragend"].forEach(function (ev) {
+          wrapper.addEventListener(ev, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            wrapper.classList.remove("drag-over");
+          });
+        });
+        wrapper.addEventListener("drop", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          wrapper.classList.remove("drag-over");
+          var files = e.dataTransfer && e.dataTransfer.files;
+          if (!files || !files[0]) return;
+          loadFile(files[0]);
+        });
+      }
+
+      // 初期カードに画像ハンドラを付与（複製パネル用に公開）
+      getCards().forEach(attachImageHandler);
+      window.__attachProductCardImage = attachImageHandler;
+    })();
+
+    // 参考画像：追加（パネルごとに委譲）
+    (function () {
+      function createReferenceImageSlot() {
+        var item = document.createElement("div");
+        item.className = "reference-image-item";
+
+        var preview = document.createElement("img");
+        preview.className = "image-preview";
+        preview.src = "images/noimage.png";
+        preview.alt = "クリックして画像を選択";
+
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.setAttribute("name", "referenceImage[]");
+        fileInput.addEventListener("change", function () {
+          var file = this.files && this.files[0];
+          if (file && file.type && file.type.indexOf("image/") === 0) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          } else {
+            preview.src = "images/noimage.png";
+          }
+        });
+
+        var deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "btn-delete-image";
+        deleteBtn.innerHTML = "×";
+        deleteBtn.title = "削除";
+        deleteBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          item.remove();
+        });
+
+        item.appendChild(preview);
+        item.appendChild(fileInput);
+        item.appendChild(deleteBtn);
+        return item;
+      }
+
+      var row = document.getElementById("productPanelsRow");
+      if (!row) return;
+
+      row.addEventListener("click", function (e) {
+        var btn = e.target.closest(".js-add-reference-image");
+        if (!btn) return;
+        e.preventDefault();
+        var card = btn.closest(".product-card");
+        var container = card && card.querySelector(".js-reference-images-container");
+        if (!container) return;
+        container.appendChild(createReferenceImageSlot());
+      });
+    })();
+
+    // 仕入得意先・仕入先：追加（パネルごとに委譲）
+    (function () {
+      function createSupplierRow(placeholder, inputName) {
+        var item = document.createElement("div");
+        item.className = "supplier-input-item";
+
+        var row = document.createElement("div");
+        row.className = "supplier-input-row";
+
+        var autocompleteDiv = document.createElement("div");
+        autocompleteDiv.className = "autocomplete";
+        var input = document.createElement("input");
+        input.type = "text";
+        input.className = "autocomplete-input";
+        input.setAttribute("data-list", "supplier");
+        input.placeholder = placeholder;
+        input.setAttribute("name", inputName);
+        var dropdown = document.createElement("div");
+        dropdown.className = "autocomplete-dropdown";
+        autocompleteDiv.appendChild(input);
+        autocompleteDiv.appendChild(dropdown);
+
+        var deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "btn-delete-supplier";
+        deleteBtn.innerHTML = "×";
+        deleteBtn.title = "削除";
+        deleteBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          item.remove();
+        });
+
+        row.appendChild(autocompleteDiv);
+        row.appendChild(deleteBtn);
+        item.appendChild(row);
+        return item;
+      }
+
+      var row = document.getElementById("productPanelsRow");
+      if (!row) return;
+
+      row.addEventListener("click", function (e) {
+        var t1 = e.target.closest(".js-add-shiire-tokuisaki");
+        var t2 = e.target.closest(".js-add-shiiresaki");
+        if (!t1 && !t2) return;
+        e.preventDefault();
+        var card = (t1 || t2).closest(".product-card");
+        if (!card) return;
+        var container = t1
+          ? card.querySelector(".js-shiire-tokuisaki-container")
+          : card.querySelector(".js-shiiresaki-container");
+        if (!container) return;
+        var item = t1
+          ? createSupplierRow("仕入得意先を入力", "shiireTokuisaki[]")
+          : createSupplierRow("仕入先を入力", "shiiresaki[]");
+        container.appendChild(item);
+        if (window.initAutocomplete) {
+          window.initAutocomplete(item.querySelector(".autocomplete"));
+        }
+      });
+    })();
+
+    // 商品パネル：先頭「追加」で右にパネル複製
+    (function () {
+      var btn = document.getElementById("addProductPanelBtn");
+      var row = document.getElementById("productPanelsRow");
+      if (!btn || !row) return;
+
+      function syncProductPanelsMultiMode() {
+        var multi = row.querySelectorAll(".product-card").length > 1;
+        document.body.classList.toggle("product-panels-multi", multi);
+      }
+
+      function resetSupplierContainer(container) {
+        if (!container) return;
+        var items = container.querySelectorAll(".supplier-input-item");
+        for (var i = 1; i < items.length; i++) {
+          items[i].remove();
+        }
+        var first = container.querySelector(".supplier-input-item");
+        if (first) {
+          first.querySelectorAll("input").forEach(function (inp) {
+            inp.value = "";
+          });
+        }
+      }
+
+      function resetPanelForm(card) {
+        card.querySelectorAll("input, textarea, select").forEach(function (el) {
+          if (el.tagName === "SELECT") {
+            return;
+          }
+          if (el.type === "file") {
+            el.value = "";
+          } else if (el.type === "checkbox" || el.type === "radio") {
+            el.checked = false;
+          } else {
+            el.value = "";
+          }
+        });
+        /* 各 select は先頭の「選択してください」相当（1番目の option）を選ぶ */
+        card.querySelectorAll("select").forEach(function (sel) {
+          if (sel.options.length > 0) {
+            sel.selectedIndex = 0;
+          }
+        });
+        card.querySelectorAll("img.product-image").forEach(function (img) {
+          img.src = "images/noimage.png";
+        });
+        card.querySelectorAll(".reference-image-item").forEach(function (n) {
+          n.remove();
+        });
+        resetSupplierContainer(card.querySelector(".js-shiire-tokuisaki-container"));
+        resetSupplierContainer(card.querySelector(".js-shiiresaki-container"));
+        card.querySelectorAll(".period-range-field[data-period-bound]").forEach(function (n) {
+          n.removeAttribute("data-period-bound");
+        });
+      }
+
+      btn.addEventListener("click", function () {
+        var template = row.querySelector(".product-card");
+        if (!template) return;
+        var clone = template.cloneNode(true);
+        clone.classList.remove("is-active");
+        clone.querySelectorAll("[id]").forEach(function (el) {
+          el.removeAttribute("id");
+        });
+        resetPanelForm(clone);
+        row.appendChild(clone);
+
+        var delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "btn-delete-product-panel";
+        delBtn.setAttribute("aria-label", "このパネルを削除");
+        delBtn.title = "削除";
+        delBtn.innerHTML = "×";
+        delBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          clone.remove();
+          syncProductPanelsMultiMode();
+        });
+        clone.insertBefore(delBtn, clone.firstChild);
+
+        syncProductPanelsMultiMode();
+
+        if (typeof window.__attachProductCardImage === "function") {
+          window.__attachProductCardImage(clone);
+        }
+
+        clone.querySelectorAll(".autocomplete").forEach(function (box) {
+          if (window.initAutocomplete) {
+            window.initAutocomplete(box);
+          }
+        });
+        attachPeriodRangeFields(clone);
+
+        var teibanSel = document.getElementById("teibanBetchuSelect");
+        if (teibanSel) {
+          teibanSel.dispatchEvent(new Event("change"));
+        }
+
+        clone.scrollIntoView({ behavior: "smooth", inline: "end", block: "nearest" });
+      });
+    })();
+
+  </script>
+</body>
+
+</html>
