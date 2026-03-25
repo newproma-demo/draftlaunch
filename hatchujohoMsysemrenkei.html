@@ -112,256 +112,6 @@
       flex-direction: column;
     }
 
-    /* #region レスポンシブ対応 */
-    /* 画面の幅が650px以下ならスマホ（ヘッダー・.content ベースは style.css） */
-    @media (max-width: 768px) {
-      .content:not(.expanded),
-      .content.expanded {
-        margin-left: -220px;
-        padding-left: 20px;
-      }
-
-      .header-title {
-        margin: 5px 0 0 35px;
-        font-size: var(--fs-xl);
-      }
-
-      .header-user {
-        display: none;
-      }
-
-      /* スクロールは .content に閉じ、ヘッダー/ハンバーガーを固定 */
-      .main-wrapper {
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-      }
-
-      .hamburger {
-        display: block;
-        position: fixed;
-        top: 6px;
-        left: 10px;
-        margin: 0;
-        cursor: pointer;
-        z-index: 3000;
-      }
-
-      .hamburger img {
-        width: 30px;
-      }
-
-      .content {
-        background: var(--color-surface);
-        flex-direction: column;
-        flex: 1;
-        min-width: 0;
-        min-height: 0;
-        max-width: 100%;
-        padding: 20px;
-        padding-right: max(20px, env(safe-area-inset-right, 0px));
-        width: 100%;
-        box-sizing: border-box;
-        overflow-x: hidden;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-      }
-
-      /* イメージ案①: スマホ用 */
-      .filter-row {
-        flex-wrap: wrap;
-      }
-      .filter-item {
-        flex: 1 1 100%;
-      }
-
-      /* スマホ: 検索条件は折りたたみ式 */
-      .search-toggle-sp {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: 14px 16px;
-        font-family: inherit;
-        font-weight: 500;
-        color: var(--color-text);
-        background: var(--color-card);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        text-align: left;
-        box-sizing: border-box;
-      }
-      .search-toggle-sp-label {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        min-width: 0;
-      }
-      .search-toggle-sp-icon {
-        margin-right: 8px;
-        flex-shrink: 0;
-        vertical-align: middle;
-      }
-      .search-toggle-sp::after {
-        content: "＋";
-        color: var(--color-text-muted);
-      }
-      .search-box {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        padding: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-      }
-       .search-box-inner {
-        display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px 16px;
-      }
-      .search-box.is-open .search-box-inner {
-        display: grid;
-      }
-      .search-box.is-open .search-toggle-sp::after {
-        content: "ー";
-      }
-
-      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
-      .view-layout-1-group > .content-area:first-of-type {
-        padding: 8px;
-      }
-      .search-box-inner .filter-row {
-        display: contents;
-      }
-      .search-box-inner .filter-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-        min-width: 0;
-      }
-      .search-box-inner .filter-item .filter-label {
-        margin-right: 0;
-      }
-      .search-box-inner .filter-item select,
-      .search-box-inner .filter-item input[type="text"] {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      .search-box-inner .search-row {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-        min-width: 0;
-      }
-      .search-box-inner .search-row label {
-        /* font-size: var(--fs-base);  */
-        flex-shrink: 0;
-      }
-      .search-box-inner .search-row select,
-      .search-box-inner .search-row input {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      .search-cancel-wrapper {
-        grid-column: 1 / -1;
-        justify-content: flex-end;
-        margin-left: 0;
-      }
-
-      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
-      #approvalListArea {
-        overflow-x: visible;
-        max-height: none;
-        --result-row-height: 270px;
-      }
-      #approvalListArea .result-table {
-        min-width: 0;
-      }
-      #approvalListArea .result-table thead {
-        display: none;
-      }
-      #approvalListArea .result-table tbody tr {
-        display: block;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        padding: 12px 14px;
-        margin-bottom: 12px;
-        background: var(--color-card);
-      }
-      #approvalListArea .result-table tbody tr::before {
-
-        display: block;
-        color: var(--color-primary);
-        padding-bottom: 8px;
-        margin-bottom: 8px;
-        border-bottom: 1px solid var(--color-border);
-      }
-      #approvalListArea .result-table tbody td {
-        display: block;
-        border: none;
-        padding: 8px 0;
-        white-space: normal;
-      }
-      /* 先頭列はチェックボックスのため、2列目以降にラベルを付与 */
-      #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "連携ステータス：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "発注No.：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "発注日：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(5)::before {
-        content: "発注先：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "得意先：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(7)::before {
-        content: "担当者：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(8)::before {
-        content: "発注区分：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(9)::before {
-        content: "発注金額合計：";
-        font-weight: 600;
-      }
-
-      /* イメージ案②: スマホ用 */
-      .view-layout-2 .status-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      /* ガントチャート */
-      .timeline-wrapper {
-        width: 100%;
-        max-width: 400px;
-      }
-
-      .timeline-line {
-        left: 20px;
-        right: 20px;
-      }
-    }
-
     /* ========== イメージ案：3つとも一括表示 ========== */
     .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
     .view-layout-1-group,
@@ -376,13 +126,6 @@
 
     /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
     .view-layout-1 { padding: 0; }
-
-    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
-    @media (min-width: 769px) {
-      .search-toggle-sp {
-        display: none;
-      }
-    }
 
     .filter-row {
       display: flex;
@@ -487,7 +230,8 @@
       display: flex;
       align-items: center;
     }
-    .btn-search-cancel {
+    .btn-search-cancel,
+    .btn-bulk-check {
       display: inline-block;
       min-width: 140px;
       padding: 6px 14px;
@@ -501,9 +245,15 @@
       font-family: inherit;
       white-space: nowrap;
     }
-    .btn-search-cancel:hover {
+    .btn-search-cancel:hover,
+    .btn-bulk-check:hover {
       background: var(--color-primary-dark);
       color: #fff;
+    }
+
+    /* 検索条件直下：一括チェック（スマホ幅のみ表示。下の @media で表示切替） */
+    .bulk-check-toolbar {
+      display: none;
     }
 
     /* 検索条件と検索結果一覧の間の余白（5px） */
@@ -862,6 +612,427 @@
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border);
     }
+
+    /* #region レスポンシブ対応 */
+    /* 画面の幅が650px以下ならスマホ（ヘッダー・.content ベースは style.css） */
+    @media (max-width: 768px) {
+      .content:not(.expanded),
+      .content.expanded {
+        margin-left: -220px;
+        padding-left: 20px;
+      }
+
+      .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* スクロールは .content に閉じ、ヘッダー/ハンバーガーを固定 */
+      .main-wrapper {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        top: 6px;
+        left: 10px;
+        margin: 0;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+        max-width: 100%;
+        padding: 20px;
+        padding-right: max(20px, env(safe-area-inset-right, 0px));
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
+
+      .bulk-check-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .bulk-check-toolbar .btn-bulk-check {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .search-toggle-sp::after {
+        content: "＋";
+        color: var(--color-text-muted);
+      }
+
+      .search-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      /* 2列grid+display:contentsは狭い画面で列が潰れ重なるため、縦一列に統一 */
+      .search-box-inner {
+        display: none;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .search-box.is-open .search-box-inner {
+        display: flex;
+      }
+
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
+      }
+
+      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
+      .view-layout-1-group > .content-area:first-of-type {
+        padding: 8px;
+        min-width: 0;
+        overflow-x: visible;
+      }
+
+      .search-box-inner .filter-row {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 0;
+      }
+
+      .search-box-inner .filter-item {
+        flex: 0 0 auto;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+        width: 100%;
+      }
+
+      .search-box-inner .filter-item .filter-label {
+        margin-right: 0;
+      }
+
+      .search-box-inner .filter-item select,
+      .search-box-inner .filter-item input[type="text"] {
+        min-width: 0 !important;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-box-inner .search-row {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+        width: 100%;
+      }
+
+      .search-box-inner .search-row label {
+        flex-shrink: 0;
+      }
+
+      .search-box-inner .search-row select,
+      .search-box-inner .search-row input {
+        min-width: 0 !important;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* PC側の min-width:160px 等を確実に打ち消し */
+      .search-box-inner .filter-row input[type="text"],
+      .search-box-inner .filter-row select {
+        min-width: 0 !important;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-box-inner .autocomplete {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-box-inner .autocomplete-input {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-cancel-wrapper {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+      }
+
+      /* 連携ステータス：スマホでは縦並び・全幅 */
+      .search-box-inner .renkei-filter-item {
+        flex: 0 0 auto;
+        flex-direction: column;
+        align-items: stretch;
+        flex-wrap: wrap;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .search-box-inner .renkei-toggle-group {
+        width: 100%;
+        display: flex;
+        min-width: 0;
+      }
+
+      .search-box-inner .renkei-toggle {
+        flex: 1;
+        text-align: center;
+        min-width: 0;
+      }
+
+      /* 検索結果一覧：スマホ時はカード形式 */
+      #approvalListArea {
+        overflow-x: visible;
+        max-height: none;
+        padding-bottom: 80px;
+      }
+
+      #approvalListArea .result-table {
+        min-width: 0;
+        width: 100%;
+        table-layout: auto;
+      }
+
+      #approvalListArea .result-table thead {
+        display: none;
+      }
+
+      /* PCの固定行高が残ると中身が次のカードと重なるため必ず解除 */
+      /* 1行目：チェック列＋連携ステータスを横並び、3列目以降は全幅 */
+      #approvalListArea .result-table tbody tr {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: 12px;
+        row-gap: 8px;
+        align-items: center;
+        height: auto;
+        min-height: 0;
+        box-sizing: border-box;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        background: var(--color-card);
+      }
+
+      #approvalListArea .result-table tbody tr::before {
+        display: none;
+      }
+
+      #approvalListArea .result-table tbody td {
+        border: none;
+        padding: 8px 0;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        text-align: left !important;
+        box-sizing: border-box;
+      }
+
+      #approvalListArea .result-table tbody td:first-child {
+        grid-column: 1;
+        grid-row: 1;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 0;
+        margin: 0;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(2) {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 10px;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 0;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(n+3) {
+        grid-column: 1 / -1;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(3) {
+        border-top: 1px solid var(--color-border);
+        padding-top: 12px;
+        margin-top: 4px;
+      }
+
+      /* 3列目以降：ラベル（::before）と値は縦積み */
+      #approvalListArea .result-table tbody td:nth-child(n+3)::before {
+        display: block;
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      /* 先頭列はチェックボックスのため、2列目以降にラベルを付与 */
+      #approvalListArea .result-table tbody td:nth-child(2)::before {
+        content: "連携ステータス：";
+        font-weight: 600;
+        display: inline;
+        width: auto;
+        margin: 0 6px 0 0;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(3)::before {
+        content: "発注No.：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(4)::before {
+        content: "発注日：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(5)::before {
+        content: "発注先：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(6)::before {
+        content: "得意先：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(7)::before {
+        content: "担当者：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
+        content: "発注区分：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(9)::before {
+        content: "発注金額合計：";
+        font-weight: 600;
+      }
+
+      /* イメージ案②: スマホ用 */
+      .view-layout-2 .status-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+
+    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
+    @media (min-width: 769px) {
+      .search-toggle-sp {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -971,6 +1142,9 @@
             </div>
           </div>
 
+          <div class="bulk-check-toolbar">
+            <button type="button" class="btn-bulk-check" id="btnBulkCheckAll">一括チェック</button>
+          </div>
 
           <!-- 検索結果一覧エリア -->
           <div class="content-area" id="approvalListArea">
@@ -1286,6 +1460,7 @@
 
             row.style.display = showRow ? "" : "none";
           });
+          document.dispatchEvent(new CustomEvent("hatchuMsysemrenkeiFilterApplied"));
         }
 
         function setRenkeiMode(mode) {
@@ -1390,17 +1565,77 @@
           }
         });
 
+        function setAllDetailCheckboxes(checked) {
+          Array.prototype.forEach.call(tbody.rows, function (row) {
+            var checkbox = row.querySelector("td:first-child input[type='checkbox']");
+            if (!checkbox || checkbox.disabled || row.style.display === "none") return;
+            checkbox.checked = checked;
+          });
+          if (headerCheckbox) {
+            headerCheckbox.checked = checked;
+            headerCheckbox.indeterminate = false;
+          }
+        }
+
+        function getEligibleCheckboxes() {
+          var list = [];
+          Array.prototype.forEach.call(tbody.rows, function (row) {
+            var checkbox = row.querySelector("td:first-child input[type='checkbox']");
+            if (!checkbox || checkbox.disabled || row.style.display === "none") return;
+            list.push(checkbox);
+          });
+          return list;
+        }
+
+        function areAllEligibleChecked() {
+          var list = getEligibleCheckboxes();
+          if (list.length === 0) return false;
+          return list.every(function (cb) {
+            return cb.checked;
+          });
+        }
+
+        var bulkCheckBtn = document.getElementById("btnBulkCheckAll");
+
+        function updateBulkCheckButtonLabel() {
+          if (!bulkCheckBtn) return;
+          var allOn = areAllEligibleChecked();
+          bulkCheckBtn.textContent = allOn ? "一括解除" : "一括チェック";
+          bulkCheckBtn.setAttribute("aria-pressed", allOn ? "true" : "false");
+        }
+
         // ヘッダーのチェックボックスで明細行を一括ON/OFF
         if (headerCheckbox) {
           headerCheckbox.addEventListener("change", function () {
-            var checked = !!headerCheckbox.checked;
-            Array.prototype.forEach.call(tbody.rows, function (row) {
-              var checkbox = row.querySelector("td:first-child input[type='checkbox']");
-              if (!checkbox || checkbox.disabled || row.style.display === "none") return;
-              checkbox.checked = checked;
-            });
+            setAllDetailCheckboxes(!!headerCheckbox.checked);
+            updateBulkCheckButtonLabel();
           });
         }
+
+        if (bulkCheckBtn) {
+          bulkCheckBtn.addEventListener("click", function () {
+            setAllDetailCheckboxes(!areAllEligibleChecked());
+            updateBulkCheckButtonLabel();
+          });
+        }
+
+        tbody.addEventListener("change", function (e) {
+          if (e.target && e.target.matches && e.target.matches("input[type='checkbox']")) {
+            if (headerCheckbox && e.target !== headerCheckbox) {
+              var list = getEligibleCheckboxes();
+              var checkedCount = list.filter(function (cb) {
+                return cb.checked;
+              }).length;
+              headerCheckbox.checked = list.length > 0 && checkedCount === list.length;
+              headerCheckbox.indeterminate = checkedCount > 0 && checkedCount < list.length;
+            }
+            updateBulkCheckButtonLabel();
+          }
+        });
+
+        updateBulkCheckButtonLabel();
+
+        document.addEventListener("hatchuMsysemrenkeiFilterApplied", updateBulkCheckButtonLabel);
 
         tbody.addEventListener("click", function (e) {
           // フォーム要素やリンクを直接クリックした時は既定動作を優先
