@@ -1552,6 +1552,76 @@
       font-weight: 500;
     }
 
+    .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .product-panel-section > .item-cell {
+      margin-bottom: 8px;
+    }
+
+    .item-thumb {
+      width: 72px;
+      height: auto;
+      max-height: 48px;
+      object-fit: contain;
+      cursor: pointer;
+    }
+
+    .estimate-image-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 4000;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    .estimate-image-modal.is-open {
+      display: flex;
+    }
+
+    .estimate-image-modal-content {
+      position: relative;
+      max-width: min(90vw, 1200px);
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .estimate-image-modal-image {
+      max-width: 100%;
+      max-height: 90vh;
+      display: block;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      background: #fff;
+    }
+
+    .estimate-image-modal-close {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     /* 768px以上：見積依頼日・定番/別注・概算/正式はラベルと入力/select を横並び（SP は従来どおり縦） */
     @media (min-width: 768px) {
       .top-filter-row > .top-filter-item {
@@ -1574,6 +1644,12 @@
 <body>
 
   <div class="overlay" onclick="closeSidebar()"></div>
+  <div class="estimate-image-modal" id="estimateImageModal" aria-hidden="true">
+    <div class="estimate-image-modal-content" role="dialog" aria-modal="true" aria-label="見積図案の拡大表示">
+      <button type="button" class="estimate-image-modal-close" id="estimateImageModalClose" aria-label="モーダルを閉じる">×</button>
+      <img src="images/noimage.png" alt="見積図案" class="estimate-image-modal-image" id="estimateImageModalImage">
+    </div>
+  </div>
 
   <!--#region ヘッダー  -->
   <div class="header">
@@ -1647,6 +1723,11 @@
       <div class="content-area-2" id="approvalNoticeArea">
         <div class="view-layout view-layout-2">
           <div class="product-panel-section">
+            <div class="item-cell">
+              <img src="images/zuan001.png"
+                   class="item-thumb"
+                   onerror="this.src='images/noimage.png'">
+            </div>
             <div class="product-panel-toolbar">
               <button type="button" id="addProductPanelBtn" class="btn-add-product-panel">追加</button>
             </div>
@@ -2587,6 +2668,46 @@
         }
 
         clone.scrollIntoView({ behavior: "smooth", inline: "end", block: "nearest" });
+      });
+    })();
+
+    // 見積図案サムネイル：クリックでモーダル表示
+    (function () {
+      var thumb = document.querySelector(".item-thumb");
+      var modal = document.getElementById("estimateImageModal");
+      var modalImage = document.getElementById("estimateImageModalImage");
+      var closeBtn = document.getElementById("estimateImageModalClose");
+      if (!thumb || !modal || !modalImage || !closeBtn) return;
+
+      function openModal(src) {
+        modalImage.src = src || "images/noimage.png";
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      thumb.addEventListener("click", function () {
+        openModal(thumb.getAttribute("src"));
+      });
+
+      closeBtn.addEventListener("click", function () {
+        closeModal();
+      });
+
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("is-open")) {
+          closeModal();
+        }
       });
     })();
 
