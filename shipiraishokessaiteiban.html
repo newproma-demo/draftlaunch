@@ -447,6 +447,7 @@
       gap: 12px;
       height: 100%;
       min-height: 0;
+      min-width: 0;
       box-sizing: border-box;
       background: var(--color-card);
       border: 1px solid var(--color-border);
@@ -460,6 +461,7 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      min-width: 0;
       padding: 12px;
       box-sizing: border-box;
     }
@@ -496,6 +498,7 @@
       justify-content: flex-start;
       gap: 10px;
       min-height: 0;
+      min-width: 0;
       padding: 12px;
       box-sizing: border-box;
     }
@@ -505,6 +508,8 @@
       align-self: stretch;
       width: 100%;
       max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     .shiyosho-panel-kessai-select-top .result-reason-wrap.is-visible {
@@ -513,6 +518,8 @@
 
     .shiyosho-panel-kessai-select-top .result-reason-wrap textarea {
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
       box-sizing: border-box;
       min-height: 88px;
       padding: 8px 12px;
@@ -679,6 +686,45 @@
     /* #region レスポンシブ対応 */
     /* 画面の幅が650px以下ならスマホ*/
     @media (max-width: 768px) {
+      /* 縦に収まらないコンテンツ（理由テキストエリアなど）をスクロールで見られるようにする */
+      html {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: auto;
+        min-height: 100%;
+        max-height: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: auto;
+        min-height: 100%;
+        max-height: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .main-wrapper {
+        flex: none;
+        min-height: calc(100vh - 48px);
+        overflow: visible;
+      }
+
+      @supports (height: 100dvh) {
+        html {
+          min-height: 100dvh;
+        }
+
+        body {
+          min-height: 100dvh;
+        }
+
+        .main-wrapper {
+          min-height: calc(100dvh - 48px);
+        }
+      }
+
       .pc-only {
         display: none;
       }
@@ -712,10 +758,85 @@
       .content {
         background: var(--color-surface);
         flex-direction: column;
-        flex: 1;
+        flex: 0 0 auto;
         padding: 20px;
         margin-left: -220px;
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: visible;
+      }
+
+      .content-area {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        height: auto;
+        min-height: 0;
+        flex: 0 0 auto;
+        overflow: visible;
+      }
+
+      .shiyosho-tabpanel {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        height: auto;
+        min-height: 0;
+        flex: none;
+        overflow: visible;
+      }
+
+      /* スマホ：依頼書イメージを小さくしすぎない（70%制限解除＋縦積みで横幅いっぱい） */
+      .shiyosho-panel-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        max-width: 100%;
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+      }
+
+      .shiyosho-panel1 {
+        grid-row: 1;
+        grid-column: 1;
+        min-height: min(42vh, 380px);
+        flex-shrink: 0;
+      }
+
+      .shiyosho-panel-kessai-select-top {
+        grid-row: 2;
+        grid-column: 1;
+        align-items: stretch;
+        max-width: 100%;
+        flex-shrink: 0;
+        min-height: 0;
+      }
+
+      /* テキストエリア・セレクトがパネル幅を超えないようにする */
+      #kessaiResultSelectPanel1 {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .shiyosho-panel1 .shiyosho-item {
+        max-width: 100%;
+        width: 100%;
+        align-self: stretch;
+        box-sizing: border-box;
+      }
+
+      .shiyosho-panel1 .shiyosho-item.img-scroll {
+        flex: 1 1 auto;
+        min-height: 200px;
+        overflow-y: auto;
+      }
+
+      .shiyosho-panel-kessai-select-top .result-reason-wrap textarea {
+        min-height: 7.5rem;
       }
 
     }
