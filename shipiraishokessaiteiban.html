@@ -486,6 +486,45 @@
       box-sizing: border-box;
     }
 
+    /* 画面イメージ右横：決済結果セレクト＋差戻し・取消時のみ理由入力 */
+    .shiyosho-panel-kessai-select-top {
+      grid-row: 1 / -1;
+      grid-column: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-start;
+      gap: 10px;
+      min-height: 0;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    .shiyosho-panel-kessai-select-top .result-reason-wrap {
+      display: none;
+      align-self: stretch;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .shiyosho-panel-kessai-select-top .result-reason-wrap.is-visible {
+      display: block;
+    }
+
+    .shiyosho-panel-kessai-select-top .result-reason-wrap textarea {
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 88px;
+      padding: 8px 12px;
+      font-size: var(--fs-sm);
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      resize: vertical;
+    }
+
     .btn-panel-register {
       display: inline-block;
       text-decoration: none;
@@ -619,6 +658,22 @@
       min-width: 160px;
     }
 
+    /* 決済結果セレクト：選択時のリスト表示を小さめに（ブラウザにより option の反映度は異なる） */
+    #kessaiResultSelectPanel1 {
+      font-size: var(--fs-xs);
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+      font-family: inherit;
+      background: var(--color-card);
+      color: var(--color-text);
+    }
+
+    #kessaiResultSelectPanel1 option {
+      font-size: var(--fs-xs);
+    }
+
     /*  */
 
     /* #region レスポンシブ対応 */
@@ -704,23 +759,34 @@
     <!--#region メインコンテンツ  -->
     <div class="content">
       <div class="content-area" id="approvalNoticeArea">
-        <h2 class="view-layout-title">国内手配書登録</h2>
+        <h2 class="view-layout-title">Ship依頼書決済（定番）</h2>
 
-        <!-- 国内手配書登録パネル -->
+        <!-- Ship依頼書決済（定番）パネル -->
         <div id="panel1" class="shiyosho-tabpanel is-active" role="tabpanel" aria-labelledby="tab1">
           <div class="shiyosho-panel-grid">
             <div class="shiyosho-panel1">
               <div class="shiyosho-item img-scroll">
-                <img src="images/納品手配書.png" alt="国内手配書">
+                <img src="images/定番SHIP依頼書.png" alt="Ship依頼書（定番）">
               </div>
               <div>
+              </div>
+            </div>
+            <div class="shiyosho-panel-kessai-select-top">
+              <select id="kessaiResultSelectPanel1" name="kessaiResultPanel1" aria-label="決済結果">
+                <option value="" selected disabled>決済結果を選択してください</option>
+                <option value="承認">承認</option>
+                <option value="差戻し">差戻し</option>
+                <option value="取消">取消</option>
+              </select>
+              <div id="resultReasonWrap" class="result-reason-wrap" aria-hidden="true">
+                <textarea id="resultReason" name="resultReason" rows="4" placeholder="理由を入力してください"></textarea>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  <!-- #endregion -->
+    <!-- #endregion -->
 
   <script src="js/sidebar.js"></script>
     <script>
@@ -782,7 +848,7 @@
       }
 
       loadSharedSidebar();
-
+    
     const tabs = document.querySelectorAll('[role="tab"]');
     const panels = document.querySelectorAll('[role="tabpanel"]');
 
@@ -827,6 +893,32 @@
 
       select.addEventListener('change', applySelection);
       applySelection();
+    })();
+
+    (function initKessaiResultReasonVisibility() {
+      const select = document.getElementById('kessaiResultSelectPanel1');
+      const wrap = document.getElementById('resultReasonWrap');
+      const reason = document.getElementById('resultReason');
+      if (!select || !wrap) return;
+
+      function needsReason(value) {
+        return value === '差戻し' || value === '取消';
+      }
+
+      function apply() {
+        const show = needsReason(select.value);
+        if (show) {
+          wrap.classList.add('is-visible');
+          wrap.setAttribute('aria-hidden', 'false');
+        } else {
+          wrap.classList.remove('is-visible');
+          wrap.setAttribute('aria-hidden', 'true');
+          if (reason) reason.value = '';
+        }
+      }
+
+      select.addEventListener('change', apply);
+      apply();
     })();
 
   </script>
