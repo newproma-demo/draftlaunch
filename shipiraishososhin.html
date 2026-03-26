@@ -804,18 +804,68 @@
       }
     }
     @media (max-width: 768px) {
+      .result-lists-dual {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow: visible;
+      }
+      .result-lists-dual > .result-list-col {
+        width: 100%;
+        min-width: 0;
+      }
+      /* 左一覧が縦に伸びすぎて以降項目が見えなくなるのを防ぐ */
+      #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .approval-list-area {
+        max-height: 45vh;
+        overflow-y: auto;
+      }
       .result-lists-transfer-top-spacer {
         display: none;
       }
       /* スマホでも操作ボタン列と右側一覧を表示 */
       .result-lists-transfer {
         display: flex !important;
+        order: 2;
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        box-sizing: border-box;
+      }
+      .result-lists-transfer .btn-transfer {
+        display: inline-flex !important;
+        min-width: 44px;
+        min-height: 44px;
+      }
+      #btnSelectAllToRight,
+      #btnSelectToRight {
+        transform: rotate(-90deg);
+        transform-origin: center;
+      }
+      #btnDischargeToLeft,
+      #btnDischargeAllToLeft {
+        transform: rotate(-90deg);
+        transform-origin: center;
+      }
+      .result-lists-transfer br {
+        display: none;
       }
       .result-lists-dual > .result-list-col:last-of-type {
         display: flex !important;
+        order: 3;
+        width: 100%;
       }
+      .result-lists-dual > .result-list-col:first-of-type { order: 1; }
+      /* 右一覧も左一覧と同じカード表示設定に揃える */
       .result-lists-dual > .result-list-col:last-of-type .result-table thead {
-        display: table-header-group !important;
+        display: none !important;
       }
       .result-lists-dual > .result-list-col:last-of-type .result-table tbody tr.is-right-visible {
         display: block !important;
@@ -886,6 +936,36 @@
     .approval-list-area .result-table tbody tr.is-row-selected a:hover {
       color: #fff;
       opacity: 0.9;
+    }
+
+    /* スマホ最終上書き：操作ボタンと右テーブルを必ず表示 */
+    @media (max-width: 768px) {
+      #approvalNoticeArea .result-lists-transfer {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      #approvalNoticeArea .result-lists-transfer .btn-transfer {
+        display: inline-flex !important;
+      }
+      #approvalNoticeArea .result-lists-transfer br {
+        display: none !important;
+      }
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .approval-list-area {
+        display: block !important;
+      }
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table {
+        display: table !important;
+        width: 100%;
+      }
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table thead {
+        display: none !important;
+      }
     }
   </style>
 </head>
