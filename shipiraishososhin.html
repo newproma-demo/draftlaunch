@@ -870,6 +870,16 @@
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
       }
+      /* 左右どちらにもデータがある時は、1画面で
+         左1レコード + ボタン + 右1レコード が見える高さに圧縮 */
+      #approvalNoticeArea.mobile-dual-has-both .result-lists-dual > .result-list-col:first-of-type .approval-list-area,
+      #approvalNoticeArea.mobile-dual-has-both .result-lists-dual > .result-list-col:last-of-type .approval-list-area {
+        max-height: 24vh;
+      }
+      #approvalNoticeArea.mobile-dual-has-both .result-lists-transfer {
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
       /* 右一覧も左一覧と同じカード表示設定に揃える */
       .result-lists-dual > .result-list-col:last-of-type .result-table thead {
         display: none !important;
@@ -1334,6 +1344,7 @@
 
       // 二つの一覧間：行の選択と移動（リンク・フォーム操作は除外）
       (function () {
+        var approvalNoticeArea = document.getElementById("approvalNoticeArea");
         var tbodyLeft = document.getElementById("approvalListTbodyLeft");
         var tbodyRight = document.getElementById("approvalListTbodyRight");
         var leftArea = document.querySelector(".result-lists-dual > .result-list-col:first-of-type .approval-list-area");
@@ -1439,6 +1450,30 @@
           }
         }
 
+        function updateMobileDualLayout() {
+          if (!approvalNoticeArea) return;
+          if (!window.matchMedia("(max-width: 768px)").matches) {
+            approvalNoticeArea.classList.remove("mobile-dual-has-both");
+            return;
+          }
+
+          var leftVisibleCount = 0;
+          Array.prototype.forEach.call(tbodyLeft.rows, function (tr) {
+            if (tr.style.display !== "none") leftVisibleCount++;
+          });
+
+          var rightVisibleCount = 0;
+          Array.prototype.forEach.call(tbodyRight.rows, function (tr) {
+            if (tr.classList.contains("is-right-visible")) rightVisibleCount++;
+          });
+
+          if (leftVisibleCount > 0 && rightVisibleCount > 0) {
+            approvalNoticeArea.classList.add("mobile-dual-has-both");
+          } else {
+            approvalNoticeArea.classList.remove("mobile-dual-has-both");
+          }
+        }
+
         // select（▶）：右側一覧のtbody行を先頭から1件ずつ表示
         if (btnSelectToRight) {
           btnSelectToRight.addEventListener("click", function () {
@@ -1467,6 +1502,7 @@
             syncLeftHeaderHeightToRight();
             syncLeftHeaderOffsetByLabel();
             refreshScrollbars();
+            updateMobileDualLayout();
           });
         }
 
@@ -1484,6 +1520,7 @@
             syncLeftHeaderHeightToRight();
             syncLeftHeaderOffsetByLabel();
             refreshScrollbars();
+            updateMobileDualLayout();
           });
         }
 
@@ -1515,6 +1552,7 @@
             syncLeftHeaderHeightToRight();
             syncLeftHeaderOffsetByLabel();
             refreshScrollbars();
+            updateMobileDualLayout();
           });
         }
 
@@ -1532,6 +1570,7 @@
             syncLeftHeaderHeightToRight();
             syncLeftHeaderOffsetByLabel();
             refreshScrollbars();
+            updateMobileDualLayout();
           });
         }
 
@@ -1539,10 +1578,12 @@
         syncLeftHeightToRight();
         syncLeftHeaderHeightToRight();
         syncLeftHeaderOffsetByLabel();
+        updateMobileDualLayout();
         window.addEventListener("resize", function () {
           syncLeftHeightToRight();
           syncLeftHeaderHeightToRight();
           syncLeftHeaderOffsetByLabel();
+          updateMobileDualLayout();
         });
       })();
     </script>
