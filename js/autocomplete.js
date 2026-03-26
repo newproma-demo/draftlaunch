@@ -311,67 +311,77 @@ function toKatakana(str) {
   )
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".autocomplete").forEach(box => {
+/**
+ * 1つの .autocomplete 要素にオートコンプリートをバインドする。
+ * ページ読み込み時の既存要素と、createSupplierRow 等で後から追加した行の両方で使う。
+ */
+function initAutocomplete(box) {
+  if (!box || box.dataset.autocompleteInitialized === "1") return
 
-    const input = box.querySelector(".autocomplete-input")
-    const dropdown = box.querySelector(".autocomplete-dropdown")
+  const input = box.querySelector(".autocomplete-input")
+  const dropdown = box.querySelector(".autocomplete-dropdown")
+  if (!input || !dropdown) return
 
-    const data = lists[input.dataset.list]
+  const data = lists[input.dataset.list]
+  if (!data || !Array.isArray(data)) {
+    return
+  }
 
-    if (!data || !Array.isArray(data)) {
-      return;
-    }
+  function render(list) {
+    dropdown.innerHTML = ""
 
-    function render(list) {
-      dropdown.innerHTML = ""
+    list.forEach(item => {
+      const div = document.createElement("div")
+      div.textContent = item
 
-      list.forEach(item => {
-        const div = document.createElement("div")
-        div.textContent = item
-
-        div.addEventListener("click", () => {
-          input.value = item
-          dropdown.style.display = "none"
-        })
-
-        dropdown.appendChild(div)
-      })
-    }
-
-    function search(keyword) {
-      // 英字は小文字化＋ひらがなはカタカナへ統一
-      const normalizedKeyword = toKatakana(keyword.toLowerCase())
-
-      return data.filter(item => {
-        const normalizedItem = toKatakana(item.toLowerCase())
-        return normalizedItem.includes(normalizedKeyword)
-      })
-    }
-
-    input.addEventListener("focus", () => {
-      render(data)
-      dropdown.style.display = "block"
-    })
-
-    input.addEventListener("input", () => {
-      const keyword = input.value.trim()
-
-      if (keyword === "") {
-        render(data)
-      } else {
-        render(search(keyword))
-      }
-
-      dropdown.style.display = "block"
-    })
-
-    document.addEventListener("click", e => {
-      if (!box.contains(e.target)) {
+      div.addEventListener("click", () => {
+        input.value = item
         dropdown.style.display = "none"
-      }
+      })
+
+      dropdown.appendChild(div)
     })
+  }
+
+  function search(keyword) {
+    const normalizedKeyword = toKatakana(keyword.toLowerCase())
+
+    return data.filter(item => {
+      const normalizedItem = toKatakana(item.toLowerCase())
+      return normalizedItem.includes(normalizedKeyword)
+    })
+  }
+
+  input.addEventListener("focus", () => {
+    render(data)
+    dropdown.style.display = "block"
   })
+
+  input.addEventListener("input", () => {
+    const keyword = input.value.trim()
+
+    if (keyword === "") {
+      render(data)
+    } else {
+      render(search(keyword))
+    }
+
+    dropdown.style.display = "block"
+  })
+
+  document.addEventListener("click", e => {
+    if (!box.contains(e.target)) {
+      dropdown.style.display = "none"
+    }
+  })
+
+  box.dataset.autocompleteInitialized = "1"
+}
+
+window.initAutocomplete = initAutocomplete
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".autocomplete").forEach(initAutocomplete)
 
   // 検索条件：期間 From～To（書式 yyyymmdd・カレンダー連動）
   initPeriodRangeInputs()
