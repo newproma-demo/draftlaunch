@@ -321,6 +321,42 @@
       border: 1px solid var(--color-border);
       z-index: 2001;
     }
+    .image-preview-modal {
+      max-width: 560px;
+      width: min(92vw, 560px);
+      padding: 16px;
+    }
+    .image-preview-modal-content {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .image-preview-modal-content img {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+    }
+    .image-preview-modal-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+      font-size: 18px;
+    }
+    .image-preview-modal-close:hover {
+      background: rgba(200, 0, 0, 0.9);
+    }
 
     /* #region レスポンシブ対応 */
     /* 画面の幅が650px以下ならスマホ*/
@@ -579,36 +615,46 @@
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "到着日：";
+        content: "";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(5)::before {
-        content: "仕様書No.：";
+        content: "到着日：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "柄共通No.：";
+        content: "仕様書No.：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(7)::before {
-        content: "販売区分：";
+        content: "柄共通No.：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(8)::before {
-        content: "展示会：";
+        content: "販売区分：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(9)::before {
-        content: "カテゴリー：";
+        content: "展示会：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(10)::before {
-        content: "アイテム：";
+        content: "カテゴリー：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(11)::before {
+        content: "アイテム：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(12)::before {
         content: "ブランド・キャラ：";
         font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(4) .result-image-cell {
+        align-items: flex-start;
+      }
+      #approvalListArea .result-table tbody td:nth-child(4) .result-image-thumb {
+        margin: 0;
       }
 
       /* 横並びで表示*/
@@ -832,6 +878,22 @@
     .result-table a:hover {
       opacity: 0.9;
     }
+    .result-image-thumb {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      display: block;
+      margin: 0 auto;
+    }
+    .result-image-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
 
     /* 画面右下固定アクションボタン群 */
     .fab-actions {
@@ -1026,70 +1088,80 @@
                   <thead>
                     <tr>
                       <th style="width: 4%;"><input type="checkbox" /></th>
-                      <th style="width: 8%;">商品コード</th>
-                      <th style="width: 20%;">品名</th>
-                      <th style="width: 8%;">到着日</th>
-                      <th style="width: 10%;">仕様書No.</th>
+                      <th style="width: 9%;">商品コード</th>
+                      <th style="width: 17%;">品名</th>
+                      <th style="width: 20%;"></th> 
+                      <th style="width: 10%;">到着日</th>
+                      <th style="width: 12%;">仕様書No.</th>
                       <th style="width: 8%;">柄共通No.</th>
                       <th style="width: 8%;">販売区分</th>
-                      <th style="width: 10%;">展示会</th>
-                      <th style="width: 8%;">カテゴリー</th>                     
-                      <th style="width: 12%;">アイテム</th>
+                      <th style="width: 12%;">展示会</th>
+                      <th style="width: 10%;">カテゴリー</th>                     
+                      <th style="width: 15%;">アイテム</th>
                       <th style="width: 10%;">ブランド・<br>キャラ</th>
                     </tr>
                   </thead>
                   <tbody>
                     <!-- 50行のサンプルデータ -->
                     <tr><td><input type="checkbox" /></td><td>999991</td><td>ミッキーA柄タオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999992</td><td>ミッキーB柄タオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td></td><td>単品タオル</td><td>ウォッシュタオル</td><td>ムーミン</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999993</td><td>ミッキーC柄タオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>フェイスタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999994</td><td>無地カラフルタオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0004</a></td><td></td><td>定番加工</td><td></td><td>単品タオル</td><td>バスタオル</td><td>サンリオ</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999995</td><td>春限定フラワータオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0005</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>マフラータオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999996</td><td>別注ミッキーAセット</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0006</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ムーミン</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999997</td><td>別注ミッキーBセット</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0007</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999998</td><td>別注無地タオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0008</a></td><td></td><td>別注</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ドラえもん</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999999</td><td>夏限定マリンセット</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0009</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999910</td><td>秋限定チェックセット</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0010</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999911</td><td>OEMミッキーAタオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0011</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999912</td><td>OEMミッキーBタオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0012</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>リラックマ</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999913</td><td>OEM無地タオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0013</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999914</td><td>OEMギフトセットA</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0014</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999915</td><td>OEMギフトセットB</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0015</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999916</td><td>ミッキーD柄タオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0016</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999917</td><td>無地ベーシックタオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0017</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999918</td><td>シーズンタオルA</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0018</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>すみっコぐらし</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999919</td><td>シーズンタオルB</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0019</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999920</td><td>シーズンタオルC</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0020</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999921</td><td>別注ミッキーCセット</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0021</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999922</td><td>別注無地カラー</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0022</a></td><td></td><td>別注</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999923</td><td>別注ギフトセットA</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0023</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999924</td><td>別注ギフトセットB</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0024</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999925</td><td>別注ギフトセットC</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0025</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999926</td><td>OEMタオルセットA</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0026</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999927</td><td>OEMタオルセットB</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0027</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999928</td><td>OEMタオルセットC</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0028</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999929</td><td>OEMミッキーCタオル</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0029</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999930</td><td>OEM無地ベーシック</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0030</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999931</td><td>春企画フラワーセット</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0031</a></td><td></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999932</td><td>夏企画マリンセット</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0032</a></td><td></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999933</td><td>秋企画チェックセット</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0033</a></td><td></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999934</td><td>ミッキー総柄タオル</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0034</a></td><td></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>冬企画スノーセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999935</td><td>別注キャラクターセットA</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0035</a></td><td></td><td>定番</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999936</td><td>別注キャラクターセットB</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0036</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999937</td><td>別注無地タオルセット</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0037</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999938</td><td>別注総柄タオルセット</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0038</a></td><td></td><td>別注</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999939</td><td>別注ギフトボックスA</td><td>2026/02/28</td><td><a href="sampletoroku.html">SY-2026-0039</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999940</td><td>別注ギフトボックスB</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0040</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999941</td><td>OEMキャラクターセットA</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0041</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999942</td><td>OEMキャラクターセットB</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0042</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999943</td><td>OEM無地タオルセット</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0043</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999944</td><td>OEMギフトボックスA</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0044</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999945</td><td>OEMギフトボックスB</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0045</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999946</td><td>ミッキーE柄タオル</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0046</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999947</td><td>ミッキーF柄タオル</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0047</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999948</td><td>別注キャラクターコラボ</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0048</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999949</td><td>OEMキャラクターコラボ</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0049</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>999950</td><td>OEM無地カラーセット</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0050</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999992</td><td>ミッキーB柄タオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ウォッシュタオル</td><td>ムーミン</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999993</td><td>ミッキーC柄タオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>フェイスタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999994</td><td>無地カラフルタオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>バスタオル</td><td>サンリオ</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999995</td><td>春限定フラワータオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>マフラータオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999996</td><td>別注ミッキーAセット</td><td>2026/01/03</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ムーミン</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999997</td><td>別注ミッキーBセット</td><td>2026/01/03</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999998</td><td>別注ミッキーCセット</td><td>2026/01/03</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ドラえもん</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999999</td><td>別注夏限定マリンセット</td><td>2026/01/03</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999910</td><td>別注秋限定チェックセット</td><td>2026/01/03</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999911</td><td>OEMミッキーAタオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999912</td><td>OEMミッキーBタオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>リラックマ</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999913</td><td>OEM無地タオル</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999914</td><td>OEMギフトセットA</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999915</td><td>OEMギフトセットB</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999916</td><td>ミッキーD柄タオル</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0004</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999917</td><td>無地ベーシックタオル</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0004</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999918</td><td>シーズンタオルA</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0004</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>すみっコぐらし</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999919</td><td>シーズンタオルB</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0004</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999920</td><td>シーズンタオルC</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0004</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999921</td><td>別注ミッキーCセット</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0005</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999922</td><td>別注無地カラー</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0005</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999923</td><td>別注ギフトセットA</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0005</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999924</td><td>別注ギフトセットB</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0005</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999925</td><td>別注ギフトセットC</td><td>2026/02/15</td><td><a href="sampletoroku.html">SY-2026-0005</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999926</td><td>OEMタオルセットA</td><td>2026/03/28</td><td><a href="sampletoroku.html">SY-2026-0006</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999927</td><td>OEMタオルセットB</td><td>2026/03/28</td><td><a href="sampletoroku.html">SY-2026-0006</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999928</td><td>OEMタオルセットC</td><td>2026/03/28</td><td><a href="sampletoroku.html">SY-2026-0006</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999929</td><td>OEMミッキーCタオル</td><td>2026/03/28</td><td><a href="sampletoroku.html">SY-2026-0006</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999930</td><td>OEM無地ベーシック</td><td>2026/03/28</td><td><a href="sampletoroku.html">SY-2026-0006</a></td><td></td><td>OEM</td><td></td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999931</td><td>春企画フラワーセット</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0007</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999932</td><td>夏企画マリンセット</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0007</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999933</td><td>秋企画チェックセット</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0007</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999934</td><td>ミッキー総柄タオル</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0007</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999935</td><td>キャラクターセットA</td><td>2026/01/01</td><td><a href="sampletoroku.html">SY-2026-0007</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999936</td><td>別注キャラクターセットB</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0008</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999937</td><td>別注無地タオルセット</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0008</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999938</td><td>別注総柄タオルセット</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0008</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999939</td><td>別注ギフトボックスA</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0008</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999940</td><td>別注ギフトボックスB</td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0008</a></td><td></td><td>別注</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999941</td><td>OEMキャラクターセットA</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0009</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999942</td><td>OEMキャラクターセットB</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0009</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999943</td><td>OEM無地タオルセット</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0009</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999944</td><td>OEMギフトボックスA</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0009</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999945</td><td>OEMギフトボックスB</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0009</a></td><td></td><td>OEM</td><td></td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+
+                    <tr><td><input type="checkbox" /></td><td>999946</td><td>ミッキーE柄タオル</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0010</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999947</td><td>ミッキーF柄タオル</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0010</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999948</td><td>キャラクターコラボA</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0010</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999949</td><td>キャラクターコラボB</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0010</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>999950</td><td>無地カラーセット</td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0010</a></td><td></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1176,6 +1248,113 @@
 
       // 初期表示（承認待ち）
       var sel = document.getElementById("tenjikaiSelect");
+
+      // 一覧: 品名の右隣にイメージ画像列を追加
+      (function () {
+        var tbody = document.querySelector("#approvalListArea .result-table tbody");
+        if (!tbody) return;
+
+        // 行ごとの初期画像を指定（1始まりの行番号）
+        var initialImageByRow = {}; 
+  
+        for (var rowNo = 1; rowNo <= 50; rowNo++) {
+          initialImageByRow[rowNo] = "images/noimage.png";
+        }
+        // 行ごとの個別指定（必要な行だけ上書き）
+        initialImageByRow[1] = "images/evidence.png";initialImageByRow[2] = "images/evidence.png";initialImageByRow[3] = "images/evidence.png";initialImageByRow[4] = "images/evidence.png";
+        initialImageByRow[5] = "images/evidence.png";initialImageByRow[6] = "images/evidence.png";initialImageByRow[7] = "images/evidence.png";initialImageByRow[8] = "images/evidence.png";
+        initialImageByRow[9] = "images/evidence.png";initialImageByRow[10] = "images/evidence.png";initialImageByRow[11] = "images/evidence.png";initialImageByRow[12] = "images/evidence.png";
+        initialImageByRow[13] = "images/evidence.png";initialImageByRow[14] = "images/evidence.png";initialImageByRow[15] = "images/evidence.png";initialImageByRow[16] = "images/evidence.png";
+        initialImageByRow[17] = "images/evidence.png";initialImageByRow[18] = "images/evidence.png";initialImageByRow[19] = "images/evidence.png";initialImageByRow[20] = "images/evidence.png";
+        initialImageByRow[21] = "images/evidence.png";initialImageByRow[22] = "images/evidence.png";initialImageByRow[23] = "images/evidence.png";initialImageByRow[24] = "images/evidence.png";
+        initialImageByRow[25] = "images/evidence.png";initialImageByRow[26] = "images/evidence.png";initialImageByRow[27] = "images/evidence.png";initialImageByRow[28] = "images/evidence.png";
+        initialImageByRow[29] = "images/evidence.png";initialImageByRow[30] = "images/evidence.png";initialImageByRow[31] = "images/evidence.png";initialImageByRow[32] = "images/evidence.png";
+        initialImageByRow[33] = "images/evidence.png";initialImageByRow[34] = "images/evidence.png";initialImageByRow[35] = "images/evidence.png";initialImageByRow[36] = "images/evidence.png";
+        initialImageByRow[37] = "images/evidence.png";initialImageByRow[38] = "images/evidence.png";initialImageByRow[39] = "images/evidence.png";initialImageByRow[40] = "images/evidence.png";
+        initialImageByRow[41] = "images/evidence.png";initialImageByRow[42] = "images/evidence.png";initialImageByRow[43] = "images/evidence.png";initialImageByRow[44] = "images/evidence.png";
+        initialImageByRow[45] = "images/evidence.png";initialImageByRow[46] = "images/evidence.png";initialImageByRow[47] = "images/evidence.png";initialImageByRow[48] = "images/evidence.png";
+        initialImageByRow[49] = "images/evidence.png";initialImageByRow[50] = "images/evidence.png";
+
+        function getInitialImageSrc(rowNo1Based) {
+          if (Object.prototype.hasOwnProperty.call(initialImageByRow, rowNo1Based)) {
+            return initialImageByRow[rowNo1Based];
+          }
+          return "images/noimage.png";
+        }
+
+        Array.prototype.forEach.call(tbody.rows, function (row, rowIndex) {
+          // 既存データ(11列)にのみ画像列を追加。既に追加済み行はスキップ
+          if (!row.cells || row.cells.length !== 11) return;
+          var imageCell = row.insertCell(3);
+          var initialSrc = getInitialImageSrc(rowIndex + 1);
+          imageCell.innerHTML =
+            '<div class="result-image-cell">' +
+            '<img class="result-image-thumb" src="' + initialSrc + '" alt="エビデンス">' +
+            '<input type="file" accept="image/*" class="result-image-input" style="display:none;">' +
+            "</div>";
+        });
+      })();
+
+      // 一覧: イメージ画像クリックでモーダル表示
+      (function () {
+        var tbody = document.querySelector("#approvalListArea .result-table tbody");
+        var modal = document.getElementById("modal-window");
+        if (!tbody || !modal) return;
+
+        function closeModal() {
+          modal.style.display = "none";
+          modal.classList.remove("image-preview-modal");
+          modal.innerHTML = "";
+          document.removeEventListener("keydown", onEscKey);
+        }
+
+        function onEscKey(e) {
+          if (e.key === "Escape") closeModal();
+        }
+
+        tbody.addEventListener("click", function (e) {
+          var img = e.target && e.target.closest("img.result-image-thumb");
+          if (!img) return;
+
+          var src = img.getAttribute("src") || "";
+          if (!src) return;
+
+          modal.classList.add("image-preview-modal");
+          modal.innerHTML =
+            '<button type="button" class="image-preview-modal-close" aria-label="閉じる">×</button>' +
+            '<figure class="image-preview-modal-content">' +
+            '<img src="' + src + '" alt="イメージ画像プレビュー">' +
+            "</figure>";
+          modal.style.display = "block";
+          document.addEventListener("keydown", onEscKey);
+        });
+
+        modal.addEventListener("click", function (e) {
+          if (
+            e.target.classList.contains("image-preview-modal-close") ||
+            e.target === modal
+          ) {
+            closeModal();
+          }
+        });
+
+        tbody.addEventListener("change", function (e) {
+          var fileInput = e.target && e.target.closest(".result-image-input");
+          if (!fileInput) return;
+          var file = fileInput.files && fileInput.files[0];
+          if (!file || !file.type || file.type.indexOf("image/") !== 0) return;
+
+          var cell = fileInput.closest(".result-image-cell");
+          var img = cell ? cell.querySelector("img.result-image-thumb") : null;
+          if (!img) return;
+
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      })();
 
       // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
       (function () {

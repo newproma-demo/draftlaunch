@@ -360,6 +360,15 @@
       white-space: nowrap;
     }
 
+    /* 商品コード入力欄（readonly input）を固定幅で表示 */
+    .entry-form .form-column-product-code > input[type="text"] {
+      flex: 0 0 auto;
+      width: 90px;
+      min-width: 90px;
+      max-width: 90px;
+      box-sizing: border-box;
+    }
+
     /* 商品コード行：選択と品名（PCは横並び） */
     .entry-form .product-code-inputs {
       flex: 0 0 auto;
@@ -370,10 +379,10 @@
       gap: 12px;
     }
 
-    .entry-form .product-code-inputs select {
-      width: 140px;
-      min-width: 140px;
-      max-width: 140px;
+    .entry-form .product-code-inputs text {
+      width: 70px;
+      min-width: 70px;
+      max-width: 70px;
       box-sizing: border-box;
     }
 
@@ -484,6 +493,37 @@
       box-sizing: border-box;
     }
 
+    /* 商品画像 */
+    .entry-form .product-image-block {
+      display: flex;
+      align-items: center;
+      align-self: flex-start;
+      max-width: 200px;
+      margin-top: -52px;
+    }
+
+    .entry-form .product-image-wrapper {
+      width: 95px;
+      max-width: 95px;
+      height: 95px;
+      max-height: 95px;
+      box-sizing: border-box;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .entry-form .product-image-wrapper img.product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
     .entry-form .product-name-label {
       color: var(--color-text-muted);
       font-weight: 500;
@@ -512,6 +552,19 @@
       flex-shrink: 0;
       padding-top: 4px;
       line-height: 1.35;
+    }
+
+    /* 仕様書Noは折り返さず1行表示 */
+    .entry-form #specificationNo {
+      width: auto;
+      max-width: none;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .entry-form .form-row-specification-no {
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 8px;
     }
 
     .entry-form input,
@@ -732,7 +785,8 @@
       }
       .entry-form .form-column-product-code {
         flex-direction: row;
-        align-items: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
       }
       .entry-form .form-column-product-code > .filter-label {
         display: inline-flex;
@@ -742,6 +796,28 @@
         box-sizing: border-box;
         padding-top: 0;
         line-height: 40px;
+      }
+      /* スマホ時: 商品名ラベルは商品コード入力の下に表示 */
+      .entry-form .form-column-product-code > .filter-label:last-of-type {
+        flex: 0 0 100%;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        line-height: 1.35;
+        padding-top: 2px;
+        margin-left: 9em;
+      }
+      .entry-form .form-column-product-code > .filter-label:first-of-type {
+        order: 1;
+      }
+      .entry-form .form-column-product-code > input[type="text"] {
+        order: 2;
+        flex: 1 1 auto;
+        width: auto;
+        max-width: calc(100% - 9em - 6px);
+      }
+      .entry-form .form-column-product-code > .filter-label:last-of-type {
+        order: 3;
       }
 
       .entry-form .form-column-product-code > .filter-label,
@@ -778,6 +854,20 @@
         max-width: 100%;
         box-sizing: border-box;
       }
+      .entry-form .form-column-product-code > input[type="text"] {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+        max-width: calc(100% - 9em - 6px);
+        box-sizing: border-box;
+      }
+      /* 上記より強いセレクタで、商品コード入力をラベル横表示に固定 */
+      .entry-form .form-row > .form-column.form-column-product-code > input[type="text"] {
+        width: auto;
+        max-width: calc(100% - 9em - 6px);
+        flex: 1 1 auto;
+        min-width: 0;
+      }
 
       /* 品名はセレクトの下に表示・折り返さない（長い場合は横スクロール） */
       .entry-form .product-code-inputs {
@@ -803,6 +893,22 @@
         min-width: 0;
         max-width: 100%;
         box-sizing: border-box;
+      }
+
+      /* スマホ時: 商品画像(1〜3)はステータスselectの下に表示 */
+      .entry-form .form-row .product-image-block {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 4px;
+        margin-left: 0;
+        align-self: stretch;
+        justify-content: flex-start;
+      }
+      .entry-form .form-row .product-image-wrapper {
+        width: 100px;
+        max-width: 100px;
+        height: 100px;
+        max-height: 100px;
       }
 
       .entry-form .product-name-label {
@@ -1388,17 +1494,14 @@
         <h2 class="page-title">サンプル登録</h2>
         <form class="entry-form">
           <div class="filter-row">
+            <div class="form-row form-row-specification-no">
+              <label class="filter-label" id="specificationNo">仕様書No.&nbsp;&nbsp;&nbsp;&nbsp;SY-2026-0001</label>
+            </div>
             <div class="form-row form-row-no-separator form-row-final-sample">
               <div class="form-column form-column-product-code">
                 <label class="filter-label">商品コード</label>
-                <div class="product-code-inputs">
-                  <select id="productCodeSelect" disabled>
-                    <option value="9999991" data-product-name="ミッキーA柄タオル" selected>9999991</option>
-                    <option value="9999992" data-product-name="ミッキーB柄タオル">9999992</option>
-                    <option value="9999993" data-product-name="ミッキーC柄タオル">9999993</option>
-                  </select>
-                  <span id="productNameLabel" class="product-name-label"></span>
-                </div>
+                <input type="text" value="9999991" readonly>
+                <label class="filter-label">ミッキーA柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
                 <label class="filter-label">サンプル到着日</label>
@@ -1448,19 +1551,18 @@
                   </select>
                 </div>
               </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
             </div>
             <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main">
               <div class="form-column form-column-product-code">
                 <label class="filter-label">商品コード</label>
-                <div class="product-code-inputs">
-                  <select id="productCodeSelect" disabled>
-                    <option value="">選択してください</option>
-                    <option value="1" data-product-name="ミッキーA柄タオル">999991</option>
-                    <option value="2" data-product-name="ミッキーB柄タオル" selected>999992</option>
-                    <option value="3" data-product-name="ミッキーC柄タオル">999993</option>
-                  </select>
-                  <span id="productNameLabel" class="product-name-label"></span>
-                </div>
+                <input type="text" value="9999992" readonly>
+                <label class="filter-label">ミッキーB柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
                 <label class="filter-label">サンプル到着日</label>
@@ -1508,19 +1610,18 @@
                   </select>
                 </div>
               </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage2" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
             </div>
             <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main">
               <div class="form-column form-column-product-code">
                 <label class="filter-label">商品コード</label>
-                <div class="product-code-inputs">
-                  <select id="productCodeSelect" disabled>
-                    <option value="">選択してください</option>
-                    <option value="1" data-product-name="ミッキーA柄タオル">999991</option>
-                    <option value="2" data-product-name="ミッキーB柄タオル">999992</option>
-                    <option value="3" data-product-name="ミッキーC柄タオル" selected>999993</option>
-                  </select>
-                  <span id="productNameLabel" class="product-name-label"></span>
-                </div>
+                <input type="text" value="9999993" readonly>
+                <label class="filter-label">ミッキーC柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
                 <label class="filter-label">サンプル到着日</label>
@@ -1567,6 +1668,12 @@
                     <option value="2" data-product-name="shinseisumi">申請済</option>
                   </select>
                 </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
           </div>
@@ -1776,6 +1883,35 @@
 
         addBtn.addEventListener("click", function () {
           container.appendChild(createImageSlot());
+        });
+      })();
+
+      // 商品画像: 画像クリックでファイル選択し、選択画像をプレビュー表示
+      (function () {
+        var blocks = document.querySelectorAll(".product-image-block");
+        if (!blocks || blocks.length === 0) return;
+
+        Array.prototype.forEach.call(blocks, function (block) {
+          var img = block.querySelector("img.product-image");
+          var fileInput = block.querySelector(".product-image-input");
+          if (!img || !fileInput) return;
+
+          img.style.cursor = "pointer";
+
+          img.addEventListener("click", function () {
+            fileInput.click();
+          });
+
+          fileInput.addEventListener("change", function () {
+            var file = this.files && this.files[0];
+            if (!file || !file.type || file.type.indexOf("image/") !== 0) return;
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          });
         });
       })();
 
