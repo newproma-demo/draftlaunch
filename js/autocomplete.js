@@ -68,6 +68,16 @@ category:[
   "タオル","フェイスタオル","キッチンタオル","バスタオル","マットタオル","タオルカーテン",
   "単品タオル","企画物タオル"
   ],  
+category2:[
+  "単品",
+  "総合",
+  "AW",
+  "BTS",
+  "サマー",
+  "キャラジャン",
+  "水野",
+  "ゴルフ"
+  ],  
 //得意先
 customer:[
   "得意先名１", "得意先名２", "得意先名３", "得意先名４", "得意先名５", 
@@ -458,41 +468,11 @@ function initPeriodRangeInputs() {
       try {
         picker.showPicker()
       } catch (_) {
-        // Fallback for mobile browsers where hidden date inputs cannot open with focus/click.
-        const prevCssText = picker.style.cssText
-        picker.style.position = "fixed"
-        picker.style.left = "0"
-        picker.style.top = "0"
-        picker.style.width = "1px"
-        picker.style.height = "1px"
-        picker.style.opacity = "0"
-        picker.style.pointerEvents = "auto"
-        picker.style.clip = "auto"
-        picker.style.clipPath = "none"
-        picker.style.zIndex = "-1"
         picker.focus()
         picker.click()
-        setTimeout(() => {
-          picker.style.cssText = prevCssText
-        }, 0)
       }
     } else {
-      const prevCssText = picker.style.cssText
-      picker.style.position = "fixed"
-      picker.style.left = "0"
-      picker.style.top = "0"
-      picker.style.width = "1px"
-      picker.style.height = "1px"
-      picker.style.opacity = "0"
-      picker.style.pointerEvents = "auto"
-      picker.style.clip = "auto"
-      picker.style.clipPath = "none"
-      picker.style.zIndex = "-1"
       picker.focus()
-      picker.click()
-      setTimeout(() => {
-        picker.style.cssText = prevCssText
-      }, 0)
     }
   }
 
@@ -578,41 +558,11 @@ function initPeriodFromOnlyInputs() {
         try {
           picker.showPicker()
         } catch (_) {
-          // Fallback for mobile browsers where hidden date inputs cannot open with focus/click.
-          const prevCssText = picker.style.cssText
-          picker.style.position = "fixed"
-          picker.style.left = "0"
-          picker.style.top = "0"
-          picker.style.width = "1px"
-          picker.style.height = "1px"
-          picker.style.opacity = "0"
-          picker.style.pointerEvents = "auto"
-          picker.style.clip = "auto"
-          picker.style.clipPath = "none"
-          picker.style.zIndex = "-1"
           picker.focus()
           picker.click()
-          setTimeout(() => {
-            picker.style.cssText = prevCssText
-          }, 0)
         }
       } else {
-        const prevCssText = picker.style.cssText
-        picker.style.position = "fixed"
-        picker.style.left = "0"
-        picker.style.top = "0"
-        picker.style.width = "1px"
-        picker.style.height = "1px"
-        picker.style.opacity = "0"
-        picker.style.pointerEvents = "auto"
-        picker.style.clip = "auto"
-        picker.style.clipPath = "none"
-        picker.style.zIndex = "-1"
         picker.focus()
-        picker.click()
-        setTimeout(() => {
-          picker.style.cssText = prevCssText
-        }, 0)
       }
     }
 
