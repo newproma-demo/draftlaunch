@@ -259,13 +259,15 @@
       display: flex;
       flex-wrap: wrap;
       align-items: flex-end;
-      gap: 16px 24px;
-      margin: 0 0 24px 0;
-      padding: 20px 24px;
+      gap: 10px 14px;
+      margin: 0 0 12px 0;
+      padding: 12px 14px;
       background: var(--color-card);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--color-border);
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     /* スマホ用「検索条件を開く」ボタン（PCでは非表示） */
@@ -277,29 +279,54 @@
     .search-box .search-box-inner {
       display: flex;
       flex-wrap: wrap;
-      align-items: flex-end;
-      gap: 16px 24px;
+      align-items: center;
+      gap: 8px 14px;
+      flex: 1 1 100%;
       width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .search-box .search-box-inner > .search-row {
+      flex: 0 1 auto;
+      width: fit-content;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .search-row {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 4px;
       min-width: 0;
+    }
+
+    .search-row-inline {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      align-items: center;
+      column-gap: 6px;
+      row-gap: 4px;
+      min-width: 0;
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .search-row-inline > label {
+      padding-top: 0;
     }
 
     .search-row label {
       margin: 0;
       font-size: var(--fs-xs);
-      font-weight: 500;
+      font-weight: 700;
       color: var(--color-text-muted);
       white-space: nowrap;
     }
 
     .search-row select,
     .search-row input {
-      min-width: 160px;
+      min-width: 220px;
       padding: 10px 12px;
       font-size: var(--fs-xs);
       font-family: inherit;
@@ -322,14 +349,169 @@
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
     }
 
+    #exhibitionFilter,
+    #exhibitionFilter option,
+    #exhibitionFilter optgroup {
+      font-size: var(--fs-xs);
+      font-family: inherit;
+    }
+
     .search-row input::placeholder {
       color: #9ca89f;
     }
 
+    /* 初回入荷日: hatchujokyokanri 契約納期と同じ入力スタイル */
+    .period-range-row {
+      align-items: center;
+      flex: 0 1 auto;
+      max-width: fit-content;
+    }
+
+    .period-range-field {
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      min-width: 0;
+    }
+
+    .period-range-picker {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .period-range-field .period-range-calendar-btn {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      flex-shrink: 0;
+      padding: 4px 6px;
+      font-size: 0.95rem;
+      line-height: 1;
+      cursor: pointer;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--color-text);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 134, 50, 0.06);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .period-range-field .period-range-calendar-btn:hover {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(0, 134, 50, 0.25);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 134, 50, 0.1);
+    }
+
+    .period-range-input.period-range-yyyymmdd.period-range-invalid {
+      border-color: #c62828;
+      box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.15);
+    }
+
+    .period-range-inputs {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      min-width: 0;
+    }
+
+    .search-row .period-range-input {
+      min-width: 160px;
+      padding: 10px 12px;
+      font-size: var(--fs-xs);
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-row .period-range-input:hover {
+      border-color: #b0bdb5;
+    }
+
+    .search-row .period-range-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .period-range-field .period-range-input.period-range-yyyymmdd {
+      --period-pad-left: 7px;
+      --period-btn-area: 2.6em;
+      box-sizing: border-box;
+      width: calc(8ch + var(--period-pad-left) + var(--period-btn-area) + 2px);
+      min-width: calc(8ch + var(--period-pad-left) + var(--period-btn-area) + 2px);
+      max-width: 100%;
+      padding: 6px var(--period-pad-left);
+      padding-right: var(--period-btn-area);
+      font-variant-numeric: tabular-nums;
+      overflow: visible;
+    }
+
+    .period-range-sep {
+      color: var(--color-text-muted);
+      font-weight: 500;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .type-toggle-inline {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rate-toggle-group {
+      display: inline-flex;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--color-card);
+    }
+
+    .rate-toggle {
+      padding: 8px 10px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: var(--fs-xs);
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .search-box .rate-toggle {
+      padding: 6px 10px;
+    }
+
+    .rate-toggle.is-active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
     /* 検索ボタン */
-    .search-button-area {
+    .search-actions {
       margin-left: auto;
-      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .search-button {
@@ -345,6 +527,16 @@
     }
 
     .search-button:hover { background: var(--color-primary-dark); }
+
+    .search-button.secondary {
+      background: #f3f4f6;
+      color: var(--color-text);
+      border: 1px solid #d1d5db;
+    }
+
+    .search-button.secondary:hover {
+      background: #e5e7eb;
+    }
 
     .search-button:active {
       transform: translateY(1px);
@@ -413,7 +605,7 @@
       gap: 8px;
     }
 
-    .overall-badge span {
+    .overall-badge #overallPercent {
       font-size: 18px;
       font-weight: 700;
     }
@@ -424,11 +616,11 @@
       gap: 18px 20px;
       width: 100%;
       margin-top: 8px;
-      align-items: stretch;
-      flex: 1;
-      min-height: 0;
-      grid-auto-rows: 1fr;
-      align-content: stretch;
+      align-items: start;
+      flex: 0 0 auto;
+      min-height: auto;
+      grid-auto-rows: minmax(320px, auto);
+      align-content: start;
     }
 
     .pie-card {
@@ -440,8 +632,8 @@
       flex-direction: column;
       padding: 12px 14px 16px;
       box-sizing: border-box;
-      height: 100%;
-      min-height: 0;
+      height: auto;
+      min-height: 320px;
       cursor: pointer;
       transition: transform 0.18s ease, box-shadow 0.22s ease, border-color 0.18s ease;
     }
@@ -1304,24 +1496,33 @@
 
       .search-box .search-box-inner {
         display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 12px 0 0;
-        gap: 12px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 8px 0 0;
+        gap: 8px 12px;
       }
 
       .search-box.is-open .search-box-inner {
-        display: grid;
+        display: flex;
       }
 
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
       }
 
+      .search-box .search-box-inner > .search-row {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .search-box .search-box-inner .search-row-inline {
+        width: 100%;
+        max-width: 100%;
+        grid-template-columns: max-content 1fr;
+      }
+
       .search-row {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
+        min-width: 0;
       }
 
       .search-row label {
@@ -1336,17 +1537,45 @@
         box-sizing: border-box;
       }
 
-      .search-button-area {
+      .period-range-row.period-range-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .period-range-inputs {
+        width: 100%;
+      }
+
+      .search-row .period-range-input {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .period-range-field {
+        display: block;
+        width: 100%;
+      }
+
+      .period-range-field .period-range-input.period-range-yyyymmdd {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .type-toggle-inline {
+        width: 100%;
+      }
+
+      .search-actions {
         margin-left: 0;
-        margin-top: 0;
-        grid-column: 1 / -1;
-        text-align: right;
+        width: 100%;
+        justify-content: flex-end;
       }
 
       .search-button {
         width: auto;
         min-width: 80px;
       }
+
 
       .content-section {
         display: flex;
@@ -1603,7 +1832,7 @@
   .pie-card {
     max-width: 100%;
     height: auto;
-    min-height: 300px;
+    min-height: 320px;
     padding: 12px 12px 16px;
   }
 
@@ -1658,6 +1887,65 @@
     <!--#region メインコンテンツ  -->
     <div class="content">
       <div class="page-title"><h2>マニフェスト管理</h2></div>
+      <div class="search-box" id="searchBox" aria-label="検索条件">
+        <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel"><span class="search-toggle-sp-label"><img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20"><span class="search-toggle-sp-text">検索条件を開く</span></span></button>
+        <div class="search-box-inner" id="searchRowsPanel">
+          <div class="search-row search-row-inline">
+            <label for="exhibitionFilter">展示会</label>
+            <select id="exhibitionFilter" aria-label="展示会を選択">
+              <option value="">すべて</option>
+              <optgroup label="2026">
+                <option value="2026">2026（年間）</option>
+                <option value="2026.Q4">2026.Q4</option>
+                <option value="2026.Q3">2026.Q3</option>
+                <option value="2026.Q2">2026.Q2</option>
+                <option value="2026.Q1">2026.Q1</option>
+              </optgroup>
+              <optgroup label="2025">
+                <option value="2025">2025（年間）</option>
+                <option value="2025.Q4">2025.Q4</option>
+                <option value="2025.Q3">2025.Q3</option>
+                <option value="2025.Q2">2025.Q2</option>
+                <option value="2025.Q1">2025.Q1</option>
+              </optgroup>
+              <optgroup label="2024">
+                <option value="2024">2024（年間）</option>
+                <option value="2024.Q4">2024.Q4</option>
+                <option value="2024.Q3">2024.Q3</option>
+                <option value="2024.Q2">2024.Q2</option>
+                <option value="2024.Q1">2024.Q1</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="search-row search-row-inline">
+            <div class="type-toggle-inline">
+              <div class="rate-toggle-group" role="group" aria-label="定番・別注の条件">
+                <button type="button" class="rate-toggle" id="typeTeibanBtn" aria-pressed="false">定番</button>
+                <button type="button" class="rate-toggle" id="typeBetchuBtn" aria-pressed="false">別注</button>
+              </div>
+            </div>
+          </div>
+          <div class="search-row search-row-inline period-range-row">
+            <label for="arrivalDateFrom">初回入荷日</label>
+            <div class="period-range-inputs">
+              <div class="period-range-field">
+                <input type="text" id="arrivalDateFrom" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="初回入荷日 開始日 yyyymmdd" title="8桁で入力（例: 20250309）またはカレンダー">
+                <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                <button type="button" class="period-range-calendar-btn" aria-label="初回入荷日 開始日をカレンダーで選択">📅</button>
+              </div>
+              <span class="period-range-sep" aria-hidden="true">～</span>
+              <div class="period-range-field">
+                <input type="text" id="arrivalDateTo" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="初回入荷日 終了日 yyyymmdd" title="8桁で入力（例: 20250309）またはカレンダー">
+                <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                <button type="button" class="period-range-calendar-btn" aria-label="初回入荷日 終了日をカレンダーで選択">📅</button>
+              </div>
+            </div>
+          </div>
+          <div class="search-actions">
+            <button type="button" class="search-button secondary" id="clearFilterBtn">クリア</button>
+          </div>
+        </div>
+      </div>
 
       <section class="progress-chart-section" aria-label="進捗率グラフ">
         <div class="progress-chart-area">
@@ -1665,7 +1953,7 @@
             <h3 class="progress-chart-title">MARUSHIN MANIFESTO 6
               CORPORATE SOCIAL RESPONSIBILITY — FOR 2030</h3>
             <div class="progress-chart-sub" aria-label="更新情報と全体達成率">
-              <span class="overall-badge">全体達成率 <span id="overallPercent">0%</span></span>
+              <span class="overall-badge"><span id="overallBadgeLabel">全体達成率</span> <span id="overallPercent">0%</span></span>
               <span class="progress-last-updated">最終更新：2025年2月3日</span>
             </div>
           </div>
@@ -1714,6 +2002,7 @@
     </div>
   </div>
 
+  <script src="js/autocomplete.js"></script>
   <script src="js/sidebar.js"></script>
   <script>
     const NO_IMAGE = "images/noimage.png";
@@ -1910,10 +2199,11 @@
       card.classList.toggle("open");
     }
 
-    // 進捗率グラフ：全期（表示項目のみ）
+    // 進捗率グラフ（検索集計対応）
     (function () {
-      var data = [
+      var MANIFEST_ITEMS = [
         {
+          key: "cotton",
           label: "タオル製品をすべてサステナブル・コットンの素材へ",
           percent: 17.2,
           color: "#faaf18",
@@ -1921,55 +2211,72 @@
           detail: "私たちは、コットンを素材とする商品開発を行うプロフェッショナルとして、地球環境に配慮した綿花を使用しています。 綿花は一見すると環境に良い原料に思えますが、その裁断過程で農薬や肥料の過度な使用など様々な問題があります。 私たちは、サステナブル・コットンを使用して商品を企画・開発し、2028年までに90%のタオル製品を、2030年までにすべてのタオル製品においてサステナブル・コットンを使用します。"
         },
         {
+          key: "polyester",
           label: "すべてのポリエステル素材を再生ポリエステル素材、もしくは天然繊維へ",
           percent: 39.0,
           color: "#0a97d1",
           Image: "images/mnf-polyester.svg",
           detail: "私たちは、商品に使用するポリエステルを再生ポリエステル、もしくは天然繊維へ切り替えます。 世界中のプラスチックごみは年間約800万トンが海に流し込まれていると言われています。 私たちは、ポリエステル商品の企画・開発において、2028年までに85%の製品を、2030年までにすべてのポリエステル製品において、再生ポリエステルの素材もしくは天然繊維に代え、地球環境に配慮した商品を企画・開発します。",
           YEAR_SEGMENTS: [
-            // ★2番目のグラフ用の年別幅（合計100になるように自由に編集してください）
-            { year: "2022", width: 33 },   // 例: 5%
-            { year: "2023", width: 2 },   // 例: 5%
-            { year: "2024", width: 4 },  // 例: 10%
-            { year: "2025", width: 11 },  // 例: 30%
-            { year: "2026", width: 10 },  // 例: 15%
-            { year: "2027", width: 20 },  // 例: 15%
-            { year: "2028", width: 5 },  // 例: 10%
-            { year: "2029", width: 10 },   // 例: 5%
-            { year: "2030", width: 5 }    // 例: 5%
+            { year: "2022", width: 33 },
+            { year: "2023", width: 2 },
+            { year: "2024", width: 4 },
+            { year: "2025", width: 11 },
+            { year: "2026", width: 10 },
+            { year: "2027", width: 20 },
+            { year: "2028", width: 5 },
+            { year: "2029", width: 10 },
+            { year: "2030", width: 5 }
           ]
         },
         {
+          key: "label",
           label: "MARUSHINブランドラベルを100%サステナブル・コットン及び再生素材へ",
           percent: 0,
           color: "#8bc63e",
           Image: "images/mnf-recycled.svg",
           detail: "私たちは商品だけでなく、それに付属するブランドネーム・ラベルやその他のラベルの素材にも環境に配慮した素材に代え、サステナブルな商品を企画・開発しています。 現在のラベルの素材は、ポリエステルなどの化学繊維の素材が中心でした。化学繊維は、原料調達の段階にある石油などの限りある資源を必要とするため、過度な資源利用の削減や不要になった廃の資源還圈に貢献することが期待されます。 私たちは、2030年までにすべてのラベルをサステナブル・コットン及び再生素材のものへ代え、サステナブルなMARUSHINブランドであり続けます。",
           YEAR_SEGMENTS: [
-            { year: "2025", width: 30 },  // 例: 10%
-            { year: "2026", width: 20 },  // 例: 15%
-            { year: "2027", width: 15 },  // 例: 15%
-            { year: "2028", width: 15 },  // 例: 10%
-            { year: "2029", width: 10 },   // 例: 5%
-            { year: "2030", width: 10 }    // 例: 5%
-          ]        
+            { year: "2025", width: 30 },
+            { year: "2026", width: 20 },
+            { year: "2027", width: 15 },
+            { year: "2028", width: 15 },
+            { year: "2029", width: 10 },
+            { year: "2030", width: 10 }
+          ]
         },
         {
+          key: "material",
           label: "資材を天然素材もしくは再生素材へ",
           percent: 6.9,
           color: "#f3829c",
           Image: "images/mnf-natural.svg",
-          detail: "私たちは、ハンガーやフォークなどの資材についても脱プラスチックを目標とし、地球環境に配慮した商品を企画・開発しています。 商品をお届けする際に付随するハンガーやフォーク、アンビタッチは多くが플ラスチック製の資材です。プラスチック製の資材の再利用率が24%であるのに対し、紙製の資材の再利用率は72%です。 私たちは、2028年までに80%の商品の資材を、2030年までにすべての商品の資材を「脱プラスチック化」し、地球環境に配慮した商品を企画・開発します。",
+          detail: "私たちは、ハンガーやフォークなどの資材についても脱プラスチックを目標とし、地球環境に配慮した商品を企画・開発しています。 商品をお届けする際に付随するハンガーやフォーク、アンビタッチは多くがプラスチック製の資材です。プラスチック製の資材の再利用率が24%であるのに対し、紙製の資材の再利用率は72%です。 私たちは、2028年までに80%の商品の資材を、2030年までにすべての商品の資材を「脱プラスチック化」し、地球環境に配慮した商品を企画・開発します。",
           YEAR_SEGMENTS: [
-            { year: "2024", width: 6.9 },   // 例: 10%
-            { year: "2025", width: 43.1 },  // 例: 10%
-            { year: "2026", width: 10 },  // 例: 15%
-            { year: "2027", width: 10 },  // 例: 15%
-            { year: "2028", width: 10 },  // 例: 10%
-            { year: "2029", width: 15 },   // 例: 5%
-            { year: "2030", width: 15 }    // 例: 5%
-          ]            
+            { year: "2024", width: 6.9 },
+            { year: "2025", width: 43.1 },
+            { year: "2026", width: 10 },
+            { year: "2027", width: 10 },
+            { year: "2028", width: 10 },
+            { year: "2029", width: 15 },
+            { year: "2030", width: 15 }
+          ]
         }
+      ];
+
+      var SHIPMENT_SAMPLE = [
+        { exhibition: "2026.Q4", type: "定番", firstArrivalDate: "2026-10-15", manifestoKey: "cotton", progress: 24.0 },
+        { exhibition: "2026.Q3", type: "別注", firstArrivalDate: "2026-08-03", manifestoKey: "polyester", progress: 41.0 },
+        { exhibition: "2026.Q2", type: "定番", firstArrivalDate: "2026-05-20", manifestoKey: "material", progress: 13.0 },
+        { exhibition: "2026.Q1", type: "別注", firstArrivalDate: "2026-02-07", manifestoKey: "label", progress: 8.0 },
+        { exhibition: "2025.Q4", type: "定番", firstArrivalDate: "2025-11-25", manifestoKey: "cotton", progress: 18.0 },
+        { exhibition: "2025.Q3", type: "別注", firstArrivalDate: "2025-09-01", manifestoKey: "polyester", progress: 37.0 },
+        { exhibition: "2025.Q2", type: "定番", firstArrivalDate: "2025-06-16", manifestoKey: "material", progress: 10.0 },
+        { exhibition: "2025.Q1", type: "定番", firstArrivalDate: "2025-02-02", manifestoKey: "label", progress: 5.0 },
+        { exhibition: "2024.Q4", type: "別注", firstArrivalDate: "2024-11-10", manifestoKey: "polyester", progress: 44.0 },
+        { exhibition: "2024.Q3", type: "定番", firstArrivalDate: "2024-08-01", manifestoKey: "cotton", progress: 22.0 },
+        { exhibition: "2024.Q2", type: "別注", firstArrivalDate: "2024-06-15", manifestoKey: "material", progress: 17.0 },
+        { exhibition: "2024.Q1", type: "別注", firstArrivalDate: "2024-03-01", manifestoKey: "label", progress: 11.0 }
       ];
 
       var modalOverlay = document.getElementById("manifestModalOverlay");
@@ -1983,6 +2290,97 @@
       var modalYearFill = document.getElementById("manifestModalYearFill");
       var modalYearMarkers = document.getElementById("manifestModalYearMarkers");
       var modalYearCurrent = document.getElementById("manifestModalYearCurrent");
+      var exhibitionFilterEl = document.getElementById("exhibitionFilter");
+      var typeTeibanBtn = document.getElementById("typeTeibanBtn");
+      var typeBetchuBtn = document.getElementById("typeBetchuBtn");
+      var arrivalDateFromEl = document.getElementById("arrivalDateFrom");
+      var arrivalDateToEl = document.getElementById("arrivalDateTo");
+      var clearFilterBtn = document.getElementById("clearFilterBtn");
+      var currentChartData = [];
+      var selectedType = "";
+
+      function syncTypeToggleUi() {
+        if (typeTeibanBtn) {
+          var teibanActive = selectedType === "定番";
+          typeTeibanBtn.classList.toggle("is-active", teibanActive);
+          typeTeibanBtn.setAttribute("aria-pressed", teibanActive ? "true" : "false");
+        }
+        if (typeBetchuBtn) {
+          var betchuActive = selectedType === "別注";
+          typeBetchuBtn.classList.toggle("is-active", betchuActive);
+          typeBetchuBtn.setAttribute("aria-pressed", betchuActive ? "true" : "false");
+        }
+      }
+
+      function setSelectedType(nextType) {
+        selectedType = (selectedType === nextType) ? "" : nextType;
+        if (selectedType === "別注" && exhibitionFilterEl) {
+          exhibitionFilterEl.value = "";
+        }
+        syncTypeToggleUi();
+        runSearch();
+      }
+
+      function toDateNumber(dateText) {
+        if (!dateText) return null;
+        var normalized = String(dateText).replace(/-/g, "");
+        if (!/^\d{8}$/.test(normalized)) return null;
+        var num = Number(normalized);
+        return Number.isFinite(num) ? num : null;
+      }
+
+      function round1(value) {
+        return Math.round(value * 10) / 10;
+      }
+
+      function getFilters() {
+        return {
+          exhibition: exhibitionFilterEl ? exhibitionFilterEl.value.trim() : "",
+          type: selectedType,
+          from: arrivalDateFromEl ? arrivalDateFromEl.value : "",
+          to: arrivalDateToEl ? arrivalDateToEl.value : ""
+        };
+      }
+
+      function applyFilters(filters) {
+        var fromNum = toDateNumber(filters.from);
+        var toNum = toDateNumber(filters.to);
+        return SHIPMENT_SAMPLE.filter(function (row) {
+          if (filters.exhibition) {
+            var isYearOnly = /^\d{4}$/.test(filters.exhibition);
+            if (isYearOnly) {
+              if (row.exhibition.indexOf(filters.exhibition + ".") !== 0) return false;
+            } else if (row.exhibition !== filters.exhibition) {
+              return false;
+            }
+          }
+          if (filters.type && row.type.indexOf(filters.type) === -1) return false;
+          var rowNum = toDateNumber(row.firstArrivalDate);
+          if (fromNum != null && rowNum != null && rowNum < fromNum) return false;
+          if (toNum != null && rowNum != null && rowNum > toNum) return false;
+          return true;
+        });
+      }
+
+      function aggregateByManifest(rows) {
+        var summaryMap = {};
+        MANIFEST_ITEMS.forEach(function (item) {
+          summaryMap[item.key] = { sum: 0, count: 0 };
+        });
+        rows.forEach(function (row) {
+          if (!summaryMap[row.manifestoKey]) return;
+          summaryMap[row.manifestoKey].sum += row.progress;
+          summaryMap[row.manifestoKey].count += 1;
+        });
+        return MANIFEST_ITEMS.map(function (item) {
+          var stats = summaryMap[item.key];
+          var percent = stats.count > 0 ? round1(stats.sum / stats.count) : 0;
+          return Object.assign({}, item, {
+            percent: percent,
+            recordCount: stats.count
+          });
+        });
+      }
 
       function renderYearBox(item) {
         if (!modalYearBar || !modalYearFill || !modalYearMarkers || !modalYearCurrent) return;
@@ -2176,91 +2574,167 @@
         });
       }
 
-      var overallEl = document.getElementById("overallPercent");
-      if (overallEl) {
-        var avg = Math.round(
-          data.reduce(function (sum, item) { return sum + (item.percent || 0); }, 0) / (data.length || 1)
-        );
-        overallEl.textContent = avg + "%";
-      }
-
       var container = document.getElementById("manifestPieContainer");
       if (!container) return;
 
-      container.innerHTML = "";
+      function getPieCaption(filters) {
+        var noExhibition = !filters.exhibition;
+        var noDateRange = !filters.from && !filters.to;
+        if (noExhibition && !filters.type && noDateRange) return "全体達成率";
+        if (noExhibition && filters.type === "定番" && noDateRange) return "【定番】全体達成率";
+        if (noExhibition && filters.type === "別注" && noDateRange) return "【別注】全体達成率";
+        if (filters.type === "別注") return "選択期間達成率";
+        if (filters.exhibition) return filters.exhibition + "達成率";
+        return "選択期間達成率";
+      }
 
-      data.forEach(function (item, index) {
-        var card = document.createElement("div");
-        card.className = "pie-card";
-        if (item.color) card.style.setProperty("--pie-accent", item.color);
-        card.setAttribute("role", "button");
-        card.setAttribute("tabindex", "0");
-        card.setAttribute("aria-label", (item.label || "") + " の詳細を見る");
-        card.innerHTML =
-          '<div class="pie-card-header">' +
-          '  <div class="pie-card-title">' + item.label + '</div>' +
-          '</div>' +
-          '<div class="pie-card-body">' +
-          '  <div class="pie-card-body-inner">' +
-          '    <div class="pie-chart-wrap">' +
-          '      <svg viewBox="0 0 100 100" role="img" aria-label="' + item.label + ' 進捗率円グラフ">' +
-          '        <circle class="pie-bg" cx="50" cy="50" r="38"></circle>' +
-          '        <circle class="pie-fill" id="manifestPieFill-' + index + '" cx="50" cy="50" r="38"></circle>' +
-          '      </svg>' +
-          '      <div class="pie-center-icon" aria-hidden="true">' +
-          '        <img id="manifestPieIcon-' + index + '" alt="" />' +
-          '      </div>' +
-          '    </div>' +
-          '    <div class="pie-metric" aria-label="進捗率表示">' +
-          '      <div class="pie-metric-percent" id="manifestPieLabel-' + index + '">0%</div>' +
-          '      <div class="pie-metric-caption">今期達成率</div>' +
-          '      <div class="pie-metric-hint">詳細を見る</div>' +
-          '    </div>' +
-          '  </div>' +
-          '</div>';
-        container.appendChild(card);
+      function renderChart(data, pieCaption) {
+        currentChartData = data.slice();
+        container.innerHTML = "";
 
-        var fill = document.getElementById("manifestPieFill-" + index);
-        var label = document.getElementById("manifestPieLabel-" + index);
-        var iconImg = document.getElementById("manifestPieIcon-" + index);
-        var iconWrap = iconImg ? iconImg.parentElement : null;
-        if (!fill || !label) return;
-
-        var r = 38;
-        var circumference = 2 * Math.PI * r;
-        fill.style.strokeDasharray = circumference;
-        fill.style.strokeDashoffset = circumference;
-        if (item.color) fill.style.stroke = item.color;
-        label.textContent = item.percent.toFixed(1) + "%";
-        if (item.color) label.style.color = item.color;
-        if (iconWrap && item.color) {
-          iconWrap.style.borderColor = item.color;
-          iconWrap.style.backgroundColor = "#ffffff";
+        var overallEl = document.getElementById("overallPercent");
+        var overallLabelEl = document.getElementById("overallBadgeLabel");
+        if (overallLabelEl) overallLabelEl.textContent = pieCaption;
+        if (overallEl) {
+          var avg = data.length
+            ? round1(data.reduce(function (sum, item) { return sum + (item.percent || 0); }, 0) / data.length)
+            : 0;
+          overallEl.textContent = avg.toFixed(1) + "%";
         }
-        if (iconImg) {
-          if (item.Image) {
-            iconImg.src = item.Image;
-          } else {
-            iconImg.style.display = "none";
+
+        data.forEach(function (item, index) {
+          var card = document.createElement("div");
+          card.className = "pie-card";
+          if (item.color) card.style.setProperty("--pie-accent", item.color);
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
+          card.setAttribute("aria-label", (item.label || "") + " の詳細を見る");
+          card.innerHTML =
+            '<div class="pie-card-header">' +
+            '  <div class="pie-card-title">' + item.label + '</div>' +
+            '</div>' +
+            '<div class="pie-card-body">' +
+            '  <div class="pie-card-body-inner">' +
+            '    <div class="pie-chart-wrap">' +
+            '      <svg viewBox="0 0 100 100" role="img" aria-label="' + item.label + ' 進捗率円グラフ">' +
+            '        <circle class="pie-bg" cx="50" cy="50" r="38"></circle>' +
+            '        <circle class="pie-fill" id="manifestPieFill-' + index + '" cx="50" cy="50" r="38"></circle>' +
+            '      </svg>' +
+            '      <div class="pie-center-icon" aria-hidden="true">' +
+            '        <img id="manifestPieIcon-' + index + '" alt="" />' +
+            '      </div>' +
+            '    </div>' +
+            '    <div class="pie-metric" aria-label="進捗率表示">' +
+            '      <div class="pie-metric-percent" id="manifestPieLabel-' + index + '">0%</div>' +
+            '      <div class="pie-metric-caption">' + pieCaption + '</div>' +
+            '      <div class="pie-metric-hint">詳細を見る</div>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>';
+          container.appendChild(card);
+
+          var fill = document.getElementById("manifestPieFill-" + index);
+          var label = document.getElementById("manifestPieLabel-" + index);
+          var iconImg = document.getElementById("manifestPieIcon-" + index);
+          var iconWrap = iconImg ? iconImg.parentElement : null;
+          if (!fill || !label) return;
+
+          var r = 38;
+          var circumference = 2 * Math.PI * r;
+          fill.style.strokeDasharray = circumference;
+          fill.style.strokeDashoffset = circumference;
+          if (item.color) fill.style.stroke = item.color;
+          label.textContent = item.percent.toFixed(1) + "%";
+          if (item.color) label.style.color = item.color;
+          if (iconWrap && item.color) {
+            iconWrap.style.borderColor = item.color;
+            iconWrap.style.backgroundColor = "#ffffff";
           }
-        }
+          if (iconImg) {
+            if (item.Image) {
+              iconImg.src = item.Image;
+            } else {
+              iconImg.style.display = "none";
+            }
+          }
 
-        card.addEventListener("click", function () {
-          openManifestModal(item);
-        });
-
-        card.addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
+          card.addEventListener("click", function () {
             openManifestModal(item);
-          }
+          });
+
+          card.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openManifestModal(item);
+            }
+          });
+
+          requestAnimationFrame(function () {
+            var offset = circumference - (item.percent / 100) * circumference;
+            fill.style.strokeDashoffset = offset;
+          });
         });
 
-        requestAnimationFrame(function () {
-          var offset = circumference - (item.percent / 100) * circumference;
-          fill.style.strokeDashoffset = offset;
+      }
+
+      function runSearch() {
+        var filters = getFilters();
+        var hasSearchValue = !!(
+          filters.exhibition ||
+          filters.type ||
+          toDateNumber(filters.from) != null ||
+          toDateNumber(filters.to) != null
+        );
+        var filteredRows = applyFilters(filters);
+        var rowsForAggregation = hasSearchValue ? filteredRows : SHIPMENT_SAMPLE.slice();
+        if (rowsForAggregation.length === 0) {
+          rowsForAggregation = SHIPMENT_SAMPLE.slice();
+        }
+        var aggregatedData = aggregateByManifest(rowsForAggregation);
+        renderChart(aggregatedData, getPieCaption(filters));
+      }
+      if (exhibitionFilterEl) {
+        exhibitionFilterEl.addEventListener("change", function () {
+          if (exhibitionFilterEl.value) {
+            selectedType = "定番";
+          } else {
+            selectedType = "";
+          }
+          syncTypeToggleUi();
+          if (!exhibitionFilterEl.value && !arrivalDateFromEl.value && !arrivalDateToEl.value) {
+            selectedType = "";
+            syncTypeToggleUi();
+          }
+          runSearch();
         });
+      }
+      [arrivalDateFromEl, arrivalDateToEl].forEach(function (el) {
+        if (!el) return;
+        el.addEventListener("change", runSearch);
       });
+      if (typeTeibanBtn) {
+        typeTeibanBtn.addEventListener("click", function () {
+          setSelectedType("定番");
+        });
+      }
+      if (typeBetchuBtn) {
+        typeBetchuBtn.addEventListener("click", function () {
+          setSelectedType("別注");
+        });
+      }
+      if (clearFilterBtn) {
+        clearFilterBtn.addEventListener("click", function () {
+          if (exhibitionFilterEl) exhibitionFilterEl.value = "";
+          selectedType = "";
+          syncTypeToggleUi();
+          if (arrivalDateFromEl) arrivalDateFromEl.value = "";
+          if (arrivalDateToEl) arrivalDateToEl.value = "";
+          runSearch();
+        });
+      }
+
+      syncTypeToggleUi();
+      runSearch();
     })();
 
   </script>
