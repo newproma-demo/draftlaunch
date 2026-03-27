@@ -312,9 +312,38 @@
       box-sizing: border-box;
     }
 
+    /* 各行の区切り線 */
+    .entry-form .filter-row > .form-row {
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 8px;
+    }
+
+    .entry-form .filter-row > .form-row:last-child {
+      border-bottom: none;
+    }
+
+
+    /* 商品コード列：ラベルと入力欄を横並び */
+    .entry-form .form-column-product-code {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
+      width: auto;
+      flex: 0 0 auto;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    .entry-form .form-column-product-code > .filter-label {
+      width: auto;
+      flex: 0 0 auto;
+      margin-right: 0;
+      white-space: nowrap;
+    }
+
     /* 商品コード行：選択と品名（PCは横並び） */
     .entry-form .product-code-inputs {
-      flex: 1;
+      flex: 0 0 auto;
       min-width: 0;
       display: flex;
       flex-direction: row;
@@ -325,6 +354,112 @@
     .entry-form .product-code-inputs select {
       min-width: 160px;
       max-width: 220px;
+      box-sizing: border-box;
+    }
+
+    /* 品名列：ラベルと入力欄を商品コードのすぐ隣に配置 */
+    .entry-form .form-column-hinmei-inline {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
+      width: auto;
+      flex: 0 0 auto;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .entry-form .form-column-hinmei-inline > .filter-label {
+      width: auto;
+      flex: 0 0 auto;
+      margin-right: 0;
+      white-space: nowrap;
+    }
+
+    .entry-form .form-column-hinmei-inline > input[type="text"] {
+      width: 220px;
+      max-width: 220px;
+      flex: 0 0 auto;
+    }
+
+    /* サンプル到着日列：品名の隣に配置 */
+    .entry-form .form-column-arrival-inline {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
+      margin-left: 10px;
+      width: auto;
+      flex: 0 0 auto;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .entry-form .form-column-arrival-inline > .filter-label {
+      width: auto;
+      flex: 0 0 auto;
+      margin-right: 0;
+      white-space: nowrap;
+    }
+
+    .entry-form .form-column-arrival-inline .period-range-row--from-only,
+    .entry-form .form-column-arrival-inline .period-range-field {
+      display: inline-flex;
+      align-items: center;
+      width: auto;
+      min-width: 0;
+    }
+
+    /* サンプル個数列：到着日の隣に配置 */
+    .entry-form .form-column-count-inline {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
+      margin-left: 10px;
+      width: auto;
+      flex: 0 0 auto;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .entry-form .form-column-count-inline > .filter-label {
+      width: auto;
+      flex: 0 0 auto;
+      margin-right: 0;
+      white-space: nowrap;
+    }
+
+    .entry-form .form-column-count-inline > input[type="text"] {
+      flex: 0 0 auto;
+      width: calc(3ch + 26px);
+      min-width: calc(3ch + 26px);
+    }
+
+    /* ステータス列：ラベルとセレクトを横並び */
+    .entry-form .form-column-status-inline {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
+      width: auto;
+      flex: 0 0 auto;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .entry-form .form-column-status-inline > .filter-label {
+      width: auto;
+      flex: 0 0 auto;
+      margin-right: 0;
+      white-space: nowrap;
+    }
+
+    .entry-form .form-column-status-inline > div > select,
+    .entry-form .form-column-status-inline > select {
+      width: 180px;
+      min-width: 180px;
+      max-width: 180px;
       box-sizing: border-box;
     }
 
@@ -518,6 +653,90 @@
         --entry-form-row-gap: 1px;
       }
 
+      /* スマホ時は各項目を1つずつ改行して表示 */
+      .entry-form .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .entry-form .form-row > .form-column {
+        width: 100%;
+        max-width: 100%;
+        flex: 1 1 auto;
+        margin-left: 0;
+      }
+
+      /* スマホ時：各入力項目の幅を統一 */
+      .entry-form .form-row > .form-column input[type="text"],
+      .entry-form .form-row > .form-column select,
+      .entry-form .form-row > .form-column textarea {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .entry-form .form-row > .form-column .period-range-row--from-only,
+      .entry-form .form-row > .form-column .period-range-field,
+      .entry-form .form-row > .form-column .period-range-input {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* PC用の横並び列はスマホでは縦並びにして左開始位置を統一 */
+      .entry-form .form-column-product-code,
+      .entry-form .form-column-hinmei-inline,
+      .entry-form .form-column-arrival-inline,
+      .entry-form .form-column-count-inline,
+      .entry-form .form-column-status-inline {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin-left: 0;
+      }
+
+      .entry-form .form-column-product-code > .filter-label,
+      .entry-form .form-column-hinmei-inline > .filter-label,
+      .entry-form .form-column-arrival-inline > .filter-label,
+      .entry-form .form-column-count-inline > .filter-label,
+      .entry-form .form-column-status-inline > .filter-label {
+        width: 9em;
+        flex: 0 0 9em;
+        margin-right: 0;
+        white-space: nowrap;
+      }
+
+      .entry-form .form-column-arrival-inline .period-range-row--from-only,
+      .entry-form .form-column-arrival-inline .period-range-field {
+        flex: 1 1 auto;
+        display: inline-flex;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+      .entry-form .form-column-arrival-inline .period-range-input {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .entry-form .form-column-count-inline > input[type="text"] {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
       /* 品名はセレクトの下に表示・折り返さない（長い場合は横スクロール） */
       .entry-form .product-code-inputs {
         flex-direction: column;
@@ -552,10 +771,11 @@
         max-width: 150%;
       }
 
-      .entry-form .period-range-input {
-        flex: 0 0 auto;
-        width: calc(8ch + 26px);
-        min-width: calc(8ch + 26px);
+      .entry-form .form-row > .form-column .period-range-input {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
       }
 
       /* 追加行は削除ボタンの横幅影響をなくし、商品コード幅を1行目とそろえる */
@@ -1060,57 +1280,6 @@
       border-bottom: 1px solid var(--color-border);
     }
 
-    /* 追加ボタン共通 */
-    .btn-add-image {
-      align-self: flex-start;
-      padding: 8px 16px;
-      background: var(--color-primary);
-      color: #fff;
-      border: 1px solid var(--color-primary);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 16px;
-    }
-
-    .btn-add-image:hover {
-      background: var(--color-primary-dark);
-      border-color: var(--color-primary-dark);
-    }
-
-    .btn-add-image--small {
-      transform: scale(0.75);
-      transform-origin: left top;
-    }
-
-    /* ラベルの真下にボタンを縦並びで配置する用 */
-    .label-with-button {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-      width: var(--entry-form-label-width);
-      flex-shrink: 0;
-    }
-
-    .label-with-button > label {
-      padding-top: 4px;
-    }
-
-    /* 動的な2行目以降（種類～個数）があるとき、商品追加ボタン直下に下線（横幅いっぱい） */
-    .entry-form .supplier-add-section.has-extra-product-rows {
-      align-items: stretch !important;
-    }
-
-    .entry-form .supplier-add-section.has-extra-product-rows .label-with-button {
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
-      padding-bottom: 8px;
-      margin-bottom: 4px;
-      border-bottom: 1px solid var(--color-border);
-    }
-
     /* 参考画像 */
     .reference-images-wrapper {
       flex: 1;
@@ -1267,48 +1436,184 @@
         <h2 class="page-title">サンプル登録</h2>
         <form class="entry-form">
           <div class="filter-row">
-            <!-- サンプル選択ラジオボタン -->
             <div class="form-row">
-              <label class="filter-label">種類</label>
-              <label class="entry-form-radio-option"><input type="radio" name="sampleType" value="sample" checked>サンプル</label>&nbsp;&nbsp;
-              <label class="entry-form-radio-option"><input type="radio" name="sampleType" value="finalsample">最終サンプル</label>
-            </div>
-            <div class="form-row">
-              <label class="filter-label">商品コード</label>
-              <div class="product-code-inputs">
-                <select id="productCodeSelect">
-                  <option value="">選択してください</option>
-                  <option value="1" data-product-name="品名1">999991</option>
-                  <option value="2" data-product-name="品名2">999992</option>
-                  <option value="3" data-product-name="品名3">999993</option>
-                </select>
-                <span id="productNameLabel" class="product-name-label"></span>
+              <div class="form-column form-column-product-code">
+                <label class="filter-label">商品コード</label>
+                <div class="product-code-inputs">
+                  <select id="productCodeSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="品名1">999991</option>
+                    <option value="2" data-product-name="品名2">999992</option>
+                    <option value="3" data-product-name="品名3">999993</option>
+                  </select>
+                  <span id="productNameLabel" class="product-name-label"></span>
+                </div>
+              </div>
+              <div class="form-column form-column-arrival-inline">
+                <label class="filter-label">サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-row--from-only">
+                    <div class="period-range-field">
+                      <input type="text" id="periodFromOnly" name="periodFromOnly"
+                        class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                        placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                        title="8桁で入力（例: 20250309）またはカレンダー">
+                      <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                      <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline">
+                <label class="filter-label">サンプル個数</label>
+                <input type="text" placeholder="個数を入力">
+              </div>
+              <div class="form-column form-column-arrival-inline">
+                <label class="filter-label">最終サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline">
+                <label class="filter-label">最終サンプル個数</label>
+                <input type="text" placeholder="個数を入力">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">ステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="form-row" style="flex: 0 0 100%;">
-              <label class="filter-label">到着日</label>
-            <div class="period-range-row--from-only">
-              <div class="period-range-field">
-                <input type="text" id="periodFromOnly" name="periodFromOnly"
-                  class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
-                  placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                  title="8桁で入力（例: 20250309）またはカレンダー">
-                <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+            <div class="form-row">
+              <div class="form-column form-column-product-code">
+                <label class="filter-label">商品コード</label>
+                <div class="product-code-inputs">
+                  <select id="productCodeSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="品名1">999991</option>
+                    <option value="2" data-product-name="品名2">999992</option>
+                    <option value="3" data-product-name="品名3">999993</option>
+                  </select>
+                  <span id="productNameLabel" class="product-name-label"></span>
+                </div>
+              </div>
+              <div class="form-column form-column-arrival-inline">
+                <label class="filter-label">サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline">
+                <label class="filter-label">サンプル個数</label>
+                <input type="text" placeholder="個数を入力">
+              </div>
+              <div class="form-column form-column-arrival-inline">
+                <label class="filter-label">最終サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline">
+                <label class="filter-label">最終サンプル個数</label>
+                <input type="text" placeholder="個数を入力">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">ステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-column form-column-product-code">
+                <label class="filter-label">商品コード</label>
+                <div class="product-code-inputs">
+                  <select id="productCodeSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="品名1">999991</option>
+                    <option value="2" data-product-name="品名2">999992</option>
+                    <option value="3" data-product-name="品名3">999993</option>
+                  </select>
+                  <span id="productNameLabel" class="product-name-label"></span>
+                </div>
+              </div>
+              <div class="form-column form-column-arrival-inline">
+                <label class="filter-label">サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline">
+                <label class="filter-label">サンプル個数</label>
+                <input type="text" placeholder="個数を入力">
+              </div>
+              <div class="form-column form-column-arrival-inline">
+                <label class="filter-label">最終サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline">
+                <label class="filter-label">最終サンプル個数</label>
+                <input type="text" placeholder="個数を入力">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">ステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-
-            <div class="form-row" style="flex: 0 0 100%;">
-              <label class="filter-label">個数</label>
-              <input type="text" placeholder="個数を入力" style="flex: 0 0 auto; width: calc(3ch + 26px); min-width: calc(3ch + 26px);">
-            </div>
-         
-
           <div id="supplierAddSection" class="form-row supplier-add-section" style="flex-direction: column; align-items: flex-start; gap: 4px;">
-            <div class="label-with-button">
-              <button type="button" id="addSupplierBtn" class="btn-add-image btn-add-image--small" title="商品追加">商品追加</button>
-            </div>
             <div class="supplier-inputs-wrapper">
               <div id="supplierInputsContainer">
                 <div class="supplier-input-item">
@@ -1450,14 +1755,17 @@
         syncPickerFromText();
       }
 
-      // 固定行の「到着日」
+      // 固定行の「到着日」（全行の到着日欄を対象）
       (function () {
-        var textInput = document.getElementById("periodFromOnly");
-        var periodField = textInput ? textInput.closest(".period-range-field") : null;
-        if (!periodField) return;
-        var pickerInput = periodField.querySelector(".period-range-picker");
-        var openBtn = periodField.querySelector(".period-range-calendar-btn");
-        bindFromOnlyCalendar(textInput, pickerInput, openBtn);
+        var periodFields = document.querySelectorAll(".form-column-arrival-inline .period-range-field");
+        if (!periodFields || periodFields.length === 0) return;
+
+        Array.prototype.forEach.call(periodFields, function (periodField) {
+          var textInput = periodField.querySelector(".period-range-input");
+          var pickerInput = periodField.querySelector(".period-range-picker");
+          var openBtn = periodField.querySelector(".period-range-calendar-btn");
+          bindFromOnlyCalendar(textInput, pickerInput, openBtn);
+        });
       })();
 
       // 参考画像：追加・削除（画像クリックでファイル選択）
@@ -1514,238 +1822,6 @@
         });
       })();
 
-      // 商品：追加（2つ目以降は削除可、追加行もオートコンプリート対応）
-      (function () {
-        var container = document.getElementById("supplierInputsContainer");
-        var addBtn = document.getElementById("addSupplierBtn");
-        var supplierAddSection = document.getElementById("supplierAddSection");
-        if (!container || !addBtn) return;
-
-        var supplierRowIndex = 0;
-
-        function updateAddButtonUnderline() {
-          if (!supplierAddSection || !container) return;
-          if (container.children.length > 1) {
-            supplierAddSection.classList.add("has-extra-product-rows");
-          } else {
-            supplierAddSection.classList.remove("has-extra-product-rows");
-          }
-        }
-
-        function createProductRow(rowIndex) {
-          var item = document.createElement("div");
-          item.className = "supplier-input-item";
-          item.style.alignItems = "flex-start";
-          // 行末に区切り線を表示
-          item.style.borderBottom = "1px solid var(--color-border)";
-          item.style.paddingBottom = "6px";
-
-          var row = document.createElement("div");
-          row.className = "supplier-input-row";
-          row.style.display = "flex";
-          row.style.flexDirection = "column";
-          /* .entry-form の --entry-form-section-gap と同じ（種類～個数の上下間隔） */
-          row.style.gap = "8px";
-
-          // 種類（1行目の .form-row と同じ：ラベル幅180px + gap でラジオ左端を揃える）
-          var typeRadioWrap = document.createElement("div");
-          typeRadioWrap.className = "entry-form-type-radio-row";
-
-          var typeLabel = document.createElement("span");
-          typeLabel.textContent = "種類";
-          typeLabel.style.fontWeight = "500";
-          typeLabel.style.width = "var(--entry-form-label-width)";
-          typeLabel.style.flexShrink = "0";
-          typeLabel.style.boxSizing = "border-box";
-          typeLabel.style.paddingTop = "4px";
-          typeLabel.style.lineHeight = "1.35";
-          typeRadioWrap.appendChild(typeLabel);
-
-          function createTypeRadio(value, labelText, checked) {
-            var radioWrap = document.createElement("label");
-            radioWrap.className = "entry-form-radio-option";
-
-            var radio = document.createElement("input");
-            radio.type = "radio";
-            radio.value = value;
-            radio.name = "supplierType[" + rowIndex + "]";
-            radio.checked = !!checked;
-            radioWrap.appendChild(radio);
-            radioWrap.appendChild(document.createTextNode(labelText));
-            return radioWrap;
-          }
-          var radioOptionGap = document.createElement("span");
-          radioOptionGap.className = "entry-form-radio-option-gap";
-          radioOptionGap.setAttribute("aria-hidden", "true");
-          radioOptionGap.textContent = "\u00A0";
-
-          typeRadioWrap.appendChild(createTypeRadio("sample", "サンプル", true));
-          typeRadioWrap.appendChild(radioOptionGap);
-          typeRadioWrap.appendChild(createTypeRadio("finalsample", "最終サンプル", false));
-
-          // 商品コード
-          var productCodeRow = document.createElement("div");
-          productCodeRow.className = "product-code-dynamic-row";
-
-          var productCodeLabel = document.createElement("label");
-          productCodeLabel.textContent = "商品コード";
-          productCodeLabel.className = "filter-label";
-
-          var productCodeInputsWrap = document.createElement("div");
-          productCodeInputsWrap.className = "product-code-inputs";
-
-          var productCodeSelect = document.createElement("select");
-          productCodeSelect.name = "productCode[]";
-          productCodeSelect.id = "productCodeSelectRow_" + rowIndex;
-
-          var emptyOpt = document.createElement("option");
-          emptyOpt.value = "";
-          emptyOpt.textContent = "選択してください";
-          productCodeSelect.appendChild(emptyOpt);
-
-          function addOption(value, productName, labelText) {
-            var opt = document.createElement("option");
-            opt.value = String(value);
-            opt.dataset.productName = productName;
-            opt.textContent = labelText;
-            productCodeSelect.appendChild(opt);
-          }
-
-          addOption("1", "品名1", "999991");
-          addOption("2", "品名2", "999992");
-          addOption("3", "品名3", "999993");
-
-          productCodeInputsWrap.appendChild(productCodeSelect);
-
-          // 商品コード選択時に品名を表示（スマホはセレクト下・折り返しなしはCSS）
-          var productNameSpan = document.createElement("span");
-          productNameSpan.id = "productNameLabelRow_" + rowIndex;
-          productNameSpan.className = "product-name-label";
-
-          function updateProductNameLabel() {
-            var opt = productCodeSelect.options[productCodeSelect.selectedIndex];
-            var name = (opt && opt.dataset && opt.dataset.productName) ? opt.dataset.productName : "";
-            productNameSpan.textContent = name || "";
-            productNameSpan.style.color = name ? "var(--color-text)" : "var(--color-text-muted)";
-          }
-
-          productCodeSelect.addEventListener("change", updateProductNameLabel);
-          updateProductNameLabel();
-
-          productCodeInputsWrap.appendChild(productNameSpan);
-          productCodeRow.appendChild(productCodeLabel);
-          productCodeRow.appendChild(productCodeInputsWrap);
-
-          // 「到着日」
-          var arrivalDateRow = document.createElement("div");
-          arrivalDateRow.style.display = "flex";
-          arrivalDateRow.style.alignItems = "center";
-          arrivalDateRow.style.gap = "8px";
-          arrivalDateRow.style.flexWrap = "nowrap";
-
-          var arrivalLabel = document.createElement("label");
-          arrivalLabel.textContent = "到着日";
-          arrivalLabel.style.fontWeight = "500";
-          arrivalLabel.style.whiteSpace = "nowrap";
-
-          var arrivalPeriodRow = document.createElement("div");
-          arrivalPeriodRow.className = "period-range-row--from-only";
-
-          var arrivalPeriodField = document.createElement("div");
-          arrivalPeriodField.className = "period-range-field";
-
-          var arrivalTextInput = document.createElement("input");
-          arrivalTextInput.type = "text";
-          arrivalTextInput.id = "arrivalFromOnly_" + rowIndex;
-          arrivalTextInput.name = "arrivalDate[]";
-          arrivalTextInput.className = "period-range-input period-range-yyyymmdd";
-          arrivalTextInput.inputMode = "numeric";
-          arrivalTextInput.maxLength = 8;
-          arrivalTextInput.placeholder = "yyyymmdd";
-          arrivalTextInput.autocomplete = "off";
-          arrivalTextInput.setAttribute("aria-label", "日付 From yyyymmdd");
-          arrivalTextInput.title = "8桁で入力（例: 20250309）またはカレンダー";
-
-          var arrivalPicker = document.createElement("input");
-          arrivalPicker.type = "date";
-          arrivalPicker.className = "period-range-picker";
-          arrivalPicker.setAttribute("aria-hidden", "true");
-          arrivalPicker.tabIndex = -1;
-          arrivalPicker.title = "";
-
-          var arrivalBtn = document.createElement("button");
-          arrivalBtn.type = "button";
-          arrivalBtn.className = "period-range-calendar-btn";
-          arrivalBtn.setAttribute("aria-label", "日付をカレンダーで選択");
-          arrivalBtn.textContent = "📅";
-
-          arrivalPeriodField.appendChild(arrivalTextInput);
-          arrivalPeriodField.appendChild(arrivalPicker);
-          arrivalPeriodField.appendChild(arrivalBtn);
-
-          arrivalPeriodRow.appendChild(arrivalPeriodField);
-
-          arrivalDateRow.appendChild(arrivalLabel);
-          arrivalDateRow.appendChild(arrivalPeriodRow);
-
-          // 追加行用：テキスト⇔カレンダーの同期をその場で有効化
-          bindFromOnlyCalendar(arrivalTextInput, arrivalPicker, arrivalBtn);
-
-          // 「個数」
-          var qtyRow = document.createElement("div");
-          qtyRow.style.display = "flex";
-          qtyRow.style.alignItems = "center";
-          qtyRow.style.gap = "8px";
-          qtyRow.style.flexWrap = "nowrap";
-          qtyRow.style.marginBottom = "0";
-
-          var qtyLabel = document.createElement("label");
-          qtyLabel.textContent = "個数";
-          qtyLabel.style.fontWeight = "500";
-          qtyLabel.style.whiteSpace = "nowrap";
-
-          var qtyInput = document.createElement("input");
-          qtyInput.type = "text";
-          qtyInput.name = "quantity[]";
-          qtyInput.id = "quantityInputRow_" + rowIndex;
-          qtyInput.placeholder = "個数を入力";
-          qtyInput.inputMode = "numeric";
-          qtyInput.style.flex = "0 0 auto";
-          // 半角数字3桁程度の幅を確保
-          qtyInput.style.width = "calc(3ch + 26px)";
-          qtyInput.style.minWidth = "calc(3ch + 26px)";
-
-          qtyRow.appendChild(qtyLabel);
-          qtyRow.appendChild(qtyInput);
-
-          var deleteBtn = document.createElement("button");
-          deleteBtn.type = "button";
-          deleteBtn.className = "btn-delete-supplier";
-          deleteBtn.textContent = "×";
-          deleteBtn.addEventListener("click", function () {
-            item.remove();
-            updateAddButtonUnderline();
-          });
-
-          row.appendChild(typeRadioWrap);
-          row.appendChild(productCodeRow);
-          row.appendChild(arrivalDateRow);
-          row.appendChild(qtyRow);
-          item.appendChild(row);
-          item.appendChild(deleteBtn);
-          return item;
-        }
-
-        addBtn.addEventListener("click", function () {
-          var item = createProductRow(supplierRowIndex++);
-          container.appendChild(item);
-          updateAddButtonUnderline();
-          if (window.initAutocomplete) {
-            window.initAutocomplete(item.querySelector(".autocomplete"));
-          }
-        });
-      })();
-
       // 検索条件による検索結果一覧の絞り込み（得意先名入力時に実行）
       (function () {
         var inpTokuisaki = document.getElementById("searchTokuisaki");
@@ -1768,14 +1844,13 @@
         applyFilter();
       })();
 
-      // 商品コード→品名 表示（商品コードコンボボックス変更時）
+      // 商品コード→品名 表示（各行のコンボボックス変更時）
       (function () {
-        var select = document.getElementById("productCodeSelect");
-        var label = document.getElementById("productNameLabel");
-        if (!select || !label) return;
+        var codeRows = document.querySelectorAll(".form-column-product-code .product-code-inputs");
+        if (!codeRows || codeRows.length === 0) return;
 
-        function getProductNameFromSelection() {
-          var opt = select.options[select.selectedIndex];
+        function getProductNameFromSelection(selectEl) {
+          var opt = selectEl.options[selectEl.selectedIndex];
           if (!opt) return "";
 
           // data属性を優先（画面側で対応付けできるため堅牢）
@@ -1786,7 +1861,7 @@
           // フォールバック：autocomplete.js に品名リストがある想定
           try {
             if (typeof lists !== "undefined" && Array.isArray(lists.productName)) {
-              var idx = parseInt(select.value, 10) - 1;
+              var idx = parseInt(selectEl.value, 10) - 1;
               if (!isNaN(idx)) return lists.productName[idx] || "";
             }
           } catch (_) {
@@ -1795,14 +1870,20 @@
           return "";
         }
 
-        function updateLabel() {
-          var name = getProductNameFromSelection();
-          label.textContent = name ? name : "";
-          label.style.color = name ? "var(--color-text)" : "var(--color-text-muted)";
-        }
+        Array.prototype.forEach.call(codeRows, function (rowEl) {
+          var selectEl = rowEl.querySelector("select");
+          var labelEl = rowEl.querySelector(".product-name-label");
+          if (!selectEl || !labelEl) return;
 
-        select.addEventListener("change", updateLabel);
-        updateLabel();
+          function updateLabel() {
+            var name = getProductNameFromSelection(selectEl);
+            labelEl.textContent = name ? name : "";
+            labelEl.style.color = name ? "var(--color-text)" : "var(--color-text-muted)";
+          }
+
+          selectEl.addEventListener("change", updateLabel);
+          updateLabel();
+        });
       })();
 
       // スマホ: 検索条件の折りたたみ開閉
