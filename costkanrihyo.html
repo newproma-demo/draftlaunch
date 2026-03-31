@@ -784,14 +784,19 @@
         display: block;
         border: 1px solid rgba(100, 160, 210, 0.35);
         border-radius: var(--radius-md);
-        padding: 12px 14px;
+        padding: 8px 10px;
         margin-top: 8px;
         background: #90CBFC;
+      }
+      #approvalListArea .result-table tfoot tr.result-table-footer::after {
+        content: "";
+        display: block;
+        clear: both;
       }
       #approvalListArea .result-table tfoot td.result-table-footer-cell {
         display: block;
         border: none;
-        padding: 8px 0;
+        padding: 6px 0;
         white-space: normal;
         text-align: left;
       }
@@ -804,8 +809,8 @@
       /* スマホ：発注合計枚数はラベルと値を横並び表示 */
       #approvalListArea .result-table tfoot tr.result-table-footer td:nth-child(2),
       #approvalListArea .result-table tfoot tr.result-table-footer td:nth-child(3) {
-        display: inline-block;
-        vertical-align: top;
+        display: block;
+        float: left;
       }
       #approvalListArea .result-table tfoot tr.result-table-footer td:nth-child(2) {
         margin-right: 4px;
@@ -815,14 +820,21 @@
       }
       /* スマホ：発注合計金額は「発注合計枚数」の次の行でラベルと値を横並び表示 */
       #approvalListArea .result-table tfoot tr.result-table-footer td:nth-child(4) {
-        display: inline-block;
-        vertical-align: top;
-      }
-      #approvalListArea .result-table tfoot tr.result-table-footer td:nth-child(4) {
+        clear: both;
+        display: block;
+        float: left;
+        width: auto;
+        margin-top: 0px;
         margin-right: 4px;
+        white-space: nowrap;
       }
       #approvalListArea .result-table tfoot tr.result-table-footer td:nth-child(4)::after {
-        content: "";
+        content: "：";
+      }
+      #approvalListArea .result-table tfoot tr.result-table-footer td:nth-child(5) {
+        display: block;
+        float: left;
+        white-space: nowrap;
       }
 
       /* スマホ：固定列・separate 等の PC 専用指定を持たない（従来のカード一覧のみ） */
@@ -1225,10 +1237,26 @@
         background: #FFB86D;
         text-align: right;
       }
-      #approvalListArea .result-table.cost-table-scroll .result-table-footer-sticky {
+      /* フッター行も tbody 同様に左側列を固定し、横スクロール対象にする */
+      #approvalListArea .result-table.cost-table-scroll tfoot tr.result-table-footer td:nth-child(1) {
         position: sticky;
         left: 0;
         z-index: 11;
+        width: calc(var(--cost-col-1) + var(--cost-col-2) + var(--cost-col-3) + var(--cost-col-4));
+        min-width: calc(var(--cost-col-1) + var(--cost-col-2) + var(--cost-col-3) + var(--cost-col-4));
+        max-width: calc(var(--cost-col-1) + var(--cost-col-2) + var(--cost-col-3) + var(--cost-col-4));
+        box-sizing: border-box;
+        box-shadow: 3px 0 6px -3px rgba(0, 0, 0, 0.12);
+        background: #90CBFC;
+      }
+      #approvalListArea .result-table.cost-table-scroll tfoot tr.result-table-footer td:nth-child(2) {
+        position: sticky;
+        left: calc(var(--cost-col-1) + var(--cost-col-2) + var(--cost-col-3) + var(--cost-col-4));
+        z-index: 12;
+        width: calc(var(--cost-col-5) + var(--cost-col-6));
+        min-width: calc(var(--cost-col-5) + var(--cost-col-6));
+        max-width: calc(var(--cost-col-5) + var(--cost-col-6));
+        box-sizing: border-box;
         box-shadow: 3px 0 6px -3px rgba(0, 0, 0, 0.12);
         background: #90CBFC;
       }
@@ -1301,6 +1329,9 @@
     }
     .result-table tfoot td.result-table-footer-numeric {
       text-align: right;
+    }
+    .cost-footer-mobile-colon {
+      display: none;
     }
     @media (min-width: 769px) {
       /* スマホ以外：ドル単価／為替／経費率／円単価／ロイヤリティ／値入率を右寄せ */
@@ -1544,9 +1575,10 @@
                     <tr class="result-table-footer">
                       <td colspan="4" class="result-table-footer-cell result-table-footer-sticky">明細</td>
                       <td colspan="2" class="result-table-footer-cell result-table-footer-sticky">発注合計枚数</td>
-                      <td colspan="8" class="result-table-footer-cell"><span id="costFooterTotalQty">4,500</span> 枚</td>
-                      <td colspan="3" class="result-table-footer-cell result-table-footer-numeric">発注合計金額： <span id="costFooterTotalAmount">¥312,432</span></td>
-                      <td colspan="10" class="result-table-footer-cell result-table-footer-empty"></td>
+                      <td colspan="9" class="result-table-footer-cell"><span id="costFooterTotalQty">4,500</span> 枚</td>
+                      <td colspan="1" class="result-table-footer-cell result-table-footer-sticky">発注合計金額</td>
+                      <td colspan="1" class="result-table-footer-cell result-table-footer-numeric"><span id="costFooterTotalAmount">¥312,432</span></td>
+                      <td colspan="10" class="result-table-footer-cell"></td>
                     </tr>
                   </tfoot>
                 </table>
