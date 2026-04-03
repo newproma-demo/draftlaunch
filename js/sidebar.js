@@ -91,7 +91,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="hinshitsukensazuankensaku.html">品質検査合格書登録</a></li>
-      <li><a href="hinshitsukensagokakushokensaku.html">品質検査合格書決済</a></li>
+      <li><a href="hinshitsukensagokakushokensaku.html">品質検査合格書決裁</a></li>
     </ul>
   </div>
 
@@ -116,8 +116,8 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">Ship依頼書/国内手配書登録</a></li>
-      <li><a href="#">Ship依頼書/国内手配書決済</a></li>
+      <li><a href="shipiraishokokunaitehaishokensaku.html">Ship依頼書/国内手配書登録</a></li>
+      <li><a href="shipiraishokokunaitehaishoshinseikensaku.html">Ship依頼書/国内手配書決裁</a></li>
       <li><a href="#">Ship依頼書送信</a></li>
     </ul>
   </div>
