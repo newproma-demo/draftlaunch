@@ -8,7 +8,9 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <script src="js/autocomplete.js"></script>
   <style>
     .pc-only {
@@ -19,10 +21,10 @@
       display: none;
     }
 
-     body {
+    body {
       display: flex;
       flex-direction: column;
-    } 
+    }
 
     /* #region ヘッダー */
     .header {
@@ -112,6 +114,7 @@
     .header-account_circle:hover {
       opacity: 0.85;
     }
+
     /* #endregion */
 
     /* #region ヘッダー下のメニューとメインコンテンツ */
@@ -122,6 +125,7 @@
       margin-top: 0;
       min-height: calc(100vh - 48px);
     }
+
     /* #endregion */
 
     /* #region メニュー */
@@ -168,7 +172,7 @@
     }
 
     .menu-item:hover .menu-title {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
     }
 
     .arrow {
@@ -225,7 +229,7 @@
       /* 折り返しOK */
       word-break: break-word;
       /* 日本語も途中で折れる */
-      line-height: 1.1; 
+      line-height: 1.1;
       /* 行間を少し広めに */
     }
 
@@ -233,6 +237,7 @@
       text-decoration: none;
       color: inherit;
     }
+
     /* #endregion */
 
     /* #region メインコンテンツ */
@@ -319,7 +324,95 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--color-border);
+      z-index: 2101;
+    }
+
+    .modal-window.show {
+      display: block;
+    }
+
+    .modal-window--newreg {
+      max-width: 420px;
+    }
+
+    .modal-backdrop-newreg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 2100;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-backdrop-newreg.show {
+      display: block;
+    }
+
+    .newreg-modal-message {
+      margin: 0 0 20px;
+      font-size: var(--fs-md, 15px);
+      font-weight: 600;
+      text-align: center;
+      color: var(--color-text);
+    }
+
+    .newreg-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .newreg-modal-actions .btn-fab-new {
+      width: 100%;
+      box-sizing: border-box;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    button.btn-fab-new {
+      font-family: inherit;
+    }
+
+    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    .search-clear-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-search-clear {
+      display: inline-block;
+      /* min-width: 140px; */
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .btn-search-clear:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+
+    /* 画面右下固定アクションボタン群 */
+    .fab-actions {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
       z-index: 2001;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     /* #region レスポンシブ対応 */
@@ -384,6 +477,7 @@
       .filter-row {
         flex-wrap: wrap;
       }
+
       .filter-item {
         flex: 1 1 100%;
       }
@@ -405,21 +499,25 @@
         text-align: left;
         box-sizing: border-box;
       }
+
       .search-toggle-sp-label {
         display: flex;
         align-items: center;
         flex: 1;
         min-width: 0;
       }
+
       .search-toggle-sp-icon {
         margin-right: 8px;
         flex-shrink: 0;
         vertical-align: middle;
       }
+
       .search-toggle-sp::after {
         content: "＋";
         color: var(--color-text-muted);
       }
+
       .search-box {
         display: flex;
         flex-direction: column;
@@ -429,38 +527,46 @@
         border: none;
         box-shadow: none;
       }
-       .search-box-inner {
+
+      .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px 16px;
       }
+
       .search-box.is-open .search-box-inner {
         display: grid;
       }
+
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
       }
 
       /* 検索条件エリア：参照画面と同じ余白・レイアウト */
-      .view-layout-1-group > .content-box:first-of-type {
+      .view-layout-1-group>.content-box:first-of-type {
         padding: 8px;
       }
-      .view-layout-1-group > .content-box:first-of-type .view-layout-title {
+
+      .view-layout-1-group>.content-box:first-of-type .view-layout-title {
         margin: 0 0 12px;
         padding: 0 0 8px;
       }
+
       .search-box-inner .filter-row {
         display: contents;
       }
+
       .search-box-inner .filter-item {
         flex-direction: column;
         align-items: stretch;
         gap: 6px;
         min-width: 0;
       }
+
       .search-box-inner .filter-item .filter-label {
         margin-right: 0;
       }
+
       .search-box-inner .filter-item select,
       .search-box-inner .filter-item input[type="text"] {
         min-width: 0;
@@ -473,12 +579,15 @@
         overflow-x: visible;
         max-height: none;
       }
+
       #approvalListArea .result-table {
         min-width: 0;
       }
+
       #approvalListArea .result-table thead {
         display: none;
       }
+
       #approvalListArea .result-table tbody tr {
         display: block;
         border: 1px solid var(--color-border);
@@ -487,6 +596,7 @@
         margin-bottom: 12px;
         background: var(--color-card);
       }
+
       #approvalListArea .result-table tbody tr::before {
 
         display: block;
@@ -495,24 +605,29 @@
         margin-bottom: 8px;
         border-bottom: 1px solid var(--color-border);
       }
+
       #approvalListArea .result-table tbody td {
         display: block;
         border: none;
         padding: 4px 0;
         white-space: normal;
       }
+
       #approvalListArea .result-table tbody td:nth-child(1)::before {
-        content: "管理番号：";
+        content: "管理No.：";
         font-weight: 600;
       }
+
       #approvalListArea .result-table tbody td:nth-child(2)::before {
         content: "区分：";
         font-weight: 600;
       }
+
       #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "デザイナー：";
+        content: "依頼者：";
         font-weight: 600;
       }
+
       #approvalListArea .result-table tbody td:nth-child(4)::before {
         content: "入力日：";
         font-weight: 600;
@@ -550,9 +665,19 @@
     }
 
     /* ========== イメージ案：3つとも一括表示 ========== */
-    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
     .view-layout-1-group,
-    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout-3 {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
 
     /* 図案情報検索（ページタイトル）専用の余白・線調整 */
     h1.view-layout-title {
@@ -562,7 +687,9 @@
     }
 
     /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
-    .view-layout-1 { padding: 0; }
+    .view-layout-1 {
+      padding: 0;
+    }
 
     /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
     @media (min-width: 769px) {
@@ -578,16 +705,20 @@
       margin-bottom: 20px;
       flex-wrap: wrap;
     }
+
     .filter-item {
       display: flex;
       align-items: center;
       gap: 4px;
       flex-wrap: nowrap;
     }
+
     .filter-row .filter-label {
       margin-right: 4px;
     }
-    .filter-row input[type="text"], .filter-row select {
+
+    .filter-row input[type="text"],
+    .filter-row select {
       padding: 8px 12px;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
@@ -603,15 +734,18 @@
       margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
     }
+
     /* 検索条件と検索結果一覧の間の余白（5px） */
-    .view-layout-1-group > .content-box:first-of-type {
+    .view-layout-1-group>.content-box:first-of-type {
       margin-bottom: 5px;
     }
+
     .content-box h3 {
       margin: 0 0 12px;
       border-bottom: 2px solid var(--color-primary);
       padding-bottom: 8px;
     }
+
     /* 検索結果一覧テーブル（スクロール対応） */
     /* PC/タブレット共通：テーブルエリアに縦横スクロール */
     #approvalListArea {
@@ -620,12 +754,14 @@
       overflow-x: auto;
       overflow-y: auto;
     }
+
     .result-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 8px;
       table-layout: fixed;
     }
+
     .result-table th,
     .result-table td {
       padding: 8px 10px;
@@ -636,38 +772,51 @@
       text-align: left;
       white-space: nowrap;
     }
+
     .result-table th {
       background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       color: #fff;
       font-weight: 600;
       border-top: none;
     }
+
     .result-table tr:nth-child(even) {
       background: var(--color-surface);
     }
+
     .result-table tr:hover {
       background: rgba(0, 134, 50, 0.06);
     }
-    /* 図案管理番号リンク */
+
+    /* 図案管理No.リンク */
     .result-table a {
       color: #0066cc;
       font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 3px;
     }
+
     .result-table a:hover {
       opacity: 0.9;
     }
 
-    /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+    /* 768px以下のカード表示は既存のまま。PC幅でウィンドウが狭いときだけセル内改行し、tr全体が横に伸び続けないようにする */
+    @media (min-width: 769px) {
+
+      .result-table th,
+      .result-table td {
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        vertical-align: top;
+      }
+    }
+
+    /* 画面右下固定 新規登録ボタン */
     .btn-fab-new {
       display: inline-block;
       text-decoration: none;
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 2001;
-      min-width: 140px;
+      /* min-width: 140px; */
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -676,14 +825,21 @@
       cursor: pointer;
       text-align: center;
     }
+
     .btn-fab-new:hover {
       background: var(--color-primary-dark);
       color: #fff;
     }
 
     /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
-    .view-layout-2 { padding: 0; }
-    .view-layout-2 .status-buttons { margin-bottom: 20px; }
+    .view-layout-2 {
+      padding: 0;
+    }
+
+    .view-layout-2 .status-buttons {
+      margin-bottom: 20px;
+    }
+
     .view-layout-2 .list-section-title {
       margin-bottom: 12px;
       padding-bottom: 8px;
@@ -718,10 +874,12 @@
     <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
     <div id="sidebarMount"></div>
     <!-- #endregion -->
-    
-    <!-- 画面右下固定 ボタンなし -->
-    <!--<a href="" class="btn-fab-new">新規登録</a>-->
-    <!-- #endregion -->
+
+    <!-- 画面右下固定 新規登録 -->
+    <div class="fab-actions">
+      <button type="button" class="btn-fab-new" id="btnNewRegistration" aria-haspopup="dialog"
+        aria-controls="modal-window-newreg">新規登録</button>
+    </div>
 
     <!--#region メインコンテンツ  -->
     <div class="content">
@@ -733,7 +891,8 @@
           <!-- 検索条件ボックス -->
           <div class="content-area">
             <div class="search-box" id="searchBox">
-              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
+              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false"
+                aria-controls="searchRowsPanel">
                 <span class="search-toggle-sp-label">
                   <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
                   <span class="search-toggle-sp-text">検索条件を開く</span>
@@ -741,6 +900,10 @@
               </button>
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="filter-row">
+                  <div class="filter-item">
+                    <label>管理No.</label>
+                    <input type="text" placeholder="管理No.を入力">
+                  </div>
                   <div class="filter-item">
                     <span class="filter-label">区分</span>
                     <select id="searchHanbaiKubun">
@@ -751,16 +914,33 @@
                     </select>
                   </div>
                   <div class="filter-item">
+                    <span class="filter-label">依頼者</span>
+                    <select id="tenjikaiSelect">
+                      <option value="">すべて</option>
+                      <option value="">丸眞太郎</option>
+                      <option value="">丸眞花子</option>
+                      <option value="">丸眞桜子</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
                     <label class="filter-label manufacturer-label">メーカー</label>
                     <div class="manufacturer-row input-actions">
                       <div class="autocomplete">
-                        <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
+                        <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索"
+                          id="searchItem">
                         <div class="autocomplete-dropdown"></div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="filter-row">
+                  <div class="filter-item">
+                    <label class="filter-label">得意先</label>
+                    <select id="productCodeSelect">
+                      <option value="">選択してください</option>
+                      <option value="1" data-product-name="得意先1">得意先名１</option>
+                      <option value="2" data-product-name="得意先2">得意先名２</option>
+                      <option value="3" data-product-name="得意先3">得意先名３</option>
+                    </select>
+                  </div>
                   <div class="filter-item">
                     <label class="filter-label">商品コード</label>
                     <select id="productCodeSelect">
@@ -783,6 +963,9 @@
                     <label>品名</label>
                     <input type="text" placeholder="品名を入力">
                   </div>
+                  <div class="search-clear-wrapper">
+                    <button type="button" class="btn-search-clear" id="searchClearBtn">クリア</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -796,76 +979,325 @@
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 15%;">管理番号</th>
-                      <th style="width: 25%;">区分</th>
-                      <th style="width: 25%;">デザイナー</th>
-                      <th style="width: 35%;">入力日</th>
+                      <th style="width: 15%;">管理No.</th>
+                      <th style="width: 20%;">区分</th>
+                      <th style="width: 20%;">依頼者</th>
+                      <th style="width: 70%;">入力日</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- 50行のサンプルデータ（図案管理番号はリンク） -->
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-001</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-002</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-003</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-004</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-005</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
+                    <!-- 50行のサンプルデータ（図案管理No.はリンク） -->
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-001</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-002</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-003</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-004</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-005</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
 
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-001</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-002</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-003</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-004</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-005</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-001</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-002</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-003</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-004</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-005</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
 
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-001</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-002</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-003</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-004</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-005</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-001</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-002</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-003</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-004</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-005</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
 
                     <!-- 以降は番号だけ変えたダミー行 -->
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-011</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-012</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-013</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-014</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-015</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-011</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-012</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-013</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-014</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-015</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
 
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-011</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-012</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-013</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-014</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-015</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-011</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-012</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-013</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-014</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-015</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
 
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-011</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-012</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-013</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-014</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-015</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-011</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-012</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-013</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-014</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-015</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
 
                     <!-- 31〜50行目 -->
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-016</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-017</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-018</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-019</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-020</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-016</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-017</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-018</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-019</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-020</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
 
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-016</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-017</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-018</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-019</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
-                    <tr><td><a href="shipiraishotorokubetchu.html">BTC-2026-020</a></td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td></tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-016</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-017</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-018</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-019</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokubetchu.html">BTC-2026-020</a></td>
+                      <td>Ship依頼書（別注）</td>
+                      <td>丸眞桜子</td>
+                      <td>2026/01/31</td>
+                    </tr>
 
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-016</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-017</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-018</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-019</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    <tr><td><a href="kokunaitehaishotoroku.html">JPN-2026-020</a></td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td></tr>
-                    
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-021</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-022</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-023</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-024</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
-                    <tr><td><a href="shipiraishotorokuteiban.html">TBN-2026-025</a></td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td></tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-016</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-017</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-018</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-019</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
+                    <tr>
+                      <td><a href="kokunaitehaishotoroku.html">JPN-2026-020</a></td>
+                      <td>国内手配書</td>
+                      <td>丸眞花子</td>
+                      <td>2026/03/15</td>
+                    </tr>
 
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-021</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-022</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-023</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-024</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
+                    <tr>
+                      <td><a href="shipiraishotorokuteiban.html">TBN-2026-025</a></td>
+                      <td>Ship依頼書（定番）</td>
+                      <td>丸眞太郎</td>
+                      <td>2026/01/01</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -876,13 +1308,35 @@
       </div>
     </div>
 
-    <!--#region モーダル(通知のリンク)  -->
-    <div id="modal-window" class="modal-window"> 
+    <!--#region 新規登録：様式選択モーダル  -->
+    <div id="modalBackdropNewreg" class="modal-backdrop-newreg" aria-hidden="true"></div>
+    <div id="modal-window-newreg" class="modal-window modal-window--newreg" role="dialog" aria-modal="true"
+      aria-labelledby="newregModalTitle" aria-hidden="true">
+      <p id="newregModalTitle" class="newreg-modal-message">様式を選択してください。</p>
+      <div class="newreg-modal-actions">
+        <a class="btn-fab-new" href="shipiraishotorokuteiban.html">Ship依頼書（定番）</a>
+        <a class="btn-fab-new" href="shipiraishotorokubetchu.html">Ship依頼書（別注）</a>
+        <a class="btn-fab-new" href="kokunaitehaishotoroku.html">国内手配書</a>
+      </div>
     </div>
     <!-- #endregion -->
 
     <script src="js/sidebar.js"></script>
     <script>
+      // スマホ: 検索条件の折りたたみ開閉
+      (function () {
+        var btn = document.getElementById("searchToggleSp");
+        var box = document.getElementById("searchBox");
+        if (btn && box) {
+          btn.addEventListener("click", function () {
+            var isOpen = box.classList.toggle("is-open");
+            btn.setAttribute("aria-expanded", isOpen);
+            var textEl = btn.querySelector(".search-toggle-sp-text");
+            if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+          });
+        }
+      })();
+
       function loadSharedSidebar() {
         const mount = document.getElementById('sidebarMount');
         if (!mount) return;
@@ -941,7 +1395,43 @@
       }
 
       loadSharedSidebar();
-      
+
+      (function () {
+        var btn = document.getElementById('btnNewRegistration');
+        var modal = document.getElementById('modal-window-newreg');
+        var backdrop = document.getElementById('modalBackdropNewreg');
+        if (!btn || !modal || !backdrop) return;
+
+        function openNewregModal() {
+          backdrop.classList.add('show');
+          modal.classList.add('show');
+          backdrop.setAttribute('aria-hidden', 'false');
+          modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeNewregModal() {
+          backdrop.classList.remove('show');
+          modal.classList.remove('show');
+          backdrop.setAttribute('aria-hidden', 'true');
+          modal.setAttribute('aria-hidden', 'true');
+          btn.focus();
+        }
+
+        btn.addEventListener('click', function () {
+          openNewregModal();
+        });
+
+        backdrop.addEventListener('click', function () {
+          closeNewregModal();
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && modal.classList.contains('show')) {
+            closeNewregModal();
+          }
+        });
+      })();
+
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
 
@@ -1021,19 +1511,6 @@
         applyFilter();
       })();
 
-      // スマホ: 検索条件の折りたたみ開閉
-      (function () {
-        var btn = document.getElementById("searchToggleSp");
-        var box = document.getElementById("searchBox");
-        if (btn && box) {
-          btn.addEventListener("click", function () {
-            var isOpen = box.classList.toggle("is-open");
-            btn.setAttribute("aria-expanded", isOpen);
-            var textEl = btn.querySelector(".search-toggle-sp-text");
-            if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-          });
-        }
-      })();
     </script>
 </body>
 

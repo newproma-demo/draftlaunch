@@ -503,7 +503,7 @@
       }
       /* 先頭列はリンクのため、2列目以降にラベルを付与 */
       #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "管理番号：";
+        content: "管理No.：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(3)::before {
@@ -511,7 +511,7 @@
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "デザイナー：";
+        content: "依頼者：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(5)::before {
@@ -519,7 +519,7 @@
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "承認結果：";
+        content: "ステータス：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(7)::before {
@@ -657,7 +657,7 @@
     .result-table tr:hover {
       background: rgba(0, 134, 50, 0.06);
     }
-    /* 図案管理番号リンク */
+    /* 図案管理No.リンク */
     .result-table a {
       color: #0066cc;
       font-weight: 600;
@@ -686,6 +686,33 @@
       text-align: center;
     }
     .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    .search-clear-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-search-clear {
+      display: inline-block;
+      /* min-width: 140px; */
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .btn-search-clear:hover {
       background: var(--color-primary-dark);
       color: #fff;
     }
@@ -751,6 +778,10 @@
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="filter-row">
                   <div class="filter-item">
+                    <label>管理No.</label>
+                    <input type="text" placeholder="管理No.を入力">
+                  </div>                  
+                  <div class="filter-item">
                     <span class="filter-label">区分</span>
                     <select id="searchHanbaiKubun">
                       <option value="">すべて</option>
@@ -760,20 +791,37 @@
                     </select>
                   </div>
                   <div class="filter-item">
+                    <span class="filter-label">依頼者</span>
+                    <select id="tenjikaiSelect">
+                      <option value="">すべて</option>
+                      <option value="">丸眞太郎</option>
+                      <option value="">丸眞花子</option>
+                      <option value="">丸眞桜子</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
                     <label class="filter-label manufacturer-label">メーカー</label>
                     <div class="manufacturer-row input-actions">
                       <div class="autocomplete">
-                        <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
+                        <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索"
+                          id="searchItem">
                         <div class="autocomplete-dropdown"></div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="filter-row">
+                  <div class="filter-item">
+                    <label class="filter-label">得意先</label>
+                    <select id="productCodeSelect">
+                      <option value="">すべて</option>
+                      <option value="1" data-product-name="得意先1">得意先名１</option>
+                      <option value="2" data-product-name="得意先2">得意先名２</option>
+                      <option value="3" data-product-name="得意先3">得意先名３</option>
+                    </select>
+                  </div>
                   <div class="filter-item">
                     <label class="filter-label">商品コード</label>
                     <select id="productCodeSelect">
-                      <option value="">選択してください</option>
+                      <option value="">すべて</option>
                       <option value="1" data-product-name="商品名1">999991</option>
                       <option value="2" data-product-name="商品名2">999992</option>
                       <option value="3" data-product-name="商品名3">999993</option>
@@ -782,7 +830,7 @@
                   <div class="filter-item">
                     <label class="filter-label">品番</label>
                     <select id="productCodeSelect">
-                      <option value="">選択してください</option>
+                      <option value="">すべて</option>
                       <option value="1" data-product-name="">888881</option>
                       <option value="2" data-product-name="">888882</option>
                       <option value="3" data-product-name="">888883</option>
@@ -794,12 +842,15 @@
                   </div>
                   <div class="filter-item">
                     <span class="filter-label">ステータス</span>
-                    <select id="searchStatus">
+                    <select id="tenjikaiSelect">
                       <option value="">すべて</option>
-                      <option value="申請中">申請中</option>
-                      <option value="承認済">承認済</option>
-                      <option value="差戻し">差戻し</option>
+                      <option value="">承認待ち</option>
+                      <option value="">承認済み</option>
+                      <option value="">差戻し</option>
                     </select>
+                  </div>
+                  <div class="search-clear-wrapper">
+                    <button type="button" class="btn-search-clear" id="searchClearBtn">クリア</button>
                   </div>
                 </div>
               </div>
@@ -815,76 +866,76 @@
                   <thead>
                     <tr>
                       <th style="width: 10%;"></th>
-                      <th style="width: 15%;">管理番号</th>
+                      <th style="width: 15%;">管理No.</th>
                       <th style="width: 15%;">区分</th>
-                      <th style="width: 20%;">デザイナー</th>
+                      <th style="width: 20%;">依頼者</th>
                       <th style="width: 15%;">入力日</th>
-                      <th style="width: 10%;">承認結果</th>
+                      <th style="width: 10%;">ステータス</th>
                       <th style="width: 15%;">結果登録日</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- 50行のサンプルデータ（図案管理番号はリンク） -->
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-001</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <!-- 50行のサンプルデータ（図案管理No.はリンク） -->
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-001</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-002</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認済</td><td>2026/03/01</td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-003</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>差戻し</td><td>2026/03/02</td></tr>
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-004</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-004</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-005</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認済</td><td>2026/03/03</td></tr>
 
                     <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-001</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>差戻し</td><td>2026/03/04</td></tr>
-                    <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-002</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-002</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-003</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認済</td><td>2026/03/05</td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-004</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>差戻し</td><td>2026/03/06</td></tr>
-                    <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-005</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-005</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認待ち</td><td></td></tr>
 
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-001</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認済</td><td>2026/03/05</td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-002</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>差戻し</td><td>2026/03/06</td></tr>
-                    <tr><td><a href="kokunaitehaishokessai.html">結果登録</a></td><td>JPN-2026-003</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="kokunaitehaishokessai.html">結果登録</a></td><td>JPN-2026-003</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-004</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認済</td><td>2026/03/07</td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-005</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>差戻し</td><td>2026/03/08</td></tr>
 
                     <!-- 以降は番号だけ変えたダミー行 -->
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-011</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-011</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-013</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認済</td><td>2026/03/09</td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-014</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>差戻し</td><td>2026/03/10</td></tr>
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-015</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-015</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
 
                     <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-011</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認済</td><td>2026/03/11</td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-012</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>差戻し</td><td>2026/03/12</td></tr>
-                    <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-013</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-013</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-014</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認済</td><td>2026/03/13</td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-015</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>差戻し</td><td>2026/03/14</td></tr>
 
-                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-011</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-011</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-012</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認済</td><td>2026/03/01</td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果登録</a></td><td>JPN-2026-013</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>差戻し</td><td>2026/03/02</td></tr>
-                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-014</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-014</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-015</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認済</td><td>2026/03/03</td></tr>
 
                     <!-- 31〜50行目 -->
                     <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-016</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>差戻し</td><td>2026/03/04</td></tr>
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-017</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-017</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-018</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認済</td><td>2026/03/05</td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-019</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>差戻し</td><td>2026/03/06</td></tr>
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-020</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-020</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
 
                     <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-016</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認済</td><td>2026/03/07</td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-017</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>差戻し</td><td>2026/03/08</td></tr>
-                    <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-018</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-018</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果照会</a></td><td>BTC-2026-019</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>承認済</td><td>2026/03/09</td></tr>
                     <tr><td><a href="shipiraishokessaibetchu.html">結果登録</a></td><td>BTC-2026-020</td><td>Ship依頼書（別注）</td><td>丸眞桜子</td><td>2026/01/31</td><td>差戻し</td><td>2026/03/10</td></tr>
 
-                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-016</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-016</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-017</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認済</td><td>2026/03/11</td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果登録</a></td><td>JPN-2026-018</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>差戻し</td><td>2026/03/12</td></tr>
-                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-019</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-019</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="kokunaitehaishokessai.html">結果照会</a></td><td>JPN-2026-020</td><td>国内手配書</td><td>丸眞花子</td><td>2026/03/15</td><td>承認済</td><td>2026/03/13</td></tr>
                     
                     <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-021</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>差戻し</td><td>2026/03/14</td></tr>
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-022</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-022</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-023</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認済</td><td>2026/03/11</td></tr>
                     <tr><td><a href="shipiraishokessaiteiban.html">結果登録</a></td><td>TBN-2026-024</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>差戻し</td><td>2026/03/12</td></tr>
-                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-025</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>申請中</td><td></td></tr>
+                    <tr><td><a href="shipiraishokessaiteiban.html">結果照会</a></td><td>TBN-2026-025</td><td>Ship依頼書（定番）</td><td>丸眞太郎</td><td>2026/01/01</td><td>承認待ち</td><td></td></tr>
 
                   </tbody>
                 </table>
@@ -903,6 +954,20 @@
 
     <script src="js/sidebar.js"></script>
     <script>
+      // スマホ: 検索条件の折りたたみ開閉
+      (function () {
+        var btn = document.getElementById("searchToggleSp");
+        var box = document.getElementById("searchBox");
+        if (btn && box) {
+          btn.addEventListener("click", function () {
+            var isOpen = box.classList.toggle("is-open");
+            btn.setAttribute("aria-expanded", isOpen);
+            var textEl = btn.querySelector(".search-toggle-sp-text");
+            if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+          });
+        }
+      })();
+
       function loadSharedSidebar() {
         const mount = document.getElementById('sidebarMount');
         if (!mount) return;
@@ -1041,19 +1106,6 @@
         applyFilter();
       })();
 
-      // スマホ: 検索条件の折りたたみ開閉
-      (function () {
-        var btn = document.getElementById("searchToggleSp");
-        var box = document.getElementById("searchBox");
-        if (btn && box) {
-          btn.addEventListener("click", function () {
-            var isOpen = box.classList.toggle("is-open");
-            btn.setAttribute("aria-expanded", isOpen);
-            var textEl = btn.querySelector(".search-toggle-sp-text");
-            if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-          });
-        }
-      })();
     </script>
 </body>
 
