@@ -388,6 +388,8 @@ function initAutocomplete(box) {
   box.dataset.autocompleteInitialized = "1"
 }
 
+// 他画面の select option 生成などで参照できるよう公開する
+window.AUTOCOMPLETE_LISTS = lists
 window.initAutocomplete = initAutocomplete
 
 document.addEventListener("DOMContentLoaded", () => {
