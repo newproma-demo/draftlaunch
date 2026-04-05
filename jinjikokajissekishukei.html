@@ -1,0 +1,3532 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+<style>
+    :root {
+      --font-size-base: 16pt;
+      --fs-base: 16pt;
+      --fs-sm: 14pt;
+      --fs-xs: 12pt;
+      --fs-lg: 18pt;
+      --fs-xl: 20pt;
+      --fs-content:14pt;
+      --color-primary: #008632;
+      --color-primary-dark: #006C29;
+      --color-primary-light: #00a840;
+      --color-surface: #f8faf9;
+      --color-tanto-hover: #47bdc5;
+      --color-card: #ffffff;
+      --color-border: #e2e8e6;
+      --color-text: #1a2e26;
+      --color-text-muted: #5c6f66;
+      --shadow-sm: 0 1px 3px rgba(0, 134, 50, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 134, 50, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 134, 50, 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-sans: "Outfit", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+      --jk-row-total-bg: #e8edf5;
+      --jk-row-total-bg-accent: #d6e0f2;
+    }
+
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+    body {
+      margin: 0;
+      font-size: var(--font-size-base);
+      font-family: var(--font-sans);
+      background: var(--color-surface);
+      color: var(--color-text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* #region ヘッダー */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      font-size: var(--font-size-base);
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      font-size: var(--fs-content);
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    /* サイドバー表示時はトグルボタンに被らないよう左余白を確保 */
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    .content > h2 {
+      margin: 0 0 20px 0;
+      font-size: var(--fs-lg);
+      font-weight: 600;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+    }
+
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .content-box .search-box {
+      flex-shrink: 0;
+      margin: 0 0 24px 0;
+    }
+
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .page-title h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    /* #region 検索条件ボックス（モダンカード） */
+    .search-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 10px 14px;
+      margin: 0 0 12px 0;
+      padding: 12px 14px;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    /* スマホ用「検索条件を開く」ボタン（PCでは非表示） */
+    .search-toggle-sp {
+      display: none;
+    }
+
+    /* PCでは search-box-inner は常に表示（flexで検索行を並べる） */
+    .search-box .search-box-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 14px;
+      flex: 1 1 100%;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .search-box .search-box-inner > .search-row {
+      flex: 0 1 auto;
+      width: fit-content;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .search-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .search-row-inline {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      align-items: center;
+      column-gap: 6px;
+      row-gap: 4px;
+      min-width: 0;
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .search-row-inline > label {
+      padding-top: 0;
+    }
+
+    .search-row label {
+      margin: 0;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .search-row select,
+    .search-row input {
+      min-width: 220px;
+      padding: 10px 12px;
+      font-size: var(--fs-xs);
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-row select:hover,
+    .search-row input:hover {
+      border-color: #b0bdb5;
+    }
+
+    .search-row select:focus,
+    .search-row input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    #exhibitionFilter,
+    #exhibitionFilter option,
+    #exhibitionFilter optgroup {
+      font-size: var(--fs-xs);
+      font-family: inherit;
+    }
+
+    .search-row input::placeholder {
+      color: #9ca89f;
+    }
+
+    /* 初回入荷日: hatchujokyokanri 契約納期と同じ入力スタイル */
+    .period-range-row {
+      align-items: center;
+      flex: 0 1 auto;
+      max-width: fit-content;
+    }
+
+    .period-range-field {
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      min-width: 0;
+    }
+
+    .period-range-picker {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .period-range-field .period-range-calendar-btn {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      flex-shrink: 0;
+      padding: 4px 6px;
+      font-size: 0.95rem;
+      line-height: 1;
+      cursor: pointer;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--color-text);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 134, 50, 0.06);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .period-range-field .period-range-calendar-btn:hover {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(0, 134, 50, 0.25);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 134, 50, 0.1);
+    }
+
+    .period-range-input.period-range-yyyymmdd.period-range-invalid {
+      border-color: #c62828;
+      box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.15);
+    }
+
+    .period-range-inputs {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      min-width: 0;
+    }
+
+    .search-row .period-range-input {
+      min-width: 160px;
+      padding: 10px 12px;
+      font-size: var(--fs-xs);
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-row .period-range-input:hover {
+      border-color: #b0bdb5;
+    }
+
+    .search-row .period-range-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .period-range-field .period-range-input.period-range-yyyymmdd {
+      --period-pad-left: 7px;
+      --period-btn-area: 2.6em;
+      box-sizing: border-box;
+      width: calc(8ch + var(--period-pad-left) + var(--period-btn-area) + 2px);
+      min-width: calc(8ch + var(--period-pad-left) + var(--period-btn-area) + 2px);
+      max-width: 100%;
+      padding: 6px var(--period-pad-left);
+      padding-right: var(--period-btn-area);
+      font-variant-numeric: tabular-nums;
+      overflow: visible;
+    }
+
+    .period-range-sep {
+      color: var(--color-text-muted);
+      font-weight: 500;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .type-toggle-inline {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rate-toggle-group {
+      display: inline-flex;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--color-card);
+    }
+
+    .rate-toggle {
+      padding: 8px 10px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: var(--fs-xs);
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .search-box .rate-toggle {
+      padding: 6px 10px;
+    }
+
+    .rate-toggle.is-active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* 検索ボタン */
+    .search-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-button {
+      padding: 6px 14px;
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .search-button:hover { background: var(--color-primary-dark); }
+
+    .search-button.secondary {
+      background: #f3f4f6;
+      color: var(--color-text);
+      border: 1px solid #d1d5db;
+    }
+
+    .search-button.secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .search-button:active {
+      transform: translateY(1px);
+    }
+
+    /* #endregion */
+
+    /* #region 進捗率グラフ（全期 円グラフ） */
+    .progress-chart-section {
+      margin-top: 8px;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+    }
+
+    .progress-chart-area {
+      flex: 1;
+      min-height: 0;
+      padding: 24px;
+      background: var(--color-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-sizing: border-box;
+    }
+
+    .progress-chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .progress-chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .progress-chart-sub {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .progress-last-updated {
+      color: var(--color-text-muted);
+    }
+
+    .overall-badge {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .overall-badge #overallPercent {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .timeline-chart-rows {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 20px;
+      width: 100%;
+      margin-top: 8px;
+      align-items: start;
+      flex: 0 0 auto;
+      min-height: auto;
+      grid-auto-rows: minmax(320px, auto);
+      align-content: start;
+    }
+
+    .pie-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      padding: 12px 14px 16px;
+      box-sizing: border-box;
+      height: auto;
+      min-height: 320px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.22s ease, border-color 0.18s ease;
+    }
+
+    .pie-card:hover {
+      border-color: var(--pie-accent, var(--color-primary));
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+      transform: translateY(-3px);
+    }
+
+    .pie-card-header {
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 6px;
+    }
+
+    .pie-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .pie-card-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 2px;
+    }
+
+    .pie-card-body-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 10px;
+    }
+
+    .pie-chart-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 170px;
+      aspect-ratio: 1;
+    }
+
+    .pie-center-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 50%;
+      height: 50%;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .pie-center-icon img {
+      width: 85%;
+      height: 85%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .pie-chart-wrap svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .pie-bg {
+      fill: none;
+      stroke: #e5e7eb;
+      stroke-width: 14;
+    }
+
+    .pie-fill {
+      fill: none;
+      stroke: var(--color-primary);
+      stroke-width: 14;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .pie-metric {
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .pie-metric-percent {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-primary);
+    }
+
+    .pie-metric-caption {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    .pie-metric-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+    }
+
+    .pie-metric-hint::before {
+      content: "⏱";
+      font-size: 12px;
+      line-height: 1;
+      opacity: 0.85;
+    }
+
+    /* --- 詳細モーダル（グラフカード用） --- */
+    .manifest-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 12000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    .manifest-modal-overlay.open {
+      display: flex;
+    }
+
+    .manifest-modal {
+      width: min(1100px, 98vw);
+      max-height: min(92vh, 1040px);
+      overflow: auto;
+      overflow-x: hidden;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .manifest-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .manifest-modal-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .manifest-modal-close {
+      appearance: none;
+      border: 1px solid var(--color-border);
+      background: var(--color-card);
+      color: var(--color-text-muted);
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .manifest-modal-close:hover {
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .manifest-modal-body {
+      padding: 18px 20px 22px;
+      display: grid;
+      grid-template-columns: 140px minmax(90px, auto) 1fr;
+      gap: 12px 14px; /* 行間, 列間 */
+      align-items: start;
+    }
+
+    .manifest-modal-icon {
+      width: 140px;
+      height: 140px;
+      border-radius: 18px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .manifest-modal-icon img {
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .manifest-modal-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+      align-self: center; /* 説明エリアと上下中央揃え */
+    }
+
+    .manifest-modal-percent {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .manifest-modal-caption {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    .manifest-modal-desc {
+      grid-column: 3 / 4;
+      margin-top: 0;
+      padding-top: 0;
+      color: var(--color-text);
+      font-size: 14px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
+    .manifest-yearbox {
+      grid-column: 1 / -1;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .manifest-yearbar-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 28px; /* マーカー行分 */
+      box-sizing: border-box;
+    }
+
+    .manifest-yearbar {
+      position: relative;
+      display: flex;
+      width: 100%;
+      height: 42px;
+      border: 3px solid var(--color-primary);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-sizing: border-box;
+    }
+
+    .manifest-yearbar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: rgba(0, 134, 50, 0.18);
+      z-index: 0;
+      transition: width 0.6s ease;
+    }
+
+    .manifest-yearcell {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--color-text-muted);
+      border-right: 2px solid rgba(0,0,0,0.08);
+      min-width: 0;
+      user-select: none;
+      background: transparent;
+      padding: 0 2px;
+    }
+
+    .manifest-yearcell:last-child {
+      border-right: none;
+    }
+
+    .manifest-markers {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .manifest-marker {
+      position: absolute;
+      transform: translateX(-100%);
+      text-align: right;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+
+    .manifest-marker.is-crowded {
+      transform: translateX(-100%) translateY(-10px);
+    }
+
+    .manifest-marker.is-crowded::after {
+      height: 12px;
+    }
+
+    .manifest-marker::after {
+      content: "";
+      display: block;
+      width: 2px;
+      height: 16px;
+      background: currentColor;
+      margin: 3px 0 0 auto;
+      border-radius: 2px;
+      opacity: 0.9;
+    }
+
+    .manifest-marker.is-100::after {
+      display: none;
+    }
+
+    /* 100% は年別バー右端の横位置（バー内）に表示 */
+    .manifest-marker.is-100-outside {
+      transform: translate(-100%, -50%);
+      text-align: right;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .manifest-current {
+      position: absolute;
+      top: 10px;
+      transform: translateX(-50%);
+      font-size: 16px;
+      color: var(--color-primary);
+      font-weight: 900;
+      pointer-events: none;
+    }
+    /* #endregion */
+
+    .content-section {
+      flex: 1;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    .dashboard-box {
+      display: flex;
+      flex-direction: column;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+
+    .shinko-box {
+      max-height: 90vh;
+      height: auto;
+    }
+
+    .dashboard-box h2 {
+      margin: 0;
+      padding: 16px 20px;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+      background: #fafbfa;
+    }
+
+    .search-box h2 {
+      margin: 0 0 16px 0;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-border);
+      width: 100%;
+    }
+
+    .shinko-table-wrapper {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .shinko-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-card);
+      font-size: var(--fs-xs);
+    }
+
+    .shinko-table th {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .shinko-table th:first-child {
+      width: 40px;
+    }
+
+    .shinko-table th:last-child {
+      min-width: 480px;
+    }
+
+    .shinko-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: middle;
+    }
+
+    .shinko-table tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    .shinko-table tbody tr:nth-child(even) {
+      background: #fafbfa;
+    }
+
+    .shinko-table tbody tr:hover {
+      background: #e8f5e9;
+    }
+
+    .order-row td:first-child {
+      vertical-align: middle;
+    }
+
+    .shinko-table .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .shinko-table .item-thumb {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      object-fit: cover;
+      border-radius: 3px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      display: block;
+    }
+
+    .shinko-table .item-cell span {
+      line-height: 1.2;
+    }
+
+    .shinko-table .item-thumb:hover {
+      opacity: 0.85;
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9999;
+    }
+
+    .image-modal.active {
+      display: block;
+    }
+
+    .image-modal .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .image-modal.active .modal-backdrop {
+      opacity: 1;
+    }
+
+    .image-modal .modal-wrapper {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .image-modal .modal-wrapper img {
+      position: absolute;
+      border-radius: 8px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+      transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    }
+
+
+    /* モーダル背景 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      z-index: 2000;
+    }
+
+    /* モーダル本体 */
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      padding: 24px;
+      width: 85%;
+      max-width: 720px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2001;
+    }
+
+    .modal-window h3 {
+      margin: 0 0 16px 0;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--fs-lg);
+      font-weight: 600;
+    }
+
+    .modal-footer {
+      text-align: right;
+      margin-top: 20px;
+    }
+
+    .modal-close {
+      padding: 10px 20px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .modal-close:hover {
+      box-shadow: 0 4px 12px rgba(0, 134, 50, 0.25);
+    }
+
+    .modal-close:active {
+      transform: translateY(1px);
+    }
+
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--fs-sm);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .modal-table th {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .modal-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-table tbody tr:nth-child(even) {
+      background: #fafbfa;
+    }
+
+    .modal-table tbody tr:hover {
+      background: #e8f5e9;
+    }
+
+    .modal-table th,
+    .modal-table td {
+      border: 1px solid var(--color-border);
+    }
+
+    /* ガントチャート（モダン） */
+    .timeline-wrapper {
+      position: relative;
+      margin: 0;
+      width: 100%;
+      min-width: 520px;
+      padding: 8px 0;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 47%;
+      left: 32px;
+      right: 32px;
+      height: 4px;
+      background: linear-gradient(90deg, #e2e8e6 0%, #d0d8d4 50%, #e2e8e6 100%);
+      border-radius: 4px;
+      z-index: 1;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+      gap: 4px;
+    }
+
+    .step {
+      text-align: center;
+      width: auto;
+      max-width: 64px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .defaultnode-btn,
+    .completednode-btn,
+    .nearingnode-btn,
+    .notcompletednode-btn {
+      width: 44px;
+      height: 44px;
+      font-size: 12px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .defaultnode-btn:hover,
+    .completednode-btn:hover,
+    .nearingnode-btn:hover,
+    .notcompletednode-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .defaultnode-btn {
+      background: linear-gradient(145deg, #e8ecf0, #d0d6de);
+      color: #5c6f66;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+
+    .completednode-btn {
+      background: linear-gradient(145deg, #1e88e5, #1565c0);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(30, 136, 229, 0.4);
+    }
+
+    .nearingnode-btn {
+      background: linear-gradient(145deg, #fdd835, #f9a825);
+      color: #5d4200;
+      box-shadow: 0 2px 6px rgba(253, 216, 53, 0.35);
+    }
+
+    .notcompletednode-btn {
+      background: linear-gradient(145deg, #e53935, #c62828);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(229, 57, 53, 0.35);
+    }
+
+    .plan {
+      font-size: 11px;
+      margin-bottom: 2px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .actual {
+      font-size: 11px;
+      margin-top: 2px;
+      color: var(--color-text-muted);
+      opacity: 0.9;
+    }
+
+    /* #endregion */
+
+    /* #region レスポンシブ対応 */
+    /* 画面の高さが750px以下ならロゴを非表示 */
+    @media (max-height: 750px) {
+      .sidebar-logo-proma {
+        display: none;
+      }
+    }
+
+    /* 画面の高さが600px以下ならロゴを非表示 */
+    @media (max-height: 600px) {
+      .sidebar-logo-marushin {
+        display: none;
+      }
+    }
+
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 768px) {
+      .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        min-height: 0;
+      }
+
+      .page-title h2 {
+        font-size: 18px;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .search-toggle-sp-text {
+        font-size: 12pt;
+      }
+
+      .search-toggle-sp::after {
+        content: "＋";
+        font-size: 1.2em;
+        color: var(--color-text-muted);
+      }
+
+      .search-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      .search-box .search-box-inner {
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 8px 0 0;
+        gap: 8px 12px;
+      }
+
+      .search-box.is-open .search-box-inner {
+        display: flex;
+      }
+
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
+      }
+
+      .search-box .search-box-inner > .search-row {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .search-box .search-box-inner .search-row-inline {
+        width: 100%;
+        max-width: 100%;
+        grid-template-columns: max-content 1fr;
+      }
+
+      /* 人事考課：集計条件ツールバーをスマホで縦並び */
+      .search-box.jk-conditions-wrap .search-box-inner .jk-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px 14px;
+      }
+
+      .search-box.jk-conditions-wrap .jk-toolbar .jk-field,
+      .search-box.jk-conditions-wrap .jk-toolbar .jk-field--sort {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .search-box.jk-conditions-wrap .jk-toolbar .jk-toolbar-tail {
+        margin-left: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box.jk-conditions-wrap .jk-toolbar select {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .search-box.jk-conditions-wrap .jk-field--sort select {
+        max-width: 100%;
+      }
+
+      .search-row {
+        min-width: 0;
+      }
+
+      .search-row label {
+        font-size: var(--fs-xs);
+        flex-shrink: 0;
+      }
+
+      .search-row select,
+      .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .period-range-row.period-range-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .period-range-inputs {
+        width: 100%;
+      }
+
+      .search-row .period-range-input {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .period-range-field {
+        display: block;
+        width: 100%;
+      }
+
+      .period-range-field .period-range-input.period-range-yyyymmdd {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .type-toggle-inline {
+        width: 100%;
+      }
+
+      .search-actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .search-button {
+        width: auto;
+        min-width: 80px;
+      }
+
+
+      .content-section {
+        display: flex;
+        gap: 30px;
+        margin-top: 0px;
+        width: 100%;
+        flex-direction: column;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+    /* スマホ表示した時の進行状況 */
+    /* ===============================
+      SP CARD UI (差分CSS)
+    =================================*/
+
+    .sp-card-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    /* カード */
+    .sp-card{
+      background:#fff;
+      border:1px solid var(--color-border);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:var(--shadow-sm);
+    }
+
+    /* ステータス帯 */
+    .sp-status{
+      padding:6px 12px;
+      font-size:12px;
+      font-weight:600;
+      color:#fff;
+    }
+
+    .status-warning{ background:#f9a825; }
+    .status-delay{ background:#e53935; }
+    .status-complete{ background:#008632; }
+    .status-onschedule{ background:#1e88e5; }
+    .status-default{ background:#9aa5a0; }
+
+    /* メイン行 */
+    .sp-card-main{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+    }
+
+    /* 情報 */
+    .sp-info{
+      flex:1;
+      min-width:0;
+    }
+
+    .sp-title{
+      font-weight:600;
+      font-size:14px;
+      line-height:1.3;
+    }
+
+    .sp-meta{
+      font-size:12px;
+      color:var(--color-text-muted);
+      margin-top:4px;
+    }
+
+    /* 展開ボタン */
+    .sp-expand{
+      font-size:20px;
+      color:var(--color-primary);
+    }
+
+    /* 詳細（初期非表示） */
+    .sp-detail{
+      display:none;
+      padding:12px 16px 16px;
+      border-top:1px solid var(--color-border);
+    }
+
+    /* 展開状態 */
+    .sp-card.open .sp-detail{
+      display:block;
+    }
+
+    .sp-card.open .sp-expand{
+      transform:rotate(45deg);
+    }
+
+    /* 子カードの＋／×は常に非表示（親カードのみ＋→×にする） */
+    .child-card .sp-expand-child{
+      display:none !important;
+    }
+
+    /* 子のいない親カードは＋／×を非表示 */
+    .sp-card.order-card:not(:has(.child-card)) .sp-expand{
+      display:none !important;
+    }
+
+    /* ===============================
+      縦タイムライン
+    =================================*/
+
+    .sp-timeline{
+      position:relative;
+      margin-left:8px;
+      padding-left:18px;
+    }
+
+    .sp-timeline::before{
+      content:"";
+      position:absolute;
+      left:6px;
+      top:0;
+      bottom:0;
+      width:2px;
+      background:#d5dfd9;
+    }
+
+    .sp-step{
+      position:relative;
+      margin-bottom:14px;
+      font-size:13px;
+    }
+
+    .sp-step::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:4px;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#cfd8d3;
+    }
+
+    .sp-step.completed::before{
+      background:#1e88e5;
+    }
+
+    .sp-step.nearing::before{
+      background:#fdd835;
+    }
+
+    .sp-step.delay::before{
+      background:#e53935;
+    }
+
+    .sp-step small{
+      display:block;
+      font-size:11px;
+      color:var(--color-text-muted);
+    }
+    /* #endregion */
+/* スマホ（幅 768px 以下）のときのモーダル・グラフ配置 */
+@media (max-width: 768px) {
+  .progress-chart-section {
+    display: block;
+    flex: none;
+    min-height: auto;
+  }
+
+  .progress-chart-area {
+    flex: none;
+    min-height: auto;
+    height: auto;
+    padding: 14px 12px 16px;
+    gap: 10px;
+    overflow: visible;
+  }
+
+  .progress-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .progress-chart-sub {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .overall-badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .overall-badge span {
+    font-size: 16px;
+  }
+
+  .manifest-modal {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .manifest-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px 14px 20px;
+    gap: 12px;
+  }
+
+  .manifest-modal-icon {
+    align-self: center;
+    width: 120px;
+    height: 120px;
+  }
+
+  .manifest-modal-meta {
+    align-self: center;
+    text-align: center;
+  }
+
+  .manifest-modal-desc {
+    grid-column: auto;
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .manifest-yearbox {
+    grid-column: auto;
+    margin-top: 8px;
+    overflow-x: auto;
+    display: none; /* スマホ時は年別バー非表示 */
+  }
+
+  .timeline-chart-rows {
+    grid-template-columns: 1fr; /* 円グラフは1列で縦並び */
+    grid-auto-rows: auto;
+    align-content: start;
+    gap: 12px;
+    flex: none;
+    min-height: auto;
+  }
+
+  .pie-card {
+    max-width: 100%;
+    height: auto;
+    min-height: 320px;
+    padding: 12px 12px 16px;
+  }
+
+  .pie-card-body {
+    padding-top: 4px;
+    min-height: 210px;
+    align-items: center;
+  }
+
+  .pie-chart-wrap {
+    max-width: 170px;
+  }
+
+  .pie-metric-percent {
+    font-size: 18px;
+  }
+
+  .pie-metric-caption {
+    font-size: 11px;
+  }
+}
+
+    /* #region 人事考課用実績集計（アプリUI） */
+    .jk-app {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* PCのみ：タブ直下の余白を詰める（スマホは共通の .page-title h2 見出しのまま） */
+    @media (min-width: 769px) {
+      .jk-app .page-title {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 8px;
+      }
+
+      .jk-app .page-title h2 {
+        margin-bottom: 6px;
+      }
+    }
+
+    .jk-intro {
+      margin: 0 0 18px;
+      font-size: var(--fs-sm);
+      line-height: 1.65;
+      color: var(--color-text-muted);
+    }
+
+    .jk-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 10px 14px;
+      margin: 0 0 12px 0;
+      padding: 12px 14px;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .jk-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    /* jk-toolbar 内は「ラベル＋プルダウン」を横並びにする */
+    .jk-toolbar .jk-field:not(.jk-d-search-field) {
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .jk-toolbar .jk-field:not(.jk-d-search-field) label {
+      margin: 0;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .jk-field label {
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+
+    /* プルダウン（開いたリストの option も同じサイズ感に） */
+    .jk-field select,
+    .jk-toolbar select {
+      min-width: 160px;
+      padding: 8px 10px;
+      font-size: 12pt;
+      line-height: 1.4;
+      font-family: var(--font-sans), inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+    }
+
+    .jk-field select option,
+    .jk-toolbar select option {
+      font-size: 12pt;
+      line-height: 1.45;
+      font-family: var(--font-sans), inherit;
+    }
+
+    .jk-btn {
+      padding: 8px 18px;
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: var(--color-primary);
+      color: #fff;
+      transition: background 0.15s ease;
+    }
+
+    .jk-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .jk-toolbar-tail {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 10px 14px;
+      margin-left: auto;
+    }
+
+    .jk-field--sort select {
+      min-width: 280px;
+      max-width: min(100vw - 32px, 420px);
+    }
+
+    .jk-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 0 0 20px;
+    }
+
+    @media (max-width: 900px) {
+      .jk-kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .jk-kpi-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .jk-kpi {
+      padding: 12px 14px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .jk-kpi-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+    }
+
+    .jk-kpi-value {
+      font-size: 22px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+
+    .jk-kpi-sub {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    .jk-kpi--accent .jk-kpi-value {
+      color: var(--color-primary);
+    }
+
+    /* CSS tabs */
+    .jk-tab-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .jk-tab-heads {
+      font-size: 18px;
+      display: flex;
+      gap: 0;
+      margin: 0 0 0;
+      padding: 0;
+      list-style: none;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .jk-tab-heads label {
+      padding: 12px 22px;
+      margin-bottom: -2px;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .jk-tab-heads label:hover {
+      color: var(--color-text);
+    }
+
+    #jk-tab-designer:checked ~ .jk-tab-heads label[for="jk-tab-designer"],
+    #jk-tab-shohin:checked ~ .jk-tab-heads label[for="jk-tab-shohin"] {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    .jk-tab-heads--top {
+      margin-top: 0;
+    }
+
+    .jk-block-title {
+      margin: 0 0 10px;
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+    }
+
+    .jk-block-title--result {
+      margin-top: 22px;
+    }
+
+    .jk-tab-panel .jk-toolbar {
+      margin-bottom: 12px;
+    }
+
+    /* 集計条件：PCはトグル非表示・jk-toolbar のカードのみ。スマホは search-box パターンで開閉 */
+    .jk-conditions-wrap.search-box {
+      padding: 0;
+      margin: 0 0 12px 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    .jk-conditions-wrap .search-box-inner {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .jk-conditions-wrap .search-box-inner .jk-toolbar {
+      width: 100%;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    .jk-tab-panel {
+      display: none;
+      padding: 16px 0 8px;
+    }
+
+    #jk-tab-designer:checked ~ .jk-tab-panel--designer,
+    #jk-tab-shohin:checked ~ .jk-tab-panel--shohin {
+      display: block;
+    }
+
+    .jk-section-title {
+      margin: 24px 0 10px;
+      font-size: var(--fs-base);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .jk-section-title:first-of-type {
+      margin-top: 8px;
+    }
+
+    .jk-hint {
+      margin: 0 0 10px;
+      font-size: var(--fs-xs);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .jk-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .jk-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--fs-xs);
+    }
+
+    .jk-table th,
+    .jk-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+    }
+
+    .jk-table thead th {
+      background: rgba(0, 134, 50, 0.08);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .jk-table .col-def {
+      min-width: 220px;
+      max-width: 360px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      line-height: 1.45;
+    }
+
+    .jk-table tbody th[scope="row"] {
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+
+    .jk-table tbody tr:last-child th,
+    .jk-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .jk-table .jk-num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .jk-table .jk-unit {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .jk-table tbody tr.jk-row-total th[scope="row"],
+    .jk-table tbody tr.jk-row-total td {
+      background: var(--jk-row-total-bg);
+      font-weight: 700;
+      border-top: 3px solid var(--color-primary);
+      color: var(--color-text);
+    }
+
+    .jk-table tbody tr.jk-row-total th[scope="row"] {
+      color: var(--color-primary-dark);
+      font-size: 13px;
+      box-shadow: inset 4px 0 0 0 var(--color-primary);
+      padding-left: 10px;
+    }
+
+    .jk-table tbody tr.jk-row-total .jk-num {
+      font-size: 13px;
+      color: var(--color-primary-dark);
+    }
+
+    .jk-table tbody tr.jk-row-total td.col-def {
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    /* デザイナー別集計結果（複数名・カードグリッド） */
+    .jk-designer-results-lead {
+      margin: 0 0 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-text);
+    }
+
+    .jk-designer-results-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px 20px;
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .jk-d-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--color-text-muted);
+      flex: 1 1 220px;
+      min-width: 0;
+    }
+
+    .jk-d-legend li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      max-width: 100%;
+    }
+
+    .jk-d-legend-k,
+    .jk-d-legend-z,
+    .jk-d-legend-h {
+      flex-shrink: 0;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .jk-d-legend-k {
+      background: rgba(0, 134, 50, 0.14);
+      color: var(--color-primary-dark);
+    }
+
+    .jk-d-legend-z,
+    .jk-d-legend-h {
+      background: var(--color-surface);
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-border);
+    }
+
+    .jk-d-search-field {
+      flex: 0 1 220px;
+      min-width: 160px;
+    }
+
+    .jk-d-search-field label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+
+    .jk-d-filter-input {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 4px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+    }
+
+    .jk-d-filter-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .jk-hint--tight {
+      margin-top: -6px;
+      margin-bottom: 12px;
+    }
+
+    .jk-designer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .jk-d-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .jk-d-card:hover {
+      border-color: rgba(0, 134, 50, 0.35);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .jk-d-card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--color-border);
+      background: linear-gradient(180deg, rgba(0, 134, 50, 0.07) 0%, rgba(0, 134, 50, 0.02) 100%);
+    }
+
+    .jk-d-avatar {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .jk-d-card-head-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .jk-d-card-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+      line-height: 1.3;
+    }
+
+    .jk-d-card-sub {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .jk-d-card-wrap {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      min-width: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+      flex: 1 1 auto;
+    }
+
+    .jk-d-table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      table-layout: fixed;
+    }
+
+    .jk-d-table th,
+    .jk-d-table td {
+      box-sizing: border-box;
+      padding: 7px 8px;
+      border: 1px solid var(--color-border);
+      vertical-align: middle;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .jk-d-table thead th {
+      background: rgba(0, 134, 50, 0.1);
+      font-weight: 700;
+      text-align: center;
+      color: var(--color-text);
+      font-size: 11px;
+    }
+
+    .jk-d-table thead th:first-child {
+      width: 46%;
+      text-align: left;
+    }
+
+    .jk-d-table thead th:nth-child(2),
+    .jk-d-table thead th:nth-child(3),
+    .jk-d-table thead th:nth-child(4) {
+      width: 18%;
+    }
+
+    .jk-d-table thead th.jk-d-col-konnen {
+      background: rgba(0, 134, 50, 0.18);
+      color: var(--color-primary-dark);
+      font-size: 12px;
+    }
+
+    .jk-d-table tbody tr:nth-child(even) th[scope="row"],
+    .jk-d-table tbody tr:nth-child(even) td {
+      background: rgba(248, 250, 249, 0.85);
+    }
+
+    .jk-d-table tbody tr.jk-d-row-total th[scope="row"],
+    .jk-d-table tbody tr.jk-d-row-total td {
+      background: var(--jk-row-total-bg);
+      font-weight: 700;
+      border-top: 3px solid var(--color-primary);
+    }
+
+    .jk-d-table tbody tr.jk-d-row-total th[scope="row"] {
+      color: var(--color-primary-dark);
+      font-size: 13px;
+      box-shadow: inset 4px 0 0 0 var(--color-primary);
+      padding-left: 10px;
+    }
+
+    .jk-d-table tbody tr.jk-d-row-total .jk-num:not(.jk-d-cell-konnen) {
+      font-size: 13px;
+      color: var(--color-primary-dark);
+    }
+
+    .jk-d-table tbody tr.jk-d-row-total .jk-d-cell-konnen {
+      font-size: 15px;
+      color: var(--color-primary-dark);
+      background: var(--jk-row-total-bg-accent) !important;
+    }
+
+    /* 合計行・前年比：数値に応じた色（100%以上=好調、95–100%=注意、95%未満=要改善、算出不可=muted） */
+    .jk-d-table tbody tr.jk-d-row-total td.jk-d-yoy-pct.jk-d-yoy-good {
+      color: #1565c0 !important;
+    }
+
+    .jk-d-table tbody tr.jk-d-row-total td.jk-d-yoy-pct.jk-d-yoy-warn {
+      color: #e65100 !important;
+    }
+
+    .jk-d-table tbody tr.jk-d-row-total td.jk-d-yoy-pct.jk-d-yoy-bad {
+      color: #c62828 !important;
+    }
+
+    .jk-d-table tbody tr.jk-d-row-total td.jk-d-yoy-pct.jk-d-yoy-na {
+      color: #757575 !important;
+    }
+
+    .jk-d-table tbody th[scope="row"] {
+      font-weight: 500;
+      text-align: left;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: var(--color-text);
+    }
+
+    .jk-d-table .jk-num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .jk-d-cell-konnen {
+      background: rgba(0, 134, 50, 0.06) !important;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .jk-d-merged {
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.35;
+      color: var(--color-text-muted);
+      background: var(--color-surface) !important;
+      font-weight: 500;
+      white-space: pre-line;
+      padding: 8px 6px;
+    }
+
+    @media (max-width: 640px) {
+      .jk-designer-results-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .jk-d-search-field {
+        flex: 1 1 auto;
+        max-width: none;
+      }
+    }
+
+    .jk-details {
+      margin: 20px 0 8px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      overflow: hidden;
+    }
+
+    .jk-details summary {
+      padding: 12px 14px;
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+      background: var(--color-card);
+    }
+
+    .jk-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .jk-details[open] summary {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .jk-details-body {
+      padding: 14px 16px 16px;
+    }
+
+    .jk-nested-details {
+      margin: 10px 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+    }
+
+    .jk-nested-details summary {
+      padding: 10px 12px;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+    }
+
+    .jk-nested-details .jk-def-list {
+      padding: 0 12px 12px;
+    }
+
+    .jk-def-list {
+      margin: 0;
+    }
+
+    .jk-def-list dt {
+      margin: 12px 0 4px;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      color: var(--color-primary-dark);
+    }
+
+    .jk-def-list dt:first-child {
+      margin-top: 0;
+    }
+
+    .jk-def-list dd {
+      margin: 0;
+      padding-left: 1em;
+      font-size: var(--fs-xs);
+      line-height: 1.6;
+      color: var(--color-text);
+    }
+
+    .jk-rule-list {
+      margin: 0;
+      padding-left: 1.2em;
+      font-size: var(--fs-xs);
+      line-height: 1.65;
+      color: var(--color-text);
+    }
+
+    .jk-rule-list li {
+      margin: 6px 0;
+    }
+
+    .jk-em {
+      color: #b71c1c;
+      font-weight: 600;
+    }
+
+    .jk-foot {
+      margin: 16px 0 0;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .jk-d-card > .jk-foot--in-card {
+      margin: 0;
+      padding: 10px 14px 12px;
+    }
+
+    @media (max-width: 768px) {
+      .jk-table .col-def {
+        min-width: 160px;
+      }
+
+      .jk-tab-heads label {
+        padding: 10px 16px;
+        font-size: 16px;
+      }
+    }
+    /* #endregion */
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー  -->
+    <div id="sidebarMount"></div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="jk-app">
+        <div class="page-title">
+          <h2>人事考課用実績集計</h2>
+        </div>
+
+        <input class="jk-tab-input" type="radio" name="jk-ptab" id="jk-tab-designer" checked>
+        <input class="jk-tab-input" type="radio" name="jk-ptab" id="jk-tab-shohin">
+        <div class="jk-tab-heads jk-tab-heads--top" role="tablist">
+          <label for="jk-tab-designer" role="tab">デザイナー</label>
+          <label for="jk-tab-shohin" role="tab">商品部</label>
+        </div>
+
+<!-- デザイナータブ -->        
+        <div class="jk-tab-panel jk-tab-panel--designer" role="tabpanel" aria-label="デザイナー向け集計">
+          <div class="search-box jk-conditions-wrap" id="jkSearchBoxDesigner">
+            <button type="button" class="search-toggle-sp" id="jkSearchToggleDesigner" aria-expanded="false" aria-controls="jkSearchInnerDesigner">
+              <span class="search-toggle-sp-label">
+                <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                <span class="search-toggle-sp-text">集計条件を開く</span>
+              </span>
+            </button>
+            <div class="search-box-inner" id="jkSearchInnerDesigner">
+              <div class="jk-toolbar" aria-label="デザイナー向け集計条件">
+                <div class="jk-field">
+                  <label for="jk-d-department">所属課</label>
+                  <select id="jk-d-department" name="d-department">
+                    <option selected>すべて</option>
+                    <option>第1課</option>
+                    <option>第2課</option>
+                    <option>第3課</option>
+                  </select>
+                </div>
+                <div class="jk-field">
+                  <label for="jk-d-year">集計年度</label>
+                  <select id="jk-d-year" name="d-fiscal-year">
+                    <option selected>2025年度</option>
+                    <option>2024年度</option>
+                  </select>
+                </div>
+                <div class="jk-field">
+                  <label for="jk-d-half">半期</label>
+                  <select id="jk-d-half" name="d-half">
+                    <option selected>前期（11月～4月）</option>
+                    <option>後期（5月～10月）</option>
+                  </select>
+                </div>
+                <div class="jk-field">
+                  <label for="jk-d-person">担当者（個人）</label>
+                  <select id="jk-d-person" name="d-person">
+                    <option selected>すべて</option>
+                    <option>Aさん</option>
+                    <option>Bさん</option>
+                  </select>
+                </div>
+                <div class="jk-toolbar-tail">
+                  <button type="button" class="jk-btn">集計</button>
+                  <div class="jk-field jk-field--sort">
+                    <label for="jk-d-sort">並び替え</label>
+                    <select id="jk-d-sort" name="d-sort" aria-label="デザイナー別の並び替え">
+                      <option value="" selected>既定（一覧順）</option>
+                      <option value="jisseki-desc">実績数（定番＋別注＋水野）・多い順</option>
+                      <option value="jisseki-asc">実績数（定番＋別注＋水野）・少ない順</option>
+                      <option value="yoy-asc">前年比（合計行）・低い順</option>
+                      <option value="yoy-desc">前年比（合計行）・高い順</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="jkDesignerResultsGrid" class="jk-designer-grid" aria-label="デザイナー別集計結果一覧"></div>
+        </div>
+<!-- 商品部タブ -->
+        <div class="jk-tab-panel jk-tab-panel--shohin" role="tabpanel" aria-label="商品部向け集計">
+          <div class="search-box jk-conditions-wrap" id="jkSearchBoxShohin">
+            <button type="button" class="search-toggle-sp" id="jkSearchToggleShohin" aria-expanded="false" aria-controls="jkSearchInnerShohin">
+              <span class="search-toggle-sp-label">
+                <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                <span class="search-toggle-sp-text">集計条件を開く</span>
+              </span>
+            </button>
+            <div class="search-box-inner" id="jkSearchInnerShohin">
+              <div class="jk-toolbar" aria-label="商品部向け集計条件">
+                <div class="jk-field">
+                  <label for="jk-s-year">集計年度</label>
+                  <select id="jk-s-year" name="s-fiscal-year">
+                    <option selected>2025年度</option>
+                    <option>2024年度</option>
+                  </select>
+                </div>
+                <div class="jk-field">
+                  <label for="jk-s-half">半期</label>
+                  <select id="jk-s-half" name="s-half">
+                    <option selected>前期（11月～4月）</option>
+                    <option>後期（5月～10月）</option>
+                  </select>
+                </div>
+                <div class="jk-toolbar-tail">
+                  <button type="button" class="jk-btn">集計</button>
+                  <div class="jk-field jk-field--sort">
+                    <label for="jk-s-sort">並び替え</label>
+                    <select id="jk-s-sort" name="s-sort" aria-label="集計結果カードの並び替え">
+                      <option value="" selected>既定（一覧順）</option>
+                      <option value="uriage-desc">今年売上（千円）・多い順</option>
+                      <option value="uriage-asc">今年売上（千円）・少ない順</option>
+                      <option value="yoy-desc">前年比・高い順</option>
+                      <option value="yoy-asc">前年比・低い順</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="jk-hint jk-hint--tight">区分ごとにカード表示します。金額は千円です。</p>
+          <div id="jkShohinResultsGrid" class="jk-designer-grid" aria-label="商品部向け集計結果一覧"></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- #endregion -->
+
+  </div>
+
+  <div id="imageModal" class="image-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-wrapper"></div>
+  </div>
+
+  <!-- 詳細モーダル（グラフカード用） -->
+  <div class="manifest-modal-overlay" id="manifestModalOverlay" aria-hidden="true">
+    <div class="manifest-modal" role="dialog" aria-modal="true" aria-labelledby="manifestModalTitle">
+      <div class="manifest-modal-header">
+        <h3 class="manifest-modal-title" id="manifestModalTitle"></h3>
+        <button type="button" class="manifest-modal-close" id="manifestModalClose" aria-label="閉じる">✕</button>
+      </div>
+      <div class="manifest-modal-body">
+        <div class="manifest-modal-icon" id="manifestModalIconBox">
+          <img id="manifestModalIcon" alt="">
+        </div>
+        <div class="manifest-modal-meta">
+          <div class="manifest-modal-percent" id="manifestModalPercent">0%</div>
+          <div class="manifest-modal-caption">今期達成率</div>
+        </div>
+        <!-- 説明エリア（赤枠部分） -->
+        <div class="manifest-modal-desc" id="manifestModalDesc"></div>
+        <div class="manifest-yearbox" id="manifestModalYearBox" aria-label="年別の達成状況">
+          <div class="manifest-yearbar-wrap">
+            <div class="manifest-markers" id="manifestModalYearMarkers"></div>
+            <div class="manifest-current" id="manifestModalYearCurrent">▲</div>
+            <div class="manifest-yearbar" id="manifestModalYearBar">
+              <div class="manifest-yearbar-fill" id="manifestModalYearFill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/autocomplete.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script>
+    /** 合計行の前年比セル用クラス（前年>0 のとき (今年/前年)×100 で判定） */
+    function jkTotalRowYoyClass(zen, kon) {
+      if (zen == null || kon == null || zen <= 0) return "jk-d-yoy-na";
+      var pct = (kon / zen) * 100;
+      if (pct >= 100) return "jk-d-yoy-good";
+      if (pct >= 95) return "jk-d-yoy-warn";
+      return "jk-d-yoy-bad";
+    }
+
+    function loadSharedSidebar() {
+      const mount = document.getElementById("sidebarMount");
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== "string" || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error("Sidebar include error: SHARED_SIDEBAR_HTML is not available.");
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === "1") return;
+
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          if (toggleImg) toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        } else {
+          if (toggleImg) toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+        }
+      });
+      toggle.dataset.bound = "1";
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');   // ← オーバーレイ表示
+      } else {
+
+        overlay.classList.remove('show'); // ← オーバーレイ非表示
+      }
+    }
+
+    // スマホのとき、開いたメニューを閉じる
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    // サイドバー共通パーツを読み込み
+    loadSharedSidebar();
+
+    // スマホ：集計条件の開閉（デザイナー／商品部タブそれぞれ）
+    (function initJkConditionsToggle() {
+      function bind(boxId, btnId) {
+        var box = document.getElementById(boxId);
+        var btn = document.getElementById(btnId);
+        if (!box || !btn) return;
+
+        btn.addEventListener("click", function () {
+          var isOpen = box.classList.toggle("is-open");
+          btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          var textEl = btn.querySelector(".search-toggle-sp-text");
+          if (textEl) {
+            textEl.textContent = isOpen ? "集計条件を閉じる" : "集計条件を開く";
+          }
+        });
+      }
+
+      bind("jkSearchBoxDesigner", "jkSearchToggleDesigner");
+      bind("jkSearchBoxShohin", "jkSearchToggleShohin");
+    })();
+
+    // autocomplete.js の定義から「所属課」select option を生成
+    (function initDepartmentSelect() {
+      var sel = document.getElementById("jk-d-department");
+      if (!sel) return;
+
+      var lists = window.AUTOCOMPLETE_LISTS;
+      var deps = lists && Array.isArray(lists.department) ? lists.department : null;
+      if (!deps) return;
+
+      var current = sel.value;
+      sel.innerHTML = "";
+
+      var allOpt = document.createElement("option");
+      allOpt.value = "すべて";
+      allOpt.textContent = "すべて";
+      sel.appendChild(allOpt);
+
+      deps.forEach(function (dep) {
+        var opt = document.createElement("option");
+        opt.value = dep;
+        opt.textContent = dep;
+        sel.appendChild(opt);
+      });
+
+      // 以前の選択が残っている場合のみ復元
+      if (current && current !== "すべて") {
+        var exists = deps.indexOf(current) !== -1;
+        if (exists) sel.value = current;
+        else sel.value = "すべて";
+      } else {
+        sel.value = "すべて";
+      }
+    })();
+
+    // 商品部：category2 ごとにカードを生成（集計行は仕様どおり11行）
+    (function initShohinResultsGrid() {
+      var grid = document.getElementById("jkShohinResultsGrid");
+      var sortSel = document.getElementById("jk-s-sort");
+      if (!grid) return;
+
+      var lists = window.AUTOCOMPLETE_LISTS;
+      var categories =
+        lists && Array.isArray(lists.category2) ? lists.category2.slice() : [];
+      if (categories.length === 0) return;
+
+      var ROW_LABELS = [
+        "定番図案実績数",
+        "別注図案実績数",
+        "水野図案実績数",
+        "定番・別注・水野 合計",
+        "移行商品完了実績数",
+        "営業在庫金額",
+        "仕入金額",
+        "売上金額",
+        "粗利金額",
+        "粗利率",
+        "回転率"
+      ];
+
+      function formatComma(n) {
+        return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function formatYoY(zen, kon) {
+        if (zen > 0) return ((kon / zen) * 100).toFixed(1) + "%";
+        return "—";
+      }
+
+      function demoCountPair(d, r) {
+        var zen = (d * 5 + r * 7 + 11) % 12;
+        var kon = (d * 3 + r * 9 + 13) % 14;
+        if (zen === 0) zen = 2;
+        if (kon === 0) kon = 1;
+        return { zen: zen, kon: kon };
+      }
+
+      function demoMoneyPair(d, r) {
+        var base = 80000 + d * 4000 + r * 9000;
+        var zen = base + (d + r) % 5000;
+        var kon = zen + 2000 + (d * r * 100) % 8000;
+        return { zen: zen, kon: kon };
+      }
+
+      function rowZenKon(d, r) {
+        if (r === 3) {
+          var a = rowZenKon(d, 0);
+          var b = rowZenKon(d, 1);
+          var c = rowZenKon(d, 2);
+          return { zen: a.zen + b.zen + c.zen, kon: a.kon + b.kon + c.kon };
+        }
+        if (r <= 2) return demoCountPair(d, r);
+        if (r === 4) {
+          var z = (d * 2 + 5) % 5;
+          var k = (d * 2 + 7) % 6;
+          return { zen: z, kon: k };
+        }
+        if (r >= 5 && r <= 8) return demoMoneyPair(d, r - 5);
+        if (r === 9) {
+          var zen = 19.2 + (d % 5) * 0.35;
+          var kon = zen + 0.3 + (d % 3) * 0.15;
+          return { zen: zen, kon: kon };
+        }
+        if (r === 10) {
+          var z2 = 3.1 + (d % 4) * 0.22;
+          var k2 = z2 + 0.15 + (d % 3) * 0.12;
+          return { zen: z2, kon: k2 };
+        }
+        return { zen: 0, kon: 0 };
+      }
+
+      function formatZenKonCell(r, zk) {
+        var z = zk.zen;
+        var k = zk.kon;
+        if (r <= 4) {
+          return {
+            zen: String(Math.round(z)),
+            kon: String(Math.round(k))
+          };
+        }
+        if (r >= 5 && r <= 8) {
+          return { zen: formatComma(z), kon: formatComma(k) };
+        }
+        if (r === 9) {
+          return {
+            zen: z.toFixed(1) + "%",
+            kon: k.toFixed(1) + "%"
+          };
+        }
+        if (r === 10) {
+          return {
+            zen: z.toFixed(1) + "回",
+            kon: k.toFixed(1) + "回"
+          };
+        }
+        return { zen: "", kon: "" };
+      }
+
+      function buildCard(name, d) {
+        var article = document.createElement("article");
+        article.className = "jk-d-card";
+        article.setAttribute("data-shohin-category", name);
+        article.setAttribute("data-shohin-index", String(d));
+        article.setAttribute("aria-labelledby", "jk-s-card-title-" + d);
+
+        var zkTotal = rowZenKon(d, 3);
+        article.setAttribute("data-jisseki", String(Math.round(zkTotal.kon)));
+        if (zkTotal.zen > 0) {
+          article.setAttribute(
+            "data-yoy-pct",
+            String((zkTotal.kon / zkTotal.zen) * 100)
+          );
+        } else {
+          article.setAttribute("data-yoy-pct", "");
+        }
+
+        var uri = rowZenKon(d, 7);
+        article.setAttribute("data-konnen-uriage", String(Math.round(uri.kon)));
+
+        var head = document.createElement("div");
+        head.className = "jk-d-card-head";
+        var ht = document.createElement("div");
+        ht.className = "jk-d-card-head-text";
+        var h4 = document.createElement("h4");
+        h4.className = "jk-d-card-title";
+        h4.id = "jk-s-card-title-" + d;
+        h4.textContent = name;
+        ht.appendChild(h4);
+        head.appendChild(ht);
+        article.appendChild(head);
+
+        var wrap = document.createElement("div");
+        wrap.className = "jk-table-wrap jk-d-card-wrap";
+
+        var table = document.createElement("table");
+        table.className = "jk-d-table";
+
+        var thead = document.createElement("thead");
+        var hr = document.createElement("tr");
+        hr.innerHTML =
+          "<th scope=\"col\">指標</th>" +
+          "<th scope=\"col\" class=\"jk-num\">前年</th>" +
+          "<th scope=\"col\" class=\"jk-num jk-d-col-konnen\">今年</th>" +
+          "<th scope=\"col\" class=\"jk-num\">前年比</th>";
+        thead.appendChild(hr);
+        table.appendChild(thead);
+
+        var tbody = document.createElement("tbody");
+        ROW_LABELS.forEach(function (label, r) {
+          var tr = document.createElement("tr");
+          if (r === 3) tr.className = "jk-d-row-total";
+          var th = document.createElement("th");
+          th.scope = "row";
+          th.textContent = label;
+          tr.appendChild(th);
+
+          var zk = rowZenKon(d, r);
+          var cells = formatZenKonCell(r, zk);
+
+          var tdZen = document.createElement("td");
+          tdZen.className = "jk-num";
+          tdZen.textContent = cells.zen;
+          tr.appendChild(tdZen);
+
+          var tdKon = document.createElement("td");
+          tdKon.className = "jk-num jk-d-cell-konnen";
+          tdKon.textContent = cells.kon;
+          tr.appendChild(tdKon);
+
+          var zkForYoy = zk;
+          var tdHi = document.createElement("td");
+          tdHi.className = "jk-num";
+          if (r === 3) {
+            tdHi.classList.add("jk-d-yoy-pct", jkTotalRowYoyClass(zk.zen, zk.kon));
+          }
+          tdHi.textContent = formatYoY(zkForYoy.zen, zkForYoy.kon);
+          tr.appendChild(tdHi);
+
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        wrap.appendChild(table);
+        article.appendChild(wrap);
+
+        return article;
+      }
+
+      function sortShohinCards(mode) {
+        var cards = Array.prototype.slice.call(
+          grid.querySelectorAll(".jk-d-card")
+        );
+        if (cards.length === 0) return;
+
+        function designerIndex(el) {
+          return parseInt(el.getAttribute("data-shohin-index"), 10) || 0;
+        }
+
+        function yoySortKey(el) {
+          var s = el.getAttribute("data-yoy-pct");
+          if (s === null || s === "") return null;
+          var n = parseFloat(s);
+          return isNaN(n) ? null : n;
+        }
+
+        function parseUriage(el) {
+          var s = el.getAttribute("data-konnen-uriage");
+          if (s === null || s === "") return 0;
+          var n = parseInt(s, 10);
+          return isNaN(n) ? 0 : n;
+        }
+
+        function cmpIndex(a, b) {
+          return designerIndex(a) - designerIndex(b);
+        }
+
+        if (!mode) {
+          cards.sort(cmpIndex);
+        } else if (mode === "uriage-desc") {
+          cards.sort(function (a, b) {
+            var d = parseUriage(b) - parseUriage(a);
+            return d !== 0 ? d : cmpIndex(a, b);
+          });
+        } else if (mode === "uriage-asc") {
+          cards.sort(function (a, b) {
+            var d = parseUriage(a) - parseUriage(b);
+            return d !== 0 ? d : cmpIndex(a, b);
+          });
+        } else if (mode === "yoy-asc") {
+          cards.sort(function (a, b) {
+            var ya = yoySortKey(a);
+            var yb = yoySortKey(b);
+            var na = ya === null ? Infinity : ya;
+            var nb = yb === null ? Infinity : yb;
+            var d = na - nb;
+            return d !== 0 ? d : cmpIndex(a, b);
+          });
+        } else if (mode === "yoy-desc") {
+          cards.sort(function (a, b) {
+            var ya = yoySortKey(a);
+            var yb = yoySortKey(b);
+            var na = ya === null ? -Infinity : ya;
+            var nb = yb === null ? -Infinity : yb;
+            var d = nb - na;
+            return d !== 0 ? d : cmpIndex(a, b);
+          });
+        } else {
+          cards.sort(cmpIndex);
+        }
+
+        cards.forEach(function (card) {
+          grid.appendChild(card);
+        });
+      }
+
+      grid.innerHTML = "";
+      categories.forEach(function (name, d) {
+        grid.appendChild(buildCard(name, d));
+      });
+
+      if (sortSel) {
+        sortSel.addEventListener("change", function () {
+          sortShohinCards(sortSel.value);
+        });
+      }
+    })();
+
+    // autocomplete.js の定義から「担当者（個人）」select option を生成
+    (function initTantoSelect() {
+      var sel = document.getElementById("jk-d-person");
+      if (!sel) return;
+
+      var lists = window.AUTOCOMPLETE_LISTS;
+      var tantos = lists && Array.isArray(lists.tanto) ? lists.tanto : null;
+      if (!tantos) return;
+
+      var current = sel.value;
+      sel.innerHTML = "";
+
+      var allOpt = document.createElement("option");
+      allOpt.value = "すべて";
+      allOpt.textContent = "すべて";
+      sel.appendChild(allOpt);
+
+      tantos.forEach(function (t) {
+        var opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        sel.appendChild(opt);
+      });
+
+      // 以前の選択が残っている場合のみ復元
+      if (current && current !== "すべて") {
+        var exists = tantos.indexOf(current) !== -1;
+        if (exists) sel.value = current;
+        else sel.value = "すべて";
+      } else {
+        sel.value = "すべて";
+      }
+    })();
+
+    (function initDesignerResultsGrid() {
+      var grid = document.getElementById("jkDesignerResultsGrid");
+      if (!grid) return;
+
+      var DESIGNER_COUNT = 30;
+      var ROW_LABELS = [
+        "定番図案実績数",
+        "別注図案実績数",
+        "水野図案実績数",
+        "定番・別注・水野 合計",
+        "移行商品発注済み実績数",
+        "最終未入稿図案数",
+        "ボツ・移行図案数"
+      ];
+      var names = ["Aさん", "Bさん"];
+      var n;
+      for (n = 3; n <= DESIGNER_COUNT; n++) {
+        names.push("デザイナー" + String(n).padStart(2, "0"));
+      }
+
+      function demoKonNen(d, r) {
+        var x = (d * 17 + r * 31 + 11) % 5;
+        if (r === 5 || r === 6) return (d + r) % 3;
+        return x;
+      }
+
+      function demoZenNen(d, r) {
+        var x = (d * 13 + r * 23 + 7) % 6;
+        if (r === 5 || r === 6) return (d + r + 1) % 4;
+        return x;
+      }
+
+      function formatYoY(zen, kon) {
+        if (zen > 0) return ((kon / zen) * 100).toFixed(1) + "%";
+        return "—";
+      }
+
+      function rowZenKon(d, r) {
+        if (r === 3) {
+          return {
+            zen:
+              demoZenNen(d, 0) + demoZenNen(d, 1) + demoZenNen(d, 2),
+            kon:
+              demoKonNen(d, 0) + demoKonNen(d, 1) + demoKonNen(d, 2)
+          };
+        }
+        return { zen: demoZenNen(d, r), kon: demoKonNen(d, r) };
+      }
+
+      var frag = document.createDocumentFragment();
+      names.forEach(function (name, d) {
+        var article = document.createElement("article");
+        article.className = "jk-d-card";
+        article.setAttribute("data-designer-name", name);
+        article.setAttribute("data-designer-index", String(d));
+        article.setAttribute("aria-labelledby", "jk-d-card-title-" + d);
+
+        var zkTotal = rowZenKon(d, 3);
+        article.setAttribute("data-jisseki", String(zkTotal.kon));
+        if (zkTotal.zen > 0) {
+          article.setAttribute(
+            "data-yoy-pct",
+            String((zkTotal.kon / zkTotal.zen) * 100)
+          );
+        } else {
+          article.setAttribute("data-yoy-pct", "");
+        }
+
+        var head = document.createElement("div");
+        head.className = "jk-d-card-head";
+        var ht = document.createElement("div");
+        ht.className = "jk-d-card-head-text";
+        var h4 = document.createElement("h4");
+        h4.className = "jk-d-card-title";
+        h4.id = "jk-d-card-title-" + d;
+        h4.textContent = name;
+        var sub = document.createElement("span");
+        sub.className = "jk-d-card-sub";
+        ht.appendChild(h4);
+        ht.appendChild(sub);
+        head.appendChild(ht);
+        article.appendChild(head);
+
+        var wrap = document.createElement("div");
+        wrap.className = "jk-table-wrap jk-d-card-wrap";
+
+        var table = document.createElement("table");
+        table.className = "jk-d-table";
+
+        var thead = document.createElement("thead");
+        var hr = document.createElement("tr");
+        hr.innerHTML =
+          "<th scope=\"col\">指標</th>" +
+          "<th scope=\"col\" class=\"jk-num\">前年</th>" +
+          "<th scope=\"col\" class=\"jk-num jk-d-col-konnen\">今年</th>" +
+          "<th scope=\"col\" class=\"jk-num\">前年比</th>";
+        thead.appendChild(hr);
+        table.appendChild(thead);
+
+        var tbody = document.createElement("tbody");
+        ROW_LABELS.forEach(function (label, r) {
+          var tr = document.createElement("tr");
+          if (r === 3) tr.className = "jk-d-row-total";
+          var th = document.createElement("th");
+          th.scope = "row";
+          th.textContent = label;
+          tr.appendChild(th);
+
+          var zkRow = rowZenKon(d, r);
+          var zen = zkRow.zen;
+          var kon = zkRow.kon;
+
+          var tdZen = document.createElement("td");
+          tdZen.className = "jk-num";
+          tdZen.textContent = String(zen);
+          tr.appendChild(tdZen);
+
+          var tdKon = document.createElement("td");
+          tdKon.className = "jk-num jk-d-cell-konnen";
+          tdKon.textContent = String(kon);
+          tr.appendChild(tdKon);
+
+          var tdHi = document.createElement("td");
+          tdHi.className = "jk-num";
+          if (r === 3) {
+            tdHi.classList.add("jk-d-yoy-pct", jkTotalRowYoyClass(zen, kon));
+          }
+          tdHi.textContent = formatYoY(zen, kon);
+          tr.appendChild(tdHi);
+
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        wrap.appendChild(table);
+        article.appendChild(wrap);
+        frag.appendChild(article);
+      });
+      grid.appendChild(frag);
+
+      var sortSel = document.getElementById("jk-d-sort");
+      if (sortSel) {
+        function designerIndex(el) {
+          return parseInt(el.getAttribute("data-designer-index"), 10) || 0;
+        }
+
+        function jissekiOf(el) {
+          return parseInt(el.getAttribute("data-jisseki"), 10) || 0;
+        }
+
+        function yoySortKey(el) {
+          var s = el.getAttribute("data-yoy-pct");
+          if (s === null || s === "") return null;
+          var n = parseFloat(s, 10);
+          return isNaN(n) ? null : n;
+        }
+
+        function sortDesignerCards(mode) {
+          var cards = Array.prototype.slice.call(
+            grid.querySelectorAll(".jk-d-card")
+          );
+          if (cards.length === 0) return;
+
+          function cmpIndex(a, b) {
+            return designerIndex(a) - designerIndex(b);
+          }
+
+          if (!mode) {
+            cards.sort(cmpIndex);
+          } else if (mode === "jisseki-desc") {
+            cards.sort(function (a, b) {
+              var d = jissekiOf(b) - jissekiOf(a);
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else if (mode === "jisseki-asc") {
+            cards.sort(function (a, b) {
+              var d = jissekiOf(a) - jissekiOf(b);
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else if (mode === "yoy-asc") {
+            cards.sort(function (a, b) {
+              var ya = yoySortKey(a);
+              var yb = yoySortKey(b);
+              var na = ya === null ? Infinity : ya;
+              var nb = yb === null ? Infinity : yb;
+              var d = na - nb;
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else if (mode === "yoy-desc") {
+            cards.sort(function (a, b) {
+              var ya = yoySortKey(a);
+              var yb = yoySortKey(b);
+              var na = ya === null ? -Infinity : ya;
+              var nb = yb === null ? -Infinity : yb;
+              var d = nb - na;
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else {
+            cards.sort(cmpIndex);
+          }
+
+          cards.forEach(function (card) {
+            grid.appendChild(card);
+          });
+        }
+
+        sortSel.addEventListener("change", function () {
+          sortDesignerCards(sortSel.value);
+        });
+      }
+    })();
+
+    var icon = document.querySelector(".header-account_circle");
+    var menu = document.querySelector(".account-menu");
+    if (icon && menu) {
+      icon.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+      });
+    }
+
+  </script>
+</body>
+
+</html>
