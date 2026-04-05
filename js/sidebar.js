@@ -141,7 +141,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">人事考課用実績集計</a></li>
+      <li><a href="jinjikokajissekishukei.html">人事考課用実績集計</a></li>
     </ul>
   </div>
 
