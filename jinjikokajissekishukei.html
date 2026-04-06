@@ -2367,6 +2367,22 @@
       box-sizing: border-box;
     }
 
+    /* カード並べ替え（担当者別入稿状況と同じ HTML5 DnD 見た目） */
+    .jk-d-card[draggable="true"] {
+      cursor: grab;
+    }
+
+    .jk-d-card.is-dragging {
+      opacity: 0.6;
+      outline: 2px dashed rgba(0, 134, 50, 0.35);
+      outline-offset: -2px;
+    }
+
+    .jk-d-card.is-drop-target {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.14);
+    }
+
     .jk-d-card {
       background: var(--color-card);
       border: 1px solid var(--color-border);
@@ -2784,7 +2800,7 @@
               </div>
             </div>
           </div>
-          <div id="jkDesignerResultsGrid" class="jk-designer-grid" aria-label="デザイナー別集計結果一覧"></div>
+          <div id="jkDesignerResultsGrid" class="jk-designer-grid" aria-label="デザイナー別集計結果一覧（カードをドラッグして並べ替えできます）"></div>
         </div>
 <!-- 商品部タブ -->
         <div class="jk-tab-panel jk-tab-panel--shohin" role="tabpanel" aria-label="商品部向け集計">
@@ -2883,6 +2899,90 @@
       if (pct >= 100) return "jk-d-yoy-good";
       if (pct >= 95) return "jk-d-yoy-warn";
       return "jk-d-yoy-bad";
+    }
+
+    /** 担当者別入稿状況（tantoGrid）と同じ HTML5 ドラッグ＆ドロップでカード順を入れ替え */
+    function bindJkCardReorderDnD(grid, idAttr, orderArray) {
+      if (!grid || grid.dataset.cardDndBound === "1") return;
+      grid.dataset.cardDndBound = "1";
+      var dragId = null;
+
+      function cardById(id) {
+        var cards = grid.querySelectorAll(".jk-d-card");
+        for (var i = 0; i < cards.length; i++) {
+          if (cards[i].getAttribute(idAttr) === id) return cards[i];
+        }
+        return null;
+      }
+
+      function applyOrder() {
+        orderArray.forEach(function (id) {
+          var card = cardById(id);
+          if (card) grid.appendChild(card);
+        });
+      }
+
+      grid.addEventListener("dragstart", function (e) {
+        var card = e.target.closest(".jk-d-card");
+        if (!card || !grid.contains(card)) return;
+        dragId = card.getAttribute(idAttr) || null;
+        card.classList.add("is-dragging");
+        e.dataTransfer.effectAllowed = "move";
+        try {
+          e.dataTransfer.setData("text/plain", dragId || "");
+        } catch (_) {}
+      });
+
+      grid.addEventListener("dragend", function (e) {
+        var card = e.target.closest(".jk-d-card");
+        if (card) card.classList.remove("is-dragging");
+        grid.querySelectorAll(".jk-d-card.is-drop-target").forEach(function (el) {
+          el.classList.remove("is-drop-target");
+        });
+        dragId = null;
+      });
+
+      grid.addEventListener("dragover", function (e) {
+        var over = e.target.closest(".jk-d-card");
+        if (!over || !grid.contains(over)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        grid.querySelectorAll(".jk-d-card.is-drop-target").forEach(function (el) {
+          el.classList.remove("is-drop-target");
+        });
+        over.classList.add("is-drop-target");
+      });
+
+      grid.addEventListener("dragleave", function (e) {
+        var over = e.target.closest(".jk-d-card");
+        if (!over) return;
+        over.classList.remove("is-drop-target");
+      });
+
+      grid.addEventListener("drop", function (e) {
+        var over = e.target.closest(".jk-d-card");
+        if (!over) return;
+        e.preventDefault();
+        var from = dragId;
+        var to = over.getAttribute(idAttr) || null;
+        if (!from || !to || from === to) return;
+        var fromIdx = orderArray.indexOf(from);
+        var toIdx = orderArray.indexOf(to);
+        if (fromIdx < 0 || toIdx < 0) return;
+        orderArray.splice(fromIdx, 1);
+        orderArray.splice(toIdx, 0, from);
+        applyOrder();
+      });
+    }
+
+    /** プルダウン並び替え後に orderArray を DOM 順と一致させる */
+    function jkRefreshOrderArrayFromDom(grid, idAttr, orderArray) {
+      orderArray.length = 0;
+      var nodes = grid.querySelectorAll(".jk-d-card");
+      for (var i = 0; i < nodes.length; i++) {
+        var id = nodes[i].getAttribute(idAttr);
+        if (id) orderArray.push(id);
+      }
     }
 
     function loadSharedSidebar() {
@@ -3004,7 +3104,6 @@
     // 商品部：category2 ごとにカードを生成（集計行は仕様どおり11行）
     (function initShohinResultsGrid() {
       var grid = document.getElementById("jkShohinResultsGrid");
-      var sortSel = document.getElementById("jk-s-sort");
       if (!grid) return;
 
       var lists = window.AUTOCOMPLETE_LISTS;
@@ -3107,6 +3206,7 @@
       function buildCard(name, d) {
         var article = document.createElement("article");
         article.className = "jk-d-card";
+        article.setAttribute("draggable", "true");
         article.setAttribute("data-shohin-category", name);
         article.setAttribute("data-shohin-index", String(d));
         article.setAttribute("aria-labelledby", "jk-s-card-title-" + d);
@@ -3193,81 +3293,86 @@
         return article;
       }
 
-      function sortShohinCards(mode) {
-        var cards = Array.prototype.slice.call(
-          grid.querySelectorAll(".jk-d-card")
-        );
-        if (cards.length === 0) return;
-
-        function designerIndex(el) {
-          return parseInt(el.getAttribute("data-shohin-index"), 10) || 0;
-        }
-
-        function yoySortKey(el) {
-          var s = el.getAttribute("data-yoy-pct");
-          if (s === null || s === "") return null;
-          var n = parseFloat(s);
-          return isNaN(n) ? null : n;
-        }
-
-        function parseUriage(el) {
-          var s = el.getAttribute("data-konnen-uriage");
-          if (s === null || s === "") return 0;
-          var n = parseInt(s, 10);
-          return isNaN(n) ? 0 : n;
-        }
-
-        function cmpIndex(a, b) {
-          return designerIndex(a) - designerIndex(b);
-        }
-
-        if (!mode) {
-          cards.sort(cmpIndex);
-        } else if (mode === "uriage-desc") {
-          cards.sort(function (a, b) {
-            var d = parseUriage(b) - parseUriage(a);
-            return d !== 0 ? d : cmpIndex(a, b);
-          });
-        } else if (mode === "uriage-asc") {
-          cards.sort(function (a, b) {
-            var d = parseUriage(a) - parseUriage(b);
-            return d !== 0 ? d : cmpIndex(a, b);
-          });
-        } else if (mode === "yoy-asc") {
-          cards.sort(function (a, b) {
-            var ya = yoySortKey(a);
-            var yb = yoySortKey(b);
-            var na = ya === null ? Infinity : ya;
-            var nb = yb === null ? Infinity : yb;
-            var d = na - nb;
-            return d !== 0 ? d : cmpIndex(a, b);
-          });
-        } else if (mode === "yoy-desc") {
-          cards.sort(function (a, b) {
-            var ya = yoySortKey(a);
-            var yb = yoySortKey(b);
-            var na = ya === null ? -Infinity : ya;
-            var nb = yb === null ? -Infinity : yb;
-            var d = nb - na;
-            return d !== 0 ? d : cmpIndex(a, b);
-          });
-        } else {
-          cards.sort(cmpIndex);
-        }
-
-        cards.forEach(function (card) {
-          grid.appendChild(card);
-        });
-      }
-
       grid.innerHTML = "";
       categories.forEach(function (name, d) {
         grid.appendChild(buildCard(name, d));
       });
 
-      if (sortSel) {
-        sortSel.addEventListener("change", function () {
-          sortShohinCards(sortSel.value);
+      var categoryOrder = categories.slice();
+      bindJkCardReorderDnD(grid, "data-shohin-category", categoryOrder);
+
+      var sortSelShohin = document.getElementById("jk-s-sort");
+      if (sortSelShohin) {
+        function sortShohinCards(mode) {
+          var cards = Array.prototype.slice.call(
+            grid.querySelectorAll(".jk-d-card")
+          );
+          if (cards.length === 0) return;
+
+          function designerIndex(el) {
+            return parseInt(el.getAttribute("data-shohin-index"), 10) || 0;
+          }
+
+          function yoySortKey(el) {
+            var s = el.getAttribute("data-yoy-pct");
+            if (s === null || s === "") return null;
+            var n = parseFloat(s);
+            return isNaN(n) ? null : n;
+          }
+
+          function parseUriage(el) {
+            var s = el.getAttribute("data-konnen-uriage");
+            if (s === null || s === "") return 0;
+            var n = parseInt(s, 10);
+            return isNaN(n) ? 0 : n;
+          }
+
+          function cmpIndex(a, b) {
+            return designerIndex(a) - designerIndex(b);
+          }
+
+          if (!mode) {
+            cards.sort(cmpIndex);
+          } else if (mode === "uriage-desc") {
+            cards.sort(function (a, b) {
+              var d = parseUriage(b) - parseUriage(a);
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else if (mode === "uriage-asc") {
+            cards.sort(function (a, b) {
+              var d = parseUriage(a) - parseUriage(b);
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else if (mode === "yoy-asc") {
+            cards.sort(function (a, b) {
+              var ya = yoySortKey(a);
+              var yb = yoySortKey(b);
+              var na = ya === null ? Infinity : ya;
+              var nb = yb === null ? Infinity : yb;
+              var d = na - nb;
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else if (mode === "yoy-desc") {
+            cards.sort(function (a, b) {
+              var ya = yoySortKey(a);
+              var yb = yoySortKey(b);
+              var na = ya === null ? -Infinity : ya;
+              var nb = yb === null ? -Infinity : yb;
+              var d = nb - na;
+              return d !== 0 ? d : cmpIndex(a, b);
+            });
+          } else {
+            cards.sort(cmpIndex);
+          }
+
+          cards.forEach(function (card) {
+            grid.appendChild(card);
+          });
+          jkRefreshOrderArrayFromDom(grid, "data-shohin-category", categoryOrder);
+        }
+
+        sortSelShohin.addEventListener("change", function () {
+          sortShohinCards(sortSelShohin.value);
         });
       }
     })();
@@ -3359,6 +3464,7 @@
       names.forEach(function (name, d) {
         var article = document.createElement("article");
         article.className = "jk-d-card";
+        article.setAttribute("draggable", "true");
         article.setAttribute("data-designer-name", name);
         article.setAttribute("data-designer-index", String(d));
         article.setAttribute("aria-labelledby", "jk-d-card-title-" + d);
@@ -3445,28 +3551,31 @@
       });
       grid.appendChild(frag);
 
-      var sortSel = document.getElementById("jk-d-sort");
-      if (sortSel) {
-        function designerIndex(el) {
-          return parseInt(el.getAttribute("data-designer-index"), 10) || 0;
-        }
+      var designerOrder = names.slice();
+      bindJkCardReorderDnD(grid, "data-designer-name", designerOrder);
 
-        function jissekiOf(el) {
-          return parseInt(el.getAttribute("data-jisseki"), 10) || 0;
-        }
-
-        function yoySortKey(el) {
-          var s = el.getAttribute("data-yoy-pct");
-          if (s === null || s === "") return null;
-          var n = parseFloat(s, 10);
-          return isNaN(n) ? null : n;
-        }
-
+      var sortSelDesigner = document.getElementById("jk-d-sort");
+      if (sortSelDesigner) {
         function sortDesignerCards(mode) {
           var cards = Array.prototype.slice.call(
             grid.querySelectorAll(".jk-d-card")
           );
           if (cards.length === 0) return;
+
+          function designerIndex(el) {
+            return parseInt(el.getAttribute("data-designer-index"), 10) || 0;
+          }
+
+          function jissekiOf(el) {
+            return parseInt(el.getAttribute("data-jisseki"), 10) || 0;
+          }
+
+          function yoySortKey(el) {
+            var s = el.getAttribute("data-yoy-pct");
+            if (s === null || s === "") return null;
+            var n = parseFloat(s);
+            return isNaN(n) ? null : n;
+          }
 
           function cmpIndex(a, b) {
             return designerIndex(a) - designerIndex(b);
@@ -3509,10 +3618,11 @@
           cards.forEach(function (card) {
             grid.appendChild(card);
           });
+          jkRefreshOrderArrayFromDom(grid, "data-designer-name", designerOrder);
         }
 
-        sortSel.addEventListener("change", function () {
-          sortDesignerCards(sortSel.value);
+        sortSelDesigner.addEventListener("change", function () {
+          sortDesignerCards(sortSelDesigner.value);
         });
       }
     })();
