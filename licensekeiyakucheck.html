@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+  <style>
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+     body {
+      display: flex;
+      flex-direction: column;
+    } 
+
+    /* #region ヘッダー */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+    /* #endregion */
+
+    /* #region メニュー */
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1500;
+      backdrop-filter: blur(2px);
+    }
+
+    .menu-item {
+      margin: 2px 8px;
+      position: relative;
+      border-radius: var(--radius-sm);
+    }
+
+    .menu-title {
+      position: relative;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s ease;
+    }
+
+    .menu-title img {
+      margin-right: 10px;
+      opacity: 0.9;
+    }
+
+    .menu-item:hover>.submenu {
+      display: block;
+    }
+
+    .menu-item:hover .menu-title {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .arrow {
+      transition: transform 0.2s ease;
+      margin-left: auto;
+      opacity: 0.8;
+    }
+
+    /* サブメニュー */
+    .submenu {
+      display: none;
+      position: absolute;
+      /* 右側に出すために絶対配置 */
+      top: -13px;
+      left: 105%;
+      background: #008632;
+      padding: 0px 0px 0px 0px;
+      border-radius: 3px;
+      display: none;
+      min-width: 330px;
+      list-style: none;
+    }
+
+    /* 隙間を埋める透明のホバー領域 */
+    .submenu::before {
+      content: "";
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: -5%;
+      width: 5%;
+      height: 100%;
+      background: transparent;
+      display: block;
+    }
+
+    .submenu li {
+      padding: 8px 10px;
+      height: auto;
+      /* ←折り返し対応 */
+    }
+
+    .submenu li:hover {
+      background: #006C29;
+      /* 好きな色に変更 */
+      border-radius: 4px;
+      /* 角丸にしたい場合 */
+    }
+
+    .submenu li a {
+      display: block;
+      /* 折り返しを効かせる */
+      white-space: normal;
+      /* 折り返しOK */
+      word-break: break-word;
+      /* 日本語も途中で折れる */
+      line-height: 1.1; 
+      /* 行間を少し広めに */
+    }
+
+    .submenu a {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 24px 56px 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .content-box .search-box {
+      flex-shrink: 0;
+    }
+
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      padding: 28px;
+      width: 85%;
+      max-width: 900px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2001;
+    }
+
+    /* #region レスポンシブ対応 */
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 768px) {
+      .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px 20px 56px 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        min-height: 0;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+      .search-toggle-sp::after {
+        content: "＋";
+        color: var(--color-text-muted);
+      }
+      .search-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+       .search-box-inner {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 16px;
+      }
+      .search-box.is-open .search-box-inner {
+        display: grid;
+      }
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
+      }
+
+      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
+      .view-layout-1-group > .content-box:first-of-type {
+        padding: 8px;
+      }
+      .view-layout-1-group > .content-box:first-of-type .view-layout-title {
+        margin: 0 0 12px;
+        padding: 0 0 8px;
+      }
+      .search-box-inner .filter-row {
+        display: contents;
+      }
+      .search-box-inner .filter-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+      }
+      .search-box-inner .filter-item .filter-label {
+        margin-right: 0;
+      }
+      .search-box-inner .filter-item select,
+      .search-box-inner .filter-item input[type="text"] {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .search-box-inner .search-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+      }
+      .search-box-inner .search-row label {
+        /* font-size: var(--fs-base);  */
+        flex-shrink: 0;
+      }
+      .search-box-inner .search-row select,
+      .search-box-inner .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        margin-left: 0;
+      }
+
+      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
+      #approvalListArea {
+        overflow-x: visible;
+        max-height: none;
+      }
+      #approvalListArea .result-table {
+        min-width: 0;
+      }
+      #approvalListArea .result-table thead {
+        display: none;
+      }
+      #approvalListArea .result-table tbody tr {
+        display: block;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        background: var(--color-card);
+      }
+      #approvalListArea .result-table tbody tr::before {
+
+        display: block;
+        color: var(--color-primary);
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      #approvalListArea .result-table tbody td {
+        display: block;
+        border: none;
+        padding: 8px 0;
+        white-space: normal;
+      }
+      /* 各列にラベルを付与 */
+      #approvalListArea .result-table tbody td:nth-child(1)::before {
+        content: "販売区分：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(2)::before {
+        content: "展示会：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(3)::before {
+        content: "商品分類：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(4)::before {
+        content: "カテゴリー：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(5)::before {
+        content: "品名：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(6)::before {
+        content: "ブランド・キャラ：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(7)::before {
+        content: "デザイナー：";
+        font-weight: 600;
+      }
+
+      /* 2段目は販売区分・展示会を横並びで表示 */
+      #approvalListArea .result-table tbody td:nth-child(1),
+      #approvalListArea .result-table tbody td:nth-child(2) {
+        display: inline-block;
+        width: auto;
+        margin-right: 12px;
+      }
+
+      /* イメージ案②: スマホ用 */
+      .view-layout-2 .status-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+
+    #tenjikaiSelect:hover,
+    .dashboard-box select:hover {
+      border-color: var(--color-primary);
+    }
+
+    #tenjikaiSelect:focus,
+    .dashboard-box select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+    }
+
+    /* ========== イメージ案：3つとも一括表示 ========== */
+    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout-1-group,
+    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
+
+    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
+    h1.view-layout-title {
+      margin: 4px 0 8px 12px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
+    .view-layout-1 { padding: 0; }
+
+    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
+    @media (min-width: 769px) {
+      .search-toggle-sp {
+        display: none;
+      }
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+    .filter-row input[type="text"], .filter-row select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+    }
+
+    /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
+    .search-box-inner .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .search-box-inner .search-row label {
+      margin: 0;
+      /* font-size: var(--fs-base); */
+      /* font-weight: 500; */
+      /* color: var(--color-text-muted); */
+      white-space: nowrap;
+    }
+    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
+    .search-box-inner .search-row .autocomplete-dropdown,
+    .search-box-inner .search-row .autocomplete-dropdown div {
+      font-size: var(--fs-base);
+      font-weight: 500;
+    }
+    .search-box-inner .search-row select,
+    .search-box-inner .search-row input {
+      /* font-size: var(--fs-base); */
+      min-width: 160px;
+      padding: 10px 12px;
+      /* font-family: inherit; */
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      /* color: var(--color-text); */
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-box-inner .search-row select:hover,
+    .search-box-inner .search-row input:hover {
+      border-color: #b0bdb5;
+    }
+    .search-box-inner .search-row select:focus,
+    .search-box-inner .search-row input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+    .search-box-inner .search-row input::placeholder {
+      color: #9ca89f;
+    }
+
+    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .btn-search-cancel {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-search-cancel:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* 承認通知／検索結果・ボックス共通 */
+    .content-box {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group > .content-box:first-of-type {
+      margin-bottom: 5px;
+    }
+    .content-box h3 {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+    /* 検索結果一覧テーブル（スクロール対応） */
+    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
+    #approvalListArea {
+      width: 100%;
+      max-height: 70vh;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      table-layout: fixed;
+    }
+    .result-table th,
+    .result-table td {
+      padding: 16px 10px;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .result-table th {
+      padding: 8px 10px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      font-weight: 600;
+      border-top: none;
+    }
+    .result-table tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+    .result-table tr:hover {
+      background: rgba(0, 134, 50, 0.06);
+    }
+    /* 図案管理番号リンク */
+    .result-table a {
+      color: #0066cc;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .result-table a:hover {
+      opacity: 0.9;
+    }
+
+    /* 一覧：デザイナー列のプルダウンをヘッダ列幅（セル幅）いっぱいに */
+    #approvalListArea .result-table td:last-child {
+      vertical-align: middle;
+    }
+    #approvalListArea .result-table td:last-child .row-designer-select {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    /* 画面右下固定 アクションボタン（登録など） */
+    .btn-fab-bar {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
+    .view-layout-2 { padding: 0; }
+    .view-layout-2 .status-buttons { margin-bottom: 20px; }
+    .view-layout-2 .list-section-title {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
+    <div id="sidebarMount"></div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">ライセンス契約チェック</h2>
+
+        <!-- ========== 検索条件・検索結果一覧 ========== -->
+        <div class="view-layout view-layout-1-group">
+          <!-- 検索条件ボックス -->
+          <div class="content-area">
+            <div class="search-box" id="searchBox">
+              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
+                <span class="search-toggle-sp-label">
+                  <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                  <span class="search-toggle-sp-text">検索条件を開く</span>
+                </span>
+              </button>
+              <div class="search-box-inner" id="searchRowsPanel">
+                <div class="filter-row">
+                  <div class="filter-item" id="tenjikaiFilterItem">
+                    <select id="tenjikaiSelect">
+                      <option value="">選択してください</option>
+                      <option value="6m">ライセンス契約外の商品</option>
+                      <option value="ship1m">ライセンス契約期間外の商品</option>
+                    </select>
+                  </div>
+                  <div class="search-cancel-wrapper">
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 検索結果一覧エリア -->
+          <div class="content-area" id="approvalNoticeArea">
+            <div class="view-layout view-layout-2">
+              <!-- テーブル用スクロールコンテナ -->
+              <div id="approvalListArea">
+                <table class="result-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 11%;">管理番号</th>
+                      <th style="width: 11%;">商品コード</th>
+                      <th style="width: 11%;">販売区分</th>
+                      <th style="width: 11%;">展示会</th>
+                      <th style="width: 12%;">商品分類</th>
+                      <th style="width: 14%;">カテゴリー</th>
+                      <th style="width: 23%;">品名</th>
+                      <th style="width: 12%;">ブランド・キャラ</th>
+                      <th style="width: 15%;">デザイナー</th>
+                    </tr>
+                  </thead>
+                  <tbody id="kojinResultTbody"></tbody>
+                </table>
+                <table id="knrRowSource" hidden aria-hidden="true" style="display:none"><tbody>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000001</td><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーA柄タオル</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000002</td><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーB柄タオル</td><td>ムーミン</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000003</td><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーC柄タオル</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000004</td><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>無地カラフルタオル</td><td>サンリオ</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000005</td><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春限定フラワータオル</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000006</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーAセット</td><td>ムーミン</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000007</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーBセット</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000008</td><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオル</td><td>ドラえもん</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000009</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>夏限定マリンセット</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000010</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>秋限定チェックセット</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000011</td><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーAタオル</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000012</td><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーBタオル</td><td>リラックマ</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000013</td><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオル</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000014</td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットA</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000015</td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットB</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000016</td><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーD柄タオル</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000017</td><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>無地ベーシックタオル</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000018</td><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルA</td><td>すみっコぐらし</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000019</td><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルB</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000020</td><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルC</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000021</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーCセット</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000022</td><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地カラー</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000023</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットA</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000024</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットB</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="6m"><td><a href='licensekeiyakujohonyuryoku.html'></a></td><td>49000000025</td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットC</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-026</a><td>49000000026</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットA</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-027</a><td>49000000027</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットB</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-028</a><td>49000000028</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットC</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-029</a><td>49000000029</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーCタオル</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-030</a><td>49000000030</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地ベーシック</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-031</a><td>49000000031</td></td><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春企画フラワーセット</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-032</a><td>49000000032</td></td><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>夏企画マリンセット</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-033</a><td>49000000033</td></td><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>秋企画チェックセット</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-034</a><td>49000000034</td></td><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>冬企画スノーセット</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-035</a><td>49000000035</td></td><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキー総柄タオル</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-036</a><td>49000000036</td></td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットA</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-037</a><td>49000000037</td></td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットB</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-038</a><td>49000000038</td></td><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオルセット</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-039</a><td>49000000039</td></td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスA</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-040</a><td>49000000040</td></td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスB</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-041</a><td>49000000041</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットA</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-042</a><td>49000000042</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットB</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-043</a><td>49000000043</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオルセット</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-044</a><td>49000000044</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスA</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-045</a><td>49000000045</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスB</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-046</a><td>49000000046</td></td><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーE柄タオル</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-047</a><td>49000000047</td></td><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーF柄タオル</td><td>ディズニー</td><td>デザイナー03</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-048</a><td>49000000048</td></td><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターコラボ</td><td>ディズニー</td><td>デザイナー04</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-049</a><td>49000000049</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターコラボ</td><td>ディズニー</td><td>デザイナー01</td></tr>
+                  <tr data-knr-filter="ship1m"><td><a href='licensekeiyakujohonyuryoku.html'>LIC-2026-050</a><td>49000000050</td></td><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地カラーセット</td><td>ディズニー</td><td>デザイナー02</td></tr>
+                </tbody>
+              </table>
+              </div>
+            </div>
+          </div>
+          <!-- #endregion -->
+        </div>
+      </div>
+    </div>
+
+    <!--#region モーダル(通知のリンク)  -->
+    <div id="modal-window" class="modal-window"> 
+    </div>
+    <!-- #endregion -->
+
+    <script src="js/sidebar.js"></script>
+    <script>
+      function loadSharedSidebar() {
+        const mount = document.getElementById('sidebarMount');
+        if (!mount) return;
+
+        if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+          console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+          return;
+        }
+
+        mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+        initSidebarCollapseToggle();
+      }
+
+      function initSidebarCollapseToggle() {
+        const sidebar = document.querySelector('.sidebar');
+        const toggle = document.querySelector('.sidebar-toggle');
+        const content = document.querySelector('.content');
+        if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+        const toggleImg = toggle.querySelector('img');
+        toggle.addEventListener('click', () => {
+          sidebar.classList.toggle('closed');
+          content.classList.toggle('expanded');
+
+          if (sidebar.classList.contains('closed')) {
+            if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+          } else {
+            if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+          }
+        });
+
+        toggle.dataset.bound = '1';
+      }
+
+      function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+        if (!sidebar || !overlay) return;
+
+        sidebar.classList.toggle('active');
+
+        if (sidebar.classList.contains('active')) {
+          overlay.classList.add('show');
+        } else {
+          overlay.classList.remove('show');
+        }
+      }
+
+      function closeSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+        if (!sidebar || !overlay) return;
+
+        sidebar.classList.remove('active');
+        overlay.classList.remove('show');
+      }
+
+      loadSharedSidebar();
+
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation(); // クリックが外側に伝播しないように
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // 有効期限条件に応じて一覧を表示（初期は tbody 空）
+      (function () {
+        var sel = document.getElementById("tenjikaiSelect");
+        var sourceBody = document.querySelector("#knrRowSource tbody");
+        var destBody = document.getElementById("kojinResultTbody");
+        if (!sel || !sourceBody || !destBody) return;
+
+        function renderRows(filter) {
+          destBody.innerHTML = "";
+          if (!filter) return;
+          var rows = sourceBody.querySelectorAll('tr[data-knr-filter="' + filter + '"]');
+          for (var i = 0; i < rows.length; i++) {
+            destBody.appendChild(rows[i].cloneNode(true));
+          }
+        }
+
+        sel.addEventListener("change", function () {
+          renderRows(sel.value);
+        });
+
+        var cancelAllBtn = document.getElementById("searchCancelAllBtn");
+        if (cancelAllBtn) {
+          cancelAllBtn.addEventListener("click", function () {
+            sel.value = "";
+            renderRows("");
+          });
+        }
+      })();
+
+      // スマホ: 検索条件の折りたたみ開閉
+      (function () {
+        var btn = document.getElementById("searchToggleSp");
+        var box = document.getElementById("searchBox");
+        if (btn && box) {
+          btn.addEventListener("click", function () {
+            var isOpen = box.classList.toggle("is-open");
+            btn.setAttribute("aria-expanded", isOpen);
+            var textEl = btn.querySelector(".search-toggle-sp-text");
+            if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+          });
+        }
+      })();
+    </script>
+</body>
+
+</html>
+
+
