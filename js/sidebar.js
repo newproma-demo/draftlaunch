@@ -153,7 +153,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="licensekeiyakujohokensaku.html">ライセンス契約情報入力</a></li>
-      <li><a href="#">ライセンス契約チェック</a></li>
+      <li><a href="licensekeiyakucheck.html">ライセンス契約チェック</a></li>
       <li><a href="kojoninteijohokensaku.html">工場認定情報入力</a></li>
       <li><a href="kojoninteiyukokigenkakunin.html">工場認定有効期限確認</a></li>
     </ul>
@@ -166,7 +166,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="#">コスト管理表</a></li>
+      <li><a href="costkanrihyo.html">コスト管理表</a></li>
       <li><a href="#">商品情報照会</a></li>
       <li><a href="#">システム設定マスタメンテナンス</a></li>
       <li><a href="#">権限グループマスタメンテナンス</a></li>
