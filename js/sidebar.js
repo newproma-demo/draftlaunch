@@ -67,7 +67,6 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="shiyoshokensaku.html">仕様書作成</a></li>
-      <li><a href="sampleshinseikensaku.html">サンプル承認結果登録</a></li>
     </ul>
   </div>
 
@@ -79,6 +78,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="sampleshokai.html">サンプル管理</a></li>
+      <li><a href="sampleshinseikensaku.html">サンプル承認結果登録</a></li>
       <li><a href="saishusampleteishutsujokyokanri.html">最終サンプル提出状況管理（重点解除）</a></li>
     </ul>
   </div>
@@ -185,3 +185,176 @@ window.SHARED_SIDEBAR_HTML = `
   <img class="sidebar-logo-marushin" src="images/logo_white.png" width="155">
 </div>
 `;
+
+// 図案情報検索ページ専用: 検索条件による一覧絞り込み
+window.initZuankensakuFilters = function () {
+  var tenjikaiWrap = document.getElementById("searchLicensor");
+  var tenjikaiToggle = document.getElementById("searchLicensorToggle");
+  var tenjikaiMenu = document.getElementById("searchLicensorMenu");
+  var categoryWrap = document.getElementById("searchCategory");
+  var categoryToggle = document.getElementById("searchCategoryToggle");
+  var categoryMenu = document.getElementById("searchCategoryMenu");
+  var inputMeisho = document.getElementById("searchMmeisho");
+  var clearBtn = document.getElementById("searchCancelAllBtn");
+  var countDisplay = document.getElementById("searchCountDisplay");
+  var tbody = document.querySelector("#approvalListArea .result-table tbody");
+  if (!tbody) return;
+
+  function buildCategoryOptionsFromDataList() {
+    if (!categoryWrap || !categoryMenu) return;
+    var listKey = categoryWrap.getAttribute("data-list");
+    if (!listKey) return;
+    var source = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS[listKey];
+    if (!Array.isArray(source)) return;
+
+    categoryMenu.innerHTML = "";
+    source.forEach(function (item) {
+      var label = document.createElement("label");
+      label.className = "multi-select-option";
+
+      var input = document.createElement("input");
+      input.type = "checkbox";
+      input.value = item;
+
+      var span = document.createElement("span");
+      span.textContent = item;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      categoryMenu.appendChild(label);
+    });
+  }
+
+  buildCategoryOptionsFromDataList();
+
+  var tenjikaiChecks = tenjikaiMenu ? tenjikaiMenu.querySelectorAll('input[type="checkbox"]') : [];
+  var categoryChecks = categoryMenu ? categoryMenu.querySelectorAll('input[type="checkbox"]') : [];
+
+  function normalizeText(value) {
+    return String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/．/g, ".")
+      .replace(/。/g, ".")
+      .replace(/０/g, "0")
+      .replace(/１/g, "1")
+      .replace(/２/g, "2")
+      .replace(/３/g, "3")
+      .replace(/４/g, "4")
+      .replace(/５/g, "5")
+      .replace(/６/g, "6")
+      .replace(/７/g, "7")
+      .replace(/８/g, "8")
+      .replace(/９/g, "9");
+  }
+
+  function getSelectedValues(checks) {
+    var values = [];
+    Array.prototype.forEach.call(checks, function (cb) {
+      if (cb.checked) values.push(normalizeText(cb.value));
+    });
+    return values;
+  }
+
+  function updateToggleLabel(toggle, checks) {
+    if (!toggle) return;
+    var checked = [];
+    Array.prototype.forEach.call(checks, function (cb) {
+      if (cb.checked) checked.push(cb.value);
+    });
+    if (checked.length === 0) {
+      toggle.textContent = "選択してください";
+    } else if (checked.length === 1) {
+      toggle.textContent = checked[0];
+    } else {
+      toggle.textContent = checked.length + "件選択中";
+    }
+  }
+
+  function applyFilter() {
+    var visibleCount = 0;
+    var condTenjikaiList = getSelectedValues(tenjikaiChecks);
+    var condCategoryList = getSelectedValues(categoryChecks);
+    var condMeisho = inputMeisho ? normalizeText(inputMeisho.value) : "";
+
+    Array.prototype.forEach.call(tbody.rows, function (row) {
+      var cellTenjikai = row.cells[1] ? normalizeText(row.cells[1].textContent) : "";
+      var cellCategory = row.cells[2] ? normalizeText(row.cells[2].textContent) : "";
+      var cellMeisho = row.cells[3] ? normalizeText(row.cells[3].textContent) : "";
+      var match = true;
+
+      if (condTenjikaiList.length > 0 && condTenjikaiList.indexOf(cellTenjikai) === -1) match = false;
+      if (condCategoryList.length > 0 && condCategoryList.indexOf(cellCategory) === -1) match = false;
+      if (condMeisho && cellMeisho.indexOf(condMeisho) === -1) match = false;
+
+      row.style.display = match ? "" : "none";
+      if (match) visibleCount++;
+    });
+
+    if (countDisplay) countDisplay.textContent = visibleCount + "件";
+  }
+
+  if (tenjikaiToggle && tenjikaiWrap) {
+    tenjikaiToggle.addEventListener("click", function (event) {
+      event.stopPropagation();
+      var isOpen = tenjikaiWrap.classList.toggle("is-open");
+      tenjikaiToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
+
+  if (categoryToggle && categoryWrap) {
+    categoryToggle.addEventListener("click", function (event) {
+      event.stopPropagation();
+      var isOpen = categoryWrap.classList.toggle("is-open");
+      categoryToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
+
+  Array.prototype.forEach.call(tenjikaiChecks, function (cb) {
+    cb.addEventListener("change", function () {
+      updateToggleLabel(tenjikaiToggle, tenjikaiChecks);
+      applyFilter();
+    });
+  });
+
+  Array.prototype.forEach.call(categoryChecks, function (cb) {
+    cb.addEventListener("change", function () {
+      updateToggleLabel(categoryToggle, categoryChecks);
+      applyFilter();
+    });
+  });
+
+  if (inputMeisho) {
+    ["change", "input", "keyup", "blur"].forEach(function (evt) {
+      inputMeisho.addEventListener(evt, applyFilter);
+    });
+  }
+
+  document.addEventListener("click", function (event) {
+    var target = event.target;
+    if (tenjikaiWrap && !tenjikaiWrap.contains(target)) {
+      tenjikaiWrap.classList.remove("is-open");
+      if (tenjikaiToggle) tenjikaiToggle.setAttribute("aria-expanded", "false");
+    }
+    if (categoryWrap && !categoryWrap.contains(target)) {
+      categoryWrap.classList.remove("is-open");
+      if (categoryToggle) categoryToggle.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function () {
+      Array.prototype.forEach.call(tenjikaiChecks, function (cb) { cb.checked = false; });
+      Array.prototype.forEach.call(categoryChecks, function (cb) { cb.checked = false; });
+      updateToggleLabel(tenjikaiToggle, tenjikaiChecks);
+      updateToggleLabel(categoryToggle, categoryChecks);
+      if (inputMeisho) inputMeisho.value = "";
+      applyFilter();
+    });
+  }
+
+  updateToggleLabel(tenjikaiToggle, tenjikaiChecks);
+  updateToggleLabel(categoryToggle, categoryChecks);
+  applyFilter();
+};
