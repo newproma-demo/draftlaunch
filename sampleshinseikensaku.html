@@ -320,6 +320,48 @@
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--color-border);
       z-index: 2001;
+      text-align: center;
+    }
+
+    .image-preview-modal {
+      max-width: 560px;
+      width: min(92vw, 560px);
+      padding: 16px;
+    }
+
+    .image-preview-modal-content {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .image-preview-modal-content img {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+    }
+
+    .image-preview-modal-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+      font-size: 18px;
+    }
+
+    .image-preview-modal-close:hover {
+      background: rgba(200, 0, 0, 0.9);
     }
 
     /* #region レスポンシブ対応 */
@@ -485,16 +527,39 @@
         box-sizing: border-box;
       }
 
+      /* カテゴリー／アイテム／ブランド・キャラ：style.css の .autocomplete 250px を外し、仕様書No. と同じ幅・パディングに */
+      .search-box-inner .filter-item .autocomplete,
+      .search-box-inner .search-row .autocomplete {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .search-box-inner .search-row input.autocomplete-input {
+        padding: 8px 12px;
+      }
+
       .search-cancel-wrapper {
         grid-column: 1 / -1;
         justify-content: flex-end;
         margin-left: 0;
       }
 
+      /* スマホ: 一覧イメージ画像は左寄せ */
+      .result-image-cell {
+        align-items: flex-start;
+      }
+
+      .result-image-thumb {
+        margin: 0;
+      }
+
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
       #approvalListArea {
         overflow-x: visible;
-        max-height: none;
+        max-height: 70vh;
+        overflow-y: scroll;
       }
       #approvalListArea .result-table {
         min-width: 0;
@@ -524,47 +589,71 @@
         padding: 8px 0;
         white-space: normal;
       }
-      /* 先頭列はチェックボックスのため、2列目以降にラベルを付与 */
+      /* 先頭列はリンクのため、2列目以降にラベルを付与 */
       #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "販売区分：";
+        content: "商品コード：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "展示会：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "カテゴリー：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(5)::before {
         content: "品名：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "アイテム：";
+      #approvalListArea .result-table tbody td:nth-child(4)::before {
+        content: "サンプル区分：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(7)::before {
-        content: "ブランド・キャラ：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(8)::before {
-        content: "デザイナー：";
-        font-weight: 600;
-      }
-      #approvalListArea .result-table tbody td:nth-child(9)::before {
+      #approvalListArea .result-table tbody td:nth-child(5)::before {
         content: "承認結果：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(10)::before {
+      #approvalListArea .result-table tbody td:nth-child(6)::before {
         content: "結果登録日：";
         font-weight: 600;
       }
+      #approvalListArea .result-table tbody td:nth-child(7)::before {
+        content: "";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
+        content: "到着日：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(9)::before {
+        content: "仕様書No.：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(10)::before {
+        content: "柄共通No.：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(11)::before {
+        content: "販売区分：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(12)::before {
+        content: "展示会：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(13)::before {
+        content: "カテゴリー：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(14)::before {
+        content: "アイテム：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(15)::before {
+        content: "ブランド・キャラ：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(16)::before {
+        content: "デザイナー：";
+        font-weight: 600;
+      }
 
-      /* 2段目は販売区分・展示会を横並びで表示（チェック列を除いて2・3列目） */
-      #approvalListArea .result-table tbody td:nth-child(2),
-      #approvalListArea .result-table tbody td:nth-child(3) {
+      /* 2段目は販売区分・展示会を横並びで表示 */
+      #approvalListArea .result-table tbody td:nth-child(11),
+      #approvalListArea .result-table tbody td:nth-child(12) {
         display: inline-block;
         width: auto;
         margin-right: 12px;
@@ -620,6 +709,47 @@
     @media (min-width: 769px) {
       .search-toggle-sp {
         display: none;
+      }
+
+      /* PC/タブレット: 一覧エリアを画面内に収め、下端の横スクロールバーまで見えるようにする */
+      #approvalListArea {
+        width: 100%;
+        height: 56vh;
+        max-height: 56vh;
+        overflow-x: scroll;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+      }
+
+      #approvalListArea .result-table {
+        width: max-content;
+        min-width: 1600px;
+        table-layout: auto;
+      }
+
+      #approvalListArea .result-table th,
+      #approvalListArea .result-table td {
+        white-space: nowrap;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(7) {
+        text-align: center;
+      }
+
+      .result-thumb-btn {
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .result-thumb-image {
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        background: #fff;
       }
     }
 
@@ -784,6 +914,25 @@
       opacity: 0.9;
     }
 
+    /* 一覧イメージ画像（saishusampleteishutsujokyokanri.html と同サイズ） */
+    .result-image-thumb {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      display: block;
+      margin: 0 auto;
+    }
+
+    .result-image-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
     /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
     .btn-fab-new {
       display: inline-block;
@@ -813,6 +962,29 @@
       margin-bottom: 12px;
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border);
+    }
+
+    /* スマホ：下の .search-box-inner .search-row { align-items: center } より後で上書きし、ラベルを他項目と同様に左揃え */
+    @media (max-width: 768px) {
+      .search-box-inner .search-row {
+        align-items: stretch;
+        gap: 6px;
+      }
+
+      .search-box-inner .search-row > label {
+        text-align: left;
+        align-self: stretch;
+        width: 100%;
+      }
+
+      /* 一覧イメージ画像もスマホでは左寄せ（後方定義で確実に上書き） */
+      #approvalListArea .result-image-cell {
+        align-items: flex-start;
+      }
+
+      #approvalListArea .result-image-thumb {
+        margin: 0;
+      }
     }
   </style>
 </head>
@@ -863,6 +1035,14 @@
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="filter-row">
                   <div class="filter-item">
+                    <span class="filter-label">仕様書No.</span>
+                    <input type="text" id="searchShiyoshoNo" placeholder="仕様書No.を入力">
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">柄共通No.</span>
+                    <input type="text" id="searchKaraKyotsuNo" placeholder="柄共通No.を入力">
+                  </div>
+                  <div class="filter-item">
                     <span class="filter-label">販売区分</span>
                     <select id="searchHanbaiKubun">
                       <option value="">すべて</option>
@@ -870,6 +1050,24 @@
                       <option value="teibankako">定番加工</option>
                       <option value="betchu">別注</option>
                       <option value="oem">OEM</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">サンプル区分</span>
+                    <select id="searchStatus">
+                      <option value="">すべて</option>
+                      <option value="1st">1st</option>
+                      <option value="2nd">2nd</option>
+                      <option value="final">最終</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">ステータス</span>
+                    <select id="searchStatus">
+                      <option value="">すべて</option>
+                      <option value="waiting">承認待</option>
+                      <option value="approved">承認済</option>
+                      <option value="rejected">差戻し</option>
                     </select>
                   </div>
                   <div class="filter-item" id="tenjikaiFilterItem">
@@ -882,20 +1080,22 @@
                     </select>
                   </div>
                   <div class="filter-item">
-                    <span class="filter-label">ステータス</span>
-                    <select id="searchStatus">
-                      <option value="">すべて</option>
-                      <option value="申請中">申請中</option>
-                      <option value="承認済">承認済</option>
-                      <option value="差戻し">差戻し</option>
-                    </select>
-                  </div>
-                  <div class="search-row">
-                    <label>カテゴリー</label>
+                    <span class="filter-label">カテゴリー</span>
                     <div class="autocomplete">
                       <input type="text" class="autocomplete-input" data-list="category" placeholder="カテゴリー検索" id="searchCategory">
                       <div class="autocomplete-dropdown"></div>
                     </div>
+                  </div>
+                  <div class="filter-item">
+                    <label class="filter-label">商品コード</label>
+                    <select id="productCodeSelect">
+                      <option value="">選択してください</option>
+                      <option value="1" data-product-name="商品名1">999991</option>
+                      <option value="2" data-product-name="商品名2">999992</option>
+                      <option value="3" data-product-name="商品名3">999993</option>
+                      <option value="4" data-product-name="商品名4">999994</option>
+                      <option value="5" data-product-name="商品名5">999995</option>
+                    </select>
                   </div>
                   <div class="filter-item">
                     <span class="filter-label">品名</span>
@@ -917,12 +1117,25 @@
                   </div>
                   <div class="filter-item">
                     <span class="filter-label">デザイナー</span>
-                    <select id="searchDesigner">
+                    <select id="tenjikaiSelect">
                       <option value="">すべて</option>
-                      <option value="丸眞花子">丸眞花子</option>
-                      <option value="丸眞幸子">丸眞幸子</option>
-                      <option value="丸眞丸子">丸眞丸子</option>
+                      <option value="">丸眞太郎</option>
+                      <option value="">丸眞花子</option>
+                      <option value="">丸眞桜子</option>
                     </select>
+                  </div>
+                  <div class="filter-item" id="arrivalDateFilterItem">
+                    <label>到着日</label>               
+                    <div class="search-row period-range-row period-range-row--from-only">
+                      <div class="period-range-field">
+                        <input type="text" id="periodFromOnly" name="periodFromOnly"
+                          class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                          placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                          title="8桁で入力（例: 20250309）またはカレンダー">
+                        <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                        <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                      </div>
+                    </div>
                   </div>
                   <div class="search-cancel-wrapper">
                     <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
@@ -940,63 +1153,60 @@
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 6%;"></th>
+                      <th style="width: 10%;"></th>
+                      <th style="width: 12%;">商品コード</th>
+                      <th style="width: 20%;">品名</th>
+                      <th style="width: 8%;">サンプル<br>区分</th>
+                      <th style="width: 10%;">承認結果</th>
+                      <th style="width: 10%;">結果登録日 </th>
+                      <th style="width: 20%;"></th> 
+                      <th style="width: 10%;">到着日</th>
+                      <th style="width: 15%;">仕様書No.</th>
+                      <th style="width: 10%;">柄共通No.</th>
                       <th style="width: 10%;">販売区分</th>
                       <th style="width: 10%;">展示会</th>
-                      <th style="width: 10%;">カテゴリー</th>
-                      <th style="width: 25%;">品名</th>
-                      <th style="width: 16%;">アイテム</th>
-                      <th style="width: 16%;">ブランド・キャラ</th>
-                      <th style="width: 10%;">デザイナー</th>
-                      <th style="width: 8%;">承認結果</th>
-                      <th style="width: 10%;">結果登録日</th>
+                      <th style="width: 10%;">カテゴリー</th>                     
+                      <th style="width: 10%;">アイテム</th>
+                      <th style="width: 10%;">ブランド・<br>キャラ</th>
+
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- 50行のサンプルデータ -->
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーA柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>定番加工</td><td></td><td>単品タオル</td><td>ミッキーB柄タオル</td><td>ウォッシュタオル</td><td>ムーミン</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/10</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーC柄タオル</td><td>フェイスタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>定番加工</td><td></td><td>単品タオル</td><td>無地カラフルタオル</td><td>バスタオル</td><td>サンリオ</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>春限定フラワータオル</td><td>マフラータオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/22</td></tr>
+                    <!-- 30行のサンプルデータ -->
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999991</td><td>ミッキーA柄タオル</td><td>1st</td><td>承認待</td><td></td><td></td><td>2025/11/30</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999992</td><td>ミッキーA柄タオル</td><td>1st</td><td>承認済</td><td>2026/01/05</td><td></td><td>2025/11/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999992</td><td>ミッキーB柄タオル</td><td>2nd</td><td>承認待</td><td></td><td></td><td>2025/11/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999993</td><td>ミッキーC柄タオル</td><td>1st</td><td>承認済</td><td>2026/01/15</td><td></td><td>2025/11/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999993</td><td>ミッキーC柄タオル</td><td>2nd</td><td>承認済</td><td>2026/01/31</td><td></td><td>2026/12/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999993</td><td>ミッキーC柄タオル</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/12/01</td><td><a href="sampletoroku.html">SY-2026-0001</a></td><td></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999910</td><td>ミッキー春限定タオルA</td><td>1st</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999910</td><td>ミッキー春限定タオルA</td><td>2nd</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999910</td><td>ミッキー春限定タオルA</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999911</td><td>ミッキー春限定タオルB</td><td>1st</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999911</td><td>ミッキー春限定タオルB</td><td>2nd</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999911</td><td>ミッキー春限定タオルB</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999912</td><td>ミッキー春限定タオルC</td><td>1st</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999912</td><td>ミッキー春限定タオルC</td><td>2nd</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999912</td><td>ミッキー春限定タオルC</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999913</td><td>ミッキー春限定タオルD</td><td>1st</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999913</td><td>ミッキー春限定タオルD</td><td>2nd</td><td>承認済</td><td>2026/02/01</td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999913</td><td>ミッキー春限定タオルD</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/02/01</td><td><a href="sampletoroku.html">SY-2026-0002</a></td><td></td><td>定番加工</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999914</td><td>ミッキー夏限定タオルA</td><td>1st</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999914</td><td>ミッキー夏限定タオルA</td><td>2nd</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999914</td><td>ミッキー夏限定タオルA</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999015</td><td>ミッキー夏限定タオルB</td><td>1st</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999915</td><td>ミッキー夏限定タオルB</td><td>2nd</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999915</td><td>ミッキー夏限定タオルB</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
 
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーAセット</td><td>ミニタオル</td><td>ムーミン</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーBセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地タオル</td><td>ミニタオル</td><td>ドラえもん</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>夏限定マリンセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>秋限定チェックセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーAタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーBタオル</td><td>ミニタオル</td><td>リラックマ</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/10</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/22</td></tr>
-
-                    <!-- 以降は番号だけ変えたダミー行 -->
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミッキーD柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>無地ベーシックタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/10</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルA</td><td>ミニタオル</td><td>すみっコぐらし</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/22</td></tr>
-
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーCセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地カラー</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/10</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地タオルセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>承認済</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトボックスA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>差戻し</td><td>2025/01/22</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトボックスB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>申請中</td><td></td></tr>
-
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーE柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーF柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>承認済</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>別注キャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>差戻し</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMキャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞幸子</td><td>申請中</td><td></td></tr>
-                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地カラーセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞丸子</td><td>承認済</td><td>2025/01/05</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999916</td><td>ミッキー夏限定タオルC</td><td>1st</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999916</td><td>ミッキー夏限定タオルC</td><td>2nd</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999916</td><td>ミッキー夏限定タオルC</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999917</td><td>ミッキー夏限定タオルD</td><td>1st</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果照会</a></td><td>999917</td><td>ミッキー夏限定タオルD</td><td>2nd</td><td>承認済</td><td>2026/03/01</td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><a href="sampleshoninkekkatoroku.html">結果登録</a></td><td>999917</td><td>ミッキー夏限定タオルD</td><td>最終</td><td>承認待</td><td></td><td></td><td>2026/03/01</td><td><a href="sampletoroku.html">SY-2026-0003</a></td><td></td><td>別注</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1081,10 +1291,10 @@
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       });
 
-      // 初期表示（承認待ち）
+      // 初期表示（承認待ち）※ dashboard 等で定義される updateLayout1 が無いページでは呼ばない
       var sel = document.getElementById("tenjikaiSelect");
 
-      if (sel) {
+      if (sel && typeof updateLayout1 === "function") {
         sel.value = "";
 
         updateLayout1("2026.03");
@@ -1092,6 +1302,8 @@
         sel.addEventListener("change", function () {
           updateLayout1(this.value);
         });
+      } else if (sel) {
+        sel.value = "";
       }
 
       // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
@@ -1222,6 +1434,117 @@
             if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
           });
         }
+      })();
+
+      // 一覧: 結果登録日の右隣にイメージ画像列を追加
+      (function () {
+        var tbody = document.querySelector("#approvalListArea .result-table tbody");
+        if (!tbody) return;
+
+        // 行ごとの初期画像を指定（1始まりの行番号）
+        var initialImageByRow = {}; 
+  
+        for (var rowNo = 1; rowNo <= 50; rowNo++) {
+          initialImageByRow[rowNo] = "images/noimage.png";
+        }
+        // 行ごとの個別指定（必要な行だけ上書き）
+        initialImageByRow[1] = "images/evidence.png";initialImageByRow[2] = "images/evidence.png";initialImageByRow[3] = "images/evidence.png";initialImageByRow[4] = "images/evidence.png";
+        initialImageByRow[5] = "images/evidence.png";initialImageByRow[6] = "images/evidence.png";initialImageByRow[7] = "images/evidence.png";initialImageByRow[8] = "images/evidence.png";
+        initialImageByRow[9] = "images/evidence.png";initialImageByRow[10] = "images/evidence.png";initialImageByRow[11] = "images/evidence.png";initialImageByRow[12] = "images/evidence.png";
+        initialImageByRow[13] = "images/evidence.png";initialImageByRow[14] = "images/evidence.png";initialImageByRow[15] = "images/evidence.png";initialImageByRow[16] = "images/evidence.png";
+        initialImageByRow[17] = "images/evidence.png";initialImageByRow[18] = "images/evidence.png";initialImageByRow[19] = "images/evidence.png";initialImageByRow[20] = "images/evidence.png";
+        initialImageByRow[21] = "images/evidence.png";initialImageByRow[22] = "images/evidence.png";initialImageByRow[23] = "images/evidence.png";initialImageByRow[24] = "images/evidence.png";
+        initialImageByRow[25] = "images/evidence.png";initialImageByRow[26] = "images/evidence.png";initialImageByRow[27] = "images/evidence.png";initialImageByRow[28] = "images/evidence.png";
+        initialImageByRow[29] = "images/evidence.png";initialImageByRow[30] = "images/evidence.png";initialImageByRow[31] = "images/evidence.png";initialImageByRow[32] = "images/evidence.png";
+        initialImageByRow[33] = "images/evidence.png";initialImageByRow[34] = "images/evidence.png";initialImageByRow[35] = "images/evidence.png";initialImageByRow[36] = "images/evidence.png";
+        initialImageByRow[37] = "images/evidence.png";initialImageByRow[38] = "images/evidence.png";initialImageByRow[39] = "images/evidence.png";initialImageByRow[40] = "images/evidence.png";
+        initialImageByRow[41] = "images/evidence.png";initialImageByRow[42] = "images/evidence.png";initialImageByRow[43] = "images/evidence.png";initialImageByRow[44] = "images/evidence.png";
+        initialImageByRow[45] = "images/evidence.png";initialImageByRow[46] = "images/evidence.png";initialImageByRow[47] = "images/evidence.png";initialImageByRow[48] = "images/evidence.png";
+        initialImageByRow[49] = "images/evidence.png";initialImageByRow[50] = "images/evidence.png";
+
+        function getInitialImageSrc(rowNo1Based) {
+          if (Object.prototype.hasOwnProperty.call(initialImageByRow, rowNo1Based)) {
+            return initialImageByRow[rowNo1Based];
+          }
+          return "images/noimage.png";
+        }
+
+        Array.prototype.forEach.call(tbody.rows, function (row, rowIndex) {
+          // 「結果登録日」の右隣（7列目）をイメージ画像セルとして利用
+          var imageColIndex = 6; // 0-based
+          if (!row.cells || row.cells.length <= imageColIndex) return;
+
+          var imageCell = row.cells[imageColIndex];
+          // 行ごとの個別設定: <tr data-image-src="images/xxx.png">
+          var initialSrc = row.getAttribute("data-image-src") || getInitialImageSrc(rowIndex + 1);
+
+          imageCell.innerHTML =
+            '<div class="result-image-cell">' +
+            '<img class="result-image-thumb" src="' + initialSrc + '" alt="エビデンス">' +
+            '<input type="file" accept="image/*" class="result-image-input" style="display:none;">' +
+            "</div>";
+        });
+      })();
+
+      // 一覧: イメージ画像クリックでモーダル表示
+      (function () {
+        var tbody = document.querySelector("#approvalListArea .result-table tbody");
+        var modal = document.getElementById("modal-window");
+        if (!tbody || !modal) return;
+
+        function closeModal() {
+          modal.style.display = "none";
+          modal.classList.remove("image-preview-modal");
+          modal.innerHTML = "";
+          document.removeEventListener("keydown", onEscKey);
+        }
+
+        function onEscKey(e) {
+          if (e.key === "Escape") closeModal();
+        }
+
+        tbody.addEventListener("click", function (e) {
+          var img = e.target && e.target.closest("img.result-image-thumb");
+          if (!img) return;
+
+          var src = img.getAttribute("src") || "";
+          if (!src) return;
+
+          modal.classList.add("image-preview-modal");
+          modal.innerHTML =
+            '<button type="button" class="image-preview-modal-close" aria-label="閉じる">×</button>' +
+            '<figure class="image-preview-modal-content">' +
+            '<img src="' + src + '" alt="イメージ画像プレビュー">' +
+            "</figure>";
+          modal.style.display = "block";
+          document.addEventListener("keydown", onEscKey);
+        });
+
+        modal.addEventListener("click", function (e) {
+          if (
+            e.target.classList.contains("image-preview-modal-close") ||
+            e.target === modal
+          ) {
+            closeModal();
+          }
+        });
+
+        tbody.addEventListener("change", function (e) {
+          var fileInput = e.target && e.target.closest(".result-image-input");
+          if (!fileInput) return;
+          var file = fileInput.files && fileInput.files[0];
+          if (!file || !file.type || file.type.indexOf("image/") !== 0) return;
+
+          var cell = fileInput.closest(".result-image-cell");
+          var img = cell ? cell.querySelector("img.result-image-thumb") : null;
+          if (!img) return;
+
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
       })();
     </script>
 </body>
