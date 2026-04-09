@@ -280,9 +280,9 @@
 
     /* エントリーフォーム用スクロールエリア */
     .entry-form {
-      /* 種類～個数のブロック間（1行目と動的行の supplier-input-row の gap と同じ値） */
+      /* 種類～個数のブロック間*/
       --entry-form-section-gap: 8px;
-      --entry-form-label-width: 180px;
+      --entry-form-label-width: 100px;
       --product-code-column-width: 210px;
       --arrival-column-offset: 48px;
       /* .form-row と動的「種類」行の横方向 gap（スマホは下のメディアクエリで上書き） */
@@ -292,8 +292,9 @@
       --product-image-preview-h: 64px;
       /* 商品画像ブロックの上下余白（全行共通） */
       --product-image-preview-margin-y: -3px;
-      /* PC: ステータス列の固定幅（ラベル差で画像の左端がずれないようにする） */
-      --status-inline-col-width: calc(11.5em + 6px + 180px);
+      /* PC: ステータス列（1st/2nd/最終試作でラベル長が違っても select 左端を揃える） */
+      --status-inline-label-width: 10em;
+      --status-inline-col-width: calc(var(--status-inline-label-width) + 6px + 180px);
       /* 商品間の区切り線を左右にのばす量（.content-box の横パディング程度まで） */
       --product-separator-extend-x: 50px;
       margin-top: 16px;
@@ -444,8 +445,8 @@
     }
 
     .entry-form .form-column-arrival-inline > .filter-label {
-      width: 10em;
-      flex: 0 0 10em;
+      width: 11em;
+      flex: 0 0 11em;
       margin-right: 0;
       white-space: nowrap;
     }
@@ -472,8 +473,8 @@
     }
 
     .entry-form .form-column-count-inline > .filter-label {
-      width: 10em;
-      flex: 0 0 10em;
+      width: 11em;
+      flex: 0 0 11em;
       margin-right: 0;
       white-space: nowrap;
     }
@@ -498,10 +499,14 @@
     }
 
     .entry-form .form-column-status-inline > .filter-label {
-      width: auto;
-      flex: 0 0 auto;
+      width: var(--status-inline-label-width);
+      flex: 0 0 var(--status-inline-label-width);
+      min-width: var(--status-inline-label-width);
+      max-width: var(--status-inline-label-width);
       margin-right: 0;
       white-space: nowrap;
+      flex-shrink: 0;
+      box-sizing: border-box;
     }
 
     .entry-form .form-column-status-inline > div > select,
@@ -772,6 +777,11 @@
         --entry-form-row-gap: 1px;
         /* スマホは .content-box の横パディングが狭いので区切り線の拡張も控えめに */
         --product-separator-extend-x: 8px;
+        /*
+         * スマホ：到着日（カレンダー付き）・個数・ステータス・品名のラベル幅を統一し、
+         * 入力・select の左端と残り幅（サイズ感）を揃える
+         */
+        --sample-inline-label-width-sp: 11em;
       }
 
       /* スマホ時は各項目を1つずつ改行して表示 */
@@ -840,38 +850,49 @@
         padding-top: 0;
         line-height: 40px;
       }
-      /* スマホ時: 商品名ラベルは商品コード入力の下に表示 */
+      /* スマホ時: 商品名ラベルは商品コード入力の下に表示（左端＝到着日テキストと同じオフセット） */
       .entry-form .form-column-product-code > .filter-label:last-of-type {
         flex: 0 0 100%;
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
         height: auto;
         min-height: 0;
         line-height: 1.35;
         padding-top: 2px;
-        margin-left: 9em;
+        margin-left: calc(var(--sample-inline-label-width-sp) + 6px);
       }
       .entry-form .form-column-product-code > .filter-label:first-of-type {
         order: 1;
+        width: var(--sample-inline-label-width-sp);
+        flex: 0 0 var(--sample-inline-label-width-sp);
+        min-width: var(--sample-inline-label-width-sp);
+        max-width: var(--sample-inline-label-width-sp);
+        margin-right: 0;
+        white-space: nowrap;
       }
       .entry-form .form-column-product-code > input[type="text"] {
         order: 2;
         flex: 1 1 auto;
         width: auto;
-        max-width: calc(100% - 9em - 6px);
+        max-width: calc(100% - var(--sample-inline-label-width-sp) - 6px);
       }
       .entry-form .form-column-product-code > .filter-label:last-of-type {
         order: 3;
       }
 
-      .entry-form .form-column-product-code > .filter-label,
-      .entry-form .form-column-hinmei-inline > .filter-label,
       .entry-form .form-column-arrival-inline > .filter-label,
+      .entry-form .form-column-hinmei-inline > .filter-label,
       .entry-form .form-column-count-inline > .filter-label,
       .entry-form .form-column-status-inline > .filter-label {
-        width: 9em;
-        flex: 0 0 9em;
+        width: var(--sample-inline-label-width-sp);
+        flex: 0 0 var(--sample-inline-label-width-sp);
+        min-width: var(--sample-inline-label-width-sp);
+        max-width: var(--sample-inline-label-width-sp);
         margin-right: 0;
         white-space: nowrap;
+        flex-shrink: 0;
+        box-sizing: border-box;
       }
 
       .entry-form .form-column-arrival-inline .period-range-row--from-only,
@@ -890,6 +911,14 @@
         max-width: 100%;
         box-sizing: border-box;
       }
+      .entry-form .form-column-hinmei-inline > input[type="text"] {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
       .entry-form .form-column-count-inline > input[type="text"] {
         flex: 1 1 auto;
         width: 100%;
@@ -901,13 +930,13 @@
         flex: 1 1 auto;
         width: auto;
         min-width: 0;
-        max-width: calc(100% - 9em - 6px);
+        max-width: calc(100% - var(--sample-inline-label-width-sp) - 6px);
         box-sizing: border-box;
       }
       /* 上記より強いセレクタで、商品コード入力をラベル横表示に固定 */
       .entry-form .form-row > .form-column.form-column-product-code > input[type="text"] {
         width: auto;
-        max-width: calc(100% - 9em - 6px);
+        max-width: calc(100% - var(--sample-inline-label-width-sp) - 6px);
         flex: 1 1 auto;
         min-width: 0;
       }
@@ -927,8 +956,13 @@
         max-width: 100%;
         box-sizing: border-box;
       }
+      /* 到着日の .period-range-field と同様に残り幅を取り、select の開始位置・幅を揃える */
       .entry-form .form-column-status-inline > div {
-        width: 100%;
+        flex: 1 1 auto;
+        min-width: 0;
+        width: auto;
+        max-width: 100%;
+        box-sizing: border-box;
       }
       .entry-form .form-column-status-inline > div > select,
       .entry-form .form-column-status-inline > select {
@@ -1561,7 +1595,7 @@
                 <label class="filter-label">ミッキーA柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label class="filter-label">1stサンプル到着日</label>
+                <label class="filter-label">1st試作サンプル到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-row--from-only">
                     <div class="period-range-field">
@@ -1576,11 +1610,11 @@
                 </div>
               </div>
               <div class="form-column form-column-count-inline">
-                <label class="filter-label">1stサンプル個数</label>
+                <label class="filter-label">1st試作サンプル個数</label>
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">1stステータス</label>
+                <label class="filter-label">1st試作ステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
@@ -1598,7 +1632,7 @@
             </div>
             <div class="form-row form-row-no-separator form-row-sample-main">
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label class="filter-label">2ndサンプル到着日</label>
+                <label class="filter-label">2nd試作サンプル到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-field">
                     <input type="text" id="periodFromOnly" name="periodFromOnly"
@@ -1611,11 +1645,11 @@
                 </div>
               </div>
               <div class="form-column form-column-count-inline form-column-count-final">
-                <label class="filter-label">2ndサンプル個数</label>
+                <label class="filter-label">2nd試作サンプル個数</label>
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">2ndステータス</label>
+                <label class="filter-label">2nd試作ステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
@@ -1673,7 +1707,7 @@
                 <label class="filter-label">ミッキーB柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label class="filter-label">1stサンプル到着日</label>
+                <label class="filter-label">1st試作サンプル到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-row--from-only">
                     <div class="period-range-field">
@@ -1688,11 +1722,11 @@
                 </div>
               </div>
               <div class="form-column form-column-count-inline">
-                <label class="filter-label">1stサンプル個数</label>
+                <label class="filter-label">1st試作サンプル個数</label>
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">1stステータス</label>
+                <label class="filter-label">1st試作ステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
@@ -1710,7 +1744,7 @@
             </div>
             <div class="form-row form-row-no-separator form-row-sample-main">
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label class="filter-label">2ndサンプル到着日</label>
+                <label class="filter-label">2nd試作サンプル到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-field">
                     <input type="text" id="periodFromOnly" name="periodFromOnly"
@@ -1723,11 +1757,11 @@
                 </div>
               </div>
               <div class="form-column form-column-count-inline form-column-count-final">
-                <label class="filter-label">2ndサンプル個数</label>
+                <label class="filter-label">2nd試作サンプル個数</label>
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">2ndステータス</label>
+                <label class="filter-label">2nd試作ステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
@@ -1785,7 +1819,7 @@
                 <label class="filter-label">ミッキーC柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label class="filter-label">1stサンプル到着日</label>
+                <label class="filter-label">1st試作サンプル到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-row--from-only">
                     <div class="period-range-field">
@@ -1800,11 +1834,11 @@
                 </div>
               </div>
               <div class="form-column form-column-count-inline">
-                <label class="filter-label">1stサンプル個数</label>
+                <label class="filter-label">1st試作サンプル個数</label>
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">1stステータス</label>
+                <label class="filter-label">1st試作ステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
@@ -1822,7 +1856,7 @@
             </div>
             <div class="form-row form-row-no-separator form-row-sample-main">
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label class="filter-label">2ndサンプル到着日</label>
+                <label class="filter-label">2nd試作サンプル到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-field">
                     <input type="text" id="periodFromOnly" name="periodFromOnly"
@@ -1835,11 +1869,11 @@
                 </div>
               </div>
               <div class="form-column form-column-count-inline form-column-count-final">
-                <label class="filter-label">2ndサンプル個数</label>
+                <label class="filter-label">2nd試作サンプル個数</label>
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">2ndステータス</label>
+                <label class="filter-label">2nd試作ステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
