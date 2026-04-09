@@ -287,6 +287,15 @@
       --arrival-column-offset: 48px;
       /* .form-row と動的「種類」行の横方向 gap（スマホは下のメディアクエリで上書き） */
       --entry-form-row-gap: 5px;
+      /* 商品画像プレビュー（全行で同一サイズ・開始位置揃えの基準） */
+      --product-image-preview-w: 72px;
+      --product-image-preview-h: 64px;
+      /* 商品画像ブロックの上下余白（全行共通） */
+      --product-image-preview-margin-y: -3px;
+      /* PC: ステータス列の固定幅（ラベル差で画像の左端がずれないようにする） */
+      --status-inline-col-width: calc(11.5em + 6px + 180px);
+      /* 商品間の区切り線を左右にのばす量（.content-box の横パディング程度まで） */
+      --product-separator-extend-x: 50px;
       margin-top: 16px;
       max-height: calc(100vh - 200px);
       overflow-y: auto;
@@ -336,10 +345,20 @@
       border-top: none;
       padding-top: 0;
     }
-    /* 商品コードが2件目以降の行のみ、行全体に区切り線を表示 */
+    /* 商品コードが2件目以降の行のみ、行全体に区切り線を表示（線幅を左右に拡張） */
     .entry-form .filter-row > .form-row.form-row-product-code-extra {
       border-top: 1px solid var(--color-border);
       padding-top: 8px;
+      margin-left: calc(-1 * var(--product-separator-extend-x));
+      margin-right: calc(-1 * var(--product-separator-extend-x) - 8px);
+      padding-left: var(--product-separator-extend-x);
+      padding-right: calc(var(--product-separator-extend-x) + 8px);
+      box-sizing: border-box;
+      /* 親幅だけだと flex 子がはみ出すとき border が画像列より短く見える → 行幅を中身（画像まで）に合わせる */
+      align-self: flex-start;
+      width: max-content;
+      min-width: 100%;
+      max-width: none;
     }
 
     /* 商品コード列：ラベルと入力欄を横並び */
@@ -493,20 +512,30 @@
       box-sizing: border-box;
     }
 
-    /* 商品画像 */
+    /* 商品画像（全行でサイズ・ブロック幅を統一） */
     .entry-form .product-image-block {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       align-self: flex-start;
-      max-width: 200px;
-      margin-top: -52px;
+      flex: 0 0 var(--product-image-preview-w);
+      width: var(--product-image-preview-w);
+      min-width: var(--product-image-preview-w);
+      max-width: var(--product-image-preview-w);
+      margin-top: var(--product-image-preview-margin-y);
+      margin-bottom: var(--product-image-preview-margin-y);
+      margin-left: 0;
+      padding-top: 0;
+      box-sizing: border-box;
     }
 
     .entry-form .product-image-wrapper {
-      width: 95px;
-      max-width: 95px;
-      height: 95px;
-      max-height: 95px;
+      width: var(--product-image-preview-w);
+      max-width: var(--product-image-preview-w);
+      min-width: var(--product-image-preview-w);
+      height: var(--product-image-preview-h);
+      max-height: var(--product-image-preview-h);
+      min-height: var(--product-image-preview-h);
       box-sizing: border-box;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
@@ -562,9 +591,21 @@
       white-space: nowrap;
     }
 
-    .entry-form .form-row-specification-no {
+    /*
+     * 仕様書No. 下の線を商品間と同じ左右の出幅にする。
+     * max-content はラベル幅に縮み線が短くなるため、.filter-row の幅いっぱい（stretch + 100%）に固定する。
+     */
+    .entry-form .filter-row > .form-row.form-row-specification-no {
       border-bottom: 1px solid var(--color-border);
       padding-bottom: 8px;
+      margin-left: calc(-1 * var(--product-separator-extend-x));
+      margin-right: calc(-1 * var(--product-separator-extend-x) - 8px);
+      padding-left: var(--product-separator-extend-x);
+      padding-right: calc(var(--product-separator-extend-x) + 8px);
+      box-sizing: border-box;
+      align-self: stretch;
+      width: 100%;
+      max-width: none;
     }
 
     .entry-form input,
@@ -729,6 +770,8 @@
         --entry-form-label-width: 100px;
         /* 1行目 .form-row と動的「種類」行の横 gap を同一に */
         --entry-form-row-gap: 1px;
+        /* スマホは .content-box の横パディングが狭いので区切り線の拡張も控えめに */
+        --product-separator-extend-x: 8px;
       }
 
       /* スマホ時は各項目を1つずつ改行して表示 */
@@ -895,20 +938,26 @@
         box-sizing: border-box;
       }
 
-      /* スマホ時: 商品画像(1〜3)はステータスselectの下に表示 */
+      /* スマホ時: 商品画像はステータスselectの下（枠サイズは PC と同一変数） */
       .entry-form .form-row .product-image-block {
         width: 100%;
         max-width: 100%;
-        margin-top: 4px;
+        min-width: 0;
+        flex: 1 1 auto;
+        margin-top: var(--product-image-preview-margin-y);
+        margin-bottom: var(--product-image-preview-margin-y);
         margin-left: 0;
+        padding-top: 0;
         align-self: stretch;
         justify-content: flex-start;
       }
       .entry-form .form-row .product-image-wrapper {
-        width: 100px;
-        max-width: 100px;
-        height: 100px;
-        max-height: 100px;
+        width: var(--product-image-preview-w);
+        max-width: var(--product-image-preview-w);
+        min-width: var(--product-image-preview-w);
+        height: var(--product-image-preview-h);
+        max-height: var(--product-image-preview-h);
+        min-height: var(--product-image-preview-h);
       }
 
       .entry-form .product-name-label {
@@ -1201,9 +1250,17 @@
       .entry-form .form-row-final-sample {
         flex-wrap: nowrap;
       }
+      /* 全ステータス列を同幅にし、隣の商品画像プレビューの左端を縦に揃える */
+      .entry-form .form-column-status-inline {
+        flex: 0 0 var(--status-inline-col-width);
+        width: var(--status-inline-col-width);
+        min-width: var(--status-inline-col-width);
+        max-width: var(--status-inline-col-width);
+        box-sizing: border-box;
+      }
+
       .entry-form .form-row-final-sample .form-column-status-inline {
         margin-left: 10px;
-        flex: 0 0 auto;
       }
     }
 
@@ -1504,7 +1561,7 @@
                 <label class="filter-label">ミッキーA柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label class="filter-label">サンプル到着日</label>
+                <label class="filter-label">１stサンプル到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-row--from-only">
                     <div class="period-range-field">
@@ -1519,8 +1576,59 @@
                 </div>
               </div>
               <div class="form-column form-column-count-inline">
-                <label class="filter-label">サンプル個数</label>
+                <label class="filter-label">１stサンプル個数</label>
                 <input type="text" placeholder="">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">１stステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+            </div>
+            <div class="form-row form-row-no-separator form-row-sample-main">
+              <div class="form-column form-column-arrival-inline form-column-arrival-final">
+                <label class="filter-label">2ndサンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline form-column-count-final">
+                <label class="filter-label">2ndサンプル個数</label>
+                <input type="text" placeholder="">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">2ndステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
             <div class="form-row form-row-no-separator form-row-sample-main">
@@ -1542,7 +1650,7 @@
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">ステータス</label>
+                <label class="filter-label">最終ステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
@@ -1565,102 +1673,26 @@
                 <label class="filter-label">ミッキーB柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label class="filter-label">サンプル到着日</label>
+                <label class="filter-label">１stサンプル到着日</label>
                 <div class="period-range-row--from-only">
-                  <div class="period-range-field">
-                    <input type="text" id="periodFromOnly" name="periodFromOnly"
-                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
-                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                      title="8桁で入力（例: 20250309）またはカレンダー">
-                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  <div class="period-range-row--from-only">
+                    <div class="period-range-field">
+                      <input type="text" id="periodFromOnly" name="periodFromOnly"
+                        class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                        placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                        title="8桁で入力（例: 20250309）またはカレンダー">
+                      <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                      <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="form-column form-column-count-inline">
-                <label class="filter-label">サンプル個数</label>
-                <input type="text" placeholder="">
-              </div>
-            </div>
-            <div class="form-row form-row-no-mobile-separator form-row-final-sample">
-              <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label class="filter-label">最終サンプル到着日</label>
-                <div class="period-range-row--from-only">
-                  <div class="period-range-field">
-                    <input type="text" id="periodFromOnly" name="periodFromOnly"
-                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
-                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                      title="8桁で入力（例: 20250309）またはカレンダー">
-                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
-                  </div>
-                </div>
-              </div>
-              <div class="form-column form-column-count-inline form-column-count-final">
-                <label class="filter-label">最終サンプル個数</label>
+                <label class="filter-label">１stサンプル個数</label>
                 <input type="text" placeholder="">
               </div>
               <div class="form-column form-column-status-inline">
-                <label class="filter-label">ステータス</label>
-                <div>
-                  <select id="statusSelect">
-                    <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
-                  </select>
-                </div>
-              </div>
-              <div class="product-image-block">
-                <div class="product-image-wrapper">
-                  <img class="product-image" id="productImage2" src="images/evidence.png" alt="商品画像プレビュー">
-                </div>
-                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
-              </div>
-            </div>
-            <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main">
-              <div class="form-column form-column-product-code">
-                <label class="filter-label">商品コード</label>
-                <input type="text" value="9999993" readonly>
-                <label class="filter-label">ミッキーC柄タオル</label>
-              </div>
-              <div class="form-column form-column-arrival-inline">
-                <label class="filter-label">サンプル到着日</label>
-                <div class="period-range-row--from-only">
-                  <div class="period-range-field">
-                    <input type="text" id="periodFromOnly" name="periodFromOnly"
-                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
-                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                      title="8桁で入力（例: 20250309）またはカレンダー">
-                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
-                  </div>
-                </div>
-              </div>
-              <div class="form-column form-column-count-inline">
-                <label class="filter-label">サンプル個数</label>
-                <input type="text" placeholder="">
-              </div>
-            </div>
-            <div class="form-row form-row-final-sample">
-              <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label class="filter-label">最終サンプル到着日</label>
-                <div class="period-range-row--from-only">
-                  <div class="period-range-field">
-                    <input type="text" id="periodFromOnly" name="periodFromOnly"
-                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
-                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                      title="8桁で入力（例: 20250309）またはカレンダー">
-                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
-                  </div>
-                </div>
-              </div>
-              <div class="form-column form-column-count-inline form-column-count-final">
-                <label class="filter-label">最終サンプル個数</label>
-                <input type="text" placeholder="">
-              </div>
-              <div class="form-column form-column-status-inline">
-                <label class="filter-label">ステータス</label>
+                <label class="filter-label">１stステータス</label>
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
@@ -1676,7 +1708,188 @@
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-          </div>
+            <div class="form-row form-row-no-separator form-row-sample-main">
+              <div class="form-column form-column-arrival-inline form-column-arrival-final">
+                <label class="filter-label">2ndサンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline form-column-count-final">
+                <label class="filter-label">2ndサンプル個数</label>
+                <input type="text" placeholder="">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">2ndステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+            </div>
+            <div class="form-row form-row-no-separator form-row-sample-main">
+              <div class="form-column form-column-arrival-inline form-column-arrival-final">
+                <label class="filter-label">最終サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline form-column-count-final">
+                <label class="filter-label">最終サンプル個数</label>
+                <input type="text" placeholder="">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">最終ステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+            </div>
+            <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main">
+              <div class="form-column form-column-product-code">
+                <label class="filter-label">商品コード</label>
+                <input type="text" value="9999993" readonly>
+                <label class="filter-label">ミッキーC柄タオル</label>
+              </div>
+              <div class="form-column form-column-arrival-inline">
+                <label class="filter-label">１stサンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-row--from-only">
+                    <div class="period-range-field">
+                      <input type="text" id="periodFromOnly" name="periodFromOnly"
+                        class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                        placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                        title="8桁で入力（例: 20250309）またはカレンダー">
+                      <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                      <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline">
+                <label class="filter-label">１stサンプル個数</label>
+                <input type="text" placeholder="">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">１stステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+            </div>
+            <div class="form-row form-row-no-separator form-row-sample-main">
+              <div class="form-column form-column-arrival-inline form-column-arrival-final">
+                <label class="filter-label">2ndサンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline form-column-count-final">
+                <label class="filter-label">2ndサンプル個数</label>
+                <input type="text" placeholder="">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">2ndステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+            </div>
+            <div class="form-row form-row-no-separator form-row-sample-main">
+              <div class="form-column form-column-arrival-inline form-column-arrival-final">
+                <label class="filter-label">最終サンプル到着日</label>
+                <div class="period-range-row--from-only">
+                  <div class="period-range-field">
+                    <input type="text" id="periodFromOnly" name="periodFromOnly"
+                      class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                      placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
+                      title="8桁で入力（例: 20250309）またはカレンダー">
+                    <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-column form-column-count-inline form-column-count-final">
+                <label class="filter-label">最終サンプル個数</label>
+                <input type="text" placeholder="">
+              </div>
+              <div class="form-column form-column-status-inline">
+                <label class="filter-label">最終ステータス</label>
+                <div>
+                  <select id="statusSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="mishinsei">未申請</option>
+                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                  </select>
+                </div>
+              </div>
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+            </div>
           <div id="supplierAddSection" class="form-row supplier-add-section" style="flex-direction: column; align-items: flex-start; gap: 4px;">
             <div class="supplier-inputs-wrapper">
               <div id="supplierInputsContainer">
