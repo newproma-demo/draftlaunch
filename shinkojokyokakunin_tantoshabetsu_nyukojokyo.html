@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Proma</title>
-  <link rel="stylesheet" href="css/style.css?v=20260318">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,29 +14,18 @@
     :root {
       /* 「例: 80」＋パディング＋ number スピンボタン分（7rem 未満だと iPad 等で潰れる） */
       --rate-input-w: 7rem;
-      --font-size-base: 16pt;
-      --fs-base: 16pt;
-      --fs-sm: 14pt;
-      --fs-xs: 12pt;
-      --fs-lg: 18pt;
-      --fs-xl: 20pt;
-      --fs-content:14pt;
-      --color-primary: #008632;
-      --color-primary-dark: #006C29;
-      --color-primary-light: #00a840;
-      --color-surface: #f8faf9;
-      --color-tanto-hover: #47bdc5;
-      --color-card: #ffffff;
-      --color-border: #e2e8e6;
-      --color-text: #1a2e26;
-      --color-text-muted: #5c6f66;
-      --shadow-sm: 0 1px 3px rgba(0, 134, 50, 0.06);
-      --shadow-md: 0 4px 12px rgba(0, 134, 50, 0.08);
-      --shadow-lg: 0 8px 24px rgba(0, 134, 50, 0.1);
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --font-sans: "Outfit", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+      /* モーダル・サイドバー背面（zuankensaku / style.css と同系統） */
+      --modal-backdrop: rgba(0, 0, 0, 0.6);
+      /* zuankensaku .content-box .page-title と同じ 18px */
+      --fs-page-title: 18px;
+      /* 週報サマリー大数字（html の clamp ベースに合わせてやや抑える） */
+      --fs-kpi: clamp(1.125rem, 2.6vw, 1.375rem);
+      /* 補助ラベル（バー内数値等） */
+      --fs-caption: clamp(10px, 0.35vw + 8px, 12px);
+    }
+
+    .overlay.show {
+      background: var(--modal-backdrop);
     }
 
     .pc-only {
@@ -49,15 +37,8 @@
     }
 
     body {
-      margin: 0;
-      font-size: var(--font-size-base);
-      font-family: var(--font-sans);
-      background: var(--color-surface);
-      color: var(--color-text);
-      height: 100vh;
       display: flex;
       flex-direction: column;
-      -webkit-font-smoothing: antialiased;
     }
 
     /* #region ヘッダー下のメニューとメインコンテンツ */
@@ -73,7 +54,6 @@
 
     /* #region メインコンテンツ */
     .content {
-      font-size: var(--fs-content);
       background: var(--color-surface);
       flex: 1;
       min-height: 0;
@@ -100,16 +80,18 @@
 
     .content > h2 {
       margin: 0 0 20px 0;
-      font-size: var(--fs-lg);
+      font-size: var(--fs-page-title);
       font-weight: 600;
       color: var(--color-text);
       letter-spacing: 0.02em;
     }
 
     .page-title {
-        font-size: 16px;
-      }
+      font-size: inherit;
+    }
+
     .page-title h2 {
+      font-size: var(--fs-page-title);
       font-weight: 700;
       color: var(--color-primary);
       margin: 0 0 16px;
@@ -123,7 +105,6 @@
     ========================================================= */
     .tanto-wrap {
       padding: 6px 0;
-      font-size: 13px;
       color: var(--color-text);
       min-width: 0;
     }
@@ -243,7 +224,6 @@
 
     .search-row label {
       margin: 0;
-      font-size: var(--fs-xs);
       font-weight: 700;
       color: var(--color-text-muted);
       white-space: nowrap;
@@ -299,7 +279,6 @@
       border: none;
       background: transparent;
       color: var(--color-text-muted);
-      font-size: var(--fs-xs);
       font-weight: 900;
       cursor: pointer;
       user-select: none;
@@ -327,7 +306,6 @@
     }
 
     .rate-suffix {
-      font-size: var(--fs-xs);
       font-weight: 900;
       color: var(--color-text-muted);
     }
@@ -347,7 +325,6 @@
       border-radius: 999px;
       border: 1px solid var(--color-border);
       background: var(--color-surface);
-      font-size: var(--fs-xs);
       font-weight: 800;
       color: var(--color-text);
       user-select: none;
@@ -409,7 +386,7 @@
       }
     }
 
-    /* かなり狭いときだけ一括クリアを次行へ（iPad 横 1024px 付近では同じ行を維持） */
+    /* かなり狭いときだけクリアを次行へ（iPad 横 1024px 付近では同じ行を維持） */
     @container searchbar (max-width: 600px) {
       .search-actions {
         flex: 0 0 100%;
@@ -495,6 +472,92 @@
     }
 
     /* --- 担当者カード（3列・クリック展開） --- */
+    /* --- 課別 年間合計（直近2年）サマリー --- */
+    .dept-annual-summary-wrap {
+      margin: 0 0 18px 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      min-width: 0;
+    }
+
+    .dept-annual-summary-title {
+      margin: 0 0 14px 0;
+      font-size: var(--fs-page-title);
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .dept-annual-summary-empty {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    .dept-annual-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .dept-annual-dept-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: #fbfdfb;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      min-width: 0;
+    }
+
+    .dept-annual-dept-card-head {
+      margin: 0;
+      padding: 10px 12px;
+      text-align: center;
+      font-size: inherit;
+      font-weight: 900;
+      color: #183a2b;
+      letter-spacing: 0.06em;
+      background: linear-gradient(180deg, #f0faf3 0%, #e8f5ec 100%);
+      border-top: 3px double rgba(0, 134, 50, 0.35);
+      border-bottom: 2px solid #bfdcc8;
+    }
+
+    .dept-annual-dept-card-body {
+      padding: 12px 14px 14px;
+      font-weight: 800;
+      color: var(--color-text);
+      border-bottom: 3px double rgba(0, 134, 50, 0.25);
+    }
+
+    .dept-annual-year-line {
+      margin: 0;
+      padding: 10px 0;
+      line-height: 1.5;
+      font-variant-numeric: tabular-nums;
+      border-bottom: 1px dashed rgba(0, 134, 50, 0.2);
+    }
+
+    .dept-annual-year-line:last-child {
+      border-bottom: none;
+      padding-bottom: 2px;
+    }
+
+    @media (max-width: 900px) {
+      .dept-annual-cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .dept-annual-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .tanto-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -534,20 +597,24 @@
     }
 
     .tanto-name {
-      font-size: 14px;
       font-weight: 900;
       line-height: 1.2;
     }
 
     .tanto-total {
       grid-column: 1 / -1;
-      font-size: 12px;
       font-weight: 800;
       color: var(--color-text-muted);
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: baseline;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .tanto-total-year-line {
+      line-height: 1.35;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text);
     }
 
     .tanto-total strong {
@@ -558,7 +625,7 @@
     .tanto-toggle {
       align-self: start;
       justify-self: end;
-      font-size: 18px;
+      font-size: var(--fs-xl);
       color: var(--color-text-muted);
       transform: rotate(0deg);
       transition: transform 0.18s ease;
@@ -587,7 +654,7 @@
     }
 
     .phase-label {
-      font-size: 11px;
+      font-size: var(--fs-caption);
       color: var(--color-text-muted);
       text-align: right;
       padding-right: 4px;
@@ -615,12 +682,11 @@
       left: 8px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 11px;
+      font-size: var(--fs-caption);
       font-weight: 800;
     }
 
     .rate-val {
-      font-size: 12px;
       font-weight: 800;
       text-align: right;
       color: var(--color-text-muted);
@@ -659,7 +725,7 @@
     .dashboard-box h2 {
       margin: 0;
       padding: 16px 20px;
-      font-size: var(--fs-base);
+      font-size: inherit;
       font-weight: 600;
       color: var(--color-text);
       border-bottom: 1px solid var(--color-border);
@@ -668,7 +734,7 @@
 
     .search-box h2 {
       margin: 0 0 16px 0;
-      font-size: var(--fs-base);
+      font-size: inherit;
       font-weight: 600;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--color-border);
@@ -748,10 +814,6 @@
         min-height: 0;
       }
 
-      .page-title {
-        font-size: 16px;
-      }
-
       /* スマホ: 検索条件は折りたたみ式 */
       .search-toggle-sp {
         display: flex;
@@ -783,13 +845,8 @@
         vertical-align: middle;
       }
 
-      .search-toggle-sp-text {
-        font-size: 12pt;
-      }
-
       .search-toggle-sp::after {
         content: "＋";
-        font-size: 1.2em;
         color: var(--color-text-muted);
       }
 
@@ -842,7 +899,6 @@
       }
 
       .search-row label {
-        font-size: var(--fs-xs);
         flex-shrink: 0;
       }
 
@@ -919,7 +975,6 @@
     /* ステータス帯 */
     .sp-status{
       padding:6px 12px;
-      font-size:12px;
       font-weight:600;
       color:#fff;
     }
@@ -946,19 +1001,18 @@
 
     .sp-title{
       font-weight:600;
-      font-size:14px;
+      font-size: var(--fs-sm);
       line-height:1.3;
     }
 
     .sp-meta{
-      font-size:12px;
       color:var(--color-text-muted);
       margin-top:4px;
     }
 
     /* 展開ボタン */
     .sp-expand{
-      font-size:20px;
+      font-size: var(--fs-xl);
       color:var(--color-primary);
     }
 
@@ -1011,7 +1065,6 @@
     .sp-step{
       position:relative;
       margin-bottom:14px;
-      font-size:13px;
     }
 
     .sp-step::before{
@@ -1039,7 +1092,7 @@
 
     .sp-step small{
       display:block;
-      font-size:11px;
+      font-size: var(--fs-caption);
       color:var(--color-text-muted);
     }
     /* #endregion */
@@ -1074,12 +1127,11 @@
   }
 
   .overall-badge {
-    font-size: 12px;
     padding: 6px 12px;
   }
 
   .overall-badge span {
-    font-size: 16px;
+    font-size: inherit;
   }
 
   .manifest-modal {
@@ -1111,7 +1163,6 @@
   .manifest-modal-desc {
     grid-column: auto;
     width: 100%;
-    font-size: 13px;
   }
 
   .manifest-yearbox {
@@ -1148,13 +1199,876 @@
   }
 
   .pie-metric-percent {
-    font-size: 18px;
+    font-size: clamp(0.9375rem, 1.8vw, 1.125rem);
   }
 
   .pie-metric-caption {
-    font-size: 11px;
+    font-size: var(--fs-caption);
   }
 }    
+
+/* --- 週報モーダル --- */
+/* 週報 FAB・モーダル内「新規登録」「出力」「保存」共通 */
+.weekly-report-fab,
+.weekly-betchu-new-btn,
+.weekly-report-output-btn,
+.weekly-report-save-btn {
+  border: none;
+  border-radius: 0;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #008632, #00a840);
+  color: #fff;
+  font-size: inherit !important;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  box-shadow: 0 10px 24px rgba(0, 134, 50, 0.28);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.weekly-report-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 2600;
+}
+
+.weekly-report-fab:hover,
+.weekly-betchu-new-btn:hover,
+.weekly-report-output-btn:hover,
+.weekly-report-save-btn:hover {
+  filter: brightness(0.95);
+}
+
+.weekly-report-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  z-index: 3100;
+}
+
+.weekly-report-overlay.is-open {
+  display: flex;
+}
+
+/* クリックで閉じる領域（モーダル・ナビの外側） */
+.weekly-report-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--modal-backdrop, rgba(0, 0, 0, 0.6));
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* モーダル＋前後週ナビのまわり（閉じない UI ゾーン）— 背面はバックドロップと同色に見えるよう透明 */
+.weekly-report-shell {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  padding: 8px;
+  border-radius: 20px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.weekly-report-shell > * {
+  pointer-events: auto;
+}
+
+.weekly-report-week-nav {
+  flex-shrink: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.96);
+  color: #14452d;
+  font-size: var(--fs-sm) !important;
+  font-weight: 800;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+}
+
+.weekly-report-week-nav:hover {
+  background: #fff;
+  color: var(--color-primary);
+}
+
+.weekly-report-week-nav:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.weekly-report-modal {
+  /* #weeklyTable2026 min-width 1460px + content 左右16px×2 + 枠 + 縦スクロールバー分の余裕 */
+  box-sizing: border-box;
+  width: min(1520px, calc(100vw - 40px));
+  max-width: 100%;
+  max-height: 96vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 46px rgba(0, 0, 0, 0.22);
+}
+
+.weekly-report-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+  background: #f7fcf8;
+}
+
+.weekly-report-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.weekly-report-title {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--fs-page-title) !important;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.weekly-report-schedule-block {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 0;
+}
+
+.weekly-report-schedule-note {
+  margin: 0;
+  font-size: var(--fs-xs) !important;
+  font-weight: 700;
+  color: #5b6a63;
+  line-height: 1.35;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.weekly-report-send-datetime {
+  margin: 0;
+  font-size: var(--fs-xs) !important;
+  font-weight: 800;
+  color: #183a2b;
+  line-height: 1.35;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.weekly-report-close {
+  border: none;
+  background: #e8f3eb;
+  color: #145f33;
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.weekly-report-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.weekly-report-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--color-border);
+  background: #f7fcf8;
+}
+
+.weekly-report-output-btn:focus-visible,
+.weekly-report-save-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.weekly-report-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.weekly-report-meta-item {
+  border: 1px solid var(--color-border);
+  background: #fbfdfb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.weekly-report-meta-dates {
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.weekly-report-meta-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.weekly-report-meta-label {
+  color: var(--color-text-muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.weekly-report-meta-value {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.weekly-issues-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.weekly-issues-label {
+  font-weight: 800;
+  color: #183a2b;
+  font-size: var(--fs-base);
+}
+
+.weekly-issues-input {
+  width: 100%;
+  min-height: 88px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  line-height: 1.5;
+  font-family: inherit;
+  resize: vertical;
+  background: #fff;
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+.weekly-issues-input::placeholder {
+  color: #9aad9f;
+}
+
+.weekly-issues-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 134, 50, 0.12);
+}
+
+.weekly-betchu-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.weekly-betchu-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.weekly-betchu-heading {
+  font-weight: 800;
+  color: #183a2b;
+  font-size: var(--fs-base);
+  margin: 0;
+}
+
+.weekly-betchu-new-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #fff !important;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.weekly-betchu-no-link {
+  color: var(--color-primary);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.weekly-betchu-no-link:hover {
+  color: var(--color-primary-dark);
+}
+
+.weekly-betchu-scroll {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: auto;
+  background: #fff;
+  max-height: 220px;
+}
+
+.weekly-betchu-table {
+  width: 100%;
+  border-collapse: collapse;
+  line-height: 1.4;
+}
+
+.weekly-betchu-table th,
+.weekly-betchu-table td {
+  border-bottom: 1px solid #e5ebe7;
+  border-right: 1px solid #e5ebe7;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.weekly-betchu-table th:last-child,
+.weekly-betchu-table td:last-child {
+  border-right: none;
+}
+
+.weekly-betchu-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #eef8f1;
+  color: #1c4030;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.weekly-betchu-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.weekly-betchu-table tbody tr:nth-child(even) td {
+  background: #fcfefd;
+}
+
+.weekly-betchu-table td:nth-child(1),
+.weekly-betchu-table td:nth-child(2) {
+  white-space: nowrap;
+  width: 1%;
+}
+
+.weekly-betchu-table td.weekly-betchu-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.weekly-betchu-cards {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.weekly-betchu-card {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.weekly-betchu-card-title {
+  margin: 0;
+  padding: 10px 12px;
+  background: #eef8f1;
+  font-weight: 800;
+  color: #1c4030;
+  line-height: 1.45;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+
+.weekly-betchu-card-title .weekly-betchu-card-sep {
+  color: #8a9a92;
+  font-weight: 700;
+}
+
+.weekly-betchu-card-body {
+  padding: 10px 12px 12px;
+  display: grid;
+  gap: 8px;
+  line-height: 1.45;
+}
+
+.weekly-betchu-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
+}
+
+.weekly-betchu-card-k {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: #5b6a63;
+}
+
+.weekly-betchu-card-c {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: #5b6a63;
+}
+
+.weekly-betchu-card-v {
+  font-weight: 700;
+  color: #1c4030;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.weekly-betchu-card--empty .weekly-betchu-card-body {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  padding: 14px 12px;
+}
+
+.weekly-visual-section-label {
+  margin: 0;
+  font-size: var(--fs-base);
+  font-weight: 800;
+  color: #183a2b;
+  line-height: 1.4;
+}
+
+.weekly-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.weekly-summary-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.weekly-summary-label {
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.weekly-summary-value {
+  color: var(--color-primary);
+  font-size: var(--fs-kpi);
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+.weekly-summary-sub {
+  margin-top: 4px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+}
+
+.weekly-visual-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.weekly-designer-card {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px;
+}
+
+.weekly-designer-name {
+  font-weight: 800;
+  color: #183a2b;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+.weekly-designer-year-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.weekly-year-stat {
+  border-radius: 8px;
+  padding: 8px;
+  background: #f7fcf8;
+  border: 1px solid #e2eee6;
+}
+
+.weekly-year-stat-title {
+  font-size: 12pt;
+  font-weight: 800;
+  color: #14452d;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.weekly-year-stat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.weekly-year-stat-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12pt;
+  line-height: 1.35;
+}
+
+.weekly-year-stat-list .k {
+  color: #5b6a63;
+  font-weight: 600;
+}
+
+.weekly-year-stat-list .v {
+  font-weight: 800;
+  color: #1c4030;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.weekly-year-stat-list .v.negative {
+  color: #c62828;
+}
+
+.weekly-table-toggle-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.weekly-table-toggle-btn {
+  border: 1px solid #cad5cf;
+  background: #fff;
+  color: #2f4a3e;
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.weekly-year-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.weekly-year-tablist {
+  display: flex;
+  gap: 0;
+  padding: 8px 10px 0;
+  background: #f7fcf8;
+  flex-shrink: 0;
+}
+
+.weekly-year-tab {
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: transparent;
+  color: #4a6b5c;
+  padding: 8px 18px;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 0;
+}
+
+.weekly-year-tab:hover {
+  color: #1c4030;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.weekly-year-tab[aria-selected="true"] {
+  background: #fff;
+  color: #14452d;
+  border-color: #d5e6db;
+  border-bottom-color: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.weekly-year-panel {
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #fff;
+  margin-top: 4px;
+}
+
+.weekly-table-wrap {
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  max-height: 58vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.weekly-table-wrap.is-collapsed {
+  display: none;
+}
+
+#weeklyTable2025 {
+  min-width: 920px;
+}
+
+#weeklyTable2026 {
+  min-width: 1460px;
+}
+
+.weekly-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 920px;
+  font-size: var(--fs-xs);
+  line-height: 1.2;
+  /* 行ホバー・列ホバーで同一色 */
+  --weekly-hover-bg: #e8eaef;
+}
+
+.weekly-table th,
+.weekly-table td {
+  border-bottom: 1px solid #edf2ee;
+  border-right: 1px solid #edf2ee;
+  padding: 6px 7px;
+  text-align: right;
+  white-space: nowrap;
+  font-size: var(--fs-xs);
+  line-height: 1.2;
+}
+
+.weekly-table thead th,
+.weekly-table tbody td {
+  font-size: 12pt;
+}
+
+.weekly-table tbody td:first-child,
+.weekly-table thead tr.group-row th:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: #fff;
+  min-width: 98px;
+}
+
+/* 2段目ヘッダー先頭セルは固定しない（2列目余白崩れ対策） */
+.weekly-table thead tr.sub-row th:first-child {
+  position: static;
+  left: auto;
+  z-index: auto;
+}
+
+.weekly-table thead tr.group-row th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #eaf6ee;
+  color: #1a4f31;
+  font-weight: 900;
+  text-align: center;
+  border-bottom: 1px solid #d5e6db;
+}
+
+.weekly-table thead tr.sub-row th {
+  position: sticky;
+  top: var(--weekly-group-row-h, 32px);
+  z-index: 2;
+  background: #f7fcf8;
+  color: #2b5140;
+  font-weight: 800;
+  text-align: center;
+}
+
+.weekly-table thead th.group-summary,
+.weekly-table td.summary-col {
+  background: #eef8f1;
+}
+
+.weekly-table td.name-cell {
+  font-weight: 800;
+  color: #1c4030;
+}
+
+.weekly-table thead tr.group-row th:first-child {
+  top: 0;
+  z-index: 5;
+}
+
+.weekly-table tbody tr:nth-child(odd) td {
+  background: #fcfefd;
+}
+
+.weekly-table tbody tr:hover td {
+  background: var(--weekly-hover-bg) !important;
+}
+
+.weekly-table th.is-col-hover,
+.weekly-table td.is-col-hover {
+  background: var(--weekly-hover-bg) !important;
+}
+
+.weekly-table thead th {
+  border-top: 1px solid #d5e6db;
+}
+
+.weekly-table td.negative {
+  color: #c62828;
+  font-weight: 800;
+}
+
+.weekly-table tr.total-row td {
+  font-weight: 900;
+  color: #14452d;
+  background: #e8f4ec !important;
+  border-top: 2px solid #bfdcc8;
+}
+
+@media (max-width: 768px) {
+  .weekly-report-fab {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .weekly-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-visual-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-designer-year-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-report-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-report-header-left {
+    flex-wrap: wrap;
+  }
+
+  .weekly-report-schedule-block {
+    margin-left: 0;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .weekly-report-schedule-note {
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .weekly-report-send-datetime {
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .weekly-betchu-scroll {
+    display: none !important;
+  }
+
+  .weekly-betchu-cards {
+    display: flex;
+  }
+
+  .weekly-report-shell {
+    flex-direction: column;
+    max-height: 96vh;
+    overflow-y: auto;
+    align-items: center;
+    width: 100%;
+  }
+
+  .weekly-report-week-nav--prev {
+    order: 1;
+  }
+
+  .weekly-report-modal {
+    order: 2;
+    width: 100%;
+  }
+
+  .weekly-report-week-nav--next {
+    order: 3;
+  }
+
+  .weekly-report-week-nav {
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+  }
+}
   </style>
 </head>
 
@@ -1228,17 +2142,135 @@
             </div>
 
             <div class="search-actions">
-              <button type="button" class="search-button secondary" id="resetBtn">一括クリア</button>
+              <button type="button" class="search-button secondary" id="resetBtn">クリア</button>
             </div>
           </div>
         </div>
+
+        <div class="dept-annual-summary-wrap" id="deptAnnualSummaryWrap" aria-label="課別の直近2年の年間入稿状況"></div>
 
         <div class="tanto-grid" id="tantoGrid" aria-label="担当者カード一覧"></div>
       </section>
 
     </div>
 
+    <button type="button" class="weekly-report-fab" id="weeklyReportOpenBtn">週報</button>
+    <div class="weekly-report-overlay" id="weeklyReportOverlay" aria-hidden="true">
+      <button type="button" class="weekly-report-backdrop" id="weeklyReportBackdrop" tabindex="-1" aria-label="週報モーダルを閉じる"></button>
+      <div class="weekly-report-shell">
+        <button type="button" class="weekly-report-week-nav weekly-report-week-nav--prev" id="weeklyReportPrevWeek" aria-label="前週の週報へ">＜前週へ</button>
+        <div class="weekly-report-modal" role="dialog" aria-modal="true" aria-labelledby="weeklyReportTitle">
+        <div class="weekly-report-header">
+          <div class="weekly-report-header-left">
+            <h3 class="weekly-report-title" id="weeklyReportTitle">部署別週次報告書（商品部デザイナー）</h3>
+            <div class="weekly-report-schedule-block">
+              <p class="weekly-report-schedule-note" role="note">毎週木曜日18:10に自動送信</p>
+              <p class="weekly-report-send-datetime" id="weeklyReportSendDateTime" aria-live="polite">送信日時：-</p>
+            </div>
+          </div>
+          <button type="button" class="weekly-report-close" id="weeklyReportCloseBtn" aria-label="閉じる">×</button>
+        </div>
+        <div class="weekly-report-content">
+          <div class="weekly-report-meta" aria-label="報告情報">
+            <div class="weekly-report-meta-item weekly-report-meta-dates">
+              <span class="weekly-report-meta-group">
+                <span class="weekly-report-meta-label">報告日：</span>
+                <span class="weekly-report-meta-value" id="weeklyReportHokokuDate">-</span>
+              </span>
+              <span class="weekly-report-meta-group">
+                <span class="weekly-report-meta-label">保存日：</span>
+                <span class="weekly-report-meta-value" id="weeklyReportSavedDate">-</span>
+              </span>
+            </div>
+            <div class="weekly-report-meta-item">
+              <span class="weekly-report-meta-label">報告者：</span>
+              <span class="weekly-report-meta-value">丸眞太郎</span>
+            </div>
+            <div class="weekly-report-meta-item">
+              <span class="weekly-report-meta-label">所属課：</span>
+              <span class="weekly-report-meta-value">○組</span>
+            </div>
+          </div>
+          <div class="weekly-issues-block">
+            <label class="weekly-issues-label" for="weeklyDeptIssuesInput">部署別問題点</label>
+            <textarea id="weeklyDeptIssuesInput" class="weekly-issues-input" name="weeklyDeptIssues" rows="4" placeholder="部署ごとの課題・問題点を入力"></textarea>
+          </div>
+          <div class="weekly-betchu-block">
+            <div class="weekly-betchu-toolbar">
+              <div class="weekly-betchu-heading">新規別注依頼</div>
+              <a class="weekly-betchu-new-btn" href="betchuzuansakuseiiraitorokushinsei.html">新規登録</a>
+            </div>
+            <div class="weekly-betchu-scroll">
+              <table class="weekly-betchu-table" aria-label="新規別注依頼一覧">
+                <thead>
+                  <tr>
+                    <th scope="col">図案依頼番号</th>
+                    <th scope="col">日付</th>
+                    <th scope="col">営業担当</th>
+                    <th scope="col">得意先</th>
+                    <th scope="col">内容</th>
+                    <th scope="col">担当者</th>
+                  </tr>
+                </thead>
+                <tbody id="weeklyBetchuTbody"></tbody>
+              </table>
+            </div>
+            <div class="weekly-betchu-cards" id="weeklyBetchuCards" aria-label="新規別注依頼一覧"></div>
+          </div>
+          <p class="weekly-visual-section-label" id="weeklyVisualSectionLabel">担当数(進行中)</p>
+          <div class="weekly-summary-grid">
+            <div class="weekly-summary-card">
+              <div class="weekly-summary-label">総合計</div>
+              <div class="weekly-summary-value" id="weeklyTotalAll">-</div>
+              <div class="weekly-summary-sub">全件数合計</div>
+            </div>
+            <div class="weekly-summary-card">
+              <div class="weekly-summary-label">未入稿</div>
+              <div class="weekly-summary-value" id="weeklyTotalUnsubmitted">-</div>
+              <div class="weekly-summary-sub">未完了件数</div>
+            </div>
+            <div class="weekly-summary-card">
+              <div class="weekly-summary-label">最終済</div>
+              <div class="weekly-summary-value" id="weeklyTotalFinalized">-</div>
+              <div class="weekly-summary-sub">完了件数</div>
+            </div>
+          </div>
+          <div class="weekly-visual-summary" id="weeklyVisualSummary" aria-labelledby="weeklyVisualSectionLabel"></div>
+          <div class="weekly-table-toggle-row">
+            <button type="button" class="weekly-table-toggle-btn" id="weeklyTableToggleBtn" aria-expanded="true" aria-controls="weeklyTableWrap">詳細表を隠す</button>
+          </div>
+          <div class="weekly-table-wrap" id="weeklyTableWrap">
+            <div class="weekly-year-tabs">
+              <div class="weekly-year-tablist" role="tablist" aria-label="年度別の詳細表">
+                <button type="button" class="weekly-year-tab" role="tab" id="weeklyTab2025" aria-selected="true" aria-controls="weeklyPanel2025">2025</button>
+                <button type="button" class="weekly-year-tab" role="tab" id="weeklyTab2026" aria-selected="false" aria-controls="weeklyPanel2026" tabindex="-1">2026</button>
+              </div>
+              <div class="weekly-year-panel" id="weeklyPanel2025" role="tabpanel" aria-labelledby="weeklyTab2025">
+                <table class="weekly-table" id="weeklyTable2025">
+                  <thead></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="weekly-year-panel" id="weeklyPanel2026" role="tabpanel" aria-labelledby="weeklyTab2026" hidden>
+                <table class="weekly-table" id="weeklyTable2026">
+                  <thead></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="weekly-report-footer">
+          <button type="button" class="weekly-report-output-btn" id="weeklyReportOutputBtn">出力</button>
+          <button type="button" class="weekly-report-save-btn" id="weeklyReportSaveBtn">保存</button>
+        </div>
+        </div>
+        <button type="button" class="weekly-report-week-nav weekly-report-week-nav--next" id="weeklyReportNextWeek" aria-label="次週の週報へ">次週へ＞</button>
+      </div>
+    </div>
+
     <script src="js/sidebar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
       // ============================
       // 担当者カード（クリック展開でグラフ表示）
@@ -1251,6 +2283,31 @@
         { name: "デザイナー④", dept: "第2課", color: "#0A97D1", textColor: "#08719B" },
         { name: "デザイナー⑤", dept: "第3課", color: "#8BC63E", textColor: "#5E8B28" }
       ];
+
+      /** 課別・年次の年間合計（全件）と未入稿（u）。入稿済 = total - u ※API連携時に差し替え */
+      const DEPT_ANNUAL_SUBMISSION_STATS = {
+        "第1課": {
+          2025: { total: 948, unsubmitted: 142 },
+          2026: { total: 874, unsubmitted: 121 }
+        },
+        "第2課": {
+          2025: { total: 712, unsubmitted: 96 },
+          2026: { total: 689, unsubmitted: 81 }
+        },
+        "第3課": {
+          2025: { total: 526, unsubmitted: 58 },
+          2026: { total: 501, unsubmitted: 52 }
+        }
+      };
+
+      /** 担当者カード見出し用：年度別 年計／未入稿（入稿済 = total - unsubmitted）※API連携時に差し替え */
+      const PERSON_ANNUAL_SUBMISSION_STATS = {
+        "デザイナー①": { 2025: { total: 512, unsubmitted: 48 }, 2026: { total: 593, unsubmitted: 44 } },
+        "デザイナー②": { 2025: { total: 275, unsubmitted: 33 }, 2026: { total: 317, unsubmitted: 42 } },
+        "デザイナー③": { 2025: { total: 280, unsubmitted: 14 }, 2026: { total: 322, unsubmitted: 14 } },
+        "デザイナー④": { 2025: { total: 200, unsubmitted: 4 }, 2026: { total: 245, unsubmitted: 5 } },
+        "デザイナー⑤": { 2025: { total: 250, unsubmitted: 0 }, 2026: { total: 276, unsubmitted: 0 } }
+      };
 
       const PHASE_DEFS = [
         { key: "2026Q1", label: "2026Q1" },
@@ -1278,6 +2335,900 @@
         const uu = Number(u) || 0;
         if (tt <= 0) return 0;
         return Math.round(((tt - uu) / tt) * 100);
+      }
+
+      const WEEKLY_REPORT_ROWS = [
+        { name: "デザイナー1", y2025_4_mar_u: 0, y2025_4_mar_t: 20, y2025_4_miz_u: 0, y2025_4_miz_t: 2, y2025_7_mar_u: 0, y2025_7_mar_t: 22, y2025_7_miz_u: 0, y2025_7_miz_t: 1, y2025_10_mar_u: 3, y2025_10_mar_t: 12, y2025_10_miz_u: 3, y2025_10_miz_t: 13, y2026_4_mar_u: 26, y2026_4_mar_t: 26, y2026_4_miz_u: 0, y2026_4_miz_t: 0, y2026_7_mar_u: 3, y2026_7_mar_t: 3, y2026_7_miz_u: 0, y2026_7_miz_t: 0, y2026_10_mar_u: 0, y2026_10_mar_t: 0, y2026_10_miz_u: 0, y2026_10_miz_t: 0, azoo_u: 0, azoo_t: 0, maker_u: 0, maker_t: 0, betchu_shinko: 7, betchu_horyu: 0, betchu_t: 7, unsubmitted: 36, all: 36, finalized: 0 },
+        { name: "デザイナー2", y2025_4_mar_u: 0, y2025_4_mar_t: 22, y2025_4_miz_u: 0, y2025_4_miz_t: 0, y2025_7_mar_u: 0, y2025_7_mar_t: 31, y2025_7_miz_u: 0, y2025_7_miz_t: 2, y2025_10_mar_u: 0, y2025_10_mar_t: 18, y2025_10_miz_u: 1, y2025_10_miz_t: 17, y2026_4_mar_u: 57, y2026_4_mar_t: 57, y2026_4_miz_u: 23, y2026_4_miz_t: 23, y2026_7_mar_u: 48, y2026_7_mar_t: 48, y2026_7_miz_u: 0, y2026_7_miz_t: 0, y2026_10_mar_u: 46, y2026_10_mar_t: 0, y2026_10_miz_u: 0, y2026_10_miz_t: 0, azoo_u: 0, azoo_t: 0, maker_u: 2, maker_t: 2, betchu_shinko: 12, betchu_horyu: 0, betchu_t: 12, unsubmitted: 188, all: 142, finalized: -46 },
+        { name: "デザイナー3", y2025_4_mar_u: 0, y2025_4_mar_t: 23, y2025_4_miz_u: 0, y2025_4_miz_t: 4, y2025_7_mar_u: 1, y2025_7_mar_t: 33, y2025_7_miz_u: 0, y2025_7_miz_t: 2, y2025_10_mar_u: 0, y2025_10_mar_t: 8, y2025_10_miz_u: 1, y2025_10_miz_t: 22, y2026_4_mar_u: 19, y2026_4_mar_t: 19, y2026_4_miz_u: 24, y2026_4_miz_t: 24, y2026_7_mar_u: 55, y2026_7_mar_t: 55, y2026_7_miz_u: 0, y2026_7_miz_t: 0, y2026_10_mar_u: 43, y2026_10_mar_t: 0, y2026_10_miz_u: 0, y2026_10_miz_t: 0, azoo_u: 0, azoo_t: 0, maker_u: 2, maker_t: 2, betchu_shinko: 13, betchu_horyu: 0, betchu_t: 13, unsubmitted: 156, all: 113, finalized: -43 },
+        { name: "デザイナー4", y2025_4_mar_u: 1, y2025_4_mar_t: 38, y2025_4_miz_u: 0, y2025_4_miz_t: 6, y2025_7_mar_u: 0, y2025_7_mar_t: 23, y2025_7_miz_u: 0, y2025_7_miz_t: 2, y2025_10_mar_u: 2, y2025_10_mar_t: 35, y2025_10_miz_u: 0, y2025_10_miz_t: 6, y2026_4_mar_u: 25, y2026_4_mar_t: 28, y2026_4_miz_u: 28, y2026_4_miz_t: 28, y2026_7_mar_u: 84, y2026_7_mar_t: 84, y2026_7_miz_u: 0, y2026_7_miz_t: 0, y2026_10_mar_u: 0, y2026_10_mar_t: 0, y2026_10_miz_u: 0, y2026_10_miz_t: 0, azoo_u: 2, azoo_t: 2, maker_u: 0, maker_t: 0, betchu_shinko: 23, betchu_horyu: 0, betchu_t: 23, unsubmitted: 162, all: 165, finalized: 3 },
+        { name: "デザイナー5", y2025_4_mar_u: 0, y2025_4_mar_t: 42, y2025_4_miz_u: 0, y2025_4_miz_t: 3, y2025_7_mar_u: 0, y2025_7_mar_t: 51, y2025_7_miz_u: 0, y2025_7_miz_t: 0, y2025_10_mar_u: 3, y2025_10_mar_t: 33, y2025_10_miz_u: 0, y2025_10_miz_t: 4, y2026_4_mar_u: 33, y2026_4_mar_t: 33, y2026_4_miz_u: 0, y2026_4_miz_t: 0, y2026_7_mar_u: 5, y2026_7_mar_t: 5, y2026_7_miz_u: 1, y2026_7_miz_t: 1, y2026_10_mar_u: 0, y2026_10_mar_t: 0, y2026_10_miz_u: 0, y2026_10_miz_t: 0, azoo_u: 0, azoo_t: 0, maker_u: 0, maker_t: 0, betchu_shinko: 80, betchu_horyu: 0, betchu_t: 80, unsubmitted: 119, all: 119, finalized: 0 },
+        { name: "デザイナー6", y2025_4_mar_u: 0, y2025_4_mar_t: 6, y2025_4_miz_u: 0, y2025_4_miz_t: 0, y2025_7_mar_u: 0, y2025_7_mar_t: 7, y2025_7_miz_u: 0, y2025_7_miz_t: 0, y2025_10_mar_u: 0, y2025_10_mar_t: 4, y2025_10_miz_u: 0, y2025_10_miz_t: 3, y2026_4_mar_u: 44, y2026_4_mar_t: 44, y2026_4_miz_u: 0, y2026_4_miz_t: 0, y2026_7_mar_u: 16, y2026_7_mar_t: 16, y2026_7_miz_u: 7, y2026_7_miz_t: 7, y2026_10_mar_u: 45, y2026_10_mar_t: 0, y2026_10_miz_u: 0, y2026_10_miz_t: 0, azoo_u: 0, azoo_t: 0, maker_u: 0, maker_t: 0, betchu_shinko: 9, betchu_horyu: 0, betchu_t: 17, unsubmitted: 121, all: 84, finalized: -37 },
+        { name: "デザイナー7", y2025_4_mar_u: 0, y2025_4_mar_t: 25, y2025_4_miz_u: 0, y2025_4_miz_t: 1, y2025_7_mar_u: 0, y2025_7_mar_t: 13, y2025_7_miz_u: 0, y2025_7_miz_t: 2, y2025_10_mar_u: 0, y2025_10_mar_t: 27, y2025_10_miz_u: 2, y2025_10_miz_t: 2, y2026_4_mar_u: 44, y2026_4_mar_t: 44, y2026_4_miz_u: 0, y2026_4_miz_t: 0, y2026_7_mar_u: 19, y2026_7_mar_t: 19, y2026_7_miz_u: 0, y2026_7_miz_t: 0, y2026_10_mar_u: 50, y2026_10_mar_t: 0, y2026_10_miz_u: 9, y2026_10_miz_t: 9, azoo_u: 0, azoo_t: 0, maker_u: 0, maker_t: 0, betchu_shinko: 18, betchu_horyu: 0, betchu_t: 26, unsubmitted: 140, all: 98, finalized: -42 },
+        { name: "デザイナー8", y2025_4_mar_u: 0, y2025_4_mar_t: 0, y2025_4_miz_u: 0, y2025_4_miz_t: 0, y2025_7_mar_u: 0, y2025_7_mar_t: 9, y2025_7_miz_u: 0, y2025_7_miz_t: 2, y2025_10_mar_u: 0, y2025_10_mar_t: 40, y2025_10_miz_u: 0, y2025_10_miz_t: 0, y2026_4_mar_u: 51, y2026_4_mar_t: 51, y2026_4_miz_u: 11, y2026_4_miz_t: 11, y2026_7_mar_u: 30, y2026_7_mar_t: 30, y2026_7_miz_u: 0, y2026_7_miz_t: 0, y2026_10_mar_u: 0, y2026_10_mar_t: 0, y2026_10_miz_u: 0, y2026_10_miz_t: 10, azoo_u: 0, azoo_t: 0, maker_u: 0, maker_t: 10, betchu_shinko: 12, betchu_horyu: 0, betchu_t: 13, unsubmitted: 104, all: 115, finalized: 11 }
+      ];
+
+      const WEEKLY_BETCHU_TOROKU_HREF = "betchuzuansakuseiiraitorokushinsei.html";
+
+      const WEEKLY_BETCHU_REQUESTS = [
+        { zuanIraiNo: "BTC-2026-001", date: "2026/04/01", sales: "山田", client: "○○商事株式会社", detail: "ロゴ差し替え・配色変更", designer: "デザイナー1" },
+        { zuanIraiNo: "BTC-2026-002", date: "2026/04/02", sales: "佐藤", client: "△△ストア", detail: "裏地の素材変更", designer: "デザイナー3" },
+        { zuanIraiNo: "BTC-2026-003", date: "2026/04/04", sales: "鈴木", client: "××百貨店", detail: "サイズ展開の追加", designer: "デザイナー2" },
+        { zuanIraiNo: "BTC-2026-004", date: "2026/04/06", sales: "高橋", client: "ニッカ専門店", detail: "タグ表記の別注", designer: "デザイナー5" }
+      ];
+
+      function formatNum(n) {
+        return Number(n || 0).toLocaleString("ja-JP");
+      }
+
+      function formatDateYmd(d) {
+        const dt = d instanceof Date ? d : new Date();
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, "0");
+        const day = String(dt.getDate()).padStart(2, "0");
+        return y + "/" + m + "/" + day;
+      }
+
+      const WEEKLY_SAVE_STORAGE_KEY = "weeklyReportSavedYmdByThursday";
+      const WEEKLY_SENT_AT_STORAGE_KEY = "weeklyReportSentAtByThursday";
+
+      /** 表示中の週（週内の任意の日）。前後週ナビで ±7 日移動 */
+      let weeklyReportWeekAnchor = new Date();
+
+      function startOfDayLocal(d) {
+        const x = new Date(d);
+        x.setHours(0, 0, 0, 0);
+        return x;
+      }
+
+      /** 月曜始まりの週として、その週の木曜日（ローカル 0:00） */
+      function getThursdayOfWeekContaining(d) {
+        const day = startOfDayLocal(d);
+        const jsDow = day.getDay();
+        const daysSinceMonday = (jsDow + 6) % 7;
+        const monday = new Date(day);
+        monday.setDate(day.getDate() - daysSinceMonday);
+        const thu = new Date(monday);
+        thu.setDate(monday.getDate() + 3);
+        return thu;
+      }
+
+      function getWeeklySavedYmdForWeekKey(weekKey) {
+        try {
+          const raw = localStorage.getItem(WEEKLY_SAVE_STORAGE_KEY);
+          if (!raw) return null;
+          const o = JSON.parse(raw);
+          const v = o[weekKey];
+          return typeof v === "string" && v ? v : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function setWeeklySavedYmdForWeekKey(weekKey, ymd) {
+        try {
+          const raw = localStorage.getItem(WEEKLY_SAVE_STORAGE_KEY);
+          const o = raw ? JSON.parse(raw) : {};
+          o[weekKey] = ymd;
+          localStorage.setItem(WEEKLY_SAVE_STORAGE_KEY, JSON.stringify(o));
+        } catch (e) {}
+      }
+
+      /** 報告週の木曜 18:10（ローカル） */
+      function getWeeklyScheduledSendDate(thursdayDate) {
+        const d = new Date(thursdayDate);
+        d.setHours(18, 10, 0, 0);
+        return d;
+      }
+
+      function formatDateYmdHm(d) {
+        const dt = d instanceof Date ? d : new Date(d);
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, "0");
+        const day = String(dt.getDate()).padStart(2, "0");
+        const h = String(dt.getHours()).padStart(2, "0");
+        const min = String(dt.getMinutes()).padStart(2, "0");
+        return y + "/" + m + "/" + day + " " + h + ":" + min;
+      }
+
+      /** API 連携時: 実際の送信日時（yyyy/mm/dd HH:mm）を保存。未送信の週はキーなし */
+      function getWeeklySentAtForWeekKey(weekKey) {
+        try {
+          const raw = localStorage.getItem(WEEKLY_SENT_AT_STORAGE_KEY);
+          if (!raw) return null;
+          const o = JSON.parse(raw);
+          const v = o[weekKey];
+          return typeof v === "string" && v ? v : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function setWeeklySentAtForWeekKey(weekKey, ymdHm) {
+        try {
+          const raw = localStorage.getItem(WEEKLY_SENT_AT_STORAGE_KEY);
+          const o = raw ? JSON.parse(raw) : {};
+          o[weekKey] = ymdHm;
+          localStorage.setItem(WEEKLY_SENT_AT_STORAGE_KEY, JSON.stringify(o));
+        } catch (e) {}
+      }
+
+      function weeklyEscapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderWeeklyBetchuList() {
+        const tbody = document.getElementById("weeklyBetchuTbody");
+        const cardsRoot = document.getElementById("weeklyBetchuCards");
+        if (!tbody || !cardsRoot) return;
+        const emptyTable = '<tr><td colspan="6" class="weekly-betchu-empty">該当する依頼はありません</td></tr>';
+        const emptyCards = (
+          '<article class="weekly-betchu-card weekly-betchu-card--empty">'
+          + '<div class="weekly-betchu-card-body">該当する依頼はありません</div>'
+          + "</article>"
+        );
+        if (!WEEKLY_BETCHU_REQUESTS.length) {
+          tbody.innerHTML = emptyTable;
+          cardsRoot.innerHTML = emptyCards;
+          return;
+        }
+        const torokuHref = weeklyEscapeHtml(WEEKLY_BETCHU_TOROKU_HREF);
+        tbody.innerHTML = WEEKLY_BETCHU_REQUESTS.map((r) => {
+          const no = r.zuanIraiNo != null ? String(r.zuanIraiNo) : "";
+          const noEsc = weeklyEscapeHtml(no);
+          return (
+            "<tr>"
+            + '<td><a class="weekly-betchu-no-link" href="' + torokuHref + '">' + noEsc + "</a></td>"
+            + "<td>" + weeklyEscapeHtml(r.date) + "</td>"
+            + "<td>" + weeklyEscapeHtml(r.sales) + "</td>"
+            + "<td>" + weeklyEscapeHtml(r.client) + "</td>"
+            + "<td>" + weeklyEscapeHtml(r.detail) + "</td>"
+            + "<td>" + weeklyEscapeHtml(r.designer) + "</td>"
+            + "</tr>"
+          );
+        }).join("");
+        cardsRoot.innerHTML = WEEKLY_BETCHU_REQUESTS.map((r) => {
+          const no = r.zuanIraiNo != null ? String(r.zuanIraiNo) : "";
+          const noEsc = weeklyEscapeHtml(no);
+          const title = (
+            "<p class=\"weekly-betchu-card-title\">"
+            + "<span class=\"weekly-betchu-card-date\">" + weeklyEscapeHtml(r.date) + "</span>"
+            + "<span class=\"weekly-betchu-card-sep\" aria-hidden=\"true\">・</span>"
+            + '<a class="weekly-betchu-no-link" href="' + torokuHref + '">' + noEsc + "</a>"
+            + "<span class=\"weekly-betchu-card-sep\" aria-hidden=\"true\">・</span>"
+            + "<span>" + weeklyEscapeHtml(r.designer) + "</span>"
+            + "</p>"
+          );
+          const row = function (k, v) {
+            return (
+              '<div class="weekly-betchu-card-row">'
+              + '<span class="weekly-betchu-card-k">' + weeklyEscapeHtml(k) + "</span>"
+              + '<span class="weekly-betchu-card-c">：</span>'
+              + '<span class="weekly-betchu-card-v">' + weeklyEscapeHtml(v) + "</span>"
+              + "</div>"
+            );
+          };
+          return (
+            '<article class="weekly-betchu-card">'
+            + title
+            + '<div class="weekly-betchu-card-body">'
+            + row("担当営業", r.sales)
+            + row("得意先", r.client)
+            + row("内容", r.detail)
+            + "</div>"
+            + "</article>"
+          );
+        }).join("");
+      }
+
+      function sumKeys(row, keys) {
+        return keys.reduce((acc, k) => acc + (Number(row[k]) || 0), 0);
+      }
+
+      const WEEKLY_Y2025_U_KEYS = ["y2025_4_mar_u", "y2025_4_miz_u", "y2025_7_mar_u", "y2025_7_miz_u", "y2025_10_mar_u", "y2025_10_miz_u"];
+      const WEEKLY_Y2025_T_KEYS = ["y2025_4_mar_t", "y2025_4_miz_t", "y2025_7_mar_t", "y2025_7_miz_t", "y2025_10_mar_t", "y2025_10_miz_t"];
+      const WEEKLY_Y2026_T_KEYS = ["y2026_4_mar_t", "y2026_4_miz_t", "y2026_7_mar_t", "y2026_7_miz_t", "y2026_10_mar_t", "y2026_10_miz_t", "azoo_t", "maker_t", "betchu_t"];
+      const WEEKLY_Y2026_PENDING_KEYS = ["y2026_4_mar_u", "y2026_4_miz_u", "y2026_7_mar_u", "y2026_7_miz_u", "y2026_10_mar_u", "y2026_10_miz_u", "azoo_u", "maker_u", "betchu_shinko", "betchu_horyu"];
+
+      function weeklyDesignerYearStats(row) {
+        const t25 = sumKeys(row, WEEKLY_Y2025_T_KEYS);
+        const u25 = sumKeys(row, WEEKLY_Y2025_U_KEYS);
+        const t26 = sumKeys(row, WEEKLY_Y2026_T_KEYS);
+        const u26 = sumKeys(row, WEEKLY_Y2026_PENDING_KEYS);
+        return {
+          y2025: { total: t25, unsubmitted: u25, submitted: t25 - u25 },
+          y2026: { total: t26, unsubmitted: u26, submitted: t26 - u26 }
+        };
+      }
+
+      function weeklyYearStatBlockHtml(yearLabel, st) {
+        function vCls(n) {
+          return (Number(n) || 0) < 0 ? "v negative" : "v";
+        }
+        return (
+          '<div class="weekly-year-stat">'
+          + '<div class="weekly-year-stat-title">' + yearLabel + "</div>"
+          + '<ul class="weekly-year-stat-list">'
+          + '<li><span class="k">年間合計</span><span class="' + vCls(st.total) + '">' + formatNum(st.total) + "</span></li>"
+          + '<li><span class="k">最終済</span><span class="' + vCls(st.submitted) + '">' + formatNum(st.submitted) + "</span></li>"
+          + '<li><span class="k">未入稿</span><span class="' + vCls(st.unsubmitted) + '">' + formatNum(st.unsubmitted) + "</span></li>"
+          + "</ul></div>"
+        );
+      }
+
+      function weeklyRowWith2025Summary(row) {
+        return Object.assign({}, row, {
+          __2025_sum_u: sumKeys(row, WEEKLY_Y2025_U_KEYS),
+          __2025_sum_t: sumKeys(row, WEEKLY_Y2025_T_KEYS)
+        });
+      }
+
+      function fillWeeklyYearTable(table, groups, rows) {
+        if (!table) return;
+        const flatCols = groups.flatMap((g) => g.cols.map((c) => ({ key: c[0], label: c[1], summary: !!g.summary })));
+        const thead = table.querySelector("thead");
+        const tbody = table.querySelector("tbody");
+        if (!thead || !tbody) return;
+
+        const groupHeader = '<tr class="group-row"><th rowspan="2">担当者</th>' + groups.map((g) => {
+          const cls = g.summary ? ' class="group-summary"' : "";
+          return '<th colspan="' + g.cols.length + '"' + cls + ">" + g.label + "</th>";
+        }).join("") + "</tr>";
+        const subHeader = '<tr class="sub-row">' + flatCols.map((c) => {
+          const cls = c.summary ? ' class="group-summary"' : "";
+          return "<th" + cls + ">" + c.label + "</th>";
+        }).join("") + "</tr>";
+        thead.innerHTML = groupHeader + subHeader;
+        const groupRowEl = thead.querySelector(".group-row");
+        if (groupRowEl) {
+          table.style.setProperty("--weekly-group-row-h", groupRowEl.getBoundingClientRect().height + "px");
+        }
+
+        const bodyRows = rows.map((row) => {
+          const tds = flatCols.map((col) => {
+            const key = col.key;
+            const val = Number(row[key]) || 0;
+            const classes = [];
+            if (val < 0) classes.push("negative");
+            if (col.summary) classes.push("summary-col");
+            const cls = classes.length ? ' class="' + classes.join(" ") + '"' : "";
+            return "<td" + cls + ">" + formatNum(val) + "</td>";
+          }).join("");
+          return '<tr><td class="name-cell">' + row.name + "</td>" + tds + "</tr>";
+        }).join("");
+
+        const totals = {};
+        flatCols.forEach((c) => {
+          totals[c.key] = rows.reduce((acc, row) => acc + (Number(row[c.key]) || 0), 0);
+        });
+        const totalTds = flatCols.map((col) => {
+          const val = totals[col.key] || 0;
+          const classes = ["summary-col"];
+          if (val < 0) classes.push("negative");
+          return '<td class="' + classes.join(" ") + '">' + formatNum(val) + "</td>";
+        }).join("");
+        const totalRow = '<tr class="total-row"><td class="name-cell">総合計</td>' + totalTds + "</tr>";
+
+        tbody.innerHTML = bodyRows + totalRow;
+      }
+
+      function renderWeeklyReport() {
+        const thu = getThursdayOfWeekContaining(weeklyReportWeekAnchor);
+        const weekKey = formatDateYmd(thu);
+        const hokokuEl = document.getElementById("weeklyReportHokokuDate");
+        const savedEl = document.getElementById("weeklyReportSavedDate");
+        if (hokokuEl) hokokuEl.textContent = weekKey;
+        if (savedEl) {
+          const saved = getWeeklySavedYmdForWeekKey(weekKey);
+          savedEl.textContent = saved || "-";
+        }
+
+        const sendDtEl = document.getElementById("weeklyReportSendDateTime");
+        if (sendDtEl) {
+          const storedSent = getWeeklySentAtForWeekKey(weekKey);
+          const scheduledSend = getWeeklyScheduledSendDate(thu);
+          let sentLabel = null;
+          if (storedSent) sentLabel = storedSent;
+          else if (scheduledSend.getTime() <= Date.now()) sentLabel = formatDateYmdHm(scheduledSend);
+          sendDtEl.textContent = sentLabel ? "送信日時：" + sentLabel : "送信日時：-";
+        }
+
+        renderWeeklyBetchuList();
+
+        const totalUnsubmitted = WEEKLY_REPORT_ROWS.reduce((a, r) => a + (Number(r.unsubmitted) || 0), 0);
+        const totalAll = WEEKLY_REPORT_ROWS.reduce((a, r) => a + (Number(r.all) || 0), 0);
+        const totalFinalized = WEEKLY_REPORT_ROWS.reduce((a, r) => a + (Number(r.finalized) || 0), 0);
+
+        const totalAllEl = document.getElementById("weeklyTotalAll");
+        const totalUnsubmittedEl = document.getElementById("weeklyTotalUnsubmitted");
+        const totalFinalizedEl = document.getElementById("weeklyTotalFinalized");
+        if (totalAllEl) totalAllEl.textContent = formatNum(totalAll);
+        if (totalUnsubmittedEl) totalUnsubmittedEl.textContent = formatNum(totalUnsubmitted);
+        if (totalFinalizedEl) totalFinalizedEl.textContent = formatNum(totalFinalized);
+
+        const visualBox = document.getElementById("weeklyVisualSummary");
+        if (visualBox) {
+          visualBox.innerHTML = WEEKLY_REPORT_ROWS.map((row) => {
+            const ys = weeklyDesignerYearStats(row);
+            return (
+              '<article class="weekly-designer-card">'
+              + '<div class="weekly-designer-name">' + row.name + "</div>"
+              + '<div class="weekly-designer-year-grid">'
+              + weeklyYearStatBlockHtml("2025", ys.y2025)
+              + weeklyYearStatBlockHtml("2026", ys.y2026)
+              + "</div>"
+              + "</article>"
+            );
+          }).join("");
+        }
+
+        const groups2025 = [
+          { label: "2025.4月(丸眞)", cols: [["y2025_4_mar_u", "未入稿"], ["y2025_4_mar_t", "全件数"]] },
+          { label: "2025.4月(水野)", cols: [["y2025_4_miz_u", "未入稿"], ["y2025_4_miz_t", "全件数"]] },
+          { label: "2025.7月(丸眞)", cols: [["y2025_7_mar_u", "未入稿"], ["y2025_7_mar_t", "全件数"]] },
+          { label: "2025.7月(水野)", cols: [["y2025_7_miz_u", "未入稿"], ["y2025_7_miz_t", "全件数"]] },
+          { label: "2025.10月(丸眞)", cols: [["y2025_10_mar_u", "未入稿"], ["y2025_10_mar_t", "全件数"]] },
+          { label: "2025.10月(水野)", cols: [["y2025_10_miz_u", "未入稿"], ["y2025_10_miz_t", "全件数"]] },
+          { label: "合計", summary: true, cols: [["__2025_sum_u", "未入稿"], ["__2025_sum_t", "全件数"]] }
+        ];
+        const groups2026 = [
+          { label: "2026.4月(丸眞)", cols: [["y2026_4_mar_u", "未入稿"], ["y2026_4_mar_t", "全件数"]] },
+          { label: "2026.4月(水野)", cols: [["y2026_4_miz_u", "未入稿"], ["y2026_4_miz_t", "全件数"]] },
+          { label: "2026.7月(丸眞)", cols: [["y2026_7_mar_u", "未入稿"], ["y2026_7_mar_t", "全件数"]] },
+          { label: "2026.7月(水野)", cols: [["y2026_7_miz_u", "未入稿"], ["y2026_7_miz_t", "全件数"]] },
+          { label: "2026.10月(丸眞)", cols: [["y2026_10_mar_u", "未入稿"], ["y2026_10_mar_t", "全件数"]] },
+          { label: "2026.10月(水野)", cols: [["y2026_10_miz_u", "未入稿"], ["y2026_10_miz_t", "全件数"]] },
+          { label: "AZOO", cols: [["azoo_u", "未入稿"], ["azoo_t", "全件数"]] },
+          { label: "メーカー変更(復刻含む)", cols: [["maker_u", "未入稿"], ["maker_t", "全件数"]] },
+          { label: "別注(進行中)", cols: [["betchu_shinko", "進行中"], ["betchu_horyu", "保留中"], ["betchu_t", "全件数"]] },
+          { label: "合計", summary: true, cols: [["unsubmitted", "未入稿"], ["all", "全件数"], ["finalized", "最終済"]] }
+        ];
+
+        const table2025 = document.getElementById("weeklyTable2025");
+        const table2026 = document.getElementById("weeklyTable2026");
+        const rows2025 = WEEKLY_REPORT_ROWS.map(weeklyRowWith2025Summary);
+        fillWeeklyYearTable(table2025, groups2025, rows2025);
+        fillWeeklyYearTable(table2026, groups2026, WEEKLY_REPORT_ROWS);
+
+        attachWeeklyTableColIndex(table2025);
+        attachWeeklyTableColIndex(table2026);
+        bindWeeklyTableColumnHover(table2025);
+        bindWeeklyTableColumnHover(table2026);
+        bindWeeklyTableToggle();
+      }
+
+      function bindWeeklyTableToggle() {
+        const btn = document.getElementById("weeklyTableToggleBtn");
+        const wrap = document.getElementById("weeklyTableWrap");
+        if (!btn || !wrap || btn.dataset.bound === "1") return;
+
+        btn.addEventListener("click", () => {
+          const isCollapsed = wrap.classList.toggle("is-collapsed");
+          btn.textContent = isCollapsed ? "詳細表を表示" : "詳細表を隠す";
+          btn.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
+        });
+
+        btn.dataset.bound = "1";
+      }
+
+      function bindWeeklyYearTabs() {
+        const t2025 = document.getElementById("weeklyTab2025");
+        const t2026 = document.getElementById("weeklyTab2026");
+        const p2025 = document.getElementById("weeklyPanel2025");
+        const p2026 = document.getElementById("weeklyPanel2026");
+        if (!t2025 || !t2026 || !p2025 || !p2026 || t2025.dataset.bound === "1") return;
+
+        const tabs = [
+          { tab: t2025, panel: p2025 },
+          { tab: t2026, panel: p2026 }
+        ];
+
+        function activate(idx) {
+          tabs.forEach((t, i) => {
+            const on = i === idx;
+            t.tab.setAttribute("aria-selected", on ? "true" : "false");
+            t.tab.tabIndex = on ? 0 : -1;
+            if (on) t.panel.removeAttribute("hidden");
+            else t.panel.setAttribute("hidden", "");
+          });
+        }
+
+        t2025.addEventListener("click", () => activate(0));
+        t2026.addEventListener("click", () => activate(1));
+
+        t2025.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight") {
+            e.preventDefault();
+            activate(1);
+            t2026.focus();
+          }
+        });
+        t2026.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            activate(0);
+            t2025.focus();
+          }
+        });
+
+        t2025.dataset.bound = "1";
+      }
+
+      function attachWeeklyTableColIndex(table) {
+        if (!table) return;
+        const thead = table.querySelector("thead");
+        const tbody = table.querySelector("tbody");
+        if (!thead || !tbody) return;
+
+        const groupRow = thead.querySelector("tr.group-row");
+        const subRow = thead.querySelector("tr.sub-row");
+        if (!subRow) return;
+
+        // 2段目ヘッダー（実データ列）の列インデックス
+        const subCells = Array.from(subRow.cells);
+        subCells.forEach((cell, idx) => {
+          cell.dataset.colIndex = String(idx);
+        });
+
+        // 1段目ヘッダー（colspanあり）の開始/終了列を付与
+        if (groupRow) {
+          const groupCells = Array.from(groupRow.cells);
+          let cursor = 0;
+          groupCells.forEach((cell, idx) => {
+            // 先頭の「担当者」はデータ列に紐づけない
+            if (idx === 0) return;
+            const span = Number(cell.colSpan) || 1;
+            cell.dataset.colStart = String(cursor);
+            cell.dataset.colEnd = String(cursor + span - 1);
+            cursor += span;
+          });
+        }
+
+        // 明細行（1列目は担当者名なので除外）
+        Array.from(tbody.rows).forEach((row) => {
+          Array.from(row.cells).forEach((cell, idx) => {
+            if (idx === 0) return;
+            cell.dataset.colIndex = String(idx - 1);
+          });
+        });
+      }
+
+      function bindWeeklyTableColumnHover(table) {
+        if (!table || table.dataset.colHoverBound === "1") return;
+
+        function clearColHover() {
+          table.querySelectorAll(".is-col-hover").forEach((el) => el.classList.remove("is-col-hover"));
+        }
+
+        function paintSingleCol(colIdx) {
+          if (colIdx == null || colIdx < 0) return;
+          clearColHover();
+
+          table.querySelectorAll("thead tr.sub-row th, tbody td").forEach((el) => {
+            if (el.dataset.colIndex === String(colIdx)) {
+              el.classList.add("is-col-hover");
+            }
+          });
+        }
+
+        function paintRange(start, end) {
+          clearColHover();
+          const s = Number(start);
+          const e = Number(end);
+          if (!Number.isFinite(s) || !Number.isFinite(e)) return;
+          table.querySelectorAll("thead tr.sub-row th, tbody td").forEach((el) => {
+            const idx = Number(el.dataset.colIndex);
+            if (Number.isFinite(idx) && idx >= s && idx <= e) {
+              el.classList.add("is-col-hover");
+            }
+          });
+        }
+
+        table.addEventListener("mouseover", (e) => {
+          const cell = e.target.closest("th, td");
+          if (!cell || !table.contains(cell)) return;
+
+          // 1段目ヘッダー（グループ）は範囲ハイライト
+          if (cell.closest("tr.group-row")) {
+            if (cell.dataset.colStart != null && cell.dataset.colEnd != null) {
+              paintRange(cell.dataset.colStart, cell.dataset.colEnd);
+            } else {
+              clearColHover();
+            }
+            return;
+          }
+
+          // 2段目ヘッダー・明細は単列ハイライト
+          if (cell.dataset.colIndex != null) {
+            paintSingleCol(Number(cell.dataset.colIndex));
+            return;
+          }
+
+          clearColHover();
+        });
+
+        table.addEventListener("mouseleave", () => {
+          clearColHover();
+        });
+
+        table.dataset.colHoverBound = "1";
+      }
+
+      /**
+       * 週報モーダル内容を PDF 出力（html2pdf.js）
+       * ・シェルは append 前に十分な領域を確保し、不透過ベールでクローンを隠す（はみ出しフラッシュ防止）
+       * ・pagebreak プラグインは inner.px.height、toPdf 分割は canvas.width×ratio のため、キャンバス幅を印刷幅に揃える
+       *   （無理に幅だけ膨らませると 2 ページ目がずれる）。横に収まらない内容は scale で縮小する。
+       * ・html2canvas の width/height は指定しない（上記の整合のため）
+       */
+      function exportWeeklyReportToPdf() {
+        if (typeof html2pdf === "undefined") {
+          window.alert("PDF生成に必要なライブラリを読み込めませんでした。ネットワーク接続を確認してください。");
+          return Promise.resolve();
+        }
+        const modal = document.querySelector(".weekly-report-modal");
+        if (!modal) return Promise.resolve();
+
+        var shellMinW = Math.max(window.innerWidth, modal.offsetWidth, 1520);
+        var shellMinH = Math.max(window.innerHeight, 720);
+
+        const shell = document.createElement("div");
+        shell.className = "weekly-pdf-capture-shell";
+        shell.setAttribute("aria-hidden", "true");
+        shell.style.cssText = [
+          "position:fixed",
+          "left:0",
+          "top:0",
+          "width:" + shellMinW + "px",
+          "height:" + shellMinH + "px",
+          "z-index:2147483646",
+          "pointer-events:auto",
+          "overflow:hidden",
+          "background:#f8faf9"
+        ].join(";");
+
+        const clone = modal.cloneNode(true);
+        clone.querySelector(".weekly-report-close")?.remove();
+        clone.querySelector(".weekly-report-footer")?.remove();
+        clone.querySelector(".weekly-table-toggle-row")?.remove();
+        clone.querySelector(".weekly-betchu-new-btn")?.remove();
+
+        const origTa = modal.querySelector("#weeklyDeptIssuesInput");
+        const cloneTa = clone.querySelector("#weeklyDeptIssuesInput");
+        if (origTa && cloneTa) {
+          cloneTa.value = origTa.value;
+        }
+
+        const betchuScroll = clone.querySelector(".weekly-betchu-scroll");
+        if (betchuScroll) {
+          betchuScroll.style.maxHeight = "none";
+          betchuScroll.style.overflow = "visible";
+        }
+
+        const tableWrap = clone.querySelector("#weeklyTableWrap");
+        if (tableWrap) {
+          tableWrap.style.maxHeight = "none";
+          tableWrap.style.overflow = "visible";
+        }
+
+        clone.querySelector(".weekly-year-tablist")?.remove();
+        clone.querySelectorAll(".weekly-year-panel").forEach((panel) => {
+          panel.removeAttribute("hidden");
+          panel.style.display = "block";
+          panel.style.overflow = "visible";
+          panel.style.marginBottom = "24px";
+          panel.style.pageBreakBefore = "auto";
+          const cap = document.createElement("div");
+          cap.className = "weekly-pdf-year-heading";
+          cap.textContent = panel.id === "weeklyPanel2025" ? "2025年（詳細表）" : "2026年（詳細表）";
+          cap.setAttribute("style", "font-weight:800;font-size:11pt;margin:12px 0 8px;color:#14452d;");
+          panel.insertBefore(cap, panel.firstChild);
+        });
+
+        const w = Math.max(modal.offsetWidth, 800);
+        clone.style.cssText = [
+          "box-sizing:border-box",
+          "position:absolute",
+          "left:0",
+          "top:0",
+          "width:" + w + "px",
+          "max-width:none",
+          "max-height:none",
+          "height:auto",
+          "min-height:200px",
+          "overflow:visible",
+          "overflow-x:visible",
+          "z-index:0",
+          "background:#fff",
+          "pointer-events:none",
+          "box-shadow:none",
+          "border-radius:0"
+        ].join(";");
+
+        const veil = document.createElement("div");
+        veil.className = "weekly-pdf-capture-veil";
+        veil.style.cssText = [
+          "position:absolute",
+          "left:0",
+          "top:0",
+          "right:0",
+          "bottom:0",
+          "width:100%",
+          "height:100%",
+          "z-index:2",
+          "background:#f8faf9",
+          "pointer-events:auto"
+        ].join(";");
+
+        const statusEl = document.createElement("p");
+        statusEl.className = "weekly-pdf-capture-status";
+        statusEl.textContent = "PDFを作成しています…";
+        statusEl.setAttribute("role", "status");
+        statusEl.setAttribute("aria-live", "polite");
+        statusEl.style.cssText = [
+          "position:absolute",
+          "left:50%",
+          "top:50%",
+          "transform:translate(-50%,-50%)",
+          "z-index:3",
+          "margin:0",
+          "pointer-events:none",
+          "font-weight:700",
+          "font-size:16px",
+          "color:#14452d",
+          "white-space:nowrap",
+          "font-family:inherit"
+        ].join(";");
+
+        shell.appendChild(clone);
+        shell.appendChild(veil);
+        shell.appendChild(statusEl);
+        document.body.appendChild(shell);
+
+        const hokokuEl = document.getElementById("weeklyReportHokokuDate");
+        const datePart = (hokokuEl && hokokuEl.textContent && hokokuEl.textContent !== "-"
+          ? hokokuEl.textContent
+          : formatDateYmd(new Date()))
+          .replace(/\//g, "-")
+          .replace(/\s+/g, "_")
+          .replace(/:/g, "-");
+        const filename = "週次報告_" + datePart + ".pdf";
+
+        function runPdf() {
+          var marginMm = 8;
+          var innerWmm = 297 - marginMm * 2;
+          function mmToCssPx(mm) {
+            return Math.floor((mm * 96) / 25.4);
+          }
+          var innerWpx = mmToCssPx(innerWmm);
+
+          clone.style.maxHeight = "none";
+          var tableWrap = clone.querySelector("#weeklyTableWrap");
+          if (tableWrap) {
+            tableWrap.style.maxHeight = "none";
+            tableWrap.style.width = "max-content";
+            tableWrap.style.maxWidth = "none";
+          }
+          clone.querySelectorAll(".weekly-year-tabs").forEach(function (el) {
+            el.style.width = "max-content";
+            el.style.maxWidth = "none";
+          });
+          clone.querySelectorAll(".weekly-year-panel").forEach(function (panel) {
+            panel.style.overflow = "visible";
+            panel.style.overflowX = "visible";
+            panel.style.maxWidth = "none";
+            panel.style.width = "max-content";
+          });
+          clone.querySelectorAll(".weekly-table").forEach(function (tbl) {
+            tbl.style.maxWidth = "none";
+            tbl.style.width = "max-content";
+            tbl.style.minWidth = "min-content";
+          });
+
+          clone.style.maxWidth = "none";
+          clone.style.minWidth = "";
+          clone.style.width = "max-content";
+          if (clone.parentNode !== shell) {
+            shell.insertBefore(clone, veil);
+          }
+          void clone.offsetWidth;
+
+          var naturalW = Math.ceil(
+            Math.max(clone.scrollWidth, clone.offsetWidth, 400)
+          );
+          var naturalH = Math.ceil(
+            Math.max(clone.scrollHeight, clone.offsetHeight, 400)
+          );
+
+          if (naturalW < 4 || naturalH < 4) {
+            shell.remove();
+            window.alert("PDF用のレイアウト幅を取得できませんでした。");
+            return Promise.resolve();
+          }
+
+          var scale = naturalW > innerWpx ? innerWpx / naturalW : 1;
+          var outH = Math.ceil(naturalH * scale);
+
+          if (clone.parentNode) {
+            clone.parentNode.removeChild(clone);
+          }
+
+          var pdfRoot = document.createElement("div");
+          pdfRoot.className = "weekly-pdf-root";
+          pdfRoot.setAttribute("aria-hidden", "true");
+          pdfRoot.style.cssText = [
+            "box-sizing:border-box",
+            "width:" + innerWpx + "px",
+            "min-height:" + outH + "px",
+            "height:" + outH + "px",
+            "overflow:hidden",
+            "background:#fff"
+          ].join(";");
+
+          var pdfScaler = document.createElement("div");
+          pdfScaler.className = "weekly-pdf-scaler";
+          pdfScaler.style.cssText = [
+            "box-sizing:border-box",
+            "position:relative",
+            "width:" + naturalW + "px",
+            "min-height:" + naturalH + "px",
+            "transform:scale(" + scale + ")",
+            "transform-origin:0 0",
+            "will-change:transform"
+          ].join(";");
+
+          clone.style.width = naturalW + "px";
+          clone.style.maxWidth = "none";
+          clone.style.boxSizing = "border-box";
+          clone.style.position = "relative";
+          clone.style.left = "0";
+          clone.style.top = "0";
+
+          pdfScaler.appendChild(clone);
+          pdfRoot.appendChild(pdfScaler);
+          shell.insertBefore(pdfRoot, veil);
+
+          shell.style.width = Math.max(window.innerWidth, innerWpx) + "px";
+          shell.style.height = Math.max(window.innerHeight, outH + 40) + "px";
+
+          /* 詳細表ブロック直前で改ページ（html2pdf pagebreak.before 用マーカー） */
+          if (tableWrap && tableWrap.parentNode) {
+            var prevPb = tableWrap.previousElementSibling;
+            if (!prevPb || !prevPb.classList.contains("weekly-pdf-break-marker")) {
+              var pb = document.createElement("div");
+              pb.className = "weekly-pdf-break-marker";
+              pb.setAttribute("aria-hidden", "true");
+              pb.style.cssText =
+                "height:1px;margin:0;padding:0;border:0;overflow:hidden;"
+                + "page-break-before:always;break-before:page;";
+              tableWrap.parentNode.insertBefore(pb, tableWrap);
+            }
+          }
+
+          var dpr = typeof window.devicePixelRatio === "number" ? window.devicePixelRatio : 1;
+          /* 最低 4 倍・最大 6 倍（DPR が高い端末はそれに追随）。PNG で JPEG 特有の滲みを避ける */
+          var pdfCaptureScale = Math.min(6, Math.max(4, dpr));
+
+          const opt = {
+            margin: [marginMm, marginMm, marginMm, marginMm],
+            filename: filename,
+            image: { type: "png" },
+            html2canvas: {
+              scale: pdfCaptureScale,
+              useCORS: true,
+              allowTaint: true,
+              logging: false,
+              scrollX: 0,
+              scrollY: 0
+            },
+            jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+            pagebreak: {
+              mode: ["css", "legacy"],
+              before: ".weekly-pdf-break-marker"
+            }
+          };
+          return html2pdf()
+            .set(opt)
+            .from(pdfRoot)
+            .save()
+            .then(function () {
+              shell.remove();
+            })
+            .catch(function (err) {
+              shell.remove();
+              console.error(err);
+              window.alert("PDFの生成に失敗しました。");
+            });
+        }
+
+        /* ベール＋シェルで1フレーム塗ってから計測・キャプチャ（クローンのフラッシュ低減） */
+        return new Promise(function (resolve) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              runPdf().then(resolve).catch(resolve);
+            });
+          });
+        });
+      }
+
+      function bindWeeklyReportModal() {
+        const openBtn = document.getElementById("weeklyReportOpenBtn");
+        const closeBtn = document.getElementById("weeklyReportCloseBtn");
+        const overlay = document.getElementById("weeklyReportOverlay");
+        const backdrop = document.getElementById("weeklyReportBackdrop");
+        const prevWeekBtn = document.getElementById("weeklyReportPrevWeek");
+        const nextWeekBtn = document.getElementById("weeklyReportNextWeek");
+        const saveBtn = document.getElementById("weeklyReportSaveBtn");
+        const outputBtn = document.getElementById("weeklyReportOutputBtn");
+        if (!openBtn || !closeBtn || !overlay) return;
+
+        function openModal() {
+          weeklyReportWeekAnchor = new Date();
+          renderWeeklyReport();
+          overlay.classList.add("is-open");
+          overlay.setAttribute("aria-hidden", "false");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeModal() {
+          overlay.classList.remove("is-open");
+          overlay.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+        }
+
+        openBtn.addEventListener("click", openModal);
+        closeBtn.addEventListener("click", closeModal);
+        if (saveBtn) {
+          saveBtn.addEventListener("click", () => {
+            const wk = formatDateYmd(getThursdayOfWeekContaining(weeklyReportWeekAnchor));
+            const today = formatDateYmd(new Date());
+            setWeeklySavedYmdForWeekKey(wk, today);
+            const savedDateEl = document.getElementById("weeklyReportSavedDate");
+            if (savedDateEl) savedDateEl.textContent = today;
+            /* 週報の保存は API 連携時に実装 */
+          });
+        }
+        if (outputBtn) {
+          outputBtn.addEventListener("click", () => {
+            const prevText = outputBtn.textContent;
+            outputBtn.disabled = true;
+            outputBtn.textContent = "出力中…";
+            exportWeeklyReportToPdf().finally(function () {
+              outputBtn.disabled = false;
+              outputBtn.textContent = prevText;
+            });
+          });
+        }
+        if (prevWeekBtn) {
+          prevWeekBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const a = new Date(weeklyReportWeekAnchor);
+            a.setDate(a.getDate() - 7);
+            weeklyReportWeekAnchor = a;
+            renderWeeklyReport();
+            /* 前週データは API／週キー連携時に差し替え */
+          });
+        }
+        if (nextWeekBtn) {
+          nextWeekBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const a = new Date(weeklyReportWeekAnchor);
+            a.setDate(a.getDate() + 7);
+            weeklyReportWeekAnchor = a;
+            renderWeeklyReport();
+            /* 次週データは API／週キー連携時に差し替え */
+          });
+        }
+        if (backdrop) {
+          backdrop.addEventListener("click", closeModal);
+        }
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && overlay.classList.contains("is-open")) closeModal();
+        });
       }
 
       function barColor(r, base) {
@@ -1390,6 +3341,117 @@
         return true;
       }
 
+      function getOrderedDeptsFromPeople() {
+        const seen = new Set();
+        const out = [];
+        for (const p of PEOPLE) {
+          const d = p.dept;
+          if (d && !seen.has(d)) {
+            seen.add(d);
+            out.push(d);
+          }
+        }
+        return out;
+      }
+
+      function getDeptYearSubmissionStat(dept, year) {
+        const byDept = DEPT_ANNUAL_SUBMISSION_STATS[dept];
+        if (!byDept) return { total: 0, unsubmitted: 0 };
+        const row = byDept[year];
+        if (!row) return { total: 0, unsubmitted: 0 };
+        const total = Number(row.total) || 0;
+        const unsubmitted = Math.min(Math.max(0, Number(row.unsubmitted) || 0), total);
+        return { total, unsubmitted };
+      }
+
+      function getPersonYearSubmissionStat(personName, year) {
+        const byPerson = PERSON_ANNUAL_SUBMISSION_STATS[personName];
+        if (!byPerson) return { total: 0, unsubmitted: 0 };
+        const row = byPerson[year];
+        if (!row) return { total: 0, unsubmitted: 0 };
+        const total = Number(row.total) || 0;
+        const unsubmitted = Math.min(Math.max(0, Number(row.unsubmitted) || 0), total);
+        return { total, unsubmitted };
+      }
+
+      /** 課別・担当者カード共通：「2025 年計 …件／ 入稿済 …件 ／未入稿 …件」1行分 */
+      function buildYearSubmissionLineText(y, st) {
+        const total = Number(st.total) || 0;
+        const u = Math.min(Math.max(0, Number(st.unsubmitted) || 0), total);
+        const submitted = Math.max(0, total - u);
+        return (
+          y
+          + " 年計 "
+          + formatNum(total)
+          + "件／ 入稿済 "
+          + formatNum(submitted)
+          + "件 ／未入稿 "
+          + formatNum(u)
+          + "件"
+        );
+      }
+
+      /** 担当者カード見出し：前年・今年の2行（課別年間サマリーと同じ「直近2年」・同じ文言） */
+      function buildPersonYearSummaryHtml(personName) {
+        const nowY = new Date().getFullYear();
+        const years = [nowY - 1, nowY];
+        return years
+          .map((y) => {
+            const st = getPersonYearSubmissionStat(personName, y);
+            const line = buildYearSubmissionLineText(y, st);
+            return '<div class="tanto-total-year-line">' + weeklyEscapeHtml(line) + "</div>";
+          })
+          .join("");
+      }
+
+      /** カード見出し用（例: 第1課 → 1課） */
+      function formatDeptCardTitle(dept) {
+        const m = String(dept).match(/^第(\d+)課$/);
+        return m ? m[1] + "課" : String(dept);
+      }
+
+      function renderDeptAnnualSummary() {
+        const wrap = document.getElementById("deptAnnualSummaryWrap");
+        if (!wrap) return;
+
+        const nowY = new Date().getFullYear();
+        const years = [nowY - 1, nowY];
+        const depts = getOrderedDeptsFromPeople().filter((d) => selectedDepts.size === 0 || selectedDepts.has(d));
+
+        const titleText = "課別 年間合計";
+
+        if (depts.length === 0) {
+          wrap.innerHTML =
+            '<h3 class="dept-annual-summary-title">' + titleText + '</h3>'
+            + '<p class="dept-annual-summary-empty">表示する課がありません</p>';
+          return;
+        }
+
+        const cardsHtml = depts
+          .map((dept) => {
+            const titleShort = weeklyEscapeHtml(formatDeptCardTitle(dept));
+            const ariaDept = weeklyEscapeHtml(dept);
+            const yearLines = years
+              .map((y) => {
+                const st = getDeptYearSubmissionStat(dept, y);
+                const line = buildYearSubmissionLineText(y, st);
+                return '<p class="dept-annual-year-line">' + weeklyEscapeHtml(line) + "</p>";
+              })
+              .join("");
+            return (
+              '<article class="dept-annual-dept-card" aria-label="' + ariaDept + "の年間集計" + '">'
+              + '<div class="dept-annual-dept-card-head">' + titleShort + "</div>"
+              + '<div class="dept-annual-dept-card-body">' + yearLines + "</div>"
+              + "</article>"
+            );
+          })
+          .join("");
+
+        wrap.innerHTML =
+          '<h3 class="dept-annual-summary-title">' + titleText + '</h3>'
+          + '<div class="dept-annual-cards-grid">' + cardsHtml + "</div>";
+      }
+
       function renderCards() {
         const grid = document.getElementById("tantoGrid");
         if (!grid) return;
@@ -1401,8 +3463,6 @@
           .sort((a, b) => personOrder.indexOf(a.name) - personOrder.indexOf(b.name));
 
         for (const p of visible) {
-          const totals = getPersonTotals(p.name);
-
           const card = document.createElement("article");
           card.className = "tanto-card";
           card.setAttribute("draggable", "true");
@@ -1417,9 +3477,8 @@
             '<div class="tanto-name" style="color:' + p.color + '">' + p.name + '</div>'
             + '<div class="tanto-toggle">＋</div>'
             + '<div class="tanto-total">'
-            + '<span>合計達成率 <strong style="color:' + p.color + '">' + totals.r + '%</strong></span>'
-            + '<span>入稿済 <strong>' + (totals.totalT - totals.totalU) + '</strong> / 全 <strong>' + totals.totalT + '</strong></span>'
-            + '</div>';
+            + buildPersonYearSummaryHtml(p.name)
+            + "</div>";
 
           const body = document.createElement("div");
           body.className = "tanto-card-body";
@@ -1436,6 +3495,7 @@
         }
 
         bindDnD(grid);
+        renderDeptAnnualSummary();
       }
 
       const personOrder = PEOPLE.map(p => p.name);
@@ -1651,6 +3711,8 @@
       loadSharedSidebar();
       bindSearch();
       renderCards();
+      bindWeeklyReportModal();
+      bindWeeklyYearTabs();
 
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
