@@ -116,7 +116,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="shipiraishokokunaitehaishokensaku.html?key=1">Ship依頼書/国内手配書登録</a></li>
+      <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=1">Ship依頼書/国内手配書登録</a></li>
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=2">Ship依頼書/国内手配書決済</a></li>
       <li><a href="#">Ship依頼書送信</a></li>
     </ul>
