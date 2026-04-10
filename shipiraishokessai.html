@@ -1221,6 +1221,32 @@
       resize: vertical;
     }
 
+    .result-select-block {
+      padding: 8px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-select-block .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .result-select-block .result-reason-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .result-select-block .result-reason-wrap.is-visible {
+      display: flex;
+    }
+
     /* 決裁結果セレクト：shipiraishokessaiteiban.html と同じ寸法 */
     #kessaiResultSelectPanel1 {
       padding: 8px 12px;
@@ -1819,13 +1845,15 @@
           </div>
         </div>
         <!-- 決裁結果選択エリア -->
-        <div class="shiyosho-panel-kessai-select-top">
-          <select id="kessaiResultSelectPanel1" name="kessaiResultPanel1" aria-label="決裁結果">
-            <option value="" selected disabled>決裁結果を選択してください</option>
-            <option value="approved">承認</option>
-            <option value="rejected">差し戻し</option>
-            <option value="cancelled">取消</option>
-          </select>
+        <div class="result-select-block">
+          <div class="filter-item">
+            <select id="resultSelect" name="result">
+              <option value="" selected disabled>選定結果を選択してください</option>
+              <option value="approved">承認</option>
+              <option value="rejected">差し戻し</option>
+              <option value="cancelled">取消</option>
+            </select>
+          </div>
           <div id="resultReasonWrap" class="result-reason-wrap" aria-hidden="true">
             <textarea id="resultReason" name="resultReason" rows="4" placeholder="理由を入力してください"></textarea>
           </div>
@@ -2133,7 +2161,7 @@
     })();
 
     (function initKessaiResultReasonVisibility() {
-      var select = document.getElementById('kessaiResultSelectPanel1');
+      var select = document.getElementById('resultSelect') || document.getElementById('kessaiResultSelectPanel1');
       var wrap = document.getElementById('resultReasonWrap');
       var reason = document.getElementById('resultReason');
       if (!select || !wrap) return;
