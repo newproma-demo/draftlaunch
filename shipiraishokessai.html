@@ -864,6 +864,18 @@
         right: 20px;
       }
 
+      /* テキストエリア・セレクトがパネル幅を超えないようにする */
+      #kessaiResultSelectPanel1 {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .shiyosho-panel-kessai-select-top .result-reason-wrap textarea {
+        min-height: 7.5rem;
+      }
+
       .fab-actions {
         right: 12px;
         bottom: 12px;
@@ -1155,6 +1167,60 @@
     .btn-fab-new:hover {
       background: var(--color-primary-dark);
       color: #fff;
+    }
+
+    /* 画面イメージ右横：決裁結果セレクト＋差戻し・取消時のみ理由入力 */
+    .shiyosho-panel-kessai-select-top {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 10px;
+      min-height: 0;
+      min-width: 0;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    .shiyosho-panel-kessai-select-top .result-reason-wrap {
+      display: none;
+      align-self: stretch;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .shiyosho-panel-kessai-select-top .result-reason-wrap.is-visible {
+      display: block;
+    }
+
+    .shiyosho-panel-kessai-select-top .result-reason-wrap textarea {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      min-height: 88px;
+      padding: 8px 12px;
+      font-size: var(--fs-sm);
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      resize: vertical;
+    }
+
+    /* 決裁結果セレクト：shipiraishokessaiteiban.html と同じ寸法 */
+    #kessaiResultSelectPanel1 {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+      font-family: inherit;
+      background: var(--color-card);
+      color: var(--color-text);
+      box-sizing: border-box;
     }
 
     .fab-actions .btn-fab-new {
@@ -1476,15 +1542,13 @@
 
     <!-- 画面右下固定：送信・仮登録・PDF -->
     <div class="fab-actions" role="toolbar">
-      <button type="button" class="btn-fab-new">シップ依頼を送信</button>
-      <button type="button" class="btn-fab-new">仮登録</button>
-      <button type="button" class="btn-fab-new">PDF</button>
+      <button type="button" class="btn-fab-new">登録</button>
     </div>
 
     <!--#region メインコンテンツ  -->
     <div class="content">
       <div class="content-box">
-        <h2 class="page-title">Ship依頼書登録・申請</h2>
+        <h2 class="page-title">Ship依頼書決裁</h2>
 
         <!-- ========== ヘッダー入力項目 ========== -->
         <div class="view-layout view-layout-1-group ship-form-header">
@@ -1493,14 +1557,14 @@
             <div class="filter-row">
               <div class="filter-item">
                 <label>工場名<span class="required-mark">（必須）</span></label>
-                <input type="text" placeholder="工場名を入力">
+                <input type="text" placeholder="工場名を入力" value = "テスト工場" readonly disabled>
                 <label>御中</label>
               </div>
               <div class="filter-item">
                 <span class="filter-label">依頼者<span class="required-mark">（必須）</span></span>
-                <select id="iraiSelect">
+                <select id="iraiSelect" readonly disabled>
                   <option value="">選択してください</option>
-                  <option value="1">丸眞太郎</option>
+                  <option value="1" selected>丸眞太郎</option>
                   <option value="2">丸眞花子</option>
                   <option value="3">丸眞桜子</option>
                 </select>
@@ -1509,17 +1573,17 @@
             <div class="filter-row">
               <div class="filter-item">
                 <span class="filter-label">コンテナ（混載）</span>
-                <select id="containerSelect">
+                <select id="containerSelect" readonly disabled>
                   <option value="">選択してください</option>
-                  <option value="ok">OK</option>
+                  <option value="ok" selected>OK</option>
                   <option value="ng">NG</option>
                 </select>
               </div>
               <div class="filter-item">
                 <span class="filter-label">目的港<span class="required-mark">（必須）</span></span>
-                <select id="shipDateSelect">
+                <select id="mokutekiSelect" readonly disabled>
                   <option value="">選択してください</option>
-                  <option value="1">名古屋港＿直流</option>
+                  <option value="1" selected>名古屋港＿直流</option>
                   <option value="2">名古屋港＿瀬戸</option>
                   <option value="3">東京港＿直流</option>
                   <option value="4">横浜港＿直流</option>
@@ -1532,9 +1596,9 @@
               </div>
               <div class="filter-item">
                 <span class="filter-label">Ship予定日</span>
-                <select id="kubunSelect">
+                <select id="shipDateSelect" readonly disabled>
                   <option value="">選択してください</option>
-                  <option value="1">中国：2026/05/09</option>
+                  <option value="1" selected>中国：2026/05/09</option>
                   <option value="2">ベトナム：2026/05/11</option>
                   <option value="1">中国：2026/05/16</option>
                   <option value="2">ベトナム：2026/05/18</option>
@@ -1544,9 +1608,9 @@
               </div>
               <div class="filter-item">
                 <span class="filter-label">区分</span>
-                <select id="searchHanbaiKubun">
+                <select id="kubunSelect" readonly disabled>
                   <option value="">選択してください</option>
-                  <option value="1">SHIP分&nbsp;&nbsp;&nbsp;&nbsp;船舶依頼&nbsp;&nbsp;&nbsp;&nbsp;明細</option>
+                  <option value="1" selected>SHIP分&nbsp;&nbsp;&nbsp;&nbsp;船舶依頼&nbsp;&nbsp;&nbsp;&nbsp;明細</option>
                   <option value="2">国内メーカー分&nbsp;&nbsp;&nbsp;&nbsp;発注依頼&nbsp;&nbsp;&nbsp;&nbsp;明細
                   </option>
                 </select>
@@ -1558,47 +1622,48 @@
         <div class="content-area ship-item-panels-host">
           <div class="view-layout view-layout-2">
             <div class="product-panel-section ship-item-panels">
-              <div class="product-panel-toolbar">
+<!--              <div class="product-panel-toolbar">
                 <button type="button" id="addShipItemPanelBtn" class="btn-add-product-panel">追加</button>
               </div>
+-->
               <div class="product-swiper" id="shipItemProductSwiper">
                 <div class="product-panels-row" id="shipItemPanelsRow">
                   <div class="product-card is-active">
                     <div class="product-table">
                       <div class="form-row">
                         <label>契約書No.</label>
-                        <div><input type="text" name="ship_1[]" placeholder="契約書No.を入力"></div>
+                        <div><input type="text" name="ship_1[]" placeholder="契約書No.を入力" value="1234567890" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>商品コード</label>
-                        <div><input type="text" name="ship_2[]" placeholder="商品コードを入力"></div>
+                        <div><input type="text" name="ship_2[]" placeholder="商品コードを入力" value="999991" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>品番</label>
-                        <div><input type="text" name="ship_3[]" placeholder="品番を入力"></div>
+                        <div><input type="text" name="ship_3[]" placeholder="品番を入力" value="888881" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>商品名</label>
-                        <div><input type="text" name="ship_4[]" placeholder="商品名を入力"></div>
+                        <div><input type="text" name="ship_4[]" placeholder="商品名を入力" value="ミッキーA柄タオル" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>数量</label>
-                        <div><input type="text" name="ship_5[]" placeholder="数量を入力"></div>
+                        <div><input type="text" name="ship_5[]" placeholder="数量を入力" value="100" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>C/S</label>
-                        <div><input type="text" name="ship_6[]" placeholder="C/Sを入力"></div>
+                        <div><input type="text" name="ship_6[]" placeholder="C/Sを入力" value="" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>定番/得意先</label>
-                        <div><input type="text" name="ship_7[]" placeholder="定番/得意先を入力"></div>
+                        <div><input type="text" name="ship_7[]" placeholder="定番/得意先を入力" value="定番" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>別注加工</label>
                         <div>
-                          <select name="ship_8[]">
+                          <select name="ship_8[]" readonly disabled>
                             <option value="">選択してください</option>
-                            <option value="0">無</option>
+                            <option value="0" selected>無</option>
                             <option value="1">有</option>
                           </select>
                         </div>
@@ -1606,9 +1671,9 @@
                       <div class="form-row">
                         <label>値付</label>
                         <div>
-                          <select name="ship_9[]">
+                          <select name="ship_9[]" readonly disabled>
                             <option value="">選択してください</option>
-                            <option value="0">無</option>
+                            <option value="0" selected>無</option>
                             <option value="1">有</option>
                             <option>有</option>
                           </select>
@@ -1617,9 +1682,9 @@
                       <div class="form-row">
                         <label>納品方法</label>
                         <div>
-                          <select name="ship_10[]">
+                          <select name="ship_10[]" readonly disabled>
                             <option value="">選択してください</option>
-                            <option value="1">納品方法１</option>
+                            <option value="1" selected>納品方法１</option>
                             <option value="2">納品方法２</option>
                             <option value="3">納品方法３</option>
                           </select>
@@ -1628,44 +1693,43 @@
                       <div class="form-row">
                         <label>新規/追加</label>
                         <div>
-                          <select name="ship_11[]">
+                          <select name="ship_11[]" readonly disabled>
                             <option value="">選択してください</option>
-                            <option value="1">新規</option>
+                            <option value="1" selected>新規</option>
                             <option value="2">追加</option>
-                            <option>追加</option>
                           </select>
                         </div>
                       </div>
                       <div class="form-row">
                         <label>納期優先度</label>
                         <div>
-                          <select name="ship_12[]">
+                          <select name="ship_12[]" readonly disabled>
                             <option value="">選択してください</option>
                             <option value="1">高</option>
                             <option value="2">中</option>
-                            <option value="3">低</option>
+                            <option value="3" selected>低</option>
                           </select>
                         </div>
                       </div>
                       <div class="form-row">
                         <label>仕入単価</label>
-                        <div><input type="text" name="ship_13[]" placeholder="仕入単価を入力"></div>
+                        <div><input type="text" name="ship_13[]" placeholder="仕入単価を入力" value="100" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>仕入単価計</label>
-                        <div><input type="text" name="ship_14[]" placeholder="仕入単価計を入力"></div>
+                        <div><input type="text" name="ship_14[]" placeholder="仕入単価計を入力" value="100" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>入数</label>
-                        <div><input type="text" name="ship_15[]" placeholder="入数を入力"></div>
+                        <div><input type="text" name="ship_15[]" placeholder="入数を入力" value="100" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>手配可能数</label>
-                        <div><input type="text" name="ship_16[]" placeholder="手配可能数を入力"></div>
+                        <div><input type="text" name="ship_16[]" placeholder="手配可能数を入力" value="100" readonly disabled></div>
                       </div>
                       <div class="form-row">
                         <label>操作</label>
-                        <div><input type="text" name="ship_17[]" placeholder="操作を入力"></div>
+                        <div><input type="text" name="ship_17[]" placeholder="操作を入力" value="なし" readonly disabled></div>
                       </div>
                     </div>
                   </div>
@@ -1683,7 +1747,7 @@
               <div class="filter-item">
                 <label for="shipTotalAmountInput">合計金額&nbsp;&nbsp;</label>
                 <input type="text" id="shipTotalAmountInput" name="ship_total_amount" class="ship-total-amount"
-                  inputmode="decimal" placeholder="0" autocomplete="off" aria-label="合計金額">
+                  inputmode="decimal" placeholder="0" autocomplete="off" aria-label="合計金額" value="100000" readonly disabled>
               </div>
             </div>
             <div class="filter-row">
@@ -1694,9 +1758,9 @@
                     <input type="text" id="periodFromOnly" name="periodFromOnly"
                       class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
                       placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                      title="8桁で入力（例: 20250309）またはカレンダー">
+                      title="8桁で入力（例: 20250309）またはカレンダー" value="2026/05/09" readonly disabled>
                     <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択" disabled>📅</button>
                   </div>
                 </div>
               </div>
@@ -1707,9 +1771,9 @@
                     <input type="text" id="periodFromOnly" name="periodFromOnly"
                       class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
                       placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                      title="8桁で入力（例: 20250309）またはカレンダー">
+                      title="8桁で入力（例: 20250309）またはカレンダー" value="2026/05/09" readonly disabled>
                     <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択" disabled>📅</button>
                   </div>
                 </div>
               </div>
@@ -1720,9 +1784,9 @@
                     <input type="text" id="periodFromOnly" name="periodFromOnly"
                       class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
                       placeholder="yyyymmdd" autocomplete="off" aria-label="日付 From yyyymmdd"
-                      title="8桁で入力（例: 20250309）またはカレンダー">
+                      title="8桁で入力（例: 20250309）またはカレンダー" value="2026/05/09" readonly disabled>
                     <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
+                    <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択" disabled>📅</button>
                   </div>
                 </div>
               </div>
@@ -1731,9 +1795,21 @@
               <div class="filter-item filter-item--remarks">
                 <label for="shipRemarksInput">備考</label>
                 <textarea id="shipRemarksInput" name="ship_remarks" rows="5" placeholder="ここに入力してください..."
-                  autocomplete="off" aria-label="備考"></textarea>
+                  autocomplete="off" aria-label="備考" readonly disabled>特記事項なし</textarea>
               </div>
             </div>
+          </div>
+        </div>
+        <!-- 決裁結果選択エリア -->
+        <div class="shiyosho-panel-kessai-select-top">
+          <select id="kessaiResultSelectPanel1" name="kessaiResultPanel1" aria-label="決裁結果">
+            <option value="" selected disabled>決裁結果を選択してください</option>
+            <option value="approved">承認</option>
+            <option value="rejected">差し戻し</option>
+            <option value="cancelled">取消</option>
+          </select>
+          <div id="resultReasonWrap" class="result-reason-wrap" aria-hidden="true">
+            <textarea id="resultReason" name="resultReason" rows="4" placeholder="理由を入力してください"></textarea>
           </div>
         </div>
       </div>
@@ -1859,13 +1935,7 @@
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       });
 
-      // 互換用：未実装画面では updateLayout1 呼び出しをスキップ
-      var sel = document.getElementById("tenjikaiSelect");
-      if (sel) {
-        sel.value = "";
-      }
-
-      // アイテム・商品サイズ・生産数量：パネル追加
+      // アイテム・商品サイズ・生産数量
       (function () {
         var btn = document.getElementById("addShipItemPanelBtn");
         var row = document.getElementById("shipItemPanelsRow");
@@ -2042,6 +2112,32 @@
 
     (function () {
       attachPeriodRangeFields(document);
+    })();
+
+    (function initKessaiResultReasonVisibility() {
+      var select = document.getElementById('kessaiResultSelectPanel1');
+      var wrap = document.getElementById('resultReasonWrap');
+      var reason = document.getElementById('resultReason');
+      if (!select || !wrap) return;
+
+      function needsReason(value) {
+        return value === 'rejected' || value === 'cancelled' || value === '差戻し' || value === '取消';
+      }
+
+      function apply() {
+        var show = needsReason(select.value);
+        if (show) {
+          wrap.classList.add('is-visible');
+          wrap.setAttribute('aria-hidden', 'false');
+        } else {
+          wrap.classList.remove('is-visible');
+          wrap.setAttribute('aria-hidden', 'true');
+          if (reason) reason.value = '';
+        }
+      }
+
+      select.addEventListener('change', apply);
+      apply();
     })();
 
     </script>
