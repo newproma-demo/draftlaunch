@@ -570,9 +570,9 @@
 
       /* 合計金額・日付 */
       .ship-form-footer .content-area #shipTotalAmountInput {
-        width: calc(100% - 200px);
+        width: calc(100% -100px);
         max-width: 100%;
-        align-self: flex-start;
+        align-self: stretch;
         min-width: 0;
         min-height: 0;
         padding: 6px 8px;
@@ -581,35 +581,42 @@
         box-sizing: border-box;
       }
 
+      /* 日付：見積情報登録の見積依頼日・date-wide-row（SP）と同じ 170px・レイアウト */
       .ship-form-footer .content-area .period-range-row--from-only {
-        width: calc(100% - 200px);
+        width: auto;
         max-width: 100%;
+        min-width: 0;
         align-self: flex-start;
         box-sizing: border-box;
       }
 
       .ship-form-footer .content-area .period-range-field {
-        display: block;
-        width: 100%;
+        position: relative;
+        display: inline-block;
+        width: auto;
         max-width: 100%;
+        min-width: 0;
+        vertical-align: middle;
+        box-sizing: border-box;
       }
 
       .ship-form-footer .content-area .period-range-field .period-range-input.period-range-yyyymmdd {
-        width: 100%;
+        width: 170px !important;
+        min-width: 170px !important;
         max-width: 100%;
-        min-width: 0;
-        padding: 6px 7px;
-        padding-right: 2.6em;
-        font-size: inherit;
+        padding: 6px 7px !important;
+        padding-right: 2.6em !important;
+        font-size: 16px !important;
         font-family: inherit;
         font-variant-numeric: tabular-nums;
+        box-sizing: border-box;
       }
 
       .ship-form-footer .content-area .period-range-field .period-range-calendar-btn {
         padding: 3px 5px;
         font-size: inherit;
         font-family: inherit;
-        right: 4px;
+        right: 5px;
       }
 
       .ship-form-footer .filter-row--remarks .filter-item--remarks {
@@ -901,6 +908,15 @@
     @media (min-width: 769px) {
       .search-toggle-sp {
         display: none;
+      }
+
+      /* Shipフッター：日付テキスト（PCのみ style.css の 8ch より広く。スマホは max-width 内で 100%） */
+      .ship-form-footer .content-area .period-range-field .period-range-input.period-range-yyyymmdd {
+        width: calc(11ch + 7px + 2.8em + 8px);
+        min-width: calc(11ch + 7px + 2.8em + 8px);
+        max-width: 100%;
+        padding-right: 2.8em;
+        box-sizing: border-box;
       }
     }
 
@@ -1975,6 +1991,49 @@
         });
         applyFilter();
       })();
+
+    // 各種日付: カレンダーボタン押下で日付ピッカーを開く（root 以下に対して付与可能）
+    function attachPeriodRangeFields(root) {
+      var scope = root || document;
+      var fields = scope.querySelectorAll('.period-range-row--from-only .period-range-field');
+      fields.forEach(function (field) {
+        if (field.getAttribute('data-period-bound') === '1') return;
+        field.setAttribute('data-period-bound', '1');
+        var textInput = field.querySelector('.period-range-yyyymmdd');
+        var picker = field.querySelector('.period-range-picker');
+        var btn = field.querySelector('.period-range-calendar-btn');
+        if (!picker || !btn || !textInput) return;
+
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (typeof window.openPeriodRangeDatePicker === 'function') {
+            window.openPeriodRangeDatePicker(picker, textInput);
+          } else {
+            try {
+              if (typeof picker.showPicker === 'function') {
+                picker.showPicker();
+              } else {
+                picker.focus();
+                picker.click();
+              }
+            } catch (_) {
+              picker.focus();
+              picker.click();
+            }
+          }
+        });
+
+        picker.addEventListener('change', function () {
+          if (!picker.value) return;
+          textInput.value = picker.value.replace(/-/g, '');
+          textInput.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      });
+    }
+
+    (function () {
+      attachPeriodRangeFields(document);
+    })();
 
     </script>
 </body>
