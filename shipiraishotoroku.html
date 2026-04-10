@@ -546,7 +546,7 @@
       .ship-form-footer .content-area .filter-item {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 5px;
         flex: 1 1 auto;
         width: 100%;
@@ -568,10 +568,11 @@
         box-sizing: border-box;
       }
 
-      /* 合計金額：希望納期の yyyymmdd 欄に近い見た目・幅 */
+      /* 合計金額・日付 */
       .ship-form-footer .content-area #shipTotalAmountInput {
-        width: 100%;
-        max-width: min(100%, calc(8ch + 7px + 2.6em + 2px));
+        width: calc(100% - 200px);
+        max-width: 100%;
+        align-self: flex-start;
         min-width: 0;
         min-height: 0;
         padding: 6px 8px;
@@ -581,8 +582,10 @@
       }
 
       .ship-form-footer .content-area .period-range-row--from-only {
-        width: 100%;
-        max-width: min(100%, calc(8ch + 7px + 2.6em + 2px));
+        width: calc(100% - 200px);
+        max-width: 100%;
+        align-self: flex-start;
+        box-sizing: border-box;
       }
 
       .ship-form-footer .content-area .period-range-field {
@@ -616,11 +619,14 @@
       .ship-form-footer .filter-row--remarks .filter-item--remarks textarea#shipRemarksInput {
         width: 100%;
         max-width: 100%;
+        align-self: stretch;
+        text-align: left;
         min-height: 4.5em;
         font-size: inherit;
         font-family: inherit;
         line-height: inherit;
         padding: 8px 10px;
+        box-sizing: border-box;
       }
 
       .filter-row--remarks .filter-item--remarks {
@@ -638,6 +644,7 @@
         width: 100%;
         min-width: 0;
         max-width: min(720px, 100%);
+        text-align: left;
       }
 
       /* スマホ: 検索条件は折りたたみ式 */
@@ -973,6 +980,7 @@
       max-width: min(650px, 100%);
       min-height: 6.5em;
       box-sizing: border-box;
+      text-align: left;
     }
 
     /* 承認通知／検索結果・ボックス共通（背景は .content と同じサーフェス） */
@@ -1298,8 +1306,17 @@
     /* 複数パネルは .product-swiper 内で横スクロール（overflow:visible にすると .content-box の hidden で欠ける） */
 
     @media (max-width: 768px) {
+      /* パネル列を親の左右パディングに少し食い込ませて幅を広げる */
+      .content-area.ship-item-panels-host {
+        width: calc(100% + 24px);
+        max-width: none;
+        margin-left: -12px;
+        margin-right: -12px;
+        box-sizing: border-box;
+      }
+
       .ship-item-panels-host {
-        max-width: 100%;
+        max-width: none;
       }
 
       .ship-item-panels .product-swiper {
@@ -1326,11 +1343,11 @@
         padding: 10px 34px 10px 8px;
       }
 
-      /* 複数パネル：従来どおり横並び＋スワイパーでスクロール */
+      /* 複数パネル：カード幅を少し広げる（左右マージンを縮小） */
       .ship-item-panels .product-panels-row:has(.product-card:nth-child(2)) .product-card {
-        width: calc(100vw - 48px);
-        min-width: min(calc(100vw - 48px), 100%);
-        max-width: calc(100vw - 48px);
+        width: calc(100vw - 32px);
+        min-width: min(calc(100vw - 32px), 100%);
+        max-width: calc(100vw - 32px);
         padding: 10px 34px 10px 8px;
       }
 
@@ -1501,7 +1518,7 @@
             </div>
           </div>
         </div>
-        <!-- アイテム等：パネル化 -->
+        <!-- 明細入力項目エリア -->
         <div class="content-area ship-item-panels-host">
           <div class="view-layout view-layout-2">
             <div class="product-panel-section ship-item-panels">
