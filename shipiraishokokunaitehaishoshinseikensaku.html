@@ -689,6 +689,10 @@
       background: var(--color-primary-dark);
       color: #fff;
     }
+    /* display:inline-block より [hidden] を確実に効かせる */
+    .btn-fab-new[hidden] {
+      display: none !important;
+    }
 
     /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
     .search-clear-wrapper {
@@ -755,8 +759,8 @@
     <div id="sidebarMount"></div>
     <!-- #endregion -->
     
-    <!-- 画面右下固定 ボタンなし -->
-    <!--<a href="" class="btn-fab-new">新規登録</a>-->
+    <!-- 画面右下固定 新規登録ボタン（key=1 のときのみ表示） -->
+    <a href="" class="btn-fab-new" id="newRegisterButton" hidden>新規登録</a>
     <!-- #endregion -->
 
     <!--#region メインコンテンツ  -->
@@ -954,6 +958,12 @@
 
     <script src="js/sidebar.js"></script>
     <script>
+      function getParameterByName(name) {
+        var url = new URL(window.location.href);
+        var v = url.searchParams.get(name);
+        return v == null ? "" : String(v).trim();
+      }
+
       // スマホ: 検索条件の折りたたみ開閉
       (function () {
         var btn = document.getElementById("searchToggleSp");
@@ -1026,6 +1036,15 @@
       }
 
       loadSharedSidebar();
+
+      // URLクエリの key に応じて新規登録ボタン表示を切り替え
+      (function () {
+        var newRegisterButton = document.getElementById("newRegisterButton");
+        if (!newRegisterButton) return;
+
+        var key = getParameterByName("key");
+        newRegisterButton.hidden = key !== "1";
+      })();
       
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
