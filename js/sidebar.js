@@ -117,7 +117,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=1">Ship依頼書/国内手配書登録</a></li>
-      <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=2">Ship依頼書/国内手配書決済</a></li>
+      <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=2">Ship依頼書/国内手配書決裁</a></li>
       <li><a href="#">Ship依頼書送信</a></li>
     </ul>
   </div>
