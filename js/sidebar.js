@@ -167,7 +167,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="costkanrihyo.html">コスト管理表</a></li>
-      <li><a href="#">商品情報照会</a></li>
+      <li><a href="shohinjohoichiran.html">商品情報照会</a></li>
       <li><a href="#">システム設定マスタメンテナンス</a></li>
       <li><a href="#">権限グループマスタメンテナンス</a></li>
       <li><a href="#">ユーザーマスタメンテナンス</a></li>
