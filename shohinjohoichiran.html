@@ -49,6 +49,9 @@
     .result-table tr:nth-child(even) { background: var(--color-surface); }
     .result-table tr:hover { background: rgba(0, 134, 50, .06); }
     .result-table a { color: #0066cc; font-weight: 600; text-decoration: underline; }
+    .result-table .shohin-row-thumb-cell { width: 56px; padding: 6px 8px; vertical-align: middle; text-align: center; }
+    .result-table .shohin-row-thumb { width: 48px; height: 48px; min-width: 48px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: #fff; cursor: pointer; display: block; margin: 0 auto; }
+    .result-table .shohin-row-thumb:hover { opacity: 0.88; }
 
     .shohin-preview-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: max(10px, env(safe-area-inset-top, 0px)) max(10px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px)); z-index: 3100; }
     .shohin-preview-overlay.is-open { display: flex; }
@@ -59,8 +62,16 @@
     .shohin-preview-close { position: absolute; top: max(10px, env(safe-area-inset-top, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); width: 40px; height: 40px; min-width: 40px; min-height: 40px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-card); font-size: 22px; cursor: pointer; touch-action: manipulation; }
 
     .shohin-detail-header { display: grid; grid-template-columns: minmax(120px, 200px) minmax(0, 1fr); gap: 16px; align-items: start; padding-right: 44px; margin-bottom: 16px; }
-    .shohin-detail-visual { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); aspect-ratio: 1; max-width: 200px; overflow: hidden; }
-    .shohin-detail-visual img { width: 100%; height: 100%; object-fit: contain; }
+    .shohin-detail-visual { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); aspect-ratio: 1; max-width: 200px; overflow: hidden; cursor: zoom-in; }
+    .shohin-detail-visual img { width: 100%; height: 100%; object-fit: contain; pointer-events: auto; }
+
+    /* 商品サムネ拡大：shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html の #imageModal と同じ挙動 */
+    #shohinThumbImageModal.image-modal { position: fixed; inset: 0; display: none; z-index: 9999; }
+    #shohinThumbImageModal.image-modal.active { display: block; }
+    #shohinThumbImageModal .modal-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.25s ease; cursor: pointer; }
+    #shohinThumbImageModal.active .modal-backdrop { opacity: 1; }
+    #shohinThumbImageModal .modal-wrapper { position: absolute; inset: 0; pointer-events: none; }
+    #shohinThumbImageModal .modal-wrapper img { position: absolute; border-radius: 8px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4); transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); object-fit: contain; }
     .shohin-detail-summary { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: #fff; padding: 14px 16px; }
     .shohin-detail-line { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 8px 12px; }
     .shohin-detail-label { font-weight: 600; color: var(--color-text-muted); }
@@ -124,7 +135,7 @@
         touch-action: manipulation;
       }
       #shohinListArea .result-table {
-        min-width: 920px;
+        min-width: 980px;
         table-layout: auto;
       }
       #shohinListArea .result-table th,
@@ -193,15 +204,16 @@
       #shohinListArea .result-table thead { display: none; }
       #shohinListArea .result-table tbody tr { display: block; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 12px; background: var(--color-card); }
       #shohinListArea .result-table tbody td { display: block; border: none; padding: 4px 0; }
-      #shohinListArea .result-table tbody td:nth-child(1)::before { content: "商品コード："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(2)::before { content: "商品名："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(3)::before { content: "カテゴリー："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(4)::before { content: "アイテム："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(5)::before { content: "ブランド・キャラ："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(6)::before { content: "JANコード："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(7)::before { content: "展示会："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(8)::before { content: "販売区分："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(9)::before { content: "最終更新日："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(1)::before { content: none; }
+      #shohinListArea .result-table tbody td:nth-child(2)::before { content: "商品コード："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(3)::before { content: "商品名："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(4)::before { content: "カテゴリー："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(5)::before { content: "アイテム："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(6)::before { content: "ブランド・キャラ："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(7)::before { content: "JANコード："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(8)::before { content: "展示会："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(9)::before { content: "販売区分："; font-weight: 600; }
+      #shohinListArea .result-table tbody td:nth-child(10)::before { content: "最終更新日："; font-weight: 600; }
       .shohin-preview-dialog { width: calc(100% - 24px); max-height: 94vh; }
       .shohin-detail-header { grid-template-columns: 1fr; padding-right: 40px; }
       .shohin-detail-visual { margin: 0 auto; }
@@ -249,13 +261,13 @@
 
       <div id="shohinListArea">
         <table class="result-table">
-          <thead><tr><th style="width:10%;">商品コード</th><th style="width:16%;">商品名</th><th style="width:9%;">カテゴリー</th><th style="width:10%;">アイテム</th><th style="width:10%;">ブランド・キャラ</th><th style="width:11%;">JANコード</th><th style="width:9%;">展示会</th><th style="width:8%;">販売区分</th><th style="width:17%;">最終更新日</th></tr></thead>
+          <thead><tr><th class="shohin-row-thumb-cell" style="width:56px;" aria-label="サムネイル"></th><th style="width:9%;">商品コード</th><th style="width:15%;">商品名</th><th style="width:9%;">カテゴリー</th><th style="width:9%;">アイテム</th><th style="width:9%;">ブランド・キャラ</th><th style="width:10%;">JANコード</th><th style="width:8%;">展示会</th><th style="width:8%;">販売区分</th><th style="width:14%;">最終更新日</th></tr></thead>
           <tbody id="shohinTableBody">
-            <tr data-category="単品タオル"><td><a href="#" class="shohin-code-link">SHN-2026-0001</a></td><td>トトロ柄バスタオル</td><td>単品タオル</td><td>バスタオル</td><td>ジブリ</td><td>4901234567890</td><td>2026.10月</td><td>定番</td><td>2026/04/01</td></tr>
-            <tr data-category="単品タオル"><td><a href="#" class="shohin-code-link">SHN-2026-0002</a></td><td>プーさんミニタオル</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td><td>4901234567891</td><td>2026.10月</td><td>定番</td><td>2026/04/02</td></tr>
-            <tr data-category="セット"><td><a href="#" class="shohin-code-link">SHN-2026-0003</a></td><td>ギフトタオル3点セット</td><td>セット</td><td>とじものWT3P</td><td>ディズニー</td><td>4901234567892</td><td>ー</td><td>別注</td><td>2026/03/28</td></tr>
-            <tr data-category="雑貨"><td><a href="#" class="shohin-code-link">SHN-2026-0004</a></td><td>キャラクターポーチ</td><td>雑貨</td><td>ポーチ</td><td>サンリオ</td><td>4901234567893</td><td>ー</td><td>別注</td><td>2026/03/30</td></tr>
-            <tr data-category="単品タオル"><td><a href="#" class="shohin-code-link">SHN-2026-0005</a></td><td>ドナルドハンドタオル</td><td>単品タオル</td><td>ウォッシュタオル</td><td>ディズニー</td><td>4901234567894</td><td>2026.10月</td><td>定番</td><td>2026/04/05</td></tr>
+            <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="トトロ柄バスタオル" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0001</a></td><td>トトロ柄バスタオル</td><td>単品タオル</td><td>バスタオル</td><td>ジブリ</td><td>4901234567890</td><td>2026.10月</td><td>定番</td><td>2026/04/01</td></tr>
+            <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="プーさんミニタオル" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0002</a></td><td>プーさんミニタオル</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td><td>4901234567891</td><td>2026.10月</td><td>定番</td><td>2026/04/02</td></tr>
+            <tr data-category="セット"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="ギフトタオル3点セット" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0003</a></td><td>ギフトタオル3点セット</td><td>セット</td><td>とじものWT3P</td><td>ディズニー</td><td>4901234567892</td><td>ー</td><td>別注</td><td>2026/03/28</td></tr>
+            <tr data-category="雑貨"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="キャラクターポーチ" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0004</a></td><td>キャラクターポーチ</td><td>雑貨</td><td>ポーチ</td><td>サンリオ</td><td>4901234567893</td><td>ー</td><td>別注</td><td>2026/03/30</td></tr>
+            <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="ドナルドハンドタオル" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0005</a></td><td>ドナルドハンドタオル</td><td>単品タオル</td><td>ウォッシュタオル</td><td>ディズニー</td><td>4901234567894</td><td>2026.10月</td><td>定番</td><td>2026/04/05</td></tr>
           </tbody>
         </table>
       </div>
@@ -268,7 +280,7 @@
       <div id="shohinPreviewDialog" class="shohin-preview-dialog" role="dialog" aria-modal="true" aria-label="商品詳細" aria-hidden="true">
       <button type="button" class="shohin-preview-close" id="shohinPreviewClose" aria-label="閉じる">×</button>
       <div class="shohin-detail-header">
-        <div class="shohin-detail-visual"><img id="shohinPreviewThumb" src="images/shohinjohoichiran_ppt_image.png" alt=""></div>
+        <div class="shohin-detail-visual"><img id="shohinPreviewThumb" src="images/shohinjohoichiran_ppt_image.png" alt="" title="クリックで拡大表示"></div>
         <div class="shohin-detail-summary">
           <div class="shohin-detail-line"><span class="shohin-detail-label">商品コード</span><span id="shohinDetailCode">—</span></div>
           <div class="shohin-detail-line"><span class="shohin-detail-label">商品名</span><span id="shohinDetailName">—</span></div>
@@ -328,6 +340,11 @@
     </div>
   </div>
 
+  <div id="shohinThumbImageModal" class="image-modal" role="dialog" aria-modal="true" aria-label="商品画像の拡大表示" aria-hidden="true">
+    <div class="modal-backdrop" id="shohinThumbImageModalBackdrop"></div>
+    <div class="modal-wrapper"></div>
+  </div>
+
   <script src="js/sidebar.js"></script>
   <script>
     function loadSharedSidebar() {
@@ -383,11 +400,11 @@
       let visible = 0;
       Array.prototype.forEach.call(tbody.rows, function (row) {
         const cells = row.cells;
-        const cellCode = cells[0] ? normalizeText(cells[0].textContent) : '';
-        const cellName = cells[1] ? normalizeText(cells[1].textContent) : '';
+        const cellCode = cells[1] ? normalizeText(cells[1].textContent) : '';
+        const cellName = cells[2] ? normalizeText(cells[2].textContent) : '';
         const cellCat = row.getAttribute('data-category') || '';
-        const cellItem = cells[3] ? normalizeText(cells[3].textContent) : '';
-        const cellBrand = cells[4] ? normalizeText(cells[4].textContent) : '';
+        const cellItem = cells[4] ? normalizeText(cells[4].textContent) : '';
+        const cellBrand = cells[5] ? normalizeText(cells[5].textContent) : '';
         const ok = (!code || cellCode.indexOf(code) !== -1) && (!name || cellName.indexOf(name) !== -1) && (!category || cellCat === category) && (!item || cellItem.indexOf(item) !== -1) && (!brandChar || cellBrand.indexOf(brandChar) !== -1);
         row.style.display = ok ? '' : 'none';
         if (ok) visible++;
@@ -440,6 +457,9 @@
       var janEl = document.getElementById('shohinDetailJan');
       var basicEl = document.getElementById('shohinDetailBasic');
       var thumbImg = document.getElementById('shohinPreviewThumb');
+      var thumbImageModal = document.getElementById('shohinThumbImageModal');
+      var thumbImageModalBackdrop = document.getElementById('shohinThumbImageModalBackdrop');
+      var thumbImageModalWrapper = thumbImageModal ? thumbImageModal.querySelector('.modal-wrapper') : null;
       var versionListEl = document.getElementById('shohinVersionHistoryList');
       var panel1 = document.getElementById('shohinPanel1');
       var tabs = modal.querySelectorAll('.shohin-detail-tab[role="tab"]');
@@ -562,16 +582,18 @@
 
       function getRowDataFromTr(tr) {
         var cells = tr.cells;
+        var rowThumb = cells[0] ? cells[0].querySelector('img.shohin-row-thumb') : null;
         return {
-          code: cells[0] ? cells[0].textContent.trim() : '—',
-          name: cells[1] ? cells[1].textContent.trim() : '—',
-          cat: cells[2] ? cells[2].textContent.trim() : '—',
-          item: cells[3] ? cells[3].textContent.trim() : '—',
-          brand: cells[4] ? cells[4].textContent.trim() : '—',
-          jan: cells[5] ? cells[5].textContent.trim() : '—',
-          tenjikai: cells[6] ? cells[6].textContent.trim() : '—',
-          hanbaiKubun: cells[7] ? cells[7].textContent.trim() : '—',
-          updated: cells[8] ? cells[8].textContent.trim() : '—'
+          thumbSrc: rowThumb && rowThumb.getAttribute('src') ? rowThumb.getAttribute('src') : undefined,
+          code: cells[1] ? cells[1].textContent.trim() : '—',
+          name: cells[2] ? cells[2].textContent.trim() : '—',
+          cat: cells[3] ? cells[3].textContent.trim() : '—',
+          item: cells[4] ? cells[4].textContent.trim() : '—',
+          brand: cells[5] ? cells[5].textContent.trim() : '—',
+          jan: cells[6] ? cells[6].textContent.trim() : '—',
+          tenjikai: cells[7] ? cells[7].textContent.trim() : '—',
+          hanbaiKubun: cells[8] ? cells[8].textContent.trim() : '—',
+          updated: cells[9] ? cells[9].textContent.trim() : '—'
         };
       }
 
@@ -579,9 +601,9 @@
         if (!tbody || !code) return null;
         var rows = tbody.rows;
         for (var i = 0; i < rows.length; i++) {
-          var c0 = rows[i].cells[0];
-          if (!c0) continue;
-          if (c0.textContent.trim() === code) return rows[i];
+          var c1 = rows[i].cells[1];
+          if (!c1) continue;
+          if (c1.textContent.trim() === code) return rows[i];
         }
         return null;
       }
@@ -714,7 +736,100 @@
         });
       });
 
+      var thumbImageModalOriginalRect = null;
+
+      function thumbImageModalAspectRatio(sourceEl) {
+        var nw = sourceEl.naturalWidth;
+        var nh = sourceEl.naturalHeight;
+        if (nw > 0 && nh > 0) return nw / nh;
+        var r = sourceEl.getBoundingClientRect();
+        if (r.height > 0) return r.width / r.height;
+        return 1;
+      }
+
+      function closeThumbImageModal(instant) {
+        if (!thumbImageModal || !thumbImageModalWrapper || !thumbImageModal.classList.contains('active')) return;
+        var clone = thumbImageModalWrapper.querySelector('img');
+        if (!clone) {
+          thumbImageModal.classList.remove('active');
+          thumbImageModal.setAttribute('aria-hidden', 'true');
+          if (thumbImageModalBackdrop) thumbImageModalBackdrop.style.opacity = '';
+          thumbImageModalWrapper.innerHTML = '';
+          return;
+        }
+        if (instant || !thumbImageModalOriginalRect) {
+          thumbImageModal.classList.remove('active');
+          thumbImageModal.setAttribute('aria-hidden', 'true');
+          thumbImageModalWrapper.innerHTML = '';
+          if (thumbImageModalBackdrop) thumbImageModalBackdrop.style.opacity = '';
+          thumbImageModalOriginalRect = null;
+          return;
+        }
+        var r = thumbImageModalOriginalRect;
+        clone.style.top = r.top + 'px';
+        clone.style.left = r.left + 'px';
+        clone.style.width = r.width + 'px';
+        clone.style.height = r.height + 'px';
+        if (thumbImageModalBackdrop) thumbImageModalBackdrop.style.opacity = '0';
+        setTimeout(function () {
+          thumbImageModal.classList.remove('active');
+          thumbImageModal.setAttribute('aria-hidden', 'true');
+          thumbImageModalWrapper.innerHTML = '';
+          if (thumbImageModalBackdrop) thumbImageModalBackdrop.style.opacity = '';
+          thumbImageModalOriginalRect = null;
+        }, 300);
+      }
+
+      function openThumbImageModalFromSource(sourceEl) {
+        if (!thumbImageModal || !thumbImageModalWrapper || !sourceEl) return;
+        thumbImageModalOriginalRect = sourceEl.getBoundingClientRect();
+        var clone = sourceEl.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.classList.remove('shohin-row-thumb');
+        var r = thumbImageModalOriginalRect;
+        clone.style.top = r.top + 'px';
+        clone.style.left = r.left + 'px';
+        clone.style.width = r.width + 'px';
+        clone.style.height = r.height + 'px';
+        thumbImageModalWrapper.innerHTML = '';
+        thumbImageModalWrapper.appendChild(clone);
+        thumbImageModal.classList.add('active');
+        thumbImageModal.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(function () {
+          if (!thumbImageModal.classList.contains('active')) return;
+          var viewportWidth = window.innerWidth;
+          var viewportHeight = window.innerHeight;
+          var maxWidth = viewportWidth * 0.8;
+          var maxHeight = viewportHeight * 0.8;
+          var ratio = thumbImageModalAspectRatio(sourceEl);
+          var targetWidth = maxWidth;
+          var targetHeight = maxWidth / ratio;
+          if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = maxHeight * ratio;
+          }
+          clone.style.top = (viewportHeight - targetHeight) / 2 + 'px';
+          clone.style.left = (viewportWidth - targetWidth) / 2 + 'px';
+          clone.style.width = targetWidth + 'px';
+          clone.style.height = targetHeight + 'px';
+        });
+      }
+
+      if (thumbImg) {
+        thumbImg.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openThumbImageModalFromSource(thumbImg);
+        });
+      }
+      if (thumbImageModalBackdrop) {
+        thumbImageModalBackdrop.addEventListener('click', function () {
+          closeThumbImageModal(false);
+        });
+      }
+
       function closeModal() {
+        closeThumbImageModal(true);
         overlay.classList.remove('is-open');
         overlay.setAttribute('aria-hidden', 'true');
         modal.setAttribute('aria-hidden', 'true');
@@ -722,6 +837,13 @@
       }
 
       tbody.addEventListener('click', function (e) {
+        var rowThumb = e.target.closest('img.shohin-row-thumb');
+        if (rowThumb) {
+          e.preventDefault();
+          e.stopPropagation();
+          openThumbImageModalFromSource(rowThumb);
+          return;
+        }
         var a = e.target.closest('a.shohin-code-link');
         if (!a) return;
         e.preventDefault();
@@ -749,7 +871,15 @@
 
       closeBtn.addEventListener('click', closeModal);
       if (backdrop) backdrop.addEventListener('click', closeModal);
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if (thumbImageModal && thumbImageModal.classList.contains('active')) {
+          closeThumbImageModal(false);
+          e.preventDefault();
+          return;
+        }
+        if (overlay.classList.contains('is-open')) closeModal();
+      });
     })();
   </script>
 </body>
