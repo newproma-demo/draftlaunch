@@ -54,8 +54,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="mitsumoriiraikensaku.html">見積依頼入力・送信</a></li>
-      <li><a href="mitsumorikaitokensaku.html">見積回答登録・メーカー決定</a></li>
+      <li><a href="mitsumoriiraikensaku.html">見積依頼・メーカー決定</a></li>
     </ul>
   </div>
 
