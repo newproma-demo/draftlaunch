@@ -38,7 +38,7 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      padding: 12px 24px 24px 32px;
+      padding: 12px 24px 56px 32px;
       overflow-y: auto;
       transition: margin-left 0.3s ease;
     }
@@ -114,7 +114,7 @@
         background: var(--color-surface);
         flex-direction: column;
         flex: 1;
-        padding: 20px;
+        padding: 20px 20px 56px 20px;
         margin-left: -220px;
         width: 100%;
       }
@@ -512,7 +512,7 @@
         max-width: 100% !important;
       }
 
-      /* 本人希望納期（SP）：ネーム行と同じラベル114px＋gap2px＋値列margin-left28px（form-row-left の子 div） */
+      /* 本番希望納期（SP）：ネーム行と同じラベル114px＋gap2px＋値列margin-left28px（form-row-left の子 div） */
       .product-table .form-row.desired-delivery-row {
         flex-direction: row;
         flex-wrap: nowrap;
@@ -608,7 +608,7 @@
         min-width: 0 !important;
       }
 
-      /* 仕入得意先・得意先・仕入先：静的行の入力幅を一致（削除ボタン分の右余白。得意先は追加なしでも仕入得意先1行目と同じ内幅） */
+      /* 仕入得意先・仕入先（SP）：全行で右28pxを確保（追加行の削除×分と同じ）。先頭行と追加行の入力幅を一致 */
       .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row {
         position: relative;
         flex-wrap: nowrap;
@@ -625,11 +625,48 @@
         margin: 0;
       }
 
+      /* アイテム行の .autocomplete（form-row-item-sp）と同じ値列の伸び方に揃える */
       .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row .autocomplete {
-        flex: 1 1 auto !important;
-        width: 100% !important;
+        flex: 1 1 0% !important;
+        width: auto !important;
         max-width: 100% !important;
         min-width: 0 !important;
+      }
+
+      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row--shiire-tokuisaki {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        row-gap: 8px;
+      }
+
+      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row--shiire-tokuisaki .autocomplete {
+        flex: 1 1 0% !important;
+        width: auto !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields {
+        flex: 1 1 0%;
+        max-width: 100%;
+        min-width: 0;
+        width: 100%;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        align-self: stretch;
+      }
+
+      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-input {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-row-check-label {
+        align-self: flex-start;
       }
 
       /* 試作データ入稿予定・希望サンプル納期（SP）：見積依頼日と同じ入力幅・16px・カレンダー位置（style.css と整合） */
@@ -705,6 +742,15 @@
         order: 4;
         flex: 1 1 100%;
       }
+
+      .fab-actions {
+        right: 12px;
+        bottom: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+        max-width: calc(100vw - 24px);
+      }
     }
     
     .filter-row {
@@ -758,25 +804,47 @@
       overflow-y: visible;
     }
 
-    /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
-    .btn-fab-new {
+    /* 画面右下固定アクションボタン群（shipiraishotoroku.html と同様） */
+    .fab-actions {
       position: fixed;
       right: 24px;
-      bottom: 12px;
+      bottom: 24px;
       z-index: 2001;
-      min-width: 100px;
-      width: clamp(80px, 5vw, 120px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button.btn-fab-new {
+      font-family: inherit;
+    }
+
+    /* 画面右下固定ボタン（fab-actions 内） */
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
       border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      font-family: var(--font-sans);
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
     }
 
     .btn-fab-new:hover {
       background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .fab-actions .btn-fab-new {
+      min-width: 132px;
+      width: clamp(132px, 9vw, 180px);
+      padding: 6px 14px;
+      box-sizing: border-box;
     }
 
     /* 追加ボタン共通 */
@@ -882,12 +950,12 @@
       box-sizing: border-box;
     }
 
-    /* パネル横幅 縮小（元 920px 基準） */
+    /* パネル横幅 */
     .product-panels-row .product-card {
       flex: 0 0 auto;
-      width: min(calc(769px), calc(100vw - 120px - 151px));
-      min-width: min(calc(769px), 100%);
-      max-width: calc(769px);
+      width: min(calc(720px), calc(100vw - 120px - 151px));
+      min-width: min(calc(720px), 100%);
+      max-width: calc(720px);
       margin-bottom: 0;
       min-height: auto;
       position: relative;
@@ -1328,7 +1396,7 @@
       }
     }
 
-    /* 本人希望納期：値列の 40% 幅（通常の select 20% 制限は行内で解除） */
+    /* 本番希望納期：値列の 40% 幅（通常の select 20% 制限は行内で解除） */
     .product-table .desired-delivery-fields {
       display: flex;
       flex-direction: column;
@@ -1410,6 +1478,82 @@
     .product-table .supplier-input-row .autocomplete .autocomplete-input {
       width: 100%;
       box-sizing: border-box;
+    }
+
+    /* 仕入得意先：名称（1段目）の下に単価～値入率・チェック（2段目） */
+    .product-table .supplier-input-row--shiire-tokuisaki {
+      flex-direction: column;
+      align-items: stretch;
+      align-self: stretch;
+      flex-wrap: nowrap;
+      gap: 8px;
+      position: relative;
+      box-sizing: border-box;
+      /* 追加行は削除×用の余白があるため、先頭行も同じ右余白で単価～値入率の有効幅を一致 */
+      padding-right: 28px;
+    }
+
+    /* 仕入先と同じ幅で名称入力を揃える（768px以上は直後のメディアクエリで 68%） */
+    .product-table .supplier-input-row--shiire-tokuisaki .autocomplete {
+      flex: 0 0 40%;
+      width: 40%;
+      max-width: 40%;
+      min-width: 0;
+      align-self: flex-start;
+      box-sizing: border-box;
+    }
+
+    /* 768px以上：仕入先・仕入得意先の名称テキストボックスを広げる（SP は max 767 側のまま） */
+    @media (min-width: 768px) {
+      .product-table .supplier-input-row .autocomplete,
+      .product-table .supplier-input-row--shiire-tokuisaki .autocomplete {
+        flex: 0 0 68%;
+        width: 68%;
+        max-width: 68%;
+      }
+    }
+
+    .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      row-gap: 6px;
+      width: 100%;
+      flex: 0 0 auto;
+      box-sizing: border-box;
+    }
+
+    .product-table .supplier-input-row--shiire-tokuisaki .btn-delete-supplier {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+    }
+
+    .product-table .supplier-row-side-fields .supplier-input {
+      width: 5.5rem;
+      min-width: 5.5rem;
+      /* .product-table input の flex:1 による伸長を防ぎ、追加行と同じ見た目の幅に固定 */
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+
+    .product-table .supplier-row-check-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .product-table .supplier-row-checkbox {
+      width: 1.15em;
+      height: 1.15em;
+      margin: 0;
+      flex-shrink: 0;
     }
 
     .reference-images-container {
@@ -1539,6 +1683,8 @@
       align-items: flex-end;
       gap: 16px;
       flex-wrap: wrap;
+      /* 定番/別注・概算/正式の select と得意先入力で共通の項目幅 */
+      --top-filter-control-width: 12rem;
     }
 
     .top-filter-item {
@@ -1550,6 +1696,45 @@
     .top-filter-item .filter-label {
       margin: 0;
       font-weight: 500;
+    }
+
+    /* ヘッダ：定番/別注・概算/正式の select を同一幅に（得意先と揃える基準） */
+    .top-filter-row > .top-filter-item > select {
+      width: var(--top-filter-control-width);
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ヘッダ「得意先」：ラベルを入力の直前（横並び時は左）に配置 */
+    .top-filter-item-tokuisaki {
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+
+    .top-filter-item-tokuisaki .filter-label {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .top-filter-item-tokuisaki .supplier-inputs-wrapper {
+      flex: 0 0 auto;
+      width: var(--top-filter-control-width);
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .top-filter-item-tokuisaki .supplier-input-row,
+    .top-filter-item-tokuisaki .autocomplete {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .top-filter-item-tokuisaki .autocomplete-input {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     .item-cell {
@@ -1622,6 +1807,100 @@
       justify-content: center;
     }
 
+    /* 送信：様式選択モーダル（fab より前面） */
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      padding: 28px;
+      width: 85%;
+      max-width: 900px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2101;
+    }
+
+    .modal-window.show {
+      display: block;
+    }
+
+    .modal-window--newreg {
+      max-width: 420px;
+    }
+
+    .modal-backdrop-newreg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 2100;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-backdrop-newreg.show {
+      display: block;
+    }
+
+    .newreg-modal-message {
+      margin: 0 0 20px;
+      font-size: var(--fs-md, 15px);
+      font-weight: 600;
+      text-align: center;
+      color: var(--color-text);
+    }
+
+    .newreg-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* 送信モーダル：チェックボックスと会社名を同一行（ラベルの横） */
+    .newreg-modal-check-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      cursor: pointer;
+      font-size: var(--fs-base);
+      font-weight: 500;
+      color: var(--color-text);
+      text-align: left;
+    }
+
+    .newreg-modal-check-row .supplier-row-checkbox {
+      width: 1.15em;
+      height: 1.15em;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .newreg-modal-check-text {
+      flex: 1;
+      min-width: 0;
+      line-height: 1.4;
+    }
+
+    /* 画面右下の一時保存・送信（.fab-actions .btn-fab-new）と同寸、モーダル内は右寄せ */
+    .newreg-modal-actions .btn-fab-new {
+      min-width: 132px;
+      width: clamp(132px, 9vw, 180px);
+      max-width: 100%;
+      padding: 6px 14px;
+      box-sizing: border-box;
+      font-family: inherit;
+      text-align: center;
+      align-self: flex-end;
+    }
+
     /* 768px以上：見積依頼日・定番/別注・概算/正式はラベルと入力/select を横並び（SP は従来どおり縦） */
     @media (min-width: 768px) {
       .top-filter-row > .top-filter-item {
@@ -1674,14 +1953,17 @@
     <div id="sidebarMount"></div>
     <!-- #endregion -->
     
-    <!-- 画面右下固定 送信ボタン -->
-    <button type="button" class="btn-fab-new">送信</button>
+    <!-- 画面右下固定：一時保存・送信 -->
+    <div class="fab-actions" role="toolbar">
+      <button type="button" class="btn-fab-new">一時保存</button>
+      <button type="button" id="fabSubmitBtn" class="btn-fab-new" data-submit-label-default="送信">送信</button>
+    </div>
     <!-- #endregion -->
 
     <!--#region メインコンテンツ  -->
     <div class="content">
       <!-- 画面タイトル -->
-      <h1>見積情報登録</h1>
+      <h1>見積情報登録・メーカー決定</h1>
       <!-- ========== : ヘッダ部 ========== -->
       <div class="content-area">
         <div class="view-layout view-layout-1">
@@ -1715,11 +1997,18 @@
                 <option value="betchu">正式</option>
               </select>
             </div>
+            <div id="headerTokuisakiRow" class="top-filter-item top-filter-item-tokuisaki">
+              <span class="filter-label">得意先</span>
+              <div class="autocomplete">
+                <input type="text" class="autocomplete-input" data-list="customer" placeholder="得意先検索" id="searchCategory">
+                  <div class="autocomplete-dropdown"></div>
+                </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 検索結果一覧エリア -->
+      <!-- 一覧エリア -->
       <div class="content-area-2" id="approvalNoticeArea">
         <div class="view-layout view-layout-2">
           <div class="product-panel-section">
@@ -1968,7 +2257,7 @@
                     </div>
                   </div>
                   <div class="form-row desired-delivery-row form-row-left">
-                    <label>本人希望納期</label>
+                    <label>本番希望納期</label>
                     <div class="desired-delivery-fields">
                       <select>
                         <option>選択してください</option>
@@ -2003,27 +2292,20 @@
                     <div class="supplier-inputs-wrapper">
                       <div id="shiireTokuisakiInputsContainer" class="js-shiire-tokuisaki-container">
                         <div class="supplier-input-item">
-                          <div class="supplier-input-row">
+                          <div class="supplier-input-row supplier-input-row--shiire-tokuisaki">
                             <div class="autocomplete">
                               <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入得意先を入力" name="shiireTokuisaki[]">
                               <div class="autocomplete-dropdown"></div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-row form-row-supplier-inputs-sp supplier-inputs-dynamic-rows-sp">
-                    <div class="label-with-button">
-                      <label>得意先</label>
-                    </div>
-                    <div class="supplier-inputs-wrapper">
-                      <div id="shiireTokuisakiInputsContainer" class="js-shiire-tokuisaki-container">
-                        <div class="supplier-input-item">
-                          <div class="supplier-input-row">
-                            <div class="autocomplete">
-                              <input type="text" class="autocomplete-input" data-list="supplier" placeholder="得意先を入力" name="shiireTokuisaki[]">
-                              <div class="autocomplete-dropdown"></div>
+                            <div class="supplier-row-side-fields">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiTanka[]" placeholder="単価" inputmode="decimal" autocomplete="off" aria-label="単価">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiUedai[]" placeholder="上代" inputmode="decimal" autocomplete="off" aria-label="上代">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiKawase[]" placeholder="為替" inputmode="decimal" autocomplete="off" aria-label="為替">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiKeihiritsu[]" placeholder="経費率" inputmode="decimal" autocomplete="off" aria-label="経費率">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiIriRate[]" placeholder="値入率（％）" inputmode="decimal" autocomplete="off" aria-label="値入率（％）">
+                              <label class="supplier-row-check-label">
+                                <input type="checkbox" class="supplier-row-checkbox" name="shiireTokuisakiCheck[]" value="1" aria-label="対象">
+                              </label>
                             </div>
                           </div>
                         </div>
@@ -2054,13 +2336,35 @@
                 </div>
               </div>
             </div>
-            </div>
           </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!--#region 送信：様式選択モーダル  -->
+  <div id="modalBackdropNewreg" class="modal-backdrop-newreg" aria-hidden="true"></div>
+    <div id="modal-window-newreg" class="modal-window modal-window--newreg" role="dialog" aria-modal="true"
+      aria-labelledby="newregModalTitle" aria-hidden="true">
+      <p id="newregModalTitle" class="newreg-modal-message">送付する仕入得意先を選択してください。</p>
+      <div class="newreg-modal-actions">
+        <label class="newreg-modal-check-row">
+          <input type="checkbox" class="supplier-row-checkbox" name="sendShiireTokuisakiCheck[]" value="1">
+          <span class="newreg-modal-check-text">今治ソフトパイル株式会社</span>
+        </label>
+        <label class="newreg-modal-check-row">
+          <input type="checkbox" class="supplier-row-checkbox" name="sendShiireTokuisakiCheck[]" value="2">
+          <span class="newreg-modal-check-text">南通華東紡績（Nantong Huadong）</span>
+        </label>
+        <label class="newreg-modal-check-row">
+          <input type="checkbox" class="supplier-row-checkbox" name="sendShiireTokuisakiCheck[]" value="3">
+          <span class="newreg-modal-check-text">泉州ガーゼ織物</span>
+        </label>
+        <a class="btn-fab-new" href="">送信</a>
+      </div>
+    </div>
+    <!-- #endregion -->
 
   <script src="js/sidebar.js"></script>
   <script>
@@ -2357,6 +2661,80 @@
       sel.addEventListener("change", toggleShiiresakiForTeiban);
     })();
 
+    // 定番選択時はヘッダの「得意先」を非表示（別注・未選択で表示）
+    (function () {
+      var sel = document.getElementById("teibanBetchuSelect");
+      var row = document.getElementById("headerTokuisakiRow");
+      if (!sel || !row) return;
+
+      function toggleHeaderTokuisakiForTeiban() {
+        var hide = sel.value === "teiban";
+        row.style.display = hide ? "none" : "";
+        row.setAttribute("aria-hidden", hide ? "true" : "false");
+      }
+
+      toggleHeaderTokuisakiForTeiban();
+      sel.addEventListener("change", toggleHeaderTokuisakiForTeiban);
+    })();
+
+    // 得意先が「得意先名２」のとき、送信ボタン文言を「登録」にする（手入力・候補クリックの両方）
+    (function () {
+      var row = document.getElementById("headerTokuisakiRow");
+      var input = row && row.querySelector(".autocomplete-input");
+      var submitBtn = document.getElementById("fabSubmitBtn");
+      if (!input || !submitBtn) return;
+
+      var defaultLabel = submitBtn.getAttribute("data-submit-label-default") || "送信";
+      var targetName = "得意先名２";
+      var altLabel = "登録";
+
+      function syncSubmitButtonLabel() {
+        submitBtn.textContent = (input.value || "").trim() === targetName ? altLabel : defaultLabel;
+      }
+
+      syncSubmitButtonLabel();
+      input.addEventListener("input", syncSubmitButtonLabel);
+      input.addEventListener("change", syncSubmitButtonLabel);
+    })();
+
+    // 送信（登録）ボタン：様式選択モーダルを開く
+    (function () {
+      var submitBtn = document.getElementById("fabSubmitBtn");
+      var modal = document.getElementById("modal-window-newreg");
+      var backdrop = document.getElementById("modalBackdropNewreg");
+      if (!submitBtn || !modal || !backdrop) return;
+
+      function openSubmitStyleModal() {
+        backdrop.classList.add("show");
+        modal.classList.add("show");
+        backdrop.setAttribute("aria-hidden", "false");
+        modal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeSubmitStyleModal() {
+        backdrop.classList.remove("show");
+        modal.classList.remove("show");
+        backdrop.setAttribute("aria-hidden", "true");
+        modal.setAttribute("aria-hidden", "true");
+        submitBtn.focus();
+      }
+
+      submitBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        openSubmitStyleModal();
+      });
+
+      backdrop.addEventListener("click", function () {
+        closeSubmitStyleModal();
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("show")) {
+          closeSubmitStyleModal();
+        }
+      });
+    })();
+
     // 共通項目「展示会」は販売区分が「定番」のときだけ表示
     (function () {
       var selHanbaiCommon = document.getElementById("teibanBetchuSelect");
@@ -2506,12 +2884,15 @@
 
     // 仕入得意先・仕入先：追加（パネルごとに委譲）
     (function () {
-      function createSupplierRow(placeholder, inputName) {
+      function createSupplierRow(placeholder, inputName, rowKind) {
         var item = document.createElement("div");
         item.className = "supplier-input-item";
 
         var row = document.createElement("div");
-        row.className = "supplier-input-row";
+        row.className =
+          rowKind === "shiire"
+            ? "supplier-input-row supplier-input-row--shiire-tokuisaki"
+            : "supplier-input-row";
 
         var autocompleteDiv = document.createElement("div");
         autocompleteDiv.className = "autocomplete";
@@ -2538,6 +2919,46 @@
         });
 
         row.appendChild(autocompleteDiv);
+        if (rowKind === "shiire") {
+          var side = document.createElement("div");
+          side.className = "supplier-row-side-fields";
+
+          function makeTankaInput(name, placeholder, ariaLabel) {
+            var el = document.createElement("input");
+            el.type = "text";
+            el.className = "supplier-input";
+            el.setAttribute("name", name);
+            el.placeholder = placeholder;
+            el.setAttribute("inputmode", "decimal");
+            el.setAttribute("autocomplete", "off");
+            el.setAttribute("aria-label", ariaLabel);
+            return el;
+          }
+
+          var tanka = makeTankaInput("shiireTokuisakiTanka[]", "単価", "単価");
+          var uedai = makeTankaInput("shiireTokuisakiUedai[]", "上代", "上代");
+          var kawase = makeTankaInput("shiireTokuisakiKawase[]", "為替", "為替");
+          var keihiritsu = makeTankaInput("shiireTokuisakiKeihiritsu[]", "経費率", "経費率");
+          var irirate = makeTankaInput("shiireTokuisakiIriRate[]", "値入率（％）", "値入率（％）");
+
+          var checkLab = document.createElement("label");
+          checkLab.className = "supplier-row-check-label";
+          var cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.className = "supplier-row-checkbox";
+          cb.setAttribute("name", "shiireTokuisakiCheck[]");
+          cb.value = "1";
+          cb.setAttribute("aria-label", "対象");
+          checkLab.appendChild(cb);
+
+          side.appendChild(tanka);
+          side.appendChild(uedai);
+          side.appendChild(kawase);
+          side.appendChild(keihiritsu);
+          side.appendChild(irirate);
+          side.appendChild(checkLab);
+          row.appendChild(side);
+        }
         row.appendChild(deleteBtn);
         item.appendChild(row);
         return item;
@@ -2558,8 +2979,8 @@
           : card.querySelector(".js-shiiresaki-container");
         if (!container) return;
         var item = t1
-          ? createSupplierRow("仕入得意先を入力", "shiireTokuisaki[]")
-          : createSupplierRow("仕入先を入力", "shiiresaki[]");
+          ? createSupplierRow("仕入得意先を入力", "shiireTokuisaki[]", "shiire")
+          : createSupplierRow("仕入先を入力", "shiiresaki[]", "shiiresaki");
         container.appendChild(item);
         if (window.initAutocomplete) {
           window.initAutocomplete(item.querySelector(".autocomplete"));
