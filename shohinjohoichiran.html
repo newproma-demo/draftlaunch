@@ -117,8 +117,8 @@
     .shohin-shiyosho-external-wrap { margin: 0; font-size: var(--fs-sm); line-height: 1.5; }
     .shohin-shiyosho-external-note { display: block; margin-top: 6px; font-size: var(--fs-xs); color: var(--color-text-muted); font-weight: 400; }
 
-    /* iPad / iPad Pro / iPad mini 等（640px〜1366px）：一覧は横スクロールで潰さず、タッチ・セーフエリアを考慮 */
-    @media (min-width: 640px) and (max-width: 1366px) {
+    /* iPad / iPad Pro / iPad mini 等（768px〜1366px）：一覧は横スクロールで潰さず（640〜767はスマホ幅のため除外） */
+    @media (min-width: 768px) and (max-width: 1366px) {
       .search-box-inner {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -172,7 +172,7 @@
         position: fixed;
         z-index: 3000;
         top: max(8px, env(safe-area-inset-top, 0px));
-        left: max(10px, env(safe-area-inset-left, 0px));
+        left: max(8px, env(safe-area-inset-left, 0px));
         margin: 0;
         padding: 4px;
         cursor: pointer;
@@ -180,17 +180,23 @@
         touch-action: manipulation;
       }
       .hamburger img { width: 30px; height: 30px; display: block; }
-      .header-title { padding-left: 44px; }
+      .header-title { padding-left: 42px; }
       .content {
-        padding: 20px max(20px, env(safe-area-inset-right, 0px)) max(56px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+        padding: 16px max(12px, env(safe-area-inset-right, 0px)) max(56px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
       }
       .content.expanded {
-        padding-left: max(20px, env(safe-area-inset-left, 0px));
+        padding-left: max(12px, env(safe-area-inset-left, 0px));
       }
+      #shohinListArea { max-width: 100%; box-sizing: border-box; }
     }
 
     /* 狭いスマホのみ（640px未満。一覧はカード表示） */
     @media (max-width: 639px) {
+      .content {
+        padding-top: 14px;
+        padding-left: max(10px, env(safe-area-inset-left, 0px));
+        padding-right: max(10px, env(safe-area-inset-right, 0px));
+      }
       .search-toggle-sp { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 14px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-card); }
       .search-toggle-sp::after { content: "＋"; color: var(--color-text-muted); }
       .search-box { padding: 0; border: none; box-shadow: none; background: transparent; }
