@@ -531,6 +531,33 @@
         min-height: 44px;
       }
 
+      /* スマホ: 得意先も依頼者と同様の縦並びにする */
+      .ship-form-header .content-area #headerTokuisakiRow {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        box-sizing: border-box;
+      }
+
+      .ship-form-header .content-area #headerTokuisakiRow > .filter-label {
+        width: 100%;
+        max-width: 100%;
+        margin-right: 0;
+        box-sizing: border-box;
+      }
+
+      .ship-form-header .content-area #headerTokuisakiRow .autocomplete,
+      .ship-form-header .content-area #headerTokuisakiRow .autocomplete-input {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
       /* フッター入力：日付欄と同系の縦並び・コンパクト幅で画面に収める */
       .ship-form-footer-br {
         display: none;
@@ -811,39 +838,51 @@
         font-weight: 600;
       }
 
-      /* 明細入力テーブル：スマホでも表レイアウトのまま横スクロール */
+      /* 明細入力テーブル：スマホでは項目を縦並び表示 */
       #approvalListArea .detail-lines-table {
-        min-width: 1200px;
+        min-width: 0;
       }
 
       #approvalListArea .detail-lines-table thead {
-        display: table-header-group;
+        display: none;
       }
 
       #approvalListArea .detail-lines-table tbody tr {
-        display: table-row;
-        border: none;
-        border-radius: 0;
-        padding: 0;
-        margin: 0;
-        background: transparent;
-      }
-
-      #approvalListArea .detail-lines-table tbody tr::before {
-        display: none;
-        content: none;
+        display: block;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        background: var(--color-card);
       }
 
       #approvalListArea .detail-lines-table tbody td {
-        display: table-cell;
-        border-top: 1px solid var(--color-border);
-        border-bottom: 1px solid var(--color-border);
-        padding: 6px 4px;
+        display: block;
+        border: none;
+        padding: 4px 0;
         white-space: normal;
       }
 
-      #approvalListArea .detail-lines-table tbody td::before {
-        content: none !important;
+      #approvalListArea .detail-lines-table tbody td:nth-child(1)::before { content: "契約書No.："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(2)::before { content: "商品コード："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(3)::before { content: "品番："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(4)::before { content: "商品名："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(5)::before { content: "数量："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(6)::before { content: "C/S："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(7)::before { content: "定番／得意先："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(8)::before { content: "別注加工："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(9)::before { content: "値付："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(10)::before { content: "納品方法："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(11)::before { content: "新規／追加："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(12)::before { content: "納期優先度："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(13)::before { content: "仕入単価："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(14)::before { content: "仕入単価計："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(15)::before { content: "入数："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(16)::before { content: "手配可能数："; font-weight: 600; }
+      #approvalListArea .detail-lines-table tbody td:nth-child(17)::before { content: "操作："; font-weight: 600; }
+
+      #approvalListArea .detail-lines-table .table-cell-input {
+        width: 100%;
       }
 
       /* イメージ案②: スマホ用 */
@@ -938,6 +977,14 @@
     }
 
     .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+
+    /* ヘッダー得意先: ラベルと入力を横並び */
+    .top-filter-item.top-filter-item-tokuisaki {
       display: flex;
       align-items: center;
       gap: 4px;
@@ -1107,6 +1154,13 @@
       color: var(--color-text-muted);
     }
 
+    /* 一覧（明細）入力欄の左右余白をなくす */
+    .detail-lines-table th,
+    .detail-lines-table td {
+      padding-left: 1px;
+      padding-right: 1px;
+    }
+
     .detail-lines-table .btn-line-delete {
       padding: 6px 10px;
       font-size: var(--fs-sm, 0.875rem);
@@ -1132,6 +1186,25 @@
         word-break: break-word;
         overflow-wrap: break-word;
         vertical-align: top;
+      }
+
+      /* PC: 指定列（数量/C/S/仕入単価/仕入単価計/入数/手配可能数）を右寄せ */
+      .detail-lines-table tbody td:nth-child(5),
+      .detail-lines-table tbody td:nth-child(6),
+      .detail-lines-table tbody td:nth-child(13),
+      .detail-lines-table tbody td:nth-child(14),
+      .detail-lines-table tbody td:nth-child(15),
+      .detail-lines-table tbody td:nth-child(16) {
+        text-align: right;
+      }
+
+      .detail-lines-table tbody td:nth-child(5) .table-cell-input,
+      .detail-lines-table tbody td:nth-child(6) .table-cell-input,
+      .detail-lines-table tbody td:nth-child(13) .table-cell-input,
+      .detail-lines-table tbody td:nth-child(14) .table-cell-input,
+      .detail-lines-table tbody td:nth-child(15) .table-cell-input,
+      .detail-lines-table tbody td:nth-child(16) .table-cell-input {
+        text-align: right;
       }
     }
 
@@ -1491,9 +1564,18 @@
           <div class="content-area">
             <div class="filter-row">
               <div class="filter-item">
-                <label>工場名<span class="required-mark">（必須）</span></label>
-                <input type="text" placeholder="工場名を入力">
-                <label>御中</label>
+                <span class="filter-label">定番/別注<span class="required-mark">（必須）</span></span>
+                <select id="teibanBetsuSelect">
+                  <option value="">選択してください</option>
+                  <option value="1">定番</option>
+                  <option value="2">別注</option>
+                </select>
+              </div>
+              </div>
+              <div class="filter-row">
+                <div class="filter-item">
+                  <label>工場名<span class="required-mark">（必須）</span></label>
+                  <input type="text" placeholder="工場名を入力">
               </div>
               <div class="filter-item">
                 <span class="filter-label">依頼者<span class="required-mark">（必須）</span></span>
@@ -1503,6 +1585,15 @@
                   <option value="2">丸眞花子</option>
                   <option value="3">丸眞桜子</option>
                 </select>
+              </div>
+              <div class="filter-item">
+                <div id="headerTokuisakiRow" class="top-filter-item top-filter-item-tokuisaki">
+                  <span class="filter-label">得意先<span class="required-mark">（必須）</span></span>
+                  <div class="autocomplete">
+                    <input type="text" class="autocomplete-input" data-list="customer" placeholder="得意先検索" id="searchCategory">
+                      <div class="autocomplete-dropdown"></div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="filter-row">
@@ -1554,11 +1645,295 @@
           </div>
         </div>
         <!-- 明細入力項目エリア -->
+        <div class="content-area" id="approvalNoticeArea">
+          <div class="view-layout view-layout-2">
+            <!-- テーブル用スクロールコンテナ -->
+            <div id="approvalListArea">
+              <table class="result-table detail-lines-table">
+                <thead>
+                  <tr>
+                    <th style="width: 15%;">契約書No.</th>
+                    <th style="width: 11%;">商品コード</th>
+                    <th style="width: 10%;">品番</th>
+                    <th style="width: 30%;">商品名</th>
+                    <th style="width: 10%;">数量</th>
+                    <th style="width: 10%;">C/S</th>
+                    <th style="width: 10%;">定番／<br>得意先</th>
+                    <th style="width: 10%;">別注加工</th>
+                    <th style="width: 10%;">値付</th>
+                    <th style="width: 10%;">納品方法</th>
+                    <th style="width: 10%;">新規／<br>追加</th>
+                    <th style="width: 10%;">納期<br>優先度</th>
+                    <th style="width: 10%;">仕入単価</th>
+                    <th style="width: 10%;">仕入単価計</th>
+                    <th style="width: 10%;">入数</th>
+                    <th style="width: 10%;">手配可能数</th>
+                    <th style="width: 10%;">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 明細 -->
+                  <tr>
+                    <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value="" aria-label="契約書No."></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_code[]" value="" aria-label="商品コード"></td>
+                    <td><input type="text" class="table-cell-input" name="line_hinban[]" value="" aria-label="品番"></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_name[]" value="" aria-label="商品名"></td>
+                    <td><input type="text" class="table-cell-input" name="line_qty[]" value="" aria-label="数量"></td>
+                    <td><input type="text" class="table-cell-input" name="line_cs[]" value="" aria-label="C/S"></td>
+                    <td><input type="text" class="table-cell-input" name="line_teiban_customer[]" value="" aria-label="定番／得意先"></td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="別注加工">
+                        <option value="">選択</option>
+                        <option value="0">無</option>
+                        <option value="1">有</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="値付">
+                        <option value="">選択</option>
+                        <option value="0">未</option>
+                        <option value="1">済</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="納品方法">
+                        <option value="">選択</option>
+                        <option value="1">一括</option>
+                        <option value="2">分納</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_new_add[]" aria-label="新規／追加">
+                        <option value="">選択</option>
+                        <option value="new">新規</option>
+                        <option value="add">追加</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_priority[]" aria-label="納期優先度">
+                        <option value="">選択</option>
+                        <option value="high">高</option>
+                        <option value="mid">中</option>
+                        <option value="low">低</option>
+                      </select>
+                    </td>
+                    <td><input type="text" class="table-cell-input" name="line_unit_cost[]" value="" aria-label="仕入単価"></td>
+                    <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
+                    <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                  </tr>
+                  <tr>
+                    <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_code[]" value="" aria-label="商品コード"></td>
+                    <td><input type="text" class="table-cell-input" name="line_hinban[]" value="" aria-label="品番"></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_name[]" value="" aria-label="商品名"></td>
+                    <td><input type="text" class="table-cell-input" name="line_qty[]" value="" aria-label="数量"></td>
+                    <td><input type="text" class="table-cell-input" name="line_cs[]" value="" aria-label="C/S"></td>
+                    <td><input type="text" class="table-cell-input" name="line_teiban_customer[]" value="" aria-label="定番／得意先"></td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="別注加工">
+                        <option value="">選択</option>
+                        <option value="0">無</option>
+                        <option value="1">有</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="値付">
+                        <option value="">選択</option>
+                        <option value="0">未</option>
+                        <option value="1">済</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="納品方法">
+                        <option value="">選択</option>
+                        <option value="1">一括</option>
+                        <option value="2">分納</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_new_add[]" aria-label="新規／追加">
+                        <option value="">選択</option>
+                        <option value="new">新規</option>
+                        <option value="add">追加</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_priority[]" aria-label="納期優先度">
+                        <option value="">選択</option>
+                        <option value="high">高</option>
+                        <option value="mid">中</option>
+                        <option value="low">低</option>
+                      </select>
+                    </td>
+                    <td><input type="text" class="table-cell-input" name="line_unit_cost[]" value="" aria-label="仕入単価"></td>
+                    <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
+                    <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                  </tr>
+                  <tr>
+                    <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_code[]" value="" aria-label="商品コード"></td>
+                    <td><input type="text" class="table-cell-input" name="line_hinban[]" value="" aria-label="品番"></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_name[]" value="" aria-label="商品名"></td>
+                    <td><input type="text" class="table-cell-input" name="line_qty[]" value="" aria-label="数量"></td>
+                    <td><input type="text" class="table-cell-input" name="line_cs[]" value="" aria-label="C/S"></td>
+                    <td><input type="text" class="table-cell-input" name="line_teiban_customer[]" value="" aria-label="定番／得意先"></td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="別注加工">
+                        <option value="">選択</option>
+                        <option value="0">無</option>
+                        <option value="1">有</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="値付">
+                        <option value="">選択</option>
+                        <option value="0">未</option>
+                        <option value="1">済</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="納品方法">
+                        <option value="">選択</option>
+                        <option value="1">一括</option>
+                        <option value="2">分納</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_new_add[]" aria-label="新規／追加">
+                        <option value="">選択</option>
+                        <option value="new">新規</option>
+                        <option value="add">追加</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_priority[]" aria-label="納期優先度">
+                        <option value="">選択</option>
+                        <option value="high">高</option>
+                        <option value="mid">中</option>
+                        <option value="low">低</option>
+                      </select>
+                    </td>
+                    <td><input type="text" class="table-cell-input" name="line_unit_cost[]" value="" aria-label="仕入単価"></td>
+                    <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
+                    <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                  </tr>
+                  <tr>
+                    <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_code[]" value="" aria-label="商品コード"></td>
+                    <td><input type="text" class="table-cell-input" name="line_hinban[]" value="" aria-label="品番"></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_name[]" value="" aria-label="商品名"></td>
+                    <td><input type="text" class="table-cell-input" name="line_qty[]" value="" aria-label="数量"></td>
+                    <td><input type="text" class="table-cell-input" name="line_cs[]" value="" aria-label="C/S"></td>
+                    <td><input type="text" class="table-cell-input" name="line_teiban_customer[]" value="" aria-label="定番／得意先"></td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="別注加工">
+                        <option value="">選択</option>
+                        <option value="0">無</option>
+                        <option value="1">有</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="値付">
+                        <option value="">選択</option>
+                        <option value="0">未</option>
+                        <option value="1">済</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="納品方法">
+                        <option value="">選択</option>
+                        <option value="1">一括</option>
+                        <option value="2">分納</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_new_add[]" aria-label="新規／追加">
+                        <option value="">選択</option>
+                        <option value="new">新規</option>
+                        <option value="add">追加</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_priority[]" aria-label="納期優先度">
+                        <option value="">選択</option>
+                        <option value="high">高</option>
+                        <option value="mid">中</option>
+                        <option value="low">低</option>
+                      </select>
+                    </td>
+                    <td><input type="text" class="table-cell-input" name="line_unit_cost[]" value="" aria-label="仕入単価"></td>
+                    <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
+                    <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                  </tr>
+                  <tr>
+                    <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_code[]" value="" aria-label="商品コード"></td>
+                    <td><input type="text" class="table-cell-input" name="line_hinban[]" value="" aria-label="品番"></td>
+                    <td><input type="text" class="table-cell-input" name="line_product_name[]" value="" aria-label="商品名"></td>
+                    <td><input type="text" class="table-cell-input" name="line_qty[]" value="" aria-label="数量"></td>
+                    <td><input type="text" class="table-cell-input" name="line_cs[]" value="" aria-label="C/S"></td>
+                    <td><input type="text" class="table-cell-input" name="line_teiban_customer[]" value="" aria-label="定番／得意先"></td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="別注加工">
+                        <option value="">選択</option>
+                        <option value="0">無</option>
+                        <option value="1">有</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="値付">
+                        <option value="">選択</option>
+                        <option value="0">未</option>
+                        <option value="1">済</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_delivery[]" aria-label="納品方法">
+                        <option value="">選択</option>
+                        <option value="1">一括</option>
+                        <option value="2">分納</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_new_add[]" aria-label="新規／追加">
+                        <option value="">選択</option>
+                        <option value="new">新規</option>
+                        <option value="add">追加</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-cell-input" name="line_priority[]" aria-label="納期優先度">
+                        <option value="">選択</option>
+                        <option value="high">高</option>
+                        <option value="mid">中</option>
+                        <option value="low">低</option>
+                      </select>
+                    </td>
+                    <td><input type="text" class="table-cell-input" name="line_unit_cost[]" value="" aria-label="仕入単価"></td>
+                    <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
+                    <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
+                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+<!--
         <div class="content-area ship-item-panels-host">
           <div class="view-layout view-layout-2">
             <div class="product-panel-section ship-item-panels">
               <div class="product-panel-toolbar">
-                <button type="button" id="addShipItemPanelBtn" class="btn-add-product-panel">追加</button>
+                <button type="button" id="addSh ipItemPanelBtn" class="btn-add-product-panel">追加</button>
               </div>
               <div class="product-swiper" id="shipItemProductSwiper">
                 <div class="product-panels-row" id="shipItemPanelsRow">
@@ -1671,6 +2046,7 @@
             </div>
           </div>
         </div>
+-->
         <!-- ========== フッター入力項目 ========== -->
         <div class="view-layout view-layout-1-group ship-form-footer">
           <!-- フッター入力項目エリア -->
@@ -2039,6 +2415,21 @@
 
     (function () {
       attachPeriodRangeFields(document);
+    })();
+
+    // ヘッダー: 定番/別注が「別注」の場合のみ得意先を表示
+    (function () {
+      var teibanBetsuSelect = document.getElementById("teibanBetsuSelect");
+      var tokuisakiRow = document.getElementById("headerTokuisakiRow");
+      if (!teibanBetsuSelect || !tokuisakiRow) return;
+
+      function toggleTokuisakiByKubun() {
+        var isBetchu = teibanBetsuSelect.value === "2";
+        tokuisakiRow.style.display = isBetchu ? "" : "none";
+      }
+
+      teibanBetsuSelect.addEventListener("change", toggleTokuisakiByKubun);
+      toggleTokuisakiByKubun();
     })();
 
     </script>
