@@ -2001,6 +2001,54 @@
       background: var(--color-primary-dark);
     }
 
+    .jk-btn.jk-btn--csv {
+      background: transparent;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    .jk-btn.jk-btn--csv:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* デザイナータブ：集計条件ボックスの右に CSV 出力 */
+    .jk-designer-conditions-row {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 16px;
+      margin: 0 0 12px;
+    }
+
+    .jk-designer-conditions-row > .jk-conditions-wrap.search-box {
+      flex: 1;
+      min-width: 0;
+      margin-bottom: 0;
+    }
+
+    .jk-designer-csv-aside {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .jk-designer-csv-aside .jk-btn.jk-btn--csv {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .jk-designer-conditions-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .jk-designer-csv-aside {
+        justify-content: flex-end;
+      }
+    }
+
     .jk-toolbar-tail {
       display: flex;
       flex-wrap: wrap;
@@ -2145,6 +2193,40 @@
       width: 100%;
       margin: 0;
       box-sizing: border-box;
+    }
+
+    /* PC：集計条件ツールバーを1段に（収まらないときのみ横スクロール） */
+    @media (min-width: 769px) {
+      .jk-app .jk-conditions-wrap .search-box-inner {
+        flex-wrap: nowrap;
+      }
+
+      .jk-app .jk-conditions-wrap .jk-toolbar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 8px 10px;
+        padding: 10px 12px;
+      }
+
+      .jk-app .jk-conditions-wrap .jk-toolbar .jk-toolbar-tail {
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+        margin-left: auto;
+      }
+
+      .jk-app .jk-conditions-wrap .jk-toolbar .jk-field {
+        flex-shrink: 0;
+      }
+
+      .jk-app .jk-conditions-wrap .jk-toolbar select {
+        min-width: 132px;
+      }
+
+      .jk-app .jk-conditions-wrap .jk-field--sort select {
+        min-width: 200px;
+        max-width: min(320px, 42vw);
+      }
     }
 
     .jk-tab-panel {
@@ -2744,60 +2826,65 @@
 
 <!-- デザイナータブ -->        
         <div class="jk-tab-panel jk-tab-panel--designer" role="tabpanel" aria-label="デザイナー向け集計">
-          <div class="search-box jk-conditions-wrap" id="jkSearchBoxDesigner">
-            <button type="button" class="search-toggle-sp" id="jkSearchToggleDesigner" aria-expanded="false" aria-controls="jkSearchInnerDesigner">
-              <span class="search-toggle-sp-label">
-                <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
-                <span class="search-toggle-sp-text">集計条件を開く</span>
-              </span>
-            </button>
-            <div class="search-box-inner" id="jkSearchInnerDesigner">
-              <div class="jk-toolbar" aria-label="デザイナー向け集計条件">
-                <div class="jk-field">
-                  <label for="jk-d-department">所属課</label>
-                  <select id="jk-d-department" name="d-department">
-                    <option selected>すべて</option>
-                    <option>第1課</option>
-                    <option>第2課</option>
-                    <option>第3課</option>
-                  </select>
-                </div>
-                <div class="jk-field">
-                  <label for="jk-d-year">集計年度</label>
-                  <select id="jk-d-year" name="d-fiscal-year">
-                    <option selected>2025年度</option>
-                    <option>2024年度</option>
-                  </select>
-                </div>
-                <div class="jk-field">
-                  <label for="jk-d-half">半期</label>
-                  <select id="jk-d-half" name="d-half">
-                    <option selected>前期（11月～4月）</option>
-                    <option>後期（5月～10月）</option>
-                  </select>
-                </div>
-                <div class="jk-field">
-                  <label for="jk-d-person">担当者（個人）</label>
-                  <select id="jk-d-person" name="d-person">
-                    <option selected>すべて</option>
-                    <option>Aさん</option>
-                    <option>Bさん</option>
-                  </select>
-                </div>
-                <div class="jk-toolbar-tail">
-                  <button type="button" class="jk-btn">集計</button>
-                  <div class="jk-field jk-field--sort">
-                    <label for="jk-d-sort">並び替え</label>
-                    <select id="jk-d-sort" name="d-sort" aria-label="デザイナー別の並び替え">
-                      <option value="" selected>既定（一覧順）</option>
-                      <option value="jisseki-desc">実績数（定番＋別注＋水野）・多い順</option>
-                      <option value="jisseki-asc">実績数（定番＋別注＋水野）・少ない順</option>
-                      <option value="yoy-asc">前年比（合計行）・低い順</option>
-                      <option value="yoy-desc">前年比（合計行）・高い順</option>
+          <div class="jk-designer-conditions-row">
+            <div class="search-box jk-conditions-wrap" id="jkSearchBoxDesigner">
+              <button type="button" class="search-toggle-sp" id="jkSearchToggleDesigner" aria-expanded="false" aria-controls="jkSearchInnerDesigner">
+                <span class="search-toggle-sp-label">
+                  <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                  <span class="search-toggle-sp-text">集計条件を開く</span>
+                </span>
+              </button>
+              <div class="search-box-inner" id="jkSearchInnerDesigner">
+                <div class="jk-toolbar" aria-label="デザイナー向け集計条件">
+                  <div class="jk-field">
+                    <label for="jk-d-department">所属課</label>
+                    <select id="jk-d-department" name="d-department">
+                      <option selected>すべて</option>
+                      <option>第1課</option>
+                      <option>第2課</option>
+                      <option>第3課</option>
                     </select>
+                  </div>
+                  <div class="jk-field">
+                    <label for="jk-d-year">集計年度</label>
+                    <select id="jk-d-year" name="d-fiscal-year">
+                      <option selected>2025年度</option>
+                      <option>2024年度</option>
+                    </select>
+                  </div>
+                  <div class="jk-field">
+                    <label for="jk-d-half">半期</label>
+                    <select id="jk-d-half" name="d-half">
+                      <option selected>前期（11月～4月）</option>
+                      <option>後期（5月～10月）</option>
+                    </select>
+                  </div>
+                  <div class="jk-field">
+                    <label for="jk-d-person">担当者（個人）</label>
+                    <select id="jk-d-person" name="d-person">
+                      <option selected>すべて</option>
+                      <option>Aさん</option>
+                      <option>Bさん</option>
+                    </select>
+                  </div>
+                  <div class="jk-toolbar-tail">
+                    <button type="button" class="jk-btn">集計</button>
+                    <div class="jk-field jk-field--sort">
+                      <label for="jk-d-sort">並び替え</label>
+                      <select id="jk-d-sort" name="d-sort" aria-label="デザイナー別の並び替え">
+                        <option value="" selected>既定（一覧順）</option>
+                        <option value="jisseki-desc">実績数（定番＋別注＋水野）・多い順</option>
+                        <option value="jisseki-asc">実績数（定番＋別注＋水野）・少ない順</option>
+                        <option value="yoy-asc">前年比（合計行）・低い順</option>
+                        <option value="yoy-desc">前年比（合計行）・高い順</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="jk-designer-csv-aside">
+              <button type="button" class="jk-btn jk-btn--csv" id="jkDesignerCsvBtn" aria-label="デザイナー集計をCSVでダウンロード">CSV出力</button>
             </div>
           </div>
           <div id="jkDesignerResultsGrid" class="jk-designer-grid" aria-label="デザイナー別集計結果一覧（カードをドラッグして並べ替えできます）"></div>
@@ -2833,8 +2920,8 @@
                     <label for="jk-s-sort">並び替え</label>
                     <select id="jk-s-sort" name="s-sort" aria-label="集計結果カードの並び替え">
                       <option value="" selected>既定（一覧順）</option>
-                      <option value="uriage-desc">今年売上（千円）・多い順</option>
-                      <option value="uriage-asc">今年売上（千円）・少ない順</option>
+                      <option value="jisseki-desc">定番・別注・水野合計（今年）・多い順</option>
+                      <option value="jisseki-asc">定番・別注・水野合計（今年）・少ない順</option>
                       <option value="yoy-desc">前年比・高い順</option>
                       <option value="yoy-asc">前年比・低い順</option>
                     </select>
@@ -2844,7 +2931,7 @@
             </div>
           </div>
 
-          <p class="jk-hint jk-hint--tight">区分ごとにカード表示します。金額は千円です。</p>
+          <p class="jk-hint jk-hint--tight">区分ごとにカード表示します。</p>
           <div id="jkShohinResultsGrid" class="jk-designer-grid" aria-label="商品部向け集計結果一覧"></div>
         </div>
 
@@ -3101,33 +3188,27 @@
       }
     })();
 
-    // 商品部：category2 ごとにカードを生成（集計行は仕様どおり11行）
+    // 商品部：区分ごとにカードを生成（集計行は実績系5行）
     (function initShohinResultsGrid() {
       var grid = document.getElementById("jkShohinResultsGrid");
       if (!grid) return;
 
-      var lists = window.AUTOCOMPLETE_LISTS;
-      var categories =
-        lists && Array.isArray(lists.category2) ? lists.category2.slice() : [];
-      if (categories.length === 0) return;
+      var categories = [
+        "タオル",
+        "寝装・インテリア",
+        "雑貨・その他",
+        "季節",
+        "アパレル",
+        "ゴルフ"
+      ];
 
       var ROW_LABELS = [
         "定番図案実績数",
         "別注図案実績数",
         "水野図案実績数",
         "定番・別注・水野 合計",
-        "移行商品完了実績数",
-        "営業在庫金額",
-        "仕入金額",
-        "売上金額",
-        "粗利金額",
-        "粗利率",
-        "回転率"
+        "移行商品完了実績数"
       ];
-
-      function formatComma(n) {
-        return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      }
 
       function formatYoY(zen, kon) {
         if (zen > 0) return ((kon / zen) * 100).toFixed(1) + "%";
@@ -3139,13 +3220,6 @@
         var kon = (d * 3 + r * 9 + 13) % 14;
         if (zen === 0) zen = 2;
         if (kon === 0) kon = 1;
-        return { zen: zen, kon: kon };
-      }
-
-      function demoMoneyPair(d, r) {
-        var base = 80000 + d * 4000 + r * 9000;
-        var zen = base + (d + r) % 5000;
-        var kon = zen + 2000 + (d * r * 100) % 8000;
         return { zen: zen, kon: kon };
       }
 
@@ -3162,17 +3236,6 @@
           var k = (d * 2 + 7) % 6;
           return { zen: z, kon: k };
         }
-        if (r >= 5 && r <= 8) return demoMoneyPair(d, r - 5);
-        if (r === 9) {
-          var zen = 19.2 + (d % 5) * 0.35;
-          var kon = zen + 0.3 + (d % 3) * 0.15;
-          return { zen: zen, kon: kon };
-        }
-        if (r === 10) {
-          var z2 = 3.1 + (d % 4) * 0.22;
-          var k2 = z2 + 0.15 + (d % 3) * 0.12;
-          return { zen: z2, kon: k2 };
-        }
         return { zen: 0, kon: 0 };
       }
 
@@ -3183,21 +3246,6 @@
           return {
             zen: String(Math.round(z)),
             kon: String(Math.round(k))
-          };
-        }
-        if (r >= 5 && r <= 8) {
-          return { zen: formatComma(z), kon: formatComma(k) };
-        }
-        if (r === 9) {
-          return {
-            zen: z.toFixed(1) + "%",
-            kon: k.toFixed(1) + "%"
-          };
-        }
-        if (r === 10) {
-          return {
-            zen: z.toFixed(1) + "回",
-            kon: k.toFixed(1) + "回"
           };
         }
         return { zen: "", kon: "" };
@@ -3221,9 +3269,6 @@
         } else {
           article.setAttribute("data-yoy-pct", "");
         }
-
-        var uri = rowZenKon(d, 7);
-        article.setAttribute("data-konnen-uriage", String(Math.round(uri.kon)));
 
         var head = document.createElement("div");
         head.className = "jk-d-card-head";
@@ -3320,8 +3365,8 @@
             return isNaN(n) ? null : n;
           }
 
-          function parseUriage(el) {
-            var s = el.getAttribute("data-konnen-uriage");
+          function parseJissekiKon(el) {
+            var s = el.getAttribute("data-jisseki");
             if (s === null || s === "") return 0;
             var n = parseInt(s, 10);
             return isNaN(n) ? 0 : n;
@@ -3333,14 +3378,14 @@
 
           if (!mode) {
             cards.sort(cmpIndex);
-          } else if (mode === "uriage-desc") {
+          } else if (mode === "jisseki-desc") {
             cards.sort(function (a, b) {
-              var d = parseUriage(b) - parseUriage(a);
+              var d = parseJissekiKon(b) - parseJissekiKon(a);
               return d !== 0 ? d : cmpIndex(a, b);
             });
-          } else if (mode === "uriage-asc") {
+          } else if (mode === "jisseki-asc") {
             cards.sort(function (a, b) {
-              var d = parseUriage(a) - parseUriage(b);
+              var d = parseJissekiKon(a) - parseJissekiKon(b);
               return d !== 0 ? d : cmpIndex(a, b);
             });
           } else if (mode === "yoy-asc") {
@@ -3624,6 +3669,78 @@
         sortSelDesigner.addEventListener("change", function () {
           sortDesignerCards(sortSelDesigner.value);
         });
+      }
+
+      /** RFC 4180 準拠：カンマ・ダブルクォート・改行を含むセルは " で囲む */
+      function csvEscapeCell(val) {
+        var s = val == null ? "" : String(val);
+        if (/[",\r\n]/.test(s)) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      }
+
+      function downloadDesignerCsv() {
+        var delim = ",";
+        var cards = Array.prototype.slice.call(
+          grid.querySelectorAll(".jk-d-card")
+        );
+        if (cards.length === 0) return;
+
+        var header = ["担当者"];
+        ROW_LABELS.forEach(function (label) {
+          header.push(label + "（前年）");
+          header.push(label + "（今年）");
+          header.push(label + "（前年比）");
+        });
+
+        var lines = [header.map(csvEscapeCell).join(delim)];
+
+        cards.forEach(function (card) {
+          var person =
+            card.getAttribute("data-designer-name") ||
+            (card.querySelector(".jk-d-card-title") &&
+              card.querySelector(".jk-d-card-title").textContent.trim()) ||
+            "";
+          var cells = [person];
+          var trs = card.querySelectorAll("tbody tr");
+          trs.forEach(function (tr) {
+            var tds = tr.querySelectorAll("td");
+            for (var i = 0; i < tds.length; i++) {
+              cells.push(tds[i].textContent.trim());
+            }
+          });
+          while (cells.length < header.length) {
+            cells.push("");
+          }
+          lines.push(cells.map(csvEscapeCell).join(delim));
+        });
+
+        var stamp = new Date();
+        var y = stamp.getFullYear();
+        var m = String(stamp.getMonth() + 1).padStart(2, "0");
+        var day = String(stamp.getDate()).padStart(2, "0");
+        var fn =
+          "jinjikoka_designer_" + y + m + day + ".csv";
+
+        /* BOM 付き UTF-8：Excel で日本語を文字化けしにくくする */
+        var csvBody = lines.join("\r\n");
+        var blob = new Blob(["\uFEFF" + csvBody], {
+          type: "text/csv;charset=utf-8;"
+        });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = fn;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      var csvBtn = document.getElementById("jkDesignerCsvBtn");
+      if (csvBtn) {
+        csvBtn.addEventListener("click", downloadDesignerCsv);
       }
     })();
 
