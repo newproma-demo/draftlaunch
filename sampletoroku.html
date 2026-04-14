@@ -599,6 +599,82 @@
       display: block;
     }
 
+    /* サンプル1行：プレビュー画像の横に「追加」 */
+    .entry-form .product-image-block-with-sample-add {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 0;
+      max-width: none;
+      align-items: flex-start;
+    }
+
+    .entry-form .product-image-preview-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .entry-form .btn-add-sample2-green {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.2;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      box-sizing: border-box;
+      background: var(--color-primary);
+      color: #fff;
+      border: 1px solid var(--color-primary);
+    }
+
+    .entry-form .btn-add-sample2-green:hover:not(:disabled) {
+      filter: brightness(0.94);
+    }
+
+    .entry-form .btn-add-sample2-green:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /* 追加サンプル行：参考画像（mitsumorijohotoroku の .btn-delete-image）と同一見た目の×を画像枠の横に */
+    .entry-form .product-image-block-with-sample-delete {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 0;
+      max-width: none;
+      align-items: flex-start;
+    }
+
+    .entry-form .js-extra-sample-row .product-image-preview-row--extra-sample .btn-delete-image {
+      position: static;
+      flex-shrink: 0;
+      z-index: 2;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .entry-form .js-extra-sample-row.is-extra-sample-tail .product-image-preview-row--extra-sample .btn-delete-image {
+      display: flex;
+    }
+
+    .entry-form .js-extra-sample-row.is-extra-sample-tail .product-image-preview-row--extra-sample .btn-delete-image:hover {
+      background: rgba(200, 0, 0, 0.9);
+    }
+
     .entry-form .product-name-label {
       color: var(--color-text-muted);
       font-weight: 100;
@@ -816,6 +892,121 @@
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--color-border);
       z-index: 2001;
+    }
+
+    /* 履歴：履歴参照モーダル */
+    .modal-backdrop-history {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 2100;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-backdrop-history.show {
+      display: block;
+    }
+
+    .modal-window-history {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      width: min(92vw, 520px);
+      max-height: min(88vh, 680px);
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2101;
+      box-sizing: border-box;
+      flex-direction: column;
+    }
+
+    .modal-window-history.show {
+      display: flex;
+    }
+
+    .history-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .history-modal-title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .history-modal-close {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--color-text);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .history-modal-close:hover {
+      background: rgba(200, 0, 0, 0.12);
+    }
+
+    .history-modal-body {
+      padding: 18px 20px 22px;
+      overflow: auto;
+      font-size: var(--fs-base, 14px);
+      color: var(--color-text-muted);
+    }
+
+    .history-modal-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 0;
+    }
+
+    .history-modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--fs-base, 14px);
+      color: var(--color-text);
+    }
+
+    .history-modal-table th,
+    .history-modal-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .history-modal-table thead th {
+      background: var(--color-surface);
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+
+    .history-modal-table tbody td {
+      color: var(--color-text);
     }
 
     /* #region レスポンシブ対応 */
@@ -1101,6 +1292,14 @@
         align-self: stretch;
         justify-content: flex-start;
       }
+
+      /* スマホ：サンプル「追加」ボタンはプレビュー画像の下 */
+      .entry-form .product-image-block-with-sample-add .product-image-preview-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
       .entry-form .form-row .product-image-wrapper {
         width: var(--product-image-preview-w);
         max-width: var(--product-image-preview-w);
@@ -1481,6 +1680,11 @@
       }
     }
 
+    /* .form-row の flex より非表示を優先（動的追加行も同クラス） */
+    .js-extra-sample-row[hidden] {
+      display: none !important;
+    }
+
     .filter-row {
       display: flex;
       align-items: center;
@@ -1574,7 +1778,12 @@
       padding-bottom: 8px;
     }
 
-    /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+    /* 画面右下固定「登録」（mitsumorijohotoroku.html の .fab-actions .btn-fab-new と同寸） */
+    a.btn-fab-new,
+    button.btn-fab-new {
+      font-family: inherit;
+    }
+
     .btn-fab-new {
       display: inline-block;
       text-decoration: none;
@@ -1582,14 +1791,18 @@
       right: 24px;
       bottom: 24px;
       z-index: 2001;
-      min-width: 70px;
+      min-width: 132px;
+      width: clamp(132px, 9vw, 180px);
       padding: 6px 14px;
+      box-sizing: border-box;
       background: var(--color-primary);
       color: #fff;
       border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
+      font-weight: 600;
+      white-space: nowrap;
     }
 
     .btn-fab-new:hover {
@@ -1771,14 +1984,14 @@
             <div class="form-row form-row-specification-no">
               <label class="filter-label" id="specificationNo">仕様書No.&nbsp;&nbsp;&nbsp;&nbsp;SY-2026-0001</label>
             </div>
-            <div class="form-row form-row-no-separator form-row-final-sample">
+            <div class="form-row form-row-no-separator form-row-final-sample" data-sample-product="1">
               <div class="form-column form-column-product-code">
                 <label class="filter-label">商品コード</label>
                 <input type="text" value="9999991" readonly>
                 <label class="filter-label">ミッキーA柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label>1stサンプル</label>
+                <label>サンプル1</label>
                 <label class="filter-label">到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-row--from-only">
@@ -1802,21 +2015,28 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
-              <div class="product-image-block">
-                <div class="product-image-wrapper">
-                  <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+              <div class="product-image-block product-image-block-with-sample-add">
+                <div class="product-image-preview-row">
+                  <div class="product-image-wrapper">
+                    <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+                  </div>
+                  <button type="button" class="btn-add-sample2-green js-btn-add-extra-sample" id="btnShowSample2" data-sample-product="1">追加</button>
+                  <button type="button" class="btn-add-sample2-green js-btn-history-modal" id="btnRireki1"
+                    aria-haspopup="dialog">履歴</button>
                 </div>
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-no-separator form-row-sample-main">
+            <div id="sampleRow2Block"
+              class="form-row form-row-no-separator form-row-sample-main js-extra-sample-row js-extra-sample-template"
+              data-sample-product="1" data-sample-number="2" hidden>
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label>2ndサンプル</label>
+                <label>サンプル2</label>
                 <label class="filter-label">到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-field">
@@ -1838,19 +2058,23 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
-              <div class="product-image-block">
-                <div class="product-image-wrapper">
-                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+              <div class="product-image-block product-image-block-with-sample-delete">
+                <div class="product-image-preview-row product-image-preview-row--extra-sample">
+                  <div class="product-image-wrapper">
+                    <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                  </div>
+                  <button type="button" class="btn-delete-image" title="削除" aria-label="このサンプル行を削除">×</button>
                 </div>
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-no-separator form-row-sample-main">
+            <div id="finalSampleRowProduct1" class="form-row form-row-no-separator form-row-sample-main"
+              data-sample-final-for="1">
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
                 <label>最終サンプル</label>
                 <label class="filter-label">到着日</label>
@@ -1874,8 +2098,8 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
@@ -1886,14 +2110,15 @@
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main">
+            <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main"
+              data-sample-product="2">
               <div class="form-column form-column-product-code">
                 <label class="filter-label">商品コード</label>
                 <input type="text" value="9999992" readonly>
                 <label class="filter-label">ミッキーB柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label>1stサンプル</label>
+                <label>サンプル1</label>
                 <label class="filter-label">到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-row--from-only">
@@ -1917,21 +2142,28 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
-              <div class="product-image-block">
-                <div class="product-image-wrapper">
-                  <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+              <div class="product-image-block product-image-block-with-sample-add">
+                <div class="product-image-preview-row">
+                  <div class="product-image-wrapper">
+                    <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+                  </div>
+                  <button type="button" class="btn-add-sample2-green js-btn-add-extra-sample" data-sample-product="2">追加</button>
+                  <button type="button" class="btn-add-sample2-green js-btn-history-modal" id="btnRireki2"
+                    aria-haspopup="dialog">履歴</button>
                 </div>
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-no-separator form-row-sample-main">
+            <div id="sampleRow2BlockProduct2"
+              class="form-row form-row-no-separator form-row-sample-main js-extra-sample-row js-extra-sample-template"
+              data-sample-product="2" data-sample-number="2" hidden>
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label>2ndサンプル</label>
+                <label>サンプル2</label>
                 <label class="filter-label">到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-field">
@@ -1953,19 +2185,23 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
-              <div class="product-image-block">
-                <div class="product-image-wrapper">
-                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+              <div class="product-image-block product-image-block-with-sample-delete">
+                <div class="product-image-preview-row product-image-preview-row--extra-sample">
+                  <div class="product-image-wrapper">
+                    <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                  </div>
+                  <button type="button" class="btn-delete-image" title="削除" aria-label="このサンプル行を削除">×</button>
                 </div>
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-no-separator form-row-sample-main">
+            <div id="finalSampleRowProduct2" class="form-row form-row-no-separator form-row-sample-main"
+              data-sample-final-for="2">
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
                 <label>最終サンプル</label>
                 <label class="filter-label">到着日</label>
@@ -1989,8 +2225,8 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
@@ -2001,14 +2237,15 @@
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main">
+            <div class="form-row form-row-product-code form-row-product-code-extra form-row-sample-main"
+              data-sample-product="3">
               <div class="form-column form-column-product-code">
                 <label class="filter-label">商品コード</label>
                 <input type="text" value="9999993" readonly>
                 <label class="filter-label">ミッキーC柄タオル</label>
               </div>
               <div class="form-column form-column-arrival-inline">
-                <label>1stサンプル</label>
+                <label>サンプル1</label>
                 <label class="filter-label">到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-row--from-only">
@@ -2032,21 +2269,28 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
-              <div class="product-image-block">
-                <div class="product-image-wrapper">
-                  <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+              <div class="product-image-block product-image-block-with-sample-add">
+                <div class="product-image-preview-row">
+                  <div class="product-image-wrapper">
+                    <img class="product-image" id="productImage3" src="images/evidence.png" alt="商品画像プレビュー">
+                  </div>
+                  <button type="button" class="btn-add-sample2-green js-btn-add-extra-sample" data-sample-product="3">追加</button>
+                  <button type="button" class="btn-add-sample2-green js-btn-history-modal" id="btnRireki3"
+                    aria-haspopup="dialog">履歴</button>
                 </div>
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-no-separator form-row-sample-main">
+            <div id="sampleRow2BlockProduct3"
+              class="form-row form-row-no-separator form-row-sample-main js-extra-sample-row js-extra-sample-template"
+              data-sample-product="3" data-sample-number="2" hidden>
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
-                <label>2ndサンプル</label>
+                <label>サンプル2</label>
                 <label class="filter-label">到着日</label>
                 <div class="period-range-row--from-only">
                   <div class="period-range-field">
@@ -2068,19 +2312,23 @@
                 <div>
                   <select id="statusSelect">
                     <option value="">選択してください</option>
-                    <option value="1" data-product-name="mishinsei">未申請</option>
-                    <option value="2" data-product-name="shinseisumi">申請済</option>
+                    <option value="1" data-product-name="appglobal">アプローバル待ち</option>
+                    <option value="2" data-product-name="appglobal">アプローバル済み</option>
                   </select>
                 </div>
               </div>
-              <div class="product-image-block">
-                <div class="product-image-wrapper">
-                  <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+              <div class="product-image-block product-image-block-with-sample-delete">
+                <div class="product-image-preview-row product-image-preview-row--extra-sample">
+                  <div class="product-image-wrapper">
+                    <img class="product-image" id="productImage1" src="images/evidence.png" alt="商品画像プレビュー">
+                  </div>
+                  <button type="button" class="btn-delete-image" title="削除" aria-label="このサンプル行を削除">×</button>
                 </div>
                 <input type="file" accept="image/*" class="product-image-input" style="display: none;">
               </div>
             </div>
-            <div class="form-row form-row-no-separator form-row-sample-main">
+            <div id="finalSampleRowProduct3" class="form-row form-row-no-separator form-row-sample-main"
+              data-sample-final-for="3">
               <div class="form-column form-column-arrival-inline form-column-arrival-final">
                 <label>最終サンプル</label>
                 <label class="filter-label">到着日</label>
@@ -2136,6 +2384,47 @@
 
     <!--#region モーダル(通知のリンク)  -->
     <div id="modal-window" class="modal-window">
+    </div>
+    <!-- #endregion -->
+
+    <!--#region 履歴：履歴参照モーダル -->
+    <div id="historyModalBackdrop" class="modal-backdrop-history" aria-hidden="true"></div>
+    <div id="historyModal" class="modal-window-history" role="dialog" aria-modal="true"
+      aria-labelledby="historyModalTitle" aria-hidden="true">
+      <div class="history-modal-header">
+        <h2 id="historyModalTitle" class="history-modal-title">アプローバル履歴</h2>
+        <button type="button" class="history-modal-close" id="historyModalClose" aria-label="閉じる">×</button>
+      </div>
+      <div class="history-modal-body">
+        <div class="history-modal-table-wrap">
+          <table class="history-modal-table">
+            <thead>
+              <tr>
+                <th scope="col">サンプル</th>
+                <th scope="col">ステータス</th>
+                <th scope="col">更新日時</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>サンプル1</td>
+                <td>アプローバル待ち</td>
+                <td>2026/03/01 10:00</td>
+              </tr>
+              <tr>
+                <td>サンプル1</td>
+                <td>アプローバル済み</td>
+                <td>2026/03/03 12:00</td>
+              </tr>
+              <tr>
+                <td>最終サンプル</td>
+                <td>アプローバル待ち</td>
+                <td>2026/03/10 09:00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
     <!-- #endregion -->
 
@@ -2200,6 +2489,46 @@
 
       loadSharedSidebar();
 
+      // 履歴：履歴参照モーダル
+      (function () {
+        var backdrop = document.getElementById("historyModalBackdrop");
+        var modal = document.getElementById("historyModal");
+        if (!backdrop || !modal) return;
+
+        function openHistoryModal() {
+          backdrop.classList.add("show");
+          modal.classList.add("show");
+          backdrop.setAttribute("aria-hidden", "false");
+          modal.setAttribute("aria-hidden", "false");
+        }
+
+        function closeHistoryModal() {
+          backdrop.classList.remove("show");
+          modal.classList.remove("show");
+          backdrop.setAttribute("aria-hidden", "true");
+          modal.setAttribute("aria-hidden", "true");
+        }
+
+        document.addEventListener("click", function (e) {
+          if (e.target.closest(".js-btn-history-modal")) {
+            e.preventDefault();
+            openHistoryModal();
+            return;
+          }
+          if (!modal.classList.contains("show")) return;
+          if (e.target.closest(".history-modal-close") || e.target === backdrop) {
+            e.preventDefault();
+            closeHistoryModal();
+          }
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && modal.classList.contains("show")) {
+            closeHistoryModal();
+          }
+        });
+      })();
+
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
 
@@ -2258,18 +2587,22 @@
         syncPickerFromText();
       }
 
-      // 固定行の「到着日」（全行の到着日欄を対象）
-      (function () {
-        var periodFields = document.querySelectorAll(".form-column-arrival-inline .period-range-field");
-        if (!periodFields || periodFields.length === 0) return;
-
+      var boundPeriodFields = new WeakSet();
+      function bindPeriodFieldsIn(root) {
+        if (!root) root = document;
+        var periodFields = root.querySelectorAll(".form-column-arrival-inline .period-range-field");
         Array.prototype.forEach.call(periodFields, function (periodField) {
+          if (boundPeriodFields.has(periodField)) return;
           var textInput = periodField.querySelector(".period-range-input");
           var pickerInput = periodField.querySelector(".period-range-picker");
           var openBtn = periodField.querySelector(".period-range-calendar-btn");
           bindFromOnlyCalendar(textInput, pickerInput, openBtn);
+          boundPeriodFields.add(periodField);
         });
-      })();
+      }
+
+      // 固定行の「到着日」（全行の到着日欄を対象・動的行は後から bindPeriodFieldsIn(行)）
+      bindPeriodFieldsIn(document);
 
       // 参考画像：追加・削除（画像クリックでファイル選択）
       (function () {
@@ -2325,33 +2658,35 @@
         });
       })();
 
+      var boundProductImageBlocks = new WeakSet();
+      function initProductImageBlock(block) {
+        if (!block || boundProductImageBlocks.has(block)) return;
+        boundProductImageBlocks.add(block);
+        var img = block.querySelector("img.product-image");
+        var fileInput = block.querySelector(".product-image-input");
+        if (!img || !fileInput) return;
+
+        img.style.cursor = "pointer";
+
+        img.addEventListener("click", function () {
+          fileInput.click();
+        });
+
+        fileInput.addEventListener("change", function () {
+          var file = this.files && this.files[0];
+          if (!file || !file.type || file.type.indexOf("image/") !== 0) return;
+
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
       // 商品画像: 画像クリックでファイル選択し、選択画像をプレビュー表示
       (function () {
-        var blocks = document.querySelectorAll(".product-image-block");
-        if (!blocks || blocks.length === 0) return;
-
-        Array.prototype.forEach.call(blocks, function (block) {
-          var img = block.querySelector("img.product-image");
-          var fileInput = block.querySelector(".product-image-input");
-          if (!img || !fileInput) return;
-
-          img.style.cursor = "pointer";
-
-          img.addEventListener("click", function () {
-            fileInput.click();
-          });
-
-          fileInput.addEventListener("change", function () {
-            var file = this.files && this.files[0];
-            if (!file || !file.type || file.type.indexOf("image/") !== 0) return;
-
-            var reader = new FileReader();
-            reader.onload = function (e) {
-              img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-          });
-        });
+        Array.prototype.forEach.call(document.querySelectorAll(".product-image-block"), initProductImageBlock);
       })();
 
       // 商品コード→品名 表示（各行のコンボボックス変更時）
@@ -2408,6 +2743,143 @@
             if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
           });
         }
+      })();
+
+      // 商品ごとのサンプル「追加」／行末「×」削除（9999991 / 9999992 / 9999993）
+      (function () {
+        var filterRow = document.querySelector(".entry-form .filter-row");
+        if (!filterRow) return;
+
+        function getAnchor(productKey) {
+          return filterRow.querySelector('[data-sample-final-for="' + productKey + '"]');
+        }
+
+        function getTemplateRow(productKey) {
+          return filterRow.querySelector(
+            '.js-extra-sample-template[data-sample-product="' + productKey + '"]'
+          );
+        }
+
+        function getExtraRows(productKey) {
+          return filterRow.querySelectorAll(
+            '.js-extra-sample-row[data-sample-product="' + productKey + '"]'
+          );
+        }
+
+        function maxVisibleSampleNumber(productKey) {
+          var max = 1;
+          Array.prototype.forEach.call(getExtraRows(productKey), function (row) {
+            if (row.hidden) return;
+            var n = parseInt(row.getAttribute("data-sample-number"), 10);
+            if (!isNaN(n)) max = Math.max(max, n);
+          });
+          return max;
+        }
+
+        function stripCloneIds(root) {
+          Array.prototype.forEach.call(root.querySelectorAll("[id]"), function (el) {
+            el.removeAttribute("id");
+          });
+        }
+
+        function clearRowFields(row) {
+          Array.prototype.forEach.call(row.querySelectorAll(".period-range-input"), function (inp) {
+            inp.value = "";
+            inp.classList.remove("period-range-invalid");
+          });
+          Array.prototype.forEach.call(row.querySelectorAll(".period-range-picker"), function (inp) {
+            inp.value = "";
+          });
+          Array.prototype.forEach.call(row.querySelectorAll('input[type="text"]'), function (inp) {
+            if (!inp.classList.contains("period-range-input")) inp.value = "";
+          });
+          Array.prototype.forEach.call(row.querySelectorAll("select"), function (sel) {
+            sel.selectedIndex = 0;
+          });
+          var img = row.querySelector("img.product-image");
+          if (img) img.src = "images/evidence.png";
+          Array.prototype.forEach.call(row.querySelectorAll(".product-image-input"), function (inp) {
+            inp.value = "";
+          });
+        }
+
+        function setTierLabel(row, num) {
+          var col = row.querySelector(".form-column-arrival-inline.form-column-arrival-final");
+          if (!col) return;
+          var lab = col.querySelector("label:not(.filter-label)");
+          if (lab) lab.textContent = "サンプル" + num;
+        }
+
+        function refreshExtraSampleTailMarkerFor(productKey) {
+          var rows = getExtraRows(productKey);
+          Array.prototype.forEach.call(rows, function (r) {
+            r.classList.remove("is-extra-sample-tail");
+          });
+          var visible = [];
+          Array.prototype.forEach.call(rows, function (r) {
+            if (!r.hidden) visible.push(r);
+          });
+          if (visible.length === 0) return;
+          visible[visible.length - 1].classList.add("is-extra-sample-tail");
+        }
+
+        filterRow.addEventListener("click", function (e) {
+          var addBtn = e.target.closest(".js-btn-add-extra-sample");
+          if (addBtn) {
+            e.preventDefault();
+            var productKey = addBtn.getAttribute("data-sample-product");
+            if (!productKey) return;
+            var templateRow = getTemplateRow(productKey);
+            var anchor = getAnchor(productKey);
+            if (!templateRow || !anchor || !anchor.parentNode) return;
+
+            if (templateRow.hidden) {
+              templateRow.removeAttribute("hidden");
+              refreshExtraSampleTailMarkerFor(productKey);
+              return;
+            }
+
+            var nextNum = maxVisibleSampleNumber(productKey) + 1;
+            var clone = templateRow.cloneNode(true);
+            clone.removeAttribute("id");
+            clone.removeAttribute("hidden");
+            clone.classList.remove("js-extra-sample-template");
+            clone.setAttribute("data-sample-number", String(nextNum));
+            clone.setAttribute("data-sample-product", productKey);
+            stripCloneIds(clone);
+            clearRowFields(clone);
+            setTierLabel(clone, nextNum);
+            anchor.parentNode.insertBefore(clone, anchor);
+            bindPeriodFieldsIn(clone);
+            var imgBlock = clone.querySelector(".product-image-block");
+            if (imgBlock) initProductImageBlock(imgBlock);
+            refreshExtraSampleTailMarkerFor(productKey);
+            return;
+          }
+
+          var delBtn = e.target.closest(
+            ".js-extra-sample-row .product-image-preview-row--extra-sample .btn-delete-image"
+          );
+          if (!delBtn) return;
+          e.preventDefault();
+          e.stopPropagation();
+          var row = delBtn.closest(".js-extra-sample-row");
+          if (!row) return;
+          var pk = row.getAttribute("data-sample-product");
+          if (!pk) return;
+          if (row.classList.contains("js-extra-sample-template")) {
+            clearRowFields(row);
+            setTierLabel(row, 2);
+            row.setAttribute("hidden", "");
+          } else {
+            row.remove();
+          }
+          refreshExtraSampleTailMarkerFor(pk);
+        });
+
+        ["1", "2", "3"].forEach(function (k) {
+          refreshExtraSampleTailMarkerFor(k);
+        });
       })();
     </script>
 </body>
