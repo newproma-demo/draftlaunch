@@ -903,6 +903,29 @@
         right: 20px;
       }
 
+      /* 決裁結果セレクト（スマホ）：退避画面と同様 */
+      #resultSelect,
+      #kessaiResultSelectPanel1 {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 44px;
+        padding: 8px 12px;
+        font-size: var(--fs-sm);
+        line-height: 1.4;
+        appearance: menulist;
+        -webkit-appearance: menulist;
+        color: var(--color-text);
+        -webkit-text-fill-color: var(--color-text);
+        opacity: 1;
+        box-sizing: border-box;
+      }
+
+      .result-select-block .result-reason-wrap textarea {
+        min-height: 7.5rem;
+      }
+
       .fab-actions {
         right: 12px;
         bottom: 12px;
@@ -1019,6 +1042,76 @@
       font-size: inherit;
       line-height: 1.45;
       resize: vertical;
+    }
+
+    /* 決裁結果選択エリア（サイズ・フォントは shipiraishokessai_退避.html に合わせる） */
+    /* key=2 のときのみ表示（data-url-key は先頭スクリプトで .content-box に付与） */
+    .result-select-block {
+      padding: 8px 0;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .content-box[data-url-key="2"] .result-select-block {
+      display: flex;
+    }
+
+    .result-select-block .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .result-select-block .result-reason-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .result-select-block .result-reason-wrap.is-visible {
+      display: flex;
+    }
+
+    .result-select-block .result-reason-wrap textarea {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      min-height: 88px;
+      padding: 8px 12px;
+      font-size: var(--fs-sm);
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      resize: vertical;
+    }
+
+    /* 決裁結果セレクト：shipiraishokessaiteiban.html と同じ寸法（退避画面と同一） */
+    #resultSelect,
+    #kessaiResultSelectPanel1 {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+      min-height: 44px;
+      font-size: inherit;
+      font-family: inherit;
+      background: var(--color-card);
+      color: var(--color-text);
+      -webkit-text-fill-color: var(--color-text);
+      opacity: 1;
+      box-sizing: border-box;
+    }
+
+    #resultSelect option,
+    #kessaiResultSelectPanel1 option {
+      color: var(--color-text);
     }
 
     /* 備考：行・項目を全幅にし、textarea が max-width まで確実に広がる（flex:0 1 auto だと親が狭く max-width が効かない） */
@@ -2027,6 +2120,20 @@
             </div>
           </div>
         </div>
+        <!-- 決裁結果選択エリア -->
+        <div class="result-select-block">
+          <div class="filter-item">
+            <select id="resultSelect" name="result">
+              <option value="" selected disabled>選定結果を選択してください</option>
+              <option value="approved">承認</option>
+              <option value="rejected">差し戻し</option>
+              <option value="cancelled">取消</option>
+            </select>
+          </div>
+          <div id="resultReasonWrap" class="result-reason-wrap" aria-hidden="true">
+            <textarea id="resultReason" name="resultReason" rows="4" placeholder="理由を入力してください"></textarea>
+          </div>
+        </div>
       </div>
     </div>
     <!-- #endregion -->
@@ -2040,6 +2147,11 @@
         var fabActions = document.querySelector(".fab-actions");
         if (fabActions) {
           fabActions.setAttribute("data-url-key", key == null ? "" : String(key));
+        }
+
+        var contentBox = document.querySelector(".content-box");
+        if (contentBox) {
+          contentBox.setAttribute("data-url-key", key == null ? "" : String(key));
         }
 
         var titleEl = document.querySelector(".content-box .page-title");
@@ -2258,6 +2370,7 @@
             )
             .forEach(function (el) {
               if (el.closest(".fab-actions")) return;
+              if (el.closest(".result-select-block")) return;
               if (el.tagName === "INPUT" && (el.type || "").toLowerCase() === "hidden") {
                 return;
               }
@@ -2346,6 +2459,38 @@
         });
 
         syncShipDetailDeleteLinks();
+      })();
+
+      (function initKessaiResultReasonVisibility() {
+        var select =
+          document.getElementById("resultSelect") || document.getElementById("kessaiResultSelectPanel1");
+        var wrap = document.getElementById("resultReasonWrap");
+        var reason = document.getElementById("resultReason");
+        if (!select || !wrap) return;
+
+        function needsReason(value) {
+          return (
+            value === "rejected" ||
+            value === "cancelled" ||
+            value === "差戻し" ||
+            value === "取消"
+          );
+        }
+
+        function apply() {
+          var show = needsReason(select.value);
+          if (show) {
+            wrap.classList.add("is-visible");
+            wrap.setAttribute("aria-hidden", "false");
+          } else {
+            wrap.classList.remove("is-visible");
+            wrap.setAttribute("aria-hidden", "true");
+            if (reason) reason.value = "";
+          }
+        }
+
+        select.addEventListener("change", apply);
+        apply();
       })();
 
       // スマホ: 検索条件の折りたたみ開閉
