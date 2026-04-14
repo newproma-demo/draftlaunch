@@ -1177,6 +1177,21 @@
       color: var(--color-primary);
     }
 
+    /* key≠2: 契約書No.入力済み行の「操作」列の削除リンク */
+    .detail-lines-table a.ship-line-op-delete {
+      font-size: var(--fs-sm, 0.875rem);
+      font-weight: 600;
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .detail-lines-table a.ship-line-op-delete:hover {
+      opacity: 0.88;
+    }
+
     /* 768px以下のカード表示は既存のまま。PC幅でウィンドウが狭いときだけセル内改行し、tr全体が横に伸び続けないようにする */
     @media (min-width: 769px) {
 
@@ -1186,6 +1201,13 @@
         word-break: break-word;
         overflow-wrap: break-word;
         vertical-align: top;
+      }
+
+      /* PCのみ: 明細「操作」列（最終列）を中央揃え */
+      .detail-lines-table thead th:last-child,
+      .detail-lines-table tbody td:last-child {
+        text-align: center;
+        vertical-align: middle;
       }
 
       /* PC: 指定列（数量/C/S/仕入単価/仕入単価計/入数/手配可能数）を右寄せ */
@@ -1235,6 +1257,19 @@
       width: clamp(132px, 9vw, 180px);
       padding: 6px 14px;
       box-sizing: border-box;
+    }
+
+    /* key=2 等で hidden を付けたとき、.btn-fab-new の display が UA の hidden を潰さないようにする */
+    .fab-actions .btn-fab-new[hidden] {
+      display: none !important;
+    }
+
+    /* 「登録」は data-url-key="2" のときのみ表示（key=1・未指定などでは非表示） */
+    .fab-actions:not([data-url-key="2"]) .fab-show-key2 {
+      display: none !important;
+    }
+    .fab-actions[data-url-key="2"] .fab-show-key2 {
+      display: inline-block !important;
     }
 
     /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
@@ -1547,10 +1582,11 @@
     <div id="sidebarMount"></div>
     <!-- #endregion -->
 
-    <!-- 画面右下固定：一時保存、申請 -->
+    <!-- 画面右下固定ボタン -->
     <div class="fab-actions" role="toolbar">
-      <button type="button" class="btn-fab-new">一時保存</button>
-      <button type="button" class="btn-fab-new">申請</button>
+      <button type="button" class="btn-fab-new fab-show-default">一時保存</button>
+      <button type="button" class="btn-fab-new fab-show-default">申請</button>
+      <button type="button" class="btn-fab-new fab-show-key2" hidden>登録</button>
     </div>
 
     <!--#region メインコンテンツ  -->
@@ -1571,11 +1607,12 @@
                   <option value="2">別注</option>
                 </select>
               </div>
-              </div>
-              <div class="filter-row">
-                <div class="filter-item">
-                  <label>工場名<span class="required-mark">（必須）</span></label>
-                  <input type="text" placeholder="工場名を入力">
+            </div>
+            <div class="filter-row">
+              <div class="filter-item">
+                <label for="kojoMeiInput">工場名<span class="required-mark">（必須）</span></label>
+                <input type="text" id="kojoMeiInput" name="kojo_mei" placeholder="工場名を入力" autocomplete="organization">
+                <label>御中</label>
               </div>
               <div class="filter-item">
                 <span class="filter-label">依頼者<span class="required-mark">（必須）</span></span>
@@ -1626,10 +1663,10 @@
                   <option value="">選択してください</option>
                   <option value="1">中国：2026/05/09</option>
                   <option value="2">ベトナム：2026/05/11</option>
-                  <option value="1">中国：2026/05/16</option>
-                  <option value="2">ベトナム：2026/05/18</option>
-                  <option value="1">中国：2026/05/23</option>
-                  <option value="2">ベトナム：2026/05/25</option>
+                  <option value="3">中国：2026/05/16</option>
+                  <option value="4">ベトナム：2026/05/18</option>
+                  <option value="5">中国：2026/05/23</option>
+                  <option value="6">ベトナム：2026/05/25</option>
                 </select>
               </div>
               <div class="filter-item">
@@ -1721,7 +1758,7 @@
                     <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
                     <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
                     <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
-                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                    <td></td>
                   </tr>
                   <tr>
                     <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
@@ -1771,7 +1808,7 @@
                     <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
                     <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
                     <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
-                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                    <td></td>
                   </tr>
                   <tr>
                     <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
@@ -1821,7 +1858,7 @@
                     <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
                     <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
                     <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
-                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                    <td></td>
                   </tr>
                   <tr>
                     <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
@@ -1871,7 +1908,7 @@
                     <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
                     <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
                     <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
-                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                    <td></td>
                   </tr>
                   <tr>
                     <td><input type="text" class="table-cell-input" name="line_keiyaku[]" value=""  aria-label="契約書No."></td>
@@ -1921,7 +1958,7 @@
                     <td><input type="text" class="table-cell-input" name="line_total_cost[]" value="" aria-label="仕入単価計"></td>
                     <td><input type="text" class="table-cell-input" name="line_per_case[]" value="" aria-label="入数"></td>
                     <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="手配可能数"></td>
-                    <td><input type="text" class="table-cell-input" name="line_available[]" value="" aria-label="操作"></td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>
@@ -1996,6 +2033,321 @@
 
     <script src="js/sidebar.js"></script>
     <script>
+      (function () {
+        var key = new URLSearchParams(window.location.search).get("key");
+        var isKey2 = key === "2";
+
+        var fabActions = document.querySelector(".fab-actions");
+        if (fabActions) {
+          fabActions.setAttribute("data-url-key", key == null ? "" : String(key));
+        }
+
+        var titleEl = document.querySelector(".content-box .page-title");
+        if (titleEl) {
+          titleEl.textContent = isKey2 ? "Ship依頼書決裁" : "Ship依頼書登録・申請";
+        }
+
+        document.querySelectorAll(".fab-show-default").forEach(function (btn) {
+          btn.hidden = isKey2;
+        });
+        // 「登録」は key=2 のみ表示（key=1 では表示しない）
+        document.querySelectorAll(".fab-show-key2").forEach(function (btn) {
+          btn.hidden = !isKey2;
+        });
+
+        if (isKey2) {
+          var teibanBetsuSelect = document.getElementById("teibanBetsuSelect");
+          if (teibanBetsuSelect) {
+            teibanBetsuSelect.value = "2";
+          }
+          var kojoMeiInput = document.getElementById("kojoMeiInput");
+          if (kojoMeiInput) {
+            kojoMeiInput.value = "テスト工場名";
+          }
+          var iraiSelect = document.getElementById("iraiSelect");
+          if (iraiSelect) {
+            iraiSelect.value = "1";
+          }
+          var tokuisakiInput = document.getElementById("searchCategory");
+          if (tokuisakiInput) {
+            tokuisakiInput.value = "得意先名１";
+          }
+          var containerSelect = document.getElementById("containerSelect");
+          if (containerSelect) {
+            containerSelect.value = "ok";
+          }
+          var mokutekiKoSelect = document.getElementById("shipDateSelect");
+          if (mokutekiKoSelect) {
+            mokutekiKoSelect.value = "1";
+          }
+          var shipYoteiSelect = document.getElementById("kubunSelect");
+          if (shipYoteiSelect) {
+            shipYoteiSelect.value = "1";
+          }
+          var kubunSelect = document.getElementById("searchHanbaiKubun");
+          if (kubunSelect) {
+            kubunSelect.value = "1";
+          }
+          var detailRows = document.querySelectorAll(
+            "#approvalListArea .detail-lines-table tbody tr"
+          );
+          function applyKey2DetailRow(row, rowIndex) {
+            if (!row) return;
+            function li(label) {
+              return row.querySelector(
+                'input.table-cell-input[aria-label="' + label + '"]'
+              );
+            }
+            function ls(label) {
+              return row.querySelector(
+                'select.table-cell-input[aria-label="' + label + '"]'
+              );
+            }
+            var keiyakuByRow = ["123456789", "1000000002", "1000000003"];
+            var productCodeByRow = ["999991", "999992", "999993"];
+            var hinbanByRow = ["888881", "888882", "888883"];
+            var productNameByRow = ["ミッキーＡ柄タオル", "ミッキーＢ柄タオル", "ミッキーＣ柄タオル"];
+            var qtyBySuryoByRow = ["12", "24", "36"];
+            var csByCsByRow = ["1", "2", "3"];
+            var teibanCustomerByRow = ["定番", "定番", "得意先"];
+            var bettyukakouByRow = ["0", "1", "0"];
+            var valueByRow = ["0", "1", "0"];
+            var deliveryMethodByRow = ["1", "2", "1"];
+            var newAddByRow = ["new", "add", "new"];       
+            var priorityByRow = ["low", "mid", "high"];
+            var unitCostByRow = ["100", "100", "100"];
+            var totalCostByRow = ["1200", "2400", "3600"];
+            var perCaseByRow = ["12", "24", "36"];
+            var availableByRow = ["12", "24", "36"];
+
+            var el;
+            if ((el = li("契約書No."))) {
+              el.value =
+                keiyakuByRow[rowIndex] != null 
+                  ? keiyakuByRow[rowIndex] 
+                  : keiyakuByRow[0];
+            }
+            if ((el = li("商品コード"))) {
+              el.value =
+                productCodeByRow[rowIndex] != null
+                  ? productCodeByRow[rowIndex]
+                  : productCodeByRow[0];
+            }
+            if ((el = li("品番"))) {
+              el.value =
+                hinbanByRow[rowIndex] != null
+                  ? hinbanByRow[rowIndex]
+                  : hinbanByRow[0];
+            }
+            if ((el = li("商品名"))) {
+              el.value =
+                productNameByRow[rowIndex] != null
+                  ? productNameByRow[rowIndex]
+                  : productNameByRow[0];
+            }
+            if ((el = li("数量"))) {
+              el.value =
+                qtyBySuryoByRow[rowIndex] != null
+                  ? qtyBySuryoByRow[rowIndex]
+                  : qtyBySuryoByRow[0];
+            }
+            if ((el = li("C/S"))) {
+              el.value =
+                csByCsByRow[rowIndex] != null
+                  ? csByCsByRow[rowIndex]
+                  : csByCsByRow[0];
+            }
+            if ((el = li("定番／得意先"))) {
+              el.value =
+                teibanCustomerByRow[rowIndex] != null
+                  ? teibanCustomerByRow[rowIndex]
+                  : teibanCustomerByRow[0];
+            }
+            if ((el = ls("別注加工"))) {
+              el.value =
+                bettyukakouByRow[rowIndex] != null
+                  ? bettyukakouByRow[rowIndex]
+                  : bettyukakouByRow[0];
+            }
+            if ((el = ls("値付"))) {
+              el.value =
+                valueByRow[rowIndex] != null
+                  ? valueByRow[rowIndex]
+                  : valueByRow[0];
+            }
+            if ((el = ls("納品方法"))) {
+              el.value =
+                deliveryMethodByRow[rowIndex] != null
+                  ? deliveryMethodByRow[rowIndex]
+                  : deliveryMethodByRow[0];
+            }
+            if ((el = ls("新規／追加"))) {
+              el.value =
+                newAddByRow[rowIndex] != null
+                  ? newAddByRow[rowIndex]
+                  : newAddByRow[0];
+            }
+            if ((el = ls("納期優先度"))) {
+              el.value =
+                priorityByRow[rowIndex] != null
+                  ? priorityByRow[rowIndex]
+                  : priorityByRow[0];
+            }
+            if ((el = li("仕入単価"))) {
+              el.value =
+                unitCostByRow[rowIndex] != null
+                  ? unitCostByRow[rowIndex]
+                  : unitCostByRow[0];
+            }
+            if ((el = li("仕入単価計"))) {
+              el.value =
+                totalCostByRow[rowIndex] != null
+                  ? totalCostByRow[rowIndex]
+                  : totalCostByRow[0];
+            }
+            if ((el = li("入数"))) {
+              el.value =
+                perCaseByRow[rowIndex] != null
+                  ? perCaseByRow[rowIndex]
+                  : perCaseByRow[0];
+            }
+            if ((el = li("手配可能数"))) {
+              el.value =
+                availableByRow[rowIndex] != null
+                  ? availableByRow[rowIndex]
+                  : availableByRow[0];
+            }
+          }
+          var visibleDetailCount = 3;
+          for (var i = 0; i < detailRows.length; i++) {
+            if (i < visibleDetailCount) {
+              applyKey2DetailRow(detailRows[i], i);
+              detailRows[i].style.display = "";
+            } else {
+              detailRows[i].style.display = "none";
+            }
+          }
+
+          var shipTotalAmountEl = document.getElementById("shipTotalAmountInput");
+          if (shipTotalAmountEl) {
+            shipTotalAmountEl.value = "7200";
+          }
+          var footerDateInputs = document.querySelectorAll(
+            ".ship-form-footer .period-range-field .period-range-input.period-range-yyyymmdd"
+          );
+          var footerDateYmd = ["20260630", "20260715", "20260731"];
+          footerDateInputs.forEach(function (inp, idx) {
+            if (footerDateYmd[idx] == null) return;
+            inp.value = footerDateYmd[idx];
+            var field = inp.closest(".period-range-field");
+            var picker = field ? field.querySelector('input.period-range-picker[type="date"]') : null;
+            if (picker && footerDateYmd[idx].length === 8) {
+              var s = footerDateYmd[idx];
+              picker.value = s.slice(0, 4) + "-" + s.slice(4, 6) + "-" + s.slice(6, 8);
+            }
+          });
+
+          var shipRemarksEl = document.getElementById("shipRemarksInput");
+          if (shipRemarksEl) {
+            shipRemarksEl.value = "特記事項なし";
+          }
+
+          document
+            .querySelectorAll(
+              ".content input, .content select, .content textarea, .content button"
+            )
+            .forEach(function (el) {
+              if (el.closest(".fab-actions")) return;
+              if (el.tagName === "INPUT" && (el.type || "").toLowerCase() === "hidden") {
+                return;
+              }
+              el.disabled = true;
+              if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                el.readOnly = true;
+              }
+            });
+        }
+      })();
+
+      // key≠2: 契約書No.に値がある行の「操作」列に「削除」リンク（クリックで当該行の明細を初期化しリンクを外す）
+      (function () {
+        var key = new URLSearchParams(window.location.search).get("key");
+        if (key === "2") return;
+
+        var tbody = document.querySelector("#approvalListArea .detail-lines-table tbody");
+        if (!tbody) return;
+
+        function keiyakuInputInRow(row) {
+          return row.querySelector('input.table-cell-input[aria-label="契約書No."]');
+        }
+
+        function actionCellInRow(row) {
+          return row.querySelector("td:last-child");
+        }
+
+        function resetDetailRowValues(row) {
+          row.querySelectorAll("input.table-cell-input").forEach(function (inp) {
+            var type = (inp.type || "").toLowerCase();
+            if (type === "hidden" || type === "button" || type === "submit") return;
+            inp.value = "";
+          });
+          row.querySelectorAll("select.table-cell-input").forEach(function (sel) {
+            sel.selectedIndex = 0;
+          });
+        }
+
+        function updateShipDetailDeleteLink(row) {
+          var keiyaku = keiyakuInputInRow(row);
+          var cell = actionCellInRow(row);
+          if (!cell) return;
+          var has = keiyaku && keiyaku.value.replace(/^\s+|\s+$/g, "") !== "";
+          var link = cell.querySelector("a.ship-line-op-delete");
+          if (has) {
+            if (!link) {
+              link = document.createElement("a");
+              link.href = "#";
+              link.className = "ship-line-op-delete";
+              link.textContent = "削除";
+              link.addEventListener("click", function (e) {
+                e.preventDefault();
+                resetDetailRowValues(row);
+                var ki = keiyakuInputInRow(row);
+                if (ki) {
+                  try {
+                    ki.dispatchEvent(new Event("input", { bubbles: true }));
+                  } catch (_) {}
+                }
+                updateShipDetailDeleteLink(row);
+              });
+              cell.appendChild(link);
+            }
+          } else if (link) {
+            link.remove();
+          }
+        }
+
+        function syncShipDetailDeleteLinks() {
+          Array.prototype.forEach.call(tbody.querySelectorAll("tr"), updateShipDetailDeleteLink);
+        }
+
+        tbody.addEventListener("input", function (e) {
+          var t = e.target;
+          if (!t || t.tagName !== "INPUT") return;
+          if (t.getAttribute("aria-label") !== "契約書No.") return;
+          var row = t.closest("tr");
+          if (row) updateShipDetailDeleteLink(row);
+        });
+        tbody.addEventListener("change", function (e) {
+          var t = e.target;
+          if (!t || t.tagName !== "INPUT") return;
+          if (t.getAttribute("aria-label") !== "契約書No.") return;
+          var row = t.closest("tr");
+          if (row) updateShipDetailDeleteLink(row);
+        });
+
+        syncShipDetailDeleteLinks();
+      })();
+
       // スマホ: 検索条件の折りたたみ開閉
       (function () {
         var btn = document.getElementById("searchToggleSp");
