@@ -459,6 +459,64 @@
       max-width: 100%;
     }
 
+    .mmf-image-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+
+    .mmf-image-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: stretch;
+    }
+
+    .mmf-image-item {
+      max-height: 60px;
+      width: 100%;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: #f5f7fa;
+      object-fit: contain;
+      display: block;
+    }
+
+    .biko-barcode-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+
+    .biko-barcode-item {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .biko-barcode-field {
+      width: 100%;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 4px 2px;
+      background: #fff;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .barcode-image {
+      width: 70%;
+      height: 64px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
     @media (min-width: 900px) {
       .product-swiper {
         display: grid;
@@ -968,13 +1026,6 @@
                     <td colspan="2"><input type="text" name="yoteiKadai" class="half-field" disabled></td>
                   </tr>
                   <tr>
-                    <th>瀬戸在庫</th>
-                    <!-- <td><input type="text" name="setoZaiko" class="half-field"></td> -->
-                    <td colspan="2"><input type="text" name="setoZaiko" class="half-field" disabled></td>
-                    <th>手配可能数</th>
-                    <td colspan="2"><input type="text" name="tehaiKanouSuu" class="half-field" disabled></td>
-                  </tr>
-                  <tr>
                     <th>ロイヤリティ</th>
                     <td><input type="text" name="royalty" class="half-field" disabled></td>
                     <th>原価</th>
@@ -1038,12 +1089,44 @@
                     <th>備考</th>
                     <td colspan="5"><input type="text" name="biko" class="half-field" disabled></td>
                   </tr>
+                  <tr>
+                    <th></th>
+                    <td colspan="5">
+                      <div class="mmf-image-list">
+                        <div class="mmf-image-col">
+                          <img class="mmf-image-item" name="mmfImage1" src="images/noimage.png" alt="マニフェストアイコン1">
+                        </div>
+                        <div class="mmf-image-col">
+                          <img class="mmf-image-item" name="mmfImage2" src="images/noimage.png" alt="マニフェストアイコン2">
+                        </div>
+                        <div class="mmf-image-col">
+                          <img class="mmf-image-item" name="mmfImage3" src="images/noimage.png" alt="マニフェストアイコン3">
+                        </div>
+                        <div class="mmf-image-col">
+                          <img class="mmf-image-item" name="mmfImage4" src="images/noimage.png" alt="マニフェストアイコン4">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>バーコード</th>
+                    <td colspan="5">
+                      <div class="biko-barcode-list">
+                        <div class="biko-barcode-item">
+                          <div class="biko-barcode-field">
+                            <img class="barcode-image" alt="バーコード1">
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
   </template>
 
   <script src="js/sidebar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode/dist/JsBarcode.all.min.js"></script>
     <script>
       function loadSharedSidebar() {
         const mount = document.getElementById('sidebarMount');
@@ -1231,10 +1314,61 @@
         });
       }
 
+      function normalizeJanCode(value) {
+        return (value || "").toString().replace(/\D/g, "");
+      }
+
+      function renderJanBarcodeToField(field, janValue) {
+        if (!field) return;
+        var jan = normalizeJanCode(janValue);
+        field.removeAttribute("src");
+
+        if (!jan || (jan.length !== 12 && jan.length !== 13) || typeof JsBarcode !== "function") {
+          return;
+        }
+
+        var canvas = document.createElement("canvas");
+        try {
+          JsBarcode(canvas, jan, {
+            format: "EAN13",
+            displayValue: true,
+            margin: 4,
+            width: 1.2,
+            height: 22,
+            fontSize: 11,
+            textMargin: 3,
+            marginBottom: 6
+          });
+          field.src = canvas.toDataURL("image/png");
+        } catch (e) {
+          field.removeAttribute("src");
+        }
+      }
+
+      function updateCardBarcodes(card, janValue) {
+        var barcodeFields = card.querySelectorAll(".barcode-image");
+        if (!barcodeFields || !barcodeFields.length) return;
+        Array.prototype.forEach.call(barcodeFields, function (field) {
+          renderJanBarcodeToField(field, janValue);
+        });
+      }
+
+      function toggleBarcodeImages(card, visible) {
+        var barcodeFields = card.querySelectorAll(".barcode-image");
+        if (!barcodeFields || !barcodeFields.length) return;
+        Array.prototype.forEach.call(barcodeFields, function (field) {
+          field.style.display = visible ? "block" : "none";
+        });
+      }
+
       // 商品コード選択に応じてカード内の項目と画像を設定
       function applyProductData(card, code) {
         var img = card.querySelector(".product-image");
         var wrapper = card.querySelector(".product-image-wrapper");
+        var mmfImage1 = card.querySelector('img[name="mmfImage1"]');
+        var mmfImage2 = card.querySelector('img[name="mmfImage2"]');
+        var mmfImage3 = card.querySelector('img[name="mmfImage3"]');
+        var mmfImage4 = card.querySelector('img[name="mmfImage4"]');
         var tenjikai = card.querySelector('input[name="tenjikai"]');
         var category = card.querySelector('input[name="category"]');
         var productName = card.querySelector('input[name="productName"]');
@@ -1261,6 +1395,8 @@
         ].forEach(function (el) {
           if (el) el.value = "";
         });
+        updateCardBarcodes(card, "");
+        toggleBarcodeImages(card, !!code);
 
         // 画像も初期化（空カード時も画像エリアは表示）
         if (img) {
@@ -1268,6 +1404,41 @@
         }
         if (wrapper) {
           wrapper.style.display = "flex";
+        }
+        if (mmfImage1) {
+          mmfImage1.src = "images/noimage.png";
+        }
+        if (mmfImage2) {
+          mmfImage2.src = "images/noimage.png";
+        }
+        if (mmfImage3) {
+          mmfImage3.src = "images/noimage.png";
+        }
+        if (mmfImage4) {
+          mmfImage4.src = "images/noimage.png";
+        }
+
+        // 商品コードが選択されたら、マニフェスト画像1を固定画像へ切替
+        if (code && mmfImage1) {
+          mmfImage1.src = "images/mnf-cotton.svg";
+        }
+        if (code && mmfImage2) {
+          mmfImage2.src = "images/mnf-natural.svg";
+        }
+        if (code && mmfImage3) {
+          mmfImage3.src = "images/mnf-polyester.svg";
+        }
+        if (code && mmfImage4) {
+          mmfImage4.src = "images/mnf-recycled.svg";
+        }
+        if (code && mmfImage2) {
+          mmfImage2.src = "images/mnf-natural.svg";
+        }
+        if (code && mmfImage3) {
+          mmfImage3.src = "images/mnf-polyester.svg";
+        }
+        if (code && mmfImage4) {
+          mmfImage4.src = "images/mnf-recycled.svg";
         }
 
         // サンプルデータに存在する商品コードは、サンプル値を優先して反映
@@ -1280,6 +1451,8 @@
             if (productName) productName.value = sample.name || "";
             if (itemName) itemName.value = sample.item || "";
             if (jan) jan.value = sample.jan || "";
+            updateCardBarcodes(card, sample.jan || "");
+            toggleBarcodeImages(card, true);
             if (koteiJodai) koteiJodai.value = sample.koteiJodai || "";
             if (shinJodai) shinJodai.value = sample.shinJodai || "";
             if (yoteiKadai) yoteiKadai.value = sample.yoteiKadai || "";
