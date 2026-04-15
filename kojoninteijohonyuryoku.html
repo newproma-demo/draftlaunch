@@ -366,7 +366,8 @@
       line-height: 1.4;
     }
 
-    .entry-form input,
+    /* .period-range-picker は style.css で絶対配置の補助用のため除外 */
+    .entry-form input:not(.period-range-picker),
     .entry-form textarea {
       flex: 1;
       min-width: 0;
@@ -691,7 +692,7 @@
       }
 
       .entry-form .form-row select,
-      .entry-form .form-row input:not([type="checkbox"]):not([type="radio"]) {
+      .entry-form .form-row input:not([type="checkbox"]):not([type="radio"]):not(.period-range-picker) {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
@@ -772,6 +773,19 @@
         padding-top: 0 !important;
       }
 
+      /*
+       * 監査提出締切のみ：iOS 等でごく薄い type=date がタップを拾えないことがあるため、
+       * スマホでは補助 date をタップ不可にし、📅ボタンを前面にして click で showPicker する。
+       */
+      .entry-form .period-range-field--sp-calendar-via-btn .period-range-picker {
+        pointer-events: none !important;
+        z-index: 1 !important;
+      }
+
+      .entry-form .period-range-field--sp-calendar-via-btn .period-range-calendar-btn {
+        pointer-events: auto !important;
+        z-index: 50 !important;
+      }
     }
 
     /* 承認通知／検索結果・ボックス共通 */
@@ -842,6 +856,18 @@
       flex: 0 1 auto;
       width: 100%;
       max-width: 300px;
+    }
+
+    /* 日付補助 input：グローバル style.css の寸法・重ね順を form 内の width:100% 指定で壊さない */
+    .entry-form .period-range-field .period-range-picker {
+      width: 2.75em;
+      min-width: 2.75em;
+      max-width: 3.25rem;
+      flex: 0 0 auto;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -953,7 +979,7 @@
             <label for="entryKansaShimekiri" class="label-kansa-deadline">監査レポート<br class="only-sp-br">提出締切</label>
             <div class="period-range-row">
               <div class="period-range-inputs">
-                <div class="period-range-field">
+                <div class="period-range-field period-range-field--sp-calendar-via-btn">
                   <input type="text" id="entryKansaShimekiri" name="kansaShimekiri" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="監査レポート提出締切（From） yyyymmdd" title="8桁で入力（例: 20260315）またはカレンダー">
                   <input type="date" class="period-range-picker" tabindex="-1" title="">
                   <button type="button" class="period-range-calendar-btn" aria-label="監査レポート提出締切をカレンダーで選択">📅</button>
@@ -1117,8 +1143,8 @@
         document.querySelectorAll(".period-range-field").forEach(function (field) {
           var textInput = field.querySelector(".period-range-input.period-range-yyyymmdd");
           var picker = field.querySelector(".period-range-picker");
-          var btn = field.querySelector(".period-range-calendar-btn");
-          if (!textInput || !picker || !btn) return;
+          var opener = field.querySelector(".period-range-calendar-btn");
+          if (!textInput || !picker || !opener) return;
 
           function syncPickerFromText() {
             var iso = toIsoDate(textInput.value);
@@ -1149,8 +1175,10 @@
             }
           }
 
-          /* キーボード：装飾ボタンにフォーカスがある場合（pointer-events:none だが Enter は届く） */
-          btn.addEventListener("click", function (e) {
+          opener.addEventListener("mousedown", syncPickerFromText);
+          opener.addEventListener("touchstart", syncPickerFromText, { passive: true });
+          /* キーボード：フォーカスが装飾ボタンにあるとき（マウスは上層の type=date が受ける） */
+          opener.addEventListener("click", function (e) {
             e.preventDefault();
             openPicker();
           });
