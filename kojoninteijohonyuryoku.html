@@ -760,15 +760,12 @@
         min-width: 0;
       }
 
-      /* 監査レポート／提出締切：スマホのみ改行＋ラベル〜入力の余白を詰める */
-      br.only-sp-br {
-        display: inline;
-      }
-
+      /* 監査レポート／提出締切：改行＋ラベル〜入力の余白を詰める（<br> は下の PC 専用ルールで非表示にしない） */
       .entry-form label.label-kansa-deadline {
+        white-space: normal;
         padding-top: 0;
-        line-height: 1.2;
-        margin-right: -2px;
+        line-height: 1.15;
+        margin-right: -3px;
       }
 
       .entry-form label.label-kansa-deadline + .period-range-row {
@@ -825,9 +822,11 @@
       color: #fff;
     }
 
-    /* PC：監査ラベルは1行（スマホのみ <br.only-sp-br> で改行） */
-    br.only-sp-br {
-      display: none;
+    /* PCのみ：<br> を無効化して1行表示（スマホでは後続ルールに負けず改行が効く） */
+    @media (min-width: 769px) {
+      br.only-sp-br {
+        display: none;
+      }
     }
 
     /* ライセンス契約：エントリー内の From～To 日付（検索画面と同様） */
