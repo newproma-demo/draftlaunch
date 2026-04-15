@@ -642,7 +642,101 @@
         min-height: 0;
       }
 
-      /* 備考：PCでは狭く、スマホでは他のテキスト入力と同幅（flex:1 相当） */
+      /* スマホ：ラベル左・入力右の2列。入力列は全行で同幅（グリッド 1fr） */
+      .entry-form {
+        --entry-sp-label-col: 9.5em;
+        --entry-sp-label-field-gap: 6px;
+        padding-right: 4px;
+      }
+
+      .entry-form label {
+        width: auto;
+        max-width: none;
+      }
+
+      .entry-form .form-row {
+        display: grid;
+        grid-template-columns: var(--entry-sp-label-col) minmax(0, 1fr);
+        column-gap: var(--entry-sp-label-field-gap);
+        row-gap: 0;
+        align-items: start;
+        margin-bottom: 8px;
+      }
+
+      .entry-form .form-row > label {
+        grid-column: 1;
+        width: 100%;
+        padding-top: 6px;
+        box-sizing: border-box;
+        line-height: 1.35;
+      }
+
+      .entry-form .form-row > div {
+        grid-column: 2;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .entry-form .form-row .autocomplete,
+      .entry-form .form-row .autocomplete .autocomplete-input {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .entry-form .form-row select,
+      .entry-form .form-row input:not([type="checkbox"]):not([type="radio"]) {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .entry-form .form-row-item-inputs > .label-with-button {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding-top: 4px;
+        box-sizing: border-box;
+      }
+
+      .entry-form .form-row-item-inputs > .item-inputs-wrapper {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .entry-form .item-inputs-wrapper,
+      .entry-form #itemInputsContainer {
+        gap: 8px;
+      }
+
+      .entry-form .item-input-row {
+        gap: 6px;
+      }
+
+      .entry-form .item-input-row .autocomplete {
+        width: 100%;
+        max-width: 100%;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .entry-form .form-row > .period-range-row,
+      .entry-form .form-row .period-range-inputs {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      /* 備考：入力列いっぱい（PCの max-width はスマホで解除済み） */
       .entry-form textarea#entryRemarksInput {
         flex: 1;
         max-width: none;
