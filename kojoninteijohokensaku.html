@@ -1336,6 +1336,72 @@
         }
       })();
 
+      // yyyymmdd入力 + カレンダーボタン連携（有効期限／監査レポート提出締切 共通）
+      (function () {
+        function toYyyyMmDd(value) {
+          if (!value) return "";
+          return String(value).replace(/-/g, "");
+        }
+
+        function toIsoDate(value) {
+          var v = String(value || "").replace(/\D/g, "");
+          if (v.length !== 8) return "";
+          return v.slice(0, 4) + "-" + v.slice(4, 6) + "-" + v.slice(6, 8);
+        }
+
+        document.querySelectorAll(".period-range-field").forEach(function (field) {
+          var textInput = field.querySelector(".period-range-input.period-range-yyyymmdd");
+          var picker = field.querySelector(".period-range-picker");
+          var opener = field.querySelector(".period-range-calendar-btn");
+          if (!textInput || !picker || !opener) return;
+
+          function syncPickerFromText() {
+            var iso = toIsoDate(textInput.value);
+            if (iso) picker.value = iso;
+          }
+
+          picker.addEventListener("focus", syncPickerFromText);
+          picker.addEventListener("pointerdown", syncPickerFromText);
+
+          function openPicker() {
+            syncPickerFromText();
+            try {
+              if (typeof picker.showPicker === "function") {
+                var ret = picker.showPicker();
+                if (ret && typeof ret.catch === "function") {
+                  ret.catch(function () {
+                    picker.focus();
+                    picker.click();
+                  });
+                }
+              } else {
+                picker.focus();
+                picker.click();
+              }
+            } catch (_) {
+              picker.focus();
+              picker.click();
+            }
+          }
+
+          opener.addEventListener("mousedown", syncPickerFromText);
+          opener.addEventListener("touchstart", syncPickerFromText, { passive: true });
+          opener.addEventListener("click", function (e) {
+            e.preventDefault();
+            openPicker();
+          });
+
+          picker.addEventListener("change", function () {
+            textInput.value = toYyyyMmDd(picker.value);
+          });
+
+          textInput.addEventListener("blur", function () {
+            var iso = toIsoDate(textInput.value);
+            if (iso) picker.value = iso;
+          });
+        });
+      })();
+
       // サンプル日付のうち、基準日から1か月以内だけ「未入稿」タグ風に強調表示
       (function () {
         var base = new Date(2025, 9, 15); // 2025/10/15（月は0始まり）

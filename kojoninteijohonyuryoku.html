@@ -1185,6 +1185,7 @@
 
           picker.addEventListener("change", function () {
             textInput.value = toYyyyMmDd(picker.value);
+            textInput.dispatchEvent(new Event("input", { bubbles: true }));
           });
 
           textInput.addEventListener("blur", function () {
@@ -1192,6 +1193,46 @@
             if (iso) picker.value = iso;
           });
         });
+      })();
+
+      // 監査レポート提出締切：yyyymmdd 以外・不正な日付はエラー表示（HTML5 制約 + 見た目）
+      (function () {
+        var el = document.getElementById("entryKansaShimekiri");
+        var form = document.querySelector("form.entry-form");
+        if (!el) return;
+
+        function isValidYyyyMmDd(raw) {
+          var s = String(raw || "").trim();
+          if (s === "") return true;
+          if (!/^\d{8}$/.test(s)) return false;
+          var y = parseInt(s.slice(0, 4), 10);
+          var m = parseInt(s.slice(4, 6), 10);
+          var d = parseInt(s.slice(6, 8), 10);
+          if (m < 1 || m > 12 || d < 1 || d > 31) return false;
+          var dt = new Date(Date.UTC(y, m - 1, d));
+          return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+        }
+
+        function refresh() {
+          var ok = isValidYyyyMmDd(el.value);
+          el.classList.toggle("period-range-invalid", !ok);
+          el.setCustomValidity(ok ? "" : "8桁の日付（yyyymmdd）で入力してください。例: 20260315");
+          el.setAttribute("aria-invalid", ok ? "false" : "true");
+        }
+
+        el.addEventListener("input", refresh);
+        el.addEventListener("blur", refresh);
+
+        if (form) {
+          form.addEventListener("submit", function (e) {
+            refresh();
+            if (!isValidYyyyMmDd(el.value)) {
+              e.preventDefault();
+              el.reportValidity();
+              el.focus();
+            }
+          });
+        }
       })();
 
     </script>
