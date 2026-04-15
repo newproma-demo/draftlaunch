@@ -313,13 +313,56 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: var(--color-card);
-      padding: 28px;
-      width: 85%;
-      max-width: 900px;
+      padding: 16px;
+      width: min(92vw, 560px);
+      max-width: 560px;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--color-border);
       z-index: 2001;
+      text-align: center;
+    }
+    .modal-window.is-open {
+      display: block;
+    }
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 2000;
+    }
+    .modal-backdrop.is-open {
+      display: block;
+    }
+    .modal-image-wrap {
+      position: relative;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .modal-close-btn:hover {
+      background: rgba(200, 0, 0, 0.9);
+    }
+    .modal-preview-image {
+      width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      display: block;
     }
 
     /* #region レスポンシブ対応 */
@@ -524,51 +567,51 @@
         padding: 8px 0;
         white-space: normal;
       }
-      /* 先頭列はチェックボックスのため、2列目以降にラベルを付与 */
-      #approvalListArea .result-table tbody td:nth-child(2)::before {
+      /* 先頭列はチェックボックス、2列目は品質画像検査合格書のため、3列目以降にラベルを付与 */
+      #approvalListArea .result-table tbody td:nth-child(3)::before {
         content: "販売区分：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(3)::before {
+      #approvalListArea .result-table tbody td:nth-child(4)::before {
         content: "展示会：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(4)::before {
+      #approvalListArea .result-table tbody td:nth-child(5)::before {
         content: "カテゴリー：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(5)::before {
+      #approvalListArea .result-table tbody td:nth-child(6)::before {
         content: "商品コード：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(6)::before {
+      #approvalListArea .result-table tbody td:nth-child(7)::before {
         content: "品名：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(7)::before {
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
         content: "アイテム：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(8)::before {
+      #approvalListArea .result-table tbody td:nth-child(9)::before {
         content: "ブランド・キャラ：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(9)::before {
+      #approvalListArea .result-table tbody td:nth-child(10)::before {
         content: "デザイナー：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(10)::before {
+      #approvalListArea .result-table tbody td:nth-child(11)::before {
         content: "承認結果：";
         font-weight: 600;
       }
-      #approvalListArea .result-table tbody td:nth-child(11)::before {
+      #approvalListArea .result-table tbody td:nth-child(12)::before {
         content: "結果登録日：";
         font-weight: 600;
       }
 
-      /* 2段目は販売区分・展示会を横並びで表示（チェック列を除いて2・3列目） */
-      #approvalListArea .result-table tbody td:nth-child(2),
-      #approvalListArea .result-table tbody td:nth-child(3) {
+      /* 2段目は販売区分・展示会を横並びで表示（先頭2列を除いて3・4列目） */
+      #approvalListArea .result-table tbody td:nth-child(3),
+      #approvalListArea .result-table tbody td:nth-child(4) {
         display: inline-block;
         width: auto;
         margin-right: 12px;
@@ -786,6 +829,17 @@
     }
     .result-table a:hover {
       opacity: 0.9;
+    }
+    .result-thumb {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      display: block;
+      margin: 0 auto;
+      cursor: pointer;
     }
 
     /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
@@ -1282,8 +1336,9 @@
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 5%;"></th>
-                      <th style="width: 5%;">販売区分</th>
+                      <th style="width: 6%;"></th>
+                      <th style="width: 6%;"></th>
+                      <th style="width: 6%;">販売区分</th>
                       <th style="width: 10%;">展示会</th>
                       <th style="width: 8%;">カテゴリー</th>
                       <th style="width: 8%;">商品コード</th>
@@ -1291,8 +1346,8 @@
                       <th style="width: 14%;">アイテム</th>
                       <th style="width: 14%;">ブランド・キャラ</th>
                       <th style="width: 10%;">デザイナー</th>
-                      <th style="width: 5%;">承認結果</th>
-                      <th style="width: 7%;">結果登録日</th>
+                      <th style="width: 6%;">承認結果</th>
+                      <th style="width: 8%;">結果登録日</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1350,6 +1405,7 @@
     </div>
 
     <!--#region モーダル(通知のリンク)  -->
+    <div id="modal-backdrop" class="modal-backdrop"></div>
     <div id="modal-window" class="modal-window"> 
     </div>
     <!-- #endregion -->
@@ -1423,6 +1479,51 @@
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       });
 
+      // 一覧画像のモーダル表示
+      (function initImageModal() {
+        var modal = document.getElementById("modal-window");
+        var backdrop = document.getElementById("modal-backdrop");
+        var listArea = document.getElementById("approvalListArea");
+        if (!modal || !backdrop || !listArea) return;
+
+        function closeModal() {
+          modal.classList.remove("is-open");
+          backdrop.classList.remove("is-open");
+          modal.innerHTML = "";
+        }
+
+        function openModal(src, altText) {
+          modal.innerHTML =
+            '<div class="modal-image-wrap">' +
+              '<button type="button" class="modal-close-btn" aria-label="閉じる">×</button>' +
+              '<img class="modal-preview-image" src="' + src + '" alt="' + (altText || "品質画像検査合格書") + '">' +
+            '</div>';
+          modal.classList.add("is-open");
+          backdrop.classList.add("is-open");
+        }
+
+        listArea.addEventListener("click", function (e) {
+          var target = e.target;
+          if (!(target instanceof Element)) return;
+          if (!target.classList.contains("result-thumb")) return;
+          openModal(target.getAttribute("src"), target.getAttribute("alt"));
+        });
+
+        modal.addEventListener("click", function (e) {
+          var target = e.target;
+          if (!(target instanceof Element)) return;
+          if (target.classList.contains("modal-close-btn")) {
+            closeModal();
+          }
+        });
+        backdrop.addEventListener("click", closeModal);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && modal.classList.contains("is-open")) {
+            closeModal();
+          }
+        });
+      })();
+
       // 展示会プルダウン初期値（ダッシュボード用の updateLayout1 は本ページにないため未使用）
       var sel = document.getElementById("tenjikaiSelect");
       if (sel) {
@@ -1440,6 +1541,30 @@
         var selBrandChara = document.getElementById("searchBrandChara");
         var tbody = document.querySelector("#approvalListArea .result-table tbody");
         if (!tbody) return;
+
+        // 販売区分の前に品質画像検査合格書列を追加（承認結果ごとに画像を割り当て）
+        (function ensureImageCells() {
+          function resolveImageByApprovalResult(approvalResult) {
+            if (approvalResult === "承認済") return "images/品質検査合格書.png";
+            return "images/noimage.png";
+          }
+
+          Array.prototype.forEach.call(tbody.rows, function (row) {
+            var hasImageCell = !!(row.cells[1] && row.cells[1].querySelector("img.result-thumb"));
+            var approvalResultCellIndex = hasImageCell ? 10 : 9;
+            var approvalResult = row.cells[approvalResultCellIndex] ? row.cells[approvalResultCellIndex].textContent.trim() : "";
+            var imageSrc = resolveImageByApprovalResult(approvalResult);
+
+            if (!hasImageCell) {
+              var imageCell = row.insertCell(1);
+              imageCell.innerHTML = '<img class="result-thumb" src="' + imageSrc + '" alt="品質画像検査合格書">';
+              return;
+            }
+
+            var currentImage = row.cells[1].querySelector("img.result-thumb");
+            if (currentImage) currentImage.src = imageSrc;
+          });
+        })();
 
         // ステータス列は表示しないため、デモでは各行へdata-statusを付与して絞り込み可能にする
         (function ensureRowStatuses() {
@@ -1480,12 +1605,12 @@
 
           Array.prototype.forEach.call(tbody.rows, function (row) {
             // 先頭セルはチェックボックス列のため、各項目は1つ後ろのインデックス
-            var cellHanbai = row.cells[1] ? row.cells[1].textContent.trim() : "";
-            var cellTenjikai = row.cells[2] ? row.cells[2].textContent.trim() : "";
-            var cellCategory = row.cells[3] ? row.cells[3].textContent.trim() : "";
-            var cellHinmei = row.cells[4] ? row.cells[4].textContent.trim() : "";
-            var cellItem = row.cells[5] ? row.cells[5].textContent.trim() : "";
-            var cellBrandChara = row.cells[6] ? row.cells[6].textContent.trim() : "";
+            var cellHanbai = row.cells[2] ? row.cells[2].textContent.trim() : "";
+            var cellTenjikai = row.cells[3] ? row.cells[3].textContent.trim() : "";
+            var cellCategory = row.cells[4] ? row.cells[4].textContent.trim() : "";
+            var cellHinmei = row.cells[6] ? row.cells[6].textContent.trim() : "";
+            var cellItem = row.cells[7] ? row.cells[7].textContent.trim() : "";
+            var cellBrandChara = row.cells[8] ? row.cells[8].textContent.trim() : "";
             var rowStatus = (row.getAttribute("data-status") || "").trim();
             var match = true;
 
