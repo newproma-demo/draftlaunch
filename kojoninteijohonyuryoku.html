@@ -648,7 +648,8 @@
        */
       .entry-form {
         --entry-sp-label-col: 9.5em;
-        --entry-sp-label-field-gap: 6px;
+        /* ラベル列と入力列のあいだ（狭く） */
+        --entry-sp-label-field-gap: 3px;
         padding-right: 4px;
         display: grid;
         grid-template-columns: var(--entry-sp-label-col) minmax(0, 1fr);
@@ -669,7 +670,7 @@
       .entry-form .form-row > label {
         grid-column: 1;
         width: 100%;
-        padding-top: 6px;
+        padding-top: 3px;
         box-sizing: border-box;
         line-height: 1.35;
       }
@@ -703,8 +704,8 @@
         min-width: 0;
         flex-direction: column;
         align-items: flex-start;
-        gap: 4px;
-        padding-top: 4px;
+        gap: 3px;
+        padding-top: 2px;
         box-sizing: border-box;
       }
 
@@ -720,29 +721,26 @@
       }
 
       .entry-form .item-input-row {
+        position: relative;
         gap: 6px;
       }
 
+      /* 削除×をレイアウトから外し、.autocomplete を会社名などと同じ列幅いっぱい（100%）に */
+      .entry-form .item-input-row .btn-delete-supplier {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+      }
+
+      /* 先頭（×なし）・追加（×あり）で同一：右余白を全行に付け、入力欄の見かけ幅を揃える（×は absolute） */
       .entry-form .item-input-row .autocomplete {
         width: 100%;
         max-width: 100%;
         flex: 1;
         min-width: 0;
-      }
-
-      /*
-       * 先頭行には削除×がないため .autocomplete が列いっぱいになる。
-       * 追加行は×分だけ狭いので、先頭行に不可視の同幅プレースホルダ（×と同じ 24px）を置き入力幅を揃える。
-       */
-      .entry-form .item-input-row:first-child::after {
-        content: "";
-        flex: 0 0 24px;
-        width: 24px;
-        min-width: 24px;
-        height: 24px;
-        align-self: center;
-        visibility: hidden;
-        pointer-events: none;
+        padding-right: 28px;
         box-sizing: border-box;
       }
 
