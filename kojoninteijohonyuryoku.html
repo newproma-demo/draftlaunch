@@ -390,6 +390,95 @@
       min-width: 0;
     }
 
+    .entry-form .form-row-item-inputs .label-with-button {
+      width: 180px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding-top: 8px;
+      box-sizing: border-box;
+    }
+
+    .entry-form .form-row-item-inputs .label-with-button label {
+      width: auto;
+      padding-top: 0;
+    }
+
+    .entry-form .item-inputs-wrapper {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .entry-form .item-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .entry-form .item-input-row .autocomplete {
+      width: 250px;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .entry-form #itemInputsContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 追加ボタン共通（mitsumorijohotoroku.html と同様） */
+    .entry-form .btn-add-image {
+      align-self: flex-start;
+      padding: 8px 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .entry-form .btn-add-image:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+
+    .entry-form .btn-add-image--small {
+      transform: scale(0.75);
+      transform-origin: left top;
+    }
+
+    /* 削除×ボタン（mitsumorijohotoroku.html と同様） */
+    .entry-form .item-input-row .btn-delete-supplier {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .entry-form .item-input-row .btn-delete-supplier:hover {
+      background: rgba(200, 0, 0, 0.9);
+    }
+
     .entry-form .form-actions {
       margin-top: 16px;
       display: flex;
@@ -553,6 +642,14 @@
         min-height: 0;
       }
 
+      /* 備考：PCでは狭く、スマホでは他のテキスト入力と同幅（flex:1 相当） */
+      .entry-form textarea#entryRemarksInput {
+        flex: 1;
+        max-width: none;
+        width: 100%;
+        min-width: 0;
+      }
+
     }
 
     /* 承認通知／検索結果・ボックス共通 */
@@ -609,6 +706,13 @@
       min-width: 0;
       max-width: 100%;
       padding-top: 4px;
+    }
+
+    /* 備考：テキストエリアの幅を他行より狭く */
+    .entry-form textarea#entryRemarksInput {
+      flex: 0 1 auto;
+      width: 100%;
+      max-width: 300px;
     }
   </style>
 </head>
@@ -676,11 +780,20 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
-            <label for="entryItem">アイテム</label>
-            <div class="autocomplete">
-              <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテムを入力" id="entryItem" name="item" autocomplete="off" aria-label="アイテム">
-              <div class="autocomplete-dropdown"></div>
+          <div class="form-row form-row-item-inputs">
+            <div class="label-with-button">
+              <label for="entryItem">アイテム</label>
+              <button type="button" id="addItemBtn" class="btn-add-image btn-add-image--small" title="アイテムを追加">追加</button>
+            </div>
+            <div class="item-inputs-wrapper">
+              <div id="itemInputsContainer">
+                <div class="item-input-row">
+                  <div class="autocomplete">
+                    <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテムを入力" id="entryItem" name="item[]" autocomplete="off" aria-label="アイテム">
+                    <div class="autocomplete-dropdown"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="form-row">
@@ -712,15 +825,15 @@
             <div class="period-range-row">
               <div class="period-range-inputs">
                 <div class="period-range-field">
-                  <input type="text" id="entryKansaShimekiriFrom" name="kansaShimekiriFrom" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="監査レポート提出締切（From） yyyymmdd" title="8桁で入力（例: 20260315）またはカレンダー">
+                  <input type="text" id="entryKansaShimekiri" name="kansaShimekiri" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="監査レポート提出締切（From） yyyymmdd" title="8桁で入力（例: 20260315）またはカレンダー">
                   <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                  <button type="button" class="period-range-calendar-btn" aria-label="監査レポート提出締切（From）をカレンダーで選択">📅</button>
+                  <button type="button" class="period-range-calendar-btn" aria-label="監査レポート提出締切をカレンダーで選択">📅</button>
                 </div>
-                <span class="period-range-sep" aria-hidden="true">～</span>
                 <div class="period-range-field">
-                  <input type="text" id="entryKansaShimekiriTo" name="kansaShimekiriTo" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="監査レポート提出締切（To） yyyymmdd" title="8桁で入力（例: 20260331）またはカレンダー">
-                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                  <button type="button" class="period-range-calendar-btn" aria-label="監査レポート提出締切（To）をカレンダーで選択">📅</button>
+                  <label>
+                    <input type="checkbox" name="kansaShimekiriCheck" value="2">
+                    <span>提出不要</span>
+                  </label>       
                 </div>
               </div>
             </div>
@@ -730,6 +843,10 @@
             <div>
               <input type="text" id="entryOyaKanriNo" name="oyaKanriNo" placeholder="親管理番号を入力" autocomplete="off" aria-label="親管理番号">
             </div>
+          </div>
+          <div class="form-row">
+            <label for="entryRemarksInput">備考</label>
+            <textarea id="entryRemarksInput" name="remarks" rows="5" autocomplete="off" aria-label="備考"></textarea>
           </div>
         </form>
       </div>
@@ -800,6 +917,107 @@
       }
 
       loadSharedSidebar();
+
+      // アイテム：追加ボタンで入力欄を追加（追加分は×で削除）
+      (function () {
+        var addBtn = document.getElementById("addItemBtn");
+        var container = document.getElementById("itemInputsContainer");
+        if (!addBtn || !container) return;
+
+        function createItemRow() {
+          var row = document.createElement("div");
+          row.className = "item-input-row";
+
+          var autocompleteDiv = document.createElement("div");
+          autocompleteDiv.className = "autocomplete";
+
+          var input = document.createElement("input");
+          input.type = "text";
+          input.className = "autocomplete-input";
+          input.setAttribute("data-list", "item");
+          input.placeholder = "アイテムを入力";
+          input.name = "item[]";
+          input.setAttribute("autocomplete", "off");
+          input.setAttribute("aria-label", "アイテム");
+
+          var dropdown = document.createElement("div");
+          dropdown.className = "autocomplete-dropdown";
+          autocompleteDiv.appendChild(input);
+          autocompleteDiv.appendChild(dropdown);
+
+          var deleteBtn = document.createElement("button");
+          deleteBtn.type = "button";
+          deleteBtn.className = "btn-delete-supplier";
+          deleteBtn.innerHTML = "×";
+          deleteBtn.title = "削除";
+          deleteBtn.setAttribute("aria-label", "アイテムを削除");
+          deleteBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            row.remove();
+          });
+
+          row.appendChild(autocompleteDiv);
+          row.appendChild(deleteBtn);
+          return row;
+        }
+
+        addBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var row = createItemRow();
+          container.appendChild(row);
+          if (window.initAutocomplete) {
+            window.initAutocomplete(row.querySelector(".autocomplete"));
+          }
+        });
+      })();
+
+      // yyyymmdd入力 + カレンダーボタン連携（有効期限／監査レポート提出締切 共通）
+      (function () {
+        function toYyyyMmDd(value) {
+          if (!value) return "";
+          return String(value).replace(/-/g, "");
+        }
+
+        function toIsoDate(value) {
+          var v = String(value || "").replace(/\D/g, "");
+          if (v.length !== 8) return "";
+          return v.slice(0, 4) + "-" + v.slice(4, 6) + "-" + v.slice(6, 8);
+        }
+
+        document.querySelectorAll(".period-range-field").forEach(function (field) {
+          var textInput = field.querySelector(".period-range-input.period-range-yyyymmdd");
+          var picker = field.querySelector(".period-range-picker");
+          var btn = field.querySelector(".period-range-calendar-btn");
+          if (!textInput || !picker || !btn) return;
+
+          btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            var iso = toIsoDate(textInput.value);
+            if (iso) picker.value = iso;
+            try {
+              if (typeof picker.showPicker === "function") {
+                picker.showPicker();
+              } else {
+                picker.focus();
+                picker.click();
+              }
+            } catch (_) {
+              picker.focus();
+              picker.click();
+            }
+          });
+
+          picker.addEventListener("change", function () {
+            textInput.value = toYyyyMmDd(picker.value);
+          });
+
+          textInput.addEventListener("blur", function () {
+            var iso = toIsoDate(textInput.value);
+            if (iso) picker.value = iso;
+          });
+        });
+      })();
 
     </script>
 </body>
