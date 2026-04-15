@@ -529,6 +529,9 @@
       }
       .search-box.is-open .search-box-inner {
         display: grid;
+        max-height: 62vh;
+        overflow-y: auto;
+        padding-right: 4px;
       }
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
@@ -575,6 +578,19 @@
         min-width: 0;
         width: 100%;
         box-sizing: border-box;
+      }
+
+      /* オートコンプリート：style.css の .autocomplete 250px を外し、他の検索入力と同幅に */
+      .search-box-inner .filter-item .autocomplete,
+      .search-box-inner .search-row .autocomplete {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .search-box-inner .search-row input.autocomplete-input {
+        padding: 8px 12px;
       }
 
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・9段構成） */
@@ -865,6 +881,40 @@
       padding: 1px 8px;
       display: inline-block;
       /* フォントサイズなどは継承して変更しない */
+    }
+
+    /* スマホ：後方の .search-box-inner .search-row { align-items: center } より後で上書き（sampleshinseikensaku.html と同様） */
+    @media (max-width: 768px) {
+      .search-box-inner .search-row {
+        align-items: stretch;
+        gap: 6px;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .search-box-inner .search-row > label {
+        text-align: left;
+        align-self: stretch;
+        width: 100%;
+      }
+
+      .search-box-inner .search-row .autocomplete,
+      .search-box-inner .search-row .autocomplete .autocomplete-input {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-box-inner .search-row.period-range-row {
+        max-width: 100%;
+      }
+
+      .search-box-inner .search-row .period-range-inputs {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
     }
   </style>
 </head>
