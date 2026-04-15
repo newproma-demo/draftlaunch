@@ -937,13 +937,13 @@
               <div class="period-range-inputs">
                 <div class="period-range-field">
                   <input type="text" id="entryYukoKigenFrom" name="yukoKigenFrom" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="有効期限（From） yyyymmdd" title="8桁で入力（例: 20260315）またはカレンダー">
-                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <input type="date" class="period-range-picker" tabindex="-1" title="">
                   <button type="button" class="period-range-calendar-btn" aria-label="有効期限（From）をカレンダーで選択">📅</button>
                 </div>
                 <span class="period-range-sep" aria-hidden="true">～</span>
                 <div class="period-range-field">
                   <input type="text" id="entryYukoKigenTo" name="yukoKigenTo" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="有効期限（To） yyyymmdd" title="8桁で入力（例: 20260331）またはカレンダー">
-                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <input type="date" class="period-range-picker" tabindex="-1" title="">
                   <button type="button" class="period-range-calendar-btn" aria-label="有効期限（To）をカレンダーで選択">📅</button>
                 </div>
               </div>
@@ -955,7 +955,7 @@
               <div class="period-range-inputs">
                 <div class="period-range-field">
                   <input type="text" id="entryKansaShimekiri" name="kansaShimekiri" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="監査レポート提出締切（From） yyyymmdd" title="8桁で入力（例: 20260315）またはカレンダー">
-                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <input type="date" class="period-range-picker" tabindex="-1" title="">
                   <button type="button" class="period-range-calendar-btn" aria-label="監査レポート提出締切をカレンダーで選択">📅</button>
                 </div>
                 <div class="period-range-field">
@@ -1120,13 +1120,25 @@
           var btn = field.querySelector(".period-range-calendar-btn");
           if (!textInput || !picker || !btn) return;
 
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
+          function syncPickerFromText() {
             var iso = toIsoDate(textInput.value);
             if (iso) picker.value = iso;
+          }
+
+          picker.addEventListener("focus", syncPickerFromText);
+          picker.addEventListener("pointerdown", syncPickerFromText);
+
+          function openPicker() {
+            syncPickerFromText();
             try {
               if (typeof picker.showPicker === "function") {
-                picker.showPicker();
+                var ret = picker.showPicker();
+                if (ret && typeof ret.catch === "function") {
+                  ret.catch(function () {
+                    picker.focus();
+                    picker.click();
+                  });
+                }
               } else {
                 picker.focus();
                 picker.click();
@@ -1135,6 +1147,12 @@
               picker.focus();
               picker.click();
             }
+          }
+
+          /* キーボード：装飾ボタンにフォーカスがある場合（pointer-events:none だが Enter は届く） */
+          btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            openPicker();
           });
 
           picker.addEventListener("change", function () {
