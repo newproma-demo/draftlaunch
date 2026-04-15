@@ -772,6 +772,21 @@
       .entry-form label.label-kansa-deadline + .period-range-row {
         padding-top: 0 !important;
       }
+
+      /*
+       * 監査提出締切のみ：有効期限と同じ「📅でカレンダーを開く」結果にする。
+       * 一部 iOS ではごく薄い type=date 重ねが反応しないため、スマホでは補助 date をタップ不可にし、
+       * 📅ボタンを前面にして既存の click → showPicker() 経路に載せる（有効期限行は従来の重ねのまま）。
+       */
+      .entry-form .period-range-field--kansa-date .period-range-picker {
+        pointer-events: none !important;
+        z-index: 1 !important;
+      }
+
+      .entry-form .period-range-field--kansa-date .period-range-calendar-btn {
+        pointer-events: auto !important;
+        z-index: 50 !important;
+      }
     }
 
     /* 承認通知／検索結果・ボックス共通 */
@@ -965,7 +980,7 @@
             <label for="entryKansaShimekiri" class="label-kansa-deadline">監査レポート<br class="only-sp-br">提出締切</label>
             <div class="period-range-row">
               <div class="period-range-inputs">
-                <div class="period-range-field">
+                <div class="period-range-field period-range-field--kansa-date">
                   <input type="text" id="entryKansaShimekiri" name="kansaShimekiri" class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8" placeholder="yyyymmdd" autocomplete="off" aria-label="監査レポート提出締切 yyyymmdd" title="8桁で入力（例: 20260315）またはカレンダー">
                   <input type="date" class="period-range-picker" tabindex="-1" title="">
                   <button type="button" class="period-range-calendar-btn" aria-label="監査レポート提出締切をカレンダーで選択">📅</button>
