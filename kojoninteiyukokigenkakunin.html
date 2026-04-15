@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- スマホで数値のみの商品コードが電話番号と誤認識され tel: リンク化されるのを防ぐ（iOS Safari 等） -->
+  <meta name="format-detection" content="telephone=no">
   <title>Proma</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -467,6 +469,19 @@
         width: 100%;
         box-sizing: border-box;
       }
+
+      /* tenjikaiSelect：2列グリッドの左1列だけに乗ると狭いため、行を全幅にして select を広げる */
+      #tenjikaiFilterItem {
+        grid-column: 1 / -1;
+      }
+
+      #tenjikaiSelect {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
       .search-box-inner .search-row {
         display: flex;
         flex-direction: column;
@@ -560,6 +575,18 @@
       #approvalListArea .result-table tbody td:nth-child(9)::before {
         content: "デザイナー：";
         font-weight: 600;
+      }
+
+      /*
+       * メタ telephone=no でも tel: が付く環境向け：商品コード列（4列目）の自動リンクのみ無効化。
+       * 管理番号列（1列目）の通常 <a> はそのまま。
+       */
+      #approvalListArea .result-table tbody td:nth-child(4) a[href^="tel:"] {
+        pointer-events: none;
+        cursor: default;
+        color: inherit;
+        font-weight: inherit;
+        text-decoration: none;
       }
 
       /* 2段目は販売区分・展示会を横並びで表示 */

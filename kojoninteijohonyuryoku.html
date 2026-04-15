@@ -642,11 +642,19 @@
         min-height: 0;
       }
 
-      /* スマホ：ラベル左・入力右の2列。入力列は全行で同幅（グリッド 1fr） */
+      /*
+       * スマホ：ラベル左・入力右の2列を .entry-form に一本化（各 .form-row は display:contents）。
+       * 会社名（日本語）とアイテム（静的・動的）が同じ「入力列」トラックを共有し、テキストボックス幅が一致する。
+       */
       .entry-form {
         --entry-sp-label-col: 9.5em;
         --entry-sp-label-field-gap: 6px;
         padding-right: 4px;
+        display: grid;
+        grid-template-columns: var(--entry-sp-label-col) minmax(0, 1fr);
+        column-gap: var(--entry-sp-label-field-gap);
+        row-gap: 8px;
+        align-items: start;
       }
 
       .entry-form label {
@@ -655,12 +663,7 @@
       }
 
       .entry-form .form-row {
-        display: grid;
-        grid-template-columns: var(--entry-sp-label-col) minmax(0, 1fr);
-        column-gap: var(--entry-sp-label-field-gap);
-        row-gap: 0;
-        align-items: start;
-        margin-bottom: 8px;
+        display: contents;
       }
 
       .entry-form .form-row > label {
@@ -695,7 +698,6 @@
 
       .entry-form .form-row-item-inputs > .label-with-button {
         grid-column: 1;
-        grid-row: 1;
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -708,7 +710,6 @@
 
       .entry-form .form-row-item-inputs > .item-inputs-wrapper {
         grid-column: 2;
-        grid-row: 1;
         width: 100%;
         min-width: 0;
       }
@@ -729,6 +730,22 @@
         min-width: 0;
       }
 
+      /*
+       * 先頭行には削除×がないため .autocomplete が列いっぱいになる。
+       * 追加行は×分だけ狭いので、先頭行に不可視の同幅プレースホルダ（×と同じ 24px）を置き入力幅を揃える。
+       */
+      .entry-form .item-input-row:first-child::after {
+        content: "";
+        flex: 0 0 24px;
+        width: 24px;
+        min-width: 24px;
+        height: 24px;
+        align-self: center;
+        visibility: hidden;
+        pointer-events: none;
+        box-sizing: border-box;
+      }
+
       .entry-form .form-row > .period-range-row,
       .entry-form .form-row .period-range-inputs {
         width: 100%;
@@ -736,8 +753,9 @@
         min-width: 0;
       }
 
-      /* 備考：入力列いっぱい（PCの max-width はスマホで解除済み） */
-      .entry-form textarea#entryRemarksInput {
+      /* 備考：入力列（2列目）いっぱい（PCの max-width はスマホで解除済み） */
+      .entry-form .form-row > textarea#entryRemarksInput {
+        grid-column: 2;
         flex: 1;
         max-width: none;
         width: 100%;
