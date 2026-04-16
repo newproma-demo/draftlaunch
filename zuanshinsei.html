@@ -477,11 +477,23 @@
       .search-box-inner .search-row label {
         /* font-size: var(--fs-base);  */
         flex-shrink: 0;
+        text-align: left;
+        align-self: stretch;
+        width: 100%;
       }
       .search-box-inner .search-row select,
       .search-box-inner .search-row input {
         min-width: 0;
         width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* スマホ: カテゴリー/アイテム/ブランド・キャラ入力を品名と同じ幅に揃える */
+      .search-box-inner .search-row .autocomplete,
+      .search-box-inner .search-row .autocomplete .autocomplete-input {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
         box-sizing: border-box;
       }
 
@@ -547,6 +559,14 @@
       }
       #approvalListArea .result-table tbody td:nth-child(7)::before {
         content: "ブランド・キャラ：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
+        content: "デザイナー：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(9)::before {
+        content: "ステータス：";
         font-weight: 600;
       }
 
@@ -772,14 +792,20 @@
       opacity: 0.9;
     }
 
-    /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
-    .btn-fab-new {
-      display: inline-block;
-      text-decoration: none;
+    /* 画面右下固定 申請ボタン群 */
+    .fab-actions {
       position: fixed;
       right: 24px;
       bottom: 24px;
       z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
       min-width: 140px;
       padding: 6px 14px;
       background: var(--color-primary);
@@ -832,8 +858,11 @@
     <div id="sidebarMount"></div>
     <!-- #endregion -->
     
-    <!-- 画面右下固定 登録ボタン -->
-    <a class="btn-fab-new">登録</a>
+    <!-- 画面右下固定 申請ボタン -->
+    <div class="fab-actions">
+      <a class="btn-fab-new">事前申請</a>
+      <a class="btn-fab-new">デザイン申請</a>
+    </div>
     <!-- #endregion -->
 
     <!--#region メインコンテンツ  -->
@@ -901,12 +930,20 @@
                   <div class="filter-item">
                     <span class="filter-label">デザイナー</span>
                     <select id="tenjikaiSelect">
-                      <option value="">すべて</option>
-                      <option value="">丸眞太郎</option>
-                      <option value="">丸眞花子</option>
-                      <option value="">丸眞桜子</option>
+                      <option value="0">すべて</option>
+                      <option value="1">丸眞太郎</option>
+                      <option value="2">丸眞花子</option>
+                      <option value="3">丸眞桜子</option>
                     </select>
-                    </div>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">ステータス</span>
+                    <select id="tenjikaiSelect">
+                      <option value="0">すべて</option>
+                      <option value="1">事前アプローバル待ち</option>
+                      <option value="2">事前アプローバル済み</option>
+                    </select>
+                  </div>
                   <div class="search-cancel-wrapper">
                     <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
                   </div>
@@ -930,71 +967,73 @@
                       <th style="width: 30%;">品名</th>
                       <th style="width: 16%;">アイテム</th>
                       <th style="width: 14%;">ブランド・キャラ</th>
+                      <th style="width: 10%;">デザイナー</th>
+                      <th style="width: 15%;">ステータス</th>
                     </tr>
                   </thead>
                   <tbody>
                     <!-- 50行のサンプルデータ -->
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーA柄タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番加工</td><td></td><td>単品タオル</td><td>ミッキーB柄タオル</td><td>ウォッシュタオル</td><td>ムーミン</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーC柄タオル</td><td>フェイスタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番加工</td><td></td><td>単品タオル</td><td>無地カラフルタオル</td><td>バスタオル</td><td>サンリオ</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>春限定フラワータオル</td><td>マフラータオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーA柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番加工</td><td></td><td>単品タオル</td><td>ミッキーB柄タオル</td><td>ウォッシュタオル</td><td>ムーミン</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーC柄タオル</td><td>フェイスタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番加工</td><td></td><td>単品タオル</td><td>無地カラフルタオル</td><td>バスタオル</td><td>サンリオ</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>春限定フラワータオル</td><td>マフラータオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
 
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーAセット</td><td>ミニタオル</td><td>ムーミン</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーBセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地タオル</td><td>ミニタオル</td><td>ドラえもん</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>夏限定マリンセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>秋限定チェックセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーAセット</td><td>ミニタオル</td><td>ムーミン</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーBセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地タオル</td><td>ミニタオル</td><td>ドラえもん</td><td>丸眞花子</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>夏限定マリンセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>秋限定チェックセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
 
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーAタオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーBタオル</td><td>ミニタオル</td><td>リラックマ</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトセットA</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトセットB</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーAタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーBタオル</td><td>ミニタオル</td><td>リラックマ</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
 
                     <!-- 以降は番号だけ変えたダミー行 -->
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミッキーD柄タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>無地ベーシックタオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルA</td><td>ミニタオル</td><td>すみっコぐらし</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルB</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルC</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>ミッキーD柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>無地ベーシックタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルA</td><td>ミニタオル</td><td>すみっコぐらし</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>シーズンタオルC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
 
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーCセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地カラー</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットA</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットB</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットC</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ミッキーCセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地カラー</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
 
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットA</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットB</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットC</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーCタオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地ベーシック</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMタオルセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEMミッキーCタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地ベーシック</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
 
                     <!-- 31〜50行目 -->
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>春企画フラワーセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>夏企画マリンセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>秋企画チェックセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>冬企画スノーセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミッキー総柄タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>春企画フラワーセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>夏企画マリンセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>秋企画チェックセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>企画物タオル</td><td>冬企画スノーセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.06 展示会</td><td>単品タオル</td><td>ミッキー総柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
 
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注キャラクターセットA</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注キャラクターセットB</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地タオルセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトボックスA</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトボックスB</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注キャラクターセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注キャラクターセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>単品タオル</td><td>別注無地タオルセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトボックスA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注ギフトボックスB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル待ち</td></tr>
 
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMキャラクターセットA</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMキャラクターセットB</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地タオルセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトボックスA</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトボックスB</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMキャラクターセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</tdt><d>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMキャラクターセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地タオルセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトボックスA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMギフトボックスB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>事前アプローバル待ち</td></tr>
 
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーE柄タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーF柄タオル</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注キャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMキャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地カラーセット</td><td>ミニタオル</td><td>ディズニー</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーE柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>ミッキーF柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>別注</td><td></td><td>企画物タオル</td><td>別注キャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>企画物タオル</td><td>OEMキャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル待ち</td></tr>
+                    <tr><td><input type="checkbox" /></td><td>OEM</td><td></td><td>単品タオル</td><td>OEM無地カラーセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞花子</td><td>事前アプローバル済み</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1074,15 +1113,17 @@
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
 
-      icon.addEventListener('click', (e) => {
-        e.stopPropagation(); // クリックが外側に伝播しないように
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      });
+      if (icon && menu) {
+        icon.addEventListener('click', (e) => {
+          e.stopPropagation(); // クリックが外側に伝播しないように
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+      }
 
-      // 初期表示（承認待ち）
+      // 初期表示（dashboard 等で定義される updateLayout1 が無いページでは呼ばない）
       var sel = document.getElementById("tenjikaiSelect");
 
-      if (sel) {
+      if (sel && typeof updateLayout1 === "function") {
         sel.value = "";
 
         updateLayout1("2026.03");
@@ -1090,6 +1131,8 @@
         sel.addEventListener("change", function () {
           updateLayout1(this.value);
         });
+      } else if (sel) {
+        sel.value = "";
       }
 
       // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
