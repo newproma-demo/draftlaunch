@@ -78,6 +78,9 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      width: 96%;
+      height: 96%;
+      margin: auto;
     }
 
     .content-area-3 {
@@ -249,6 +252,169 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       font-family: var(--font-sans);
+    }
+
+    .btn-history {
+      min-width: 72px;
+      padding: 4px 10px;
+      margin-bottom: 6px;
+      background: var(--color-primary);
+      color: #fff;
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .btn-history:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+
+    .history-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      z-index: 2500;
+    }
+
+    .history-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(92vw, 640px);
+      max-height: 80vh;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 2501;
+      overflow: hidden;
+    }
+
+    .history-modal.is-open,
+    .history-modal-overlay.is-open {
+      display: block;
+    }
+
+    .history-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .history-modal-close {
+      border: 1px solid var(--color-border);
+      background: #fff;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .history-modal-body {
+      padding: 12px 16px;
+      overflow: auto;
+      max-height: calc(80vh - 54px);
+      font-size: var(--fs-base, 14px);
+      color: var(--color-text-muted);
+    }
+
+    /* 履歴：吹き出し表示 */
+    .history-bubble-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .history-bubble {
+      position: relative;
+      margin: 0 0 0 8px;
+      padding: 12px 14px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .history-bubble::before {
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: 14px;
+      width: 0;
+      height: 0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 8px solid var(--color-border);
+    }
+
+    .history-bubble::after {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: 15px;
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-right: 7px solid var(--color-surface);
+    }
+
+    .history-bubble.history-bubble-right {
+      margin: 0 8px 0 0;
+      margin-left: 24px;
+      background: #93c47d;
+    }
+
+    .history-bubble.history-bubble-right::before {
+      left: auto;
+      right: -7px;
+      border-right: none;
+      border-left: 8px solid #93c47d;
+    }
+
+    .history-bubble.history-bubble-right::after {
+      left: auto;
+      right: -5px;
+      border-right: none;
+      border-left: 7px solid #93c47d;
+    }
+
+    .history-bubble-grid {
+      display: block;
+      margin: 0;
+      min-width: 0;
+    }
+
+    .history-bubble-grid label {
+      display: block;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    /* 履歴モーダル内の画像は小さめに表示 */
+    .history-modal-body img {
+      max-width: 96px;
+      max-height: 96px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
     }
 
     /* 画面右下固定 新規登録ボタン */
@@ -546,8 +712,9 @@
           <tbody id="detailTableProductListBody">
             <tr>
               <td>
+                <button type="button" class="btn-history">履歴</button>
                 <div class="detail-name">品名サンプル１</div>
-                <div class="detail-meta">定番（2026.01展示会）｜単品タオル｜ミニタオル｜ミッキー</div>
+                <div class="detail-meta">定番（2026.01展示会）｜単品タオル｜ミニタオル｜ミッキー｜丸眞太郎</div>
               </td>
               <td class="detail-image-cell">
                 <div class="detail-row-upload">
@@ -565,9 +732,9 @@
           <div class="filter-item">
             <select id="resultSelect" name="result">
               <option value="" selected disabled>選定結果を選択してください</option>
-              <option value="承認">承認</option>
-              <option value="差戻し">差戻し</option>
-              <option value="取消">取消</option>
+              <option value="aproboval">アプローバル済み</option>
+              <option value="reject">差し戻し</option>
+              <option value="cancel">取消</option>
             </select>
           </div>
           <div id="resultReasonWrap" class="result-reason-wrap" aria-hidden="true">
@@ -577,9 +744,9 @@
       </div>
 
       <div class="content-area-2">
-        <div class="product-card is-active">
-          <div class="product-image-wrapper">
-            <img class="product-image" src="images/noimage.png" alt="プレビュー">
+        <div class="product-card is-active allimage-card">
+          <div class="product-image-wrapper allimage-panel">
+            <img class="product-image" name="allimage" src="images/noimage.png" alt="プレビュー">
             <div class="product-pdf-canvas-wrap" aria-hidden="true">
               <canvas class="product-pdf-canvas"></canvas>
             </div>
@@ -670,6 +837,7 @@
                 <th>カテゴリー</th>
                 <th>アイテム</th>
                 <th>ブランド・キャラ</th>
+                <th>デザイナー</th>
               </tr>
             </thead>
             <tbody>
@@ -683,6 +851,7 @@
                 <td>単品タオル</td>
                 <td>ミニタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
               </tr>
               <tr>
                 <td class="modal-result-col-check">
@@ -694,6 +863,7 @@
                 <td>単品タオル</td>
                 <td>フェイスタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
               </tr>
               <tr>
                 <td class="modal-result-col-check">
@@ -705,6 +875,7 @@
                 <td>単品タオル</td>
                 <td>ウオッシュタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
               </tr>
             </tbody>
           </table>
@@ -718,6 +889,46 @@
       </div>
     </div>
   </div>
+
+  <!--#region 履歴：履歴参照モーダル -->
+  <div id="historyModalOverlay" class="history-modal-overlay" aria-hidden="true"></div>
+  <div id="historyModal" class="history-modal" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+    <div class="history-modal-header">
+      <span id="historyModalTitle">アプローバル履歴</span>
+      <button type="button" class="history-modal-close" id="historyModalClose" aria-label="閉じる">×</button>
+    </div>
+    <div class="history-modal-body">
+      <ul class="history-bubble-stack">
+        <li class="history-bubble history-bubble-right">
+          <dl class="history-bubble-grid">
+            <label>2026-03-03 12:00:00</label>
+            <label>丸眞太郎：品名サンプル１を「アプローバル待ち」にしました</label>           
+          </dl>
+        </li>
+        <img src="images/zuan002.png" alt="サンプル１" >
+        <li class="history-bubble history-bubble-left">
+          <dl class="history-bubble-grid">
+            <label>2026-03-04 10:00:00</label>
+            <label>承認太郎：品名サンプル１を「差し戻し」にしました</label>           
+          </dl>
+        </li> 
+        <li class="history-bubble history-bubble-right">
+          <dl class="history-bubble-grid">
+            <label>2026-03-10 12:00:00</label>
+            <label>丸眞太郎：品名サンプル１を「アプローバル待ち」にしました</label>           
+          </dl>
+        </li> 
+        <img src="images/zuan001.png" alt="サンプル１" >
+        <li class="history-bubble history-bubble-left">
+          <dl class="history-bubble-grid">
+            <label>2026-03-11 10:00:00</label>
+            <label>承認太郎：品名サンプル１を「アプローバル済み」にしました</label>           
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- #endregion -->
 
   <!-- PDF.js（blob URL の iframe 表示がブロックされる環境向け） -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1064,6 +1275,7 @@
               '<button type="button" class="detail-delete-btn">×</button>' +
               '</td>' +
               '<td>' +
+              '<button type="button" class="btn-history">履歴</button>' +
               '<div class="detail-name"></div>' +
               '<div class="detail-meta"></div>' +
               '</td>' +
@@ -1195,6 +1407,37 @@
           row.remove();
         }
       });
+    })();
+
+    // 履歴参照モーダル
+    (function () {
+      var overlay = document.getElementById('historyModalOverlay');
+      var modal = document.getElementById('historyModal');
+      var btnClose = document.getElementById('historyModalClose');
+      var table = document.getElementById('detailTableProductList');
+      if (!overlay || !modal || !btnClose || !table) return;
+
+      function openModal() {
+        overlay.classList.add('is-open');
+        modal.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeModal() {
+        overlay.classList.remove('is-open');
+        modal.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+
+      table.addEventListener('click', function (e) {
+        var btn = e.target.closest('.btn-history');
+        if (!btn) return;
+        e.preventDefault();
+        openModal();
+      });
+
+      btnClose.addEventListener('click', closeModal);
+      overlay.addEventListener('click', closeModal);
     })();
   </script>
 </body>
