@@ -11,6 +11,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
   <style>
     .pc-only {
       display: block;
@@ -485,6 +486,21 @@
         box-sizing: border-box;
       }
 
+      /* スマホ: アイテム/ブランド・キャラ入力を品名と同じ幅に揃える */
+      .search-box-inner .filter-item .autocomplete,
+      .search-box-inner .filter-item .autocomplete .autocomplete-input {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        margin-left: 0;
+      }
+
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
       #approvalListArea {
         overflow-x: visible;
@@ -655,6 +671,32 @@
       min-width: 160px;
     }
 
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-search-cancel {
+      display: inline-block;
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .btn-search-cancel:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
     /* 承認通知／検索結果・ボックス共通 */
     .content-box {
       background: var(--color-card);
@@ -788,6 +830,12 @@
       transition: box-shadow 0.2s ease, transform 0.1s ease;
     }
 
+    .zuan-grid-block {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     .zuan-grid-item:hover {
       box-shadow: var(--shadow-md);
       transform: translateY(-1px);
@@ -799,6 +847,25 @@
       object-fit: cover;
       border-radius: calc(var(--radius-sm) - 2px);
       display: block;
+    }
+
+    .zuan-item-name,
+    .zuan-item-designer {
+      display: block;
+      width: 100%;
+      margin-top: 4px;
+      font-size: 12px;
+      line-height: 1.35;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: left;
+      color: var(--color-text);
+    }
+
+    .zuan-item-designer {
+      color: var(--color-text-muted);
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -878,349 +945,42 @@
                   </div>
                   <div class="filter-item">
                     <label>品名</label>
-                    <input type="text" placeholder="品名を入力">
+                    <input type="text" id="searchHinmei" placeholder="品名を入力">
                   </div>
-                  <div class="filter-item" id="tenjikaiFilterItem">
-                    <span class="filter-label">アイテム</span>
-                    <select id="tenjikaiSelect">
-                      <option value="">すべて</option>
-                      <option>ミニタオル</option>
-                      <option>ウォッシュタオル</option>
-                      <option>フェイスタオル</option>
-                      <option>バスタオル</option>
-                      <option>マフラータオル</option>
-                      <option>お出かけタオル</option>
-                      <option>ビックバスタオル</option>
-                      <option>ループタオル</option>
-                      <option>ポケット2P</option>
-                      <option>ミニタオル３Ｐ</option>
-                      <option>ファスナー付き</option>
-                      <option>ポケット付き</option>
-                      <option>ドレスタオル</option>
-                      <option>タオルバスマット</option>
-                      <option>ヘアーバンド</option>
-                      <option>3色ミニハンカチ</option>
-                      <option>ガーゼハンカチ</option>
-                      <option>タオル枕カバー</option>
-                      <option>手ぬぐい</option>
-                      <option>マキタオル６０</option>
-                      <option>マキタオル８０</option>
-                      <option>マキタオル１００</option>
-                      <option>その他マキタオル</option>
-                      <option>バスローブ</option>
-                      <option>Dビーチタオル</option>
-                      <option>ビーチスティック</option>
-                      <option>フード付きタオル</option>
-                      <option>フード付きポンチョ</option>
-                      <option>タオルケープ</option>
-                      <option>レジャーバスタオル</option>
-                      <option>スポーツタオル</option>
-                      <option>ジュニアバスタオル</option>
-                      <option>お昼寝ケット</option>
-                      <option>タオルケット</option>
-                      <option>ラウンドビーチ</option>
-                      <option>キャップタオル</option>
-                      <option>ビーチバック</option>
-                      <option>ひざ掛け</option>
-                      <option>ハーフ毛布</option>
-                      <option>毛布</option>
-                      <option>敷きパット</option>
-                      <option>ラップ毛布</option>
-                      <option>ジュニア毛布</option>
-                      <option>着る毛布</option>
-                      <option>ケープ</option>
-                      <option>スリーパー</option>
-                      <option>お昼寝セット</option>
-                      <option>ジュニア枕</option>
-                      <option>ラウンド毛布</option>
-                      <option>ネックウォーマー</option>
-                      <option>ポーチ</option>
-                      <option>バック</option>
-                      <option>巾着</option>
-                      <option>口金ポーチ</option>
-                      <option>ランチョンマット</option>
-                      <option>ストール</option>
-                      <option>ハンカチーフ</option>
-                      <option>ランチーフ</option>
-                      <option>キッチンタオル</option>
-                      <option>マルチクロス</option>
-                      <option>キッチンミトン</option>
-                      <option>鍋敷き</option>
-                      <option>お風呂タオル</option>
-                      <option>エプロン</option>
-                      <option>作務衣・甚平・はんてん</option>
-                      <option>ポンチョ</option>
-                      <option>クッションカバー</option>
-                      <option>クッション（綿入り）</option>
-                      <option>スクールクッション</option>
-                      <option>シートクッション</option>
-                      <option>トイレタリー</option>
-                      <option>ペーパーホルダー</option>
-                      <option>バスマット</option>
-                      <option>キッチンマット</option>
-                      <option>ティッシュＢＯＸカバー</option>
-                      <option>ラグマット</option>
-                      <option>マルチカバー</option>
-                      <option>スリッパ</option>
-                      <option>ルームシューズ</option>
-                      <option>掛けカバー</option>
-                      <option>敷きカバー</option>
-                      <option>ピロケース</option>
-                      <option>こたつ</option>
-                      <option>その他ギフト</option>
-                      <option>とじものWT1P</option>
-                      <option>とじものWT2P</option>
-                      <option>とじものWT3P</option>
-                      <option>とじものFT1P</option>
-                      <option>とじものFT2P</option>
-                      <option>とじものBT1P</option>
-                      <option>マーメイドB/K</option>
-                      <option>B/Kinポーチ</option>
-                      <option>玄関マット</option>
-                      <option>マルチケース</option>
-                      <option>ベビー雑貨</option>
-                      <option>ベビー寝装</option>
-                      <option>ベビータオル</option>
-                      <option>ベビーインテリア</option>
-                      <option>キッチン雑貨</option>
-                      <option>その他タオル</option>
-                      <option>その他サマー</option>
-                      <option>その他寝装</option>
-                      <option>その他インテリア</option>
-                      <option>その他雑貨</option>
-                      <option>その他新入学</option>
-                      <option>パックタオル</option>
-                      <option>ぞうきん</option>
-                      <option>カバーリング</option>
-                      <option>ギフト（タオル）</option>
-                      <option>ギフト（寝装）</option>
-                      <option>ギフト（インテリア）</option>
-                      <option>パーソナルギフト</option>
-                      <option>オーナメントギフト</option>
-                      <option>バンダナ・風呂敷</option>
-                      <option>チェアシート</option>
-                      <option>刺繍ブローチ</option>
-                      <option>コースター</option>
-                      <option>ランドリーバッグ</option>
-                      <option>頭巻きタオル</option>
-                      <option>新入学ミニタオル</option>
-                      <option>腹巻き</option>
-                      <option>収納ボックス</option>
-                      <option>マスコットネックピロ</option>
-                      <option>タオルエプロン</option>
-                      <option>カレンダーギフト</option>
-                      <option>ジュニアエコバック</option>
-                      <option>ナップサック</option>
-                      <option>シューズバッグ</option>
-                      <option>レッスンバッグ</option>
-                      <option>ポケットポーチ</option>
-                      <option>レジャーシート</option>
-                      <option>お出かけシート</option>
-                      <option>ピクニックマット</option>
-                      <option>新入学ハンカチーフ</option>
-                      <option>新入学ランチーフ</option>
-                      <option>背当てタオル</option>
-                      <option>湯上げタオル</option>
-                      <option>新入学リュックサック</option>
-                      <option>レジャーバッグ</option>
-                      <option>キャリータオル</option>
-                      <option>スキニータオル</option>
-                      <option>スカジャン</option>
-                      <option>エコバッグ</option>
-                      <option>腰あてクッション</option>
-                      <option>文房具</option>
-                      <option>氷のう</option>
-                      <option>ゴルフ企画</option>
-                      <option>水野商品</option>
-                      <option>スポンジ</option>
-                      <option>トラベル商品</option>
-                      <option>湯たんぽ</option>
-                      <option>タブレットケース</option>
-                      <option>スタジャン</option>
-                      <option>アロハシャツ</option>
-                      <option>Tシャツ</option>
-                      <option>ジージャン</option>
-                      <option>ジャージ</option>
-                      <option>ペットボトルカバー</option>
-                      <option>ネームタグ</option>
-                      <option>エアタグ</option>
-                      <option>靴下</option>
-                      <option>ペット商品</option>
-                      <option>カー用品</option>
-                      <option>その他</option>
+                  <div class="filter-item">
+                    <label>アイテム</label>
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="searchItem">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="filter-item">
+                    <label>ブランド・キャラ</label>
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                  <div class="filter-item">
+                    <span class="filter-label">デザイナー</span>
+                    <select id="searchDesigner">
+                      <option value="0">すべて</option>
+                      <option value="1">丸眞太郎</option>
+                      <option value="2">丸眞花子</option>
+                      <option value="3">丸眞桜子</option>
                     </select>
                   </div>
                   <div class="filter-item">
-                    <span class="filter-label">ブランド・キャラ</span>
-                    <select id="searchCategory">
-                      <option value="">すべて</option>
-                      <option>ジブリ</option>
-                      <option>ムーミン</option>
-                      <option>ディズニー</option>
-                      <option>マーベル</option>
-                      <option>スターウォーズ</option>
-                      <option>サンリオ</option>
-                      <option>ミッフィー</option>
-                      <option>トーマス</option>
-                      <option>くまのがっこう</option>
-                      <option>オサムグッズ</option>
-                      <option>スタジオ地図</option>
-                      <option>スタジオポノック</option>
-                      <option>ＪＡＬ</option>
-                      <option>Wendy's</option>
-                      <option>いないいないばあ</option>
-                      <option>バービー</option>
-                      <option>ピーターラビット</option>
-                      <option>リサ＆ガスパール</option>
-                      <option>カレルチャペック</option>
-                      <option>リサ・ラーソン</option>
-                      <option>ドラえもん</option>
-                      <option>ベイビーシャーク</option>
-                      <option>クマーバ</option>
-                      <option>ユニバーサル</option>
-                      <option>ペッパピッグ</option>
-                      <option>名探偵コナン</option>
-                      <option>ウォーリーをさがせ</option>
-                      <option>ミニオンズ</option>
-                      <option>オブチアキコ</option>
-                      <option>おさるのジョージ</option>
-                      <option>もふさんど</option>
-                      <option>マイリトルポニー</option>
-                      <option>コウペンちゃん</option>
-                      <option>ポテトヘッド</option>
-                      <option>スイマー</option>
-                      <option>シンプソンズ</option>
-                      <option>エヴァンゲリオン</option>
-                      <option>星のカービィー</option>
-                      <option>バーバパパ</option>
-                      <option>ケアベア</option>
-                      <option>エルマー</option>
-                      <option>HALEIWA</option>
-                      <option>ドラゴンボール</option>
-                      <option>fantti</option>
-                      <option>100日後に死ぬワニ</option>
-                      <option>インゲラ</option>
-                      <option>フィンレイソン</option>
-                      <option>ピンクリボン</option>
-                      <option>アアリッカ</option>
-                      <option>SOUSOU</option>
-                      <option>ベネトン</option>
-                      <option>ちいかわ</option>
-                      <option>オリンピック</option>
-                      <option>ＳＵＮ　ＨＥＡＲＴ</option>
-                      <option>北斎</option>
-                      <option>鳥獣戯画</option>
-                      <option>アノラック</option>
-                      <option>チャンピオン</option>
-                      <option>アドミラル</option>
-                      <option>イーストボーイ</option>
-                      <option>しままる</option>
-                      <option>porukkapattern</option>
-                      <option>piccolino</option>
-                      <option>polku</option>
-                      <option>yup!</option>
-                      <option>キキプリ</option>
-                      <option>ガッツ</option>
-                      <option>今治タオル・ギフト</option>
-                      <option>泉州タオル・ギフト</option>
-                      <option>高級カラータオル</option>
-                      <option>輸入ギフト</option>
-                      <option>平安閣・互助会</option>
-                      <option>一般マキタオル</option>
-                      <option>一般サマー</option>
-                      <option>タオルケット</option>
-                      <option>ポルトガル</option>
-                      <option>トルコ</option>
-                      <option>その他ＥＵ</option>
-                      <option>LINEクリエイターズ</option>
-                      <option>寝装</option>
-                      <option>ぐっこすぱ</option>
-                      <option>インテリア</option>
-                      <option>わんだふるぴーす</option>
-                      <option>雑貨</option>
-                      <option>エコットン</option>
-                      <option>メニーメニー</option>
-                      <option>ベビー</option>
-                      <option>ライセンス終了</option>
-                      <option>輸入タオル別注</option>
-                      <option>国内タオル別注</option>
-                      <option>ＯＬＣ別注</option>
-                      <option>輸入タオル単品</option>
-                      <option>輸入組タオル</option>
-                      <option>輸入寝装・ｲﾝﾃﾘｱ別注</option>
-                      <option>その他キャラクター</option>
-                      <option>過去商品用</option>
-                      <option>資材（箱・雑品）</option>
-                      <option>証紙</option>
-                      <option>その他</option>
-                      <option>テスト</option>
-                      <option>リラックマ</option>
-                      <option>すみっコぐらし</option>
-                      <option>マリオ</option>
-                      <option>スプラトゥーン</option>
-                      <option>どうぶつの森</option>
-                      <option>LINE</option>
-                      <option>BT21</option>
-                      <option>TRUZ</option>
-                      <option>ハリーポッター</option>
-                      <option>トムとジェリー</option>
-                      <option>DC</option>
-                      <option>ルーニー・テューンズ</option>
-                      <option>パワーパフガールズ</option>
-                      <option>その他ワーナー</option>
-                      <option>アンパンマン</option>
-                      <option>鬼滅の刃</option>
-                      <option>呪術廻戦</option>
-                      <option>ワンピース</option>
-                      <option>セーラームーン</option>
-                      <option>ウルトラマン</option>
-                      <option>仮面ライダー</option>
-                      <option>僕のﾋｰﾛｰｱｶﾃﾞﾐｱ</option>
-                      <option>その他バンダイ</option>
-                      <option>ケロッグ</option>
-                      <option>モコモカ</option>
-                      <option>チロルチョコ</option>
-                      <option>珈琲関係</option>
-                      <option>マウントレーニア</option>
-                      <option>プリッとチャンネル</option>
-                      <option>八木春</option>
-                      <option>スパイファミリー</option>
-                      <option>ガーフィールド</option>
-                      <option>ウルポとトゥルポ</option>
-                      <option>水野(売)</option>
-                      <option>WDZY</option>
-                      <option>ねずみのアンディ</option>
-                      <option>umao</option>
-                      <option>アリス</option>
-                      <option>オリオンビール</option>
-                      <option>スパム</option>
-                      <option>助六の日常</option>
-                      <option>可愛い嘘のカワウソ</option>
-                      <option>ネパール</option>
-                      <option>SWEDY</option>
-                      <option>あにまるバス</option>
-                      <option>ﾑｰﾐﾝｱﾆﾒｰｼｮﾝ</option>
-                      <option>みいつけた</option>
-                      <option>星の王子さま</option>
-                      <option>シナぷしゅ</option>
-                      <option>to:alla</option>
-                      <option>ピクミン</option>
-                      <option>その他任天堂</option>
-                      <option>大阪万博</option>
-                      <option>パンダのおさじ</option>
-                      <option>ガチャピン</option>
-                      <option>パンどろぼう</option>
-                      <option>カンボジア</option>
-                      <option>しまじろう</option>
-                      <option>たまごっち</option>
-                      <option>なんでもいきもの</option>
-                      <option>ドナ・ウィルソン</option>
-                      <option>ｻﾝｴｯｸｽﾚｼﾞｪﾝﾄﾞｷｬﾗ</option>
-                      <option>ピンクパンサー</option>
-                      <option>ﾌｼﾞﾃﾚﾋﾞｷｬﾗｸﾀｰ</option>
-                      <option>ソニック</option>
-                      <option>水野(買)</option>
+                    <span class="filter-label">承認状況</span>
+                    <select id="shuninStatusSelect">
+                      <option value="0">すべて</option>
+                      <option value="1">承認待ち</option>
+                      <option value="2">差戻し</option>
+                      <option value="3">承認済み</option>
                     </select>
+                  </div>
+                  <div class="search-cancel-wrapper">
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
                   </div>
                 </div>
               </div>
@@ -1233,66 +993,146 @@
               <div class="zuan-grid">
                 <!-- 20個のサンプル画像を折り返し表示 -->
                 <!-- 実際にはサーバー側からループ生成する想定 -->
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案1">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案2">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案3">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案4">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案5">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案6">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案7">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案8">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案9">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案10">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案11">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案12">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案13">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案14">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案15">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案16">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案17">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案18">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案19">
-                </a>
-                <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案20">
-                </a>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案1">
+                  </a>
+                  <span class="zuan-item-name">ミッキーA柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案2">
+                  </a>
+                  <span class="zuan-item-name">ミッキーB柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案3">
+                  </a>
+                  <span class="zuan-item-name">ミッキーC柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案4">
+                  </a>
+                  <span class="zuan-item-name">夏限定タオルマリンセットA</span>
+                  <span class="zuan-item-designer">丸眞花子</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案5">
+                  </a>
+                  <span class="zuan-item-name">夏限定タオルマリンセットB</span>
+                  <span class="zuan-item-designer">丸眞花子</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案6">
+                  </a>
+                  <span class="zuan-item-name">夏限定タオルマリンセットC</span>
+                  <span class="zuan-item-designer">丸眞花子</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案7">
+                  </a>
+                  <span class="zuan-item-name">別注ミッキーA柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案8">
+                  </a>
+                  <span class="zuan-item-name">別注ミッキーB柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案9">
+                  </a>
+                  <span class="zuan-item-name">別注ミッキーC柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案10">
+                  </a>
+                  <span class="zuan-item-name">別注無地カラータオルセットA</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案11">
+                  </a>
+                  <span class="zuan-item-name">別注無地カラータオルセットB</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案12">
+                  </a>
+                  <span class="zuan-item-name">別注無地カラータオルセットC</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案13">
+                  </a>
+                  <span class="zuan-item-name">春限定フラワータオルAセット</span>
+                  <span class="zuan-item-designer">丸眞花子</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案14">
+                  </a>
+                  <span class="zuan-item-name">春限定フラワータオルBセット</span>
+                  <span class="zuan-item-designer">丸眞花子</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案15">
+                  </a>
+                  <span class="zuan-item-name">春限定フラワータオルCセット</span>
+                  <span class="zuan-item-designer">丸眞花子</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案16">
+                  </a>
+                  <span class="zuan-item-name">無地タオル・ギフトセットA</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案17">
+                  </a>
+                  <span class="zuan-item-name">無地タオル・ギフトセットB</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案18">
+                  </a>
+                  <span class="zuan-item-name">無地タオル・ギフトセットC</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan001.png" alt="提出図案19">
+                  </a>
+                  <span class="zuan-item-name">別注ミッキーA柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
+                <div class="zuan-grid-block">
+                  <a href="zuansenteikekkatoroku.html" class="zuan-grid-item">
+                    <img src="images/zuan002.png" alt="提出図案20">
+                  </a>
+                  <span class="zuan-item-name">別注ミッキーB柄タオル</span>
+                  <span class="zuan-item-designer">丸眞太郎</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1368,10 +1208,12 @@
     const icon = document.querySelector('.header-account_circle');
     const menu = document.querySelector('.account-menu');
 
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation(); // クリックが外側に伝播しないように
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
+    if (icon && menu) {
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation(); // クリックが外側に伝播しないように
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+    }
 
     // 初期表示（承認待ち）※ updateLayout1 が定義されている場合のみ実行
     (function () {
@@ -1391,6 +1233,17 @@
       var selHanbai = document.getElementById("searchHanbaiKubun");
       var selTenjikai = document.getElementById("tenjikaiSelect");
       var selCategory = document.getElementById("searchCategory");
+      var inpHinmei = document.getElementById("searchHinmei");
+      var inpItem = document.getElementById("searchItem");
+      var inpBrandChara = document.getElementById("searchBrandChara");
+      var selDesigner = document.getElementById("searchDesigner");
+      var selShoninStatus = document.getElementById("shuninStatusSelect");
+      var cancelAllBtn = document.getElementById("searchCancelAllBtn");
+      if (cancelAllBtn) {
+        cancelAllBtn.addEventListener("click", function () {
+          window.location.reload();
+        });
+      }
       var tbody = document.querySelector("#approvalListArea .result-table tbody");
       if (!tbody) return;
 
@@ -1441,6 +1294,7 @@
       [selHanbai, selTenjikai, selCategory].forEach(function (el) {
         if (el) el.addEventListener("change", applyFilter);
       });
+
       applyFilter();
     })();
 
