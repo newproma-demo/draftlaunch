@@ -1144,6 +1144,8 @@
         var selItem = document.getElementById("searchItem");
         var selBrandChara = document.getElementById("searchBrandChara");
         var tbody = document.querySelector("#approvalListArea .result-table tbody");
+        var table = document.querySelector("#approvalListArea .result-table");
+        var headerCheck = table ? table.querySelector("thead input[type='checkbox']") : null;
         if (!tbody) return;
 
         function mapHanbai(value) {
@@ -1221,6 +1223,14 @@
         if (inpHinmei) {
           inpHinmei.addEventListener("input", applyFilter);
           inpHinmei.addEventListener("change", applyFilter);
+        }
+        if (headerCheck) {
+          headerCheck.addEventListener("change", function () {
+            var rowChecks = tbody.querySelectorAll("tr td:first-child input[type='checkbox']");
+            Array.prototype.forEach.call(rowChecks, function (cb) {
+              cb.checked = headerCheck.checked;
+            });
+          });
         }
 
         var cancelAllBtn = document.getElementById("searchCancelAllBtn");
