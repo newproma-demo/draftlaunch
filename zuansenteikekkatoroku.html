@@ -72,12 +72,80 @@
 
     .content-area-2 {
       grid-column: 2;
-      /* タイトル下の2段分をまたぎ、縦いっぱいに画像エリアを伸ばす */
+      /* タイトル下の2段分をまたぎ、縦いっぱいに画像エリアを伸ばす（zuanteishutsu.html と同寸） */
       grid-row: 2 / 4;
-      min-height: 0;
-      overflow: hidden;
+      min-height: 600px;
+      max-height: calc(100vh - 170px);
+      overflow: visible;
       display: flex;
       flex-direction: column;
+      align-items: center;
+    }
+
+    .image-panel-toolbar {
+      width: min(100%, 760px);
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .image-switch-btn {
+      border: none;
+      background: rgba(255, 255, 255, 0.96);
+      color: #14452d;
+      font-size: var(--fs-sm);
+      font-weight: 800;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+      font-family: inherit;
+      line-height: 1.2;
+      z-index: 2;
+    }
+
+    .image-panel-stage {
+      width: min(100%, 760px);
+      position: relative;
+      padding-right: 90px;
+      box-sizing: border-box;
+    }
+
+    .image-switch-btn--floating-prev {
+      position: absolute;
+      left: -90px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .image-switch-btn--floating-next {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .image-switch-btn:hover:not(:disabled) {
+      background: #fff;
+      color: var(--color-primary);
+    }
+
+    .image-switch-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .image-index-indicator {
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      font-size: var(--fs-sm);
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
     .content-area-3 {
@@ -101,6 +169,17 @@
       flex-wrap: wrap;
     }
 
+    /* 選定結果・承認図案：PC のみ固定幅。スマホは bk_0415 同様に親内で可変（下記メディアクエリ） */
+    @media (min-width: 768px) {
+      #resultSelect,
+      #resultApproveImageSelect,
+      .result-select-block select {
+        width: 280px;
+        max-width: 280px;
+        box-sizing: border-box;
+      }
+    }
+
     .result-reason-wrap {
       display: none;
       flex-direction: column;
@@ -118,11 +197,27 @@
       color: var(--color-text);
     }
 
+    .result-approve-image-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 100%;
+    }
 
+    .result-approve-image-wrap.is-visible {
+      display: flex;
+    }
+
+    .result-approve-image-wrap label {
+      font-weight: 600;
+      color: var(--color-text);
+    }
 
     .product-image-wrapper {
       flex: 1 1 0;
       min-height: 0;
+      position: relative;
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -150,6 +245,13 @@
     /* #region レスポンシブ対応 */
     /* 画面の幅が768px以下ならスマホ*/
     @media (max-width: 767px) {
+      /*
+       * ルートフォントを bk_0415 の css/style.css と同じに（現行 style.css の html { font-size: var(--fs-base); } を上書き）
+       */
+      html {
+        font-size: clamp(12px, 0.5vw + 8px, var(--fs-base));
+      }
+
       .pc-only {
         display: none;
       }
@@ -217,6 +319,40 @@
         position: relative;
         z-index: 3;
       }
+
+      /* bk_202604 draftlaunch-main_0415 と同様：resultSelect は固定幅を外し列内いっぱい。承認図案も同じ幅 */
+      .result-select-block .filter-item {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #resultSelect,
+      #resultApproveImageSelect,
+      .result-select-block select {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .result-approve-image-wrap {
+        width: 100%;
+        max-width: 100%;
+        align-self: stretch;
+        box-sizing: border-box;
+      }
+
+      .image-panel-stage {
+        width: 100%;
+        padding-right: 0;
+        gap: 8px;
+      }
+
+      /* 0415 には無い要素：本文（html）のスケールに合わせ var(--fs-sm) による差をなくす */
+      .image-switch-btn,
+      .image-index-indicator {
+        font-size: inherit;
+      }
     }
 
     .filter-row {
@@ -279,11 +415,13 @@
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       padding: 10px;
+      margin-top: 0;
       margin-bottom: 3px;
       box-sizing: border-box;
       background: #fff;
       width: 100%;
-      height: 100%;
+      height: min(860px, calc(100vh - 220px));
+      max-height: calc(100vh - 220px);
       min-height: 0;
       overflow: hidden;
     }
@@ -315,10 +453,12 @@
       cursor: default;
     }
 
-    /* 枠内に必ず収める（縦横比は維持・はみ出し・スクロールなし） */
+    /* 枠内に必ず収める（縦横比は維持・はみ出し・スクロールなし）— zuanteishutsu.html と同じ */
     img.product-image {
-      width: 100%;
-      height: 100%;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       object-position: center;
       display: block;
@@ -347,6 +487,8 @@
     .product-pdf-canvas {
       display: block;
       max-width: 100%;
+      max-height: 100%;
+      width: auto;
       height: auto;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
     }
@@ -568,7 +710,7 @@
             <tr>
               <td>
                 <div class="detail-name">品名サンプル２</div>
-                <div class="detail-meta">別注｜単品タオル｜フェイスタオル｜ミッキー</div>
+                <div class="detail-meta">別注｜単品タオル｜フェイスタオル｜ミッキー｜丸眞太郎</div>
               </td>
               <td class="detail-image-cell">
                 <div class="detail-row-upload">
@@ -589,7 +731,7 @@
             <tr>
               <td>
                 <div class="detail-name">品名サンプル３</div>
-                <div class="detail-meta">OEM｜単品タオル｜ウオッシュタオル｜ミッキー</div>
+                <div class="detail-meta">OEM｜単品タオル｜ウオッシュタオル｜ミッキー｜丸眞太郎</div>
               </td>
               <td class="detail-image-cell">
                 <div class="detail-row-upload">
@@ -620,6 +762,14 @@
               <option value="取消">取消</option>
             </select>
           </div>
+          <div id="resultApproveImageWrap" class="result-approve-image-wrap" aria-hidden="true">
+            <label for="resultApproveImageSelect"></label>
+            <select id="resultApproveImageSelect" name="resultApproveImage">
+              <option value="1">1 / 3</option>
+              <option value="2">2 / 3</option>
+              <option value="3">3 / 3</option>
+            </select>
+          </div>
           <div id="resultReasonWrap" class="result-reason-wrap" aria-hidden="true">
             <textarea id="resultReason" name="resultReason" rows="4" placeholder="理由を入力してください"></textarea>
           </div>
@@ -627,19 +777,28 @@
       </div>
 
       <div class="content-area-2">
-        <div class="product-card is-active">
-          <div class="product-image-wrapper">
-            <img class="product-image" src="images/zuan001.png" alt="商品画像プレビュー">
-            <div class="product-pdf-canvas-wrap" aria-hidden="true">
-              <canvas class="product-pdf-canvas"></canvas>
+        <div class="image-panel-toolbar">
+          <div class="image-index-indicator" id="productImageIndexIndicator">1 / 3</div>
+        </div>
+        <div class="image-panel-stage" id="mainImagePanelStage">
+          <div class="product-card is-active">
+            <div class="product-image-wrapper">
+              <img class="product-image" name="allimage" src="images/zuan001.png" alt="商品画像プレビュー">
+              <div class="product-pdf-canvas-wrap" aria-hidden="true">
+                <canvas class="product-pdf-canvas"></canvas>
+              </div>
+              <div class="product-pdf-fallback">
+                <p>この環境では埋め込み表示できません。</p>
+                <p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">PDF / AI を新しいタブで開く</a></p>
+              </div>
             </div>
-            <div class="product-pdf-fallback">
-              <p>この環境では埋め込み表示できません。</p>
-              <p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">PDF / AI を新しいタブで開く</a></p>
-            </div>
+            <input type="file" id="productImageInput" accept="image/*,application/pdf,.pdf,.ai" multiple
+              class="product-image-input" style="display: none;">
           </div>
-          <input type="file" id="productImageInput" accept="image/*,application/pdf,.pdf,.ai"
-            class="product-image-input" style="display: none;">
+          <button type="button" class="image-switch-btn image-switch-btn--next image-switch-btn--floating-prev"
+            id="productImageNextBtn">＜前へ</button>
+          <button type="button" class="image-switch-btn image-switch-btn--prev image-switch-btn--floating-next"
+            id="productImagePrevBtn">次へ＞</button>
         </div>
       </div>
     </div>
@@ -733,6 +892,7 @@
                 <td>単品タオル</td>
                 <td>ミニタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
               </tr>
               <tr>
                 <td class="modal-result-col-check">
@@ -743,7 +903,8 @@
                 <td>別注</td>
                 <td>単品タオル</td>
                 <td>フェイスタオル</td>
-                <td>ミッキー</td>
+                <td>ミッキー</td> 
+                <td>丸眞太郎</td>
               </tr>
               <tr>
                 <td class="modal-result-col-check">
@@ -755,6 +916,7 @@
                 <td>単品タオル</td>
                 <td>ウオッシュタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
               </tr>
             </tbody>
           </table>
@@ -863,7 +1025,297 @@
       selHanbaiCommon.addEventListener("change", toggleTenjikaiByHanbai);
     })();
 
-    // 画像／PDF アップロード（product-card および detail-row-upload 各行で共通）
+    // メイン図案エリア（name=allimage）: 3スロット固定（zuan001〜003）・前後ボタン
+    (function () {
+      var stage = document.getElementById('mainImagePanelStage');
+      if (!stage) return;
+      var wrapper = stage.querySelector('.product-image-wrapper');
+      var img = stage.querySelector('img[name="allimage"]');
+      var pdfCanvas = stage.querySelector('.product-pdf-canvas');
+      var pdfOpenTab = stage.querySelector('.product-pdf-open-tab');
+      var fileInput = document.getElementById('productImageInput');
+      var btnNext = document.getElementById('productImageNextBtn');
+      var btnPrev = document.getElementById('productImagePrevBtn');
+      var indexIndicator = document.getElementById('productImageIndexIndicator');
+      var approveSelect = document.getElementById('resultApproveImageSelect');
+
+      if (!wrapper || !img || !fileInput) return;
+
+      var pdfObjectUrl = null;
+      /** 3件固定：1=zuan001, 2=zuan002, 3=zuan003 */
+      var mediaItems = [
+        { type: 'image-url', src: 'images/zuan001.png', isPlaceholder: false },
+        { type: 'image-url', src: 'images/zuan002.png', isPlaceholder: false },
+        { type: 'image-url', src: 'images/zuan003.png', isPlaceholder: false }
+      ];
+      var currentMediaIndex = 0;
+
+      if (typeof pdfjsLib !== 'undefined' && pdfjsLib.GlobalWorkerOptions) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
+
+      function revokePdfUrl() {
+        if (pdfObjectUrl) {
+          URL.revokeObjectURL(pdfObjectUrl);
+          pdfObjectUrl = null;
+        }
+      }
+
+      function showImagePreview(dataUrl) {
+        revokePdfUrl();
+        wrapper.classList.remove('is-pdf', 'is-pdf-fallback');
+        if (pdfOpenTab) pdfOpenTab.href = '#';
+        img.src = dataUrl;
+      }
+
+      function showPdfFallback(file) {
+        revokePdfUrl();
+        pdfObjectUrl = URL.createObjectURL(file);
+        wrapper.classList.add('is-pdf', 'is-pdf-fallback');
+        if (pdfOpenTab) pdfOpenTab.href = pdfObjectUrl;
+      }
+
+      function showPdfPreview(file) {
+        wrapper.classList.remove('is-pdf-fallback');
+        if (typeof pdfjsLib === 'undefined' || !pdfCanvas) {
+          showPdfFallback(file);
+          return;
+        }
+
+        revokePdfUrl();
+        pdfObjectUrl = URL.createObjectURL(file);
+        if (pdfOpenTab) pdfOpenTab.href = pdfObjectUrl;
+
+        var reader = new FileReader();
+        reader.onerror = function () {
+          showPdfFallback(file);
+        };
+        reader.onload = function (e) {
+          var arrayBuffer = e.target.result;
+          var loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+          loadingTask.promise.then(function (pdf) {
+            return pdf.getPage(1);
+          }).then(function (page) {
+            var baseViewport = page.getViewport({ scale: 1 });
+            var w = wrapper.clientWidth || 400;
+            var h = wrapper.clientHeight || 300;
+            var scale = Math.min(w / baseViewport.width, h / baseViewport.height, 2);
+            var viewport = page.getViewport({ scale: scale });
+            pdfCanvas.width = viewport.width;
+            pdfCanvas.height = viewport.height;
+            var ctx = pdfCanvas.getContext('2d');
+            return page.render({ canvasContext: ctx, viewport: viewport }).promise;
+          }).then(function () {
+            wrapper.classList.add('is-pdf');
+          }).catch(function () {
+            showPdfFallback(file);
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      function isPdfLike(file) {
+        return file && (
+          file.type === 'application/pdf' ||
+          /\.pdf$/i.test(file.name || '') ||
+          /\.ai$/i.test(file.name || '')
+        );
+      }
+
+      function isImageFile(file) {
+        return !!(file && file.type && file.type.indexOf('image/') === 0);
+      }
+
+      function updateSwitchButtons() {
+        if (!btnNext || !btnPrev) return;
+        btnNext.disabled = currentMediaIndex <= 0;
+        btnPrev.disabled = currentMediaIndex >= mediaItems.length - 1;
+      }
+
+      function updateIndexIndicator() {
+        if (!indexIndicator) return;
+        var current = mediaItems.length ? currentMediaIndex + 1 : 0;
+        var total = mediaItems.length;
+        indexIndicator.textContent = current + ' / ' + total;
+      }
+
+      /** 承認時の図案 select（1〜3）を、現在の allimage 表示位置と一致させる */
+      function syncApproveSelectFromCarousel() {
+        if (!approveSelect) return;
+        var v = String(currentMediaIndex + 1);
+        if (approveSelect.value !== v) {
+          approveSelect.value = v;
+        }
+      }
+
+      function afterDisplayUpdate() {
+        updateSwitchButtons();
+        updateIndexIndicator();
+        syncApproveSelectFromCarousel();
+      }
+
+      function renderCurrentMedia() {
+        var current = mediaItems[currentMediaIndex];
+        if (!current) return;
+
+        if (current.type === 'image-url') {
+          showImagePreview(current.src);
+          afterDisplayUpdate();
+          return;
+        }
+
+        if (current.type === 'pdf-file') {
+          showPdfPreview(current.file);
+          afterDisplayUpdate();
+          return;
+        }
+
+        if (current.type === 'image-file') {
+          var renderToken = currentMediaIndex;
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            if (renderToken !== currentMediaIndex) return;
+            showImagePreview(e.target.result);
+            afterDisplayUpdate();
+          };
+          reader.readAsDataURL(current.file);
+          afterDisplayUpdate();
+        }
+      }
+
+      function getFilesFromDataTransfer(dt) {
+        if (!dt) return null;
+        if (dt.files && dt.files.length) return dt.files;
+        if (dt.items && dt.items.length) {
+          var arr = [];
+          for (var i = 0; i < dt.items.length; i++) {
+            if (dt.items[i].kind === 'file') {
+              var f = dt.items[i].getAsFile();
+              if (f) arr.push(f);
+            }
+          }
+          if (arr.length) return arr;
+        }
+        return null;
+      }
+
+      function handleFiles(files) {
+        if (!files || !files.length) return;
+        var normalized = [];
+        Array.prototype.forEach.call(files, function (file) {
+          if (isPdfLike(file)) {
+            normalized.push({ type: 'pdf-file', file: file });
+            return;
+          }
+          if (isImageFile(file)) {
+            normalized.push({ type: 'image-file', file: file });
+          }
+        });
+
+        if (!normalized.length) return;
+        /* 3スロット固定：現在表示中のスロットのみ差し替え */
+        mediaItems.splice(currentMediaIndex, 1, normalized[0]);
+        renderCurrentMedia();
+      }
+
+      wrapper.addEventListener('click', function (e) {
+        var target = e.target;
+        if (target && target.closest && target.closest('.image-switch-btn')) return;
+        if (target && target.closest && target.closest('.product-pdf-open-tab')) return;
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', function (e) {
+        handleFiles(e.target.files);
+        fileInput.value = '';
+      });
+
+      if (btnNext) {
+        btnNext.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (currentMediaIndex <= 0) return;
+          currentMediaIndex -= 1;
+          renderCurrentMedia();
+        });
+      }
+
+      if (btnPrev) {
+        btnPrev.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (currentMediaIndex >= mediaItems.length - 1) return;
+          currentMediaIndex += 1;
+          renderCurrentMedia();
+        });
+      }
+
+      if (approveSelect) {
+        approveSelect.addEventListener('change', function () {
+          var n = parseInt(approveSelect.value, 10);
+          if (isNaN(n) || n < 1 || n > mediaItems.length) return;
+          currentMediaIndex = n - 1;
+          renderCurrentMedia();
+        });
+      }
+
+      var dropZone = wrapper.closest('.product-card') || wrapper;
+
+      function setDragOver(active) {
+        wrapper.classList.toggle('dragover', active);
+        if (dropZone !== wrapper) dropZone.classList.toggle('dragover', active);
+      }
+
+      function isOutsideDropZone(target) {
+        if (!target || !dropZone.contains) return true;
+        return !dropZone.contains(target);
+      }
+
+      dropZone.addEventListener('dragenter', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragOver(true);
+      }, true);
+
+      dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          e.dataTransfer.dropEffect = 'copy';
+        } catch (err) { /* ignore */ }
+        setDragOver(true);
+      }, true);
+
+      dropZone.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isOutsideDropZone(e.relatedTarget)) setDragOver(false);
+      }, true);
+
+      dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragOver(false);
+        var fileList = getFilesFromDataTransfer(e.dataTransfer);
+        if (fileList && fileList.length) handleFiles(fileList);
+      }, true);
+
+      dropZone.addEventListener('dragend', function () {
+        setDragOver(false);
+      }, true);
+
+      if (pdfOpenTab) {
+        pdfOpenTab.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (pdfOpenTab.getAttribute('href') === '#') e.preventDefault();
+        });
+      }
+
+      renderCurrentMedia();
+
+      window.syncMainImageApproveSelectFromCarousel = syncApproveSelectFromCarousel;
+    })();
+
+    // 画像／PDF アップロード（detail-row-upload 各行。メインは上記）
     (function () {
       if (typeof pdfjsLib !== 'undefined' && pdfjsLib.GlobalWorkerOptions) {
         pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -1016,11 +1468,6 @@
         }
       }
 
-      // メインの product-card
-      var mainInput = document.getElementById('productImageInput');
-      if (mainInput) {
-        bindImageUploader(mainInput.closest('.product-card'));
-      }
       // detail-table 各行の detail-row-upload
       document.querySelectorAll('.detail-row-upload').forEach(function (el) {
         bindImageUploader(el);
@@ -1207,16 +1654,20 @@
       syncHeaderCheckbox();
     })();
 
-    // 結果select：差戻し・取消のとき理由入力欄を表示
+    // 結果select：承認時は allimage 図案選択、差戻し・取消のとき理由入力欄を表示
     (function () {
       var sel = document.getElementById('resultSelect');
       var wrap = document.getElementById('resultReasonWrap');
       var reason = document.getElementById('resultReason');
+      var approveWrap = document.getElementById('resultApproveImageWrap');
+      var approveImageSelect = document.getElementById('resultApproveImageSelect');
       if (!sel || !wrap) return;
 
-      function toggleReason() {
+      function toggleResultFields() {
         var v = sel.value;
         var needReason = (v === '差戻し' || v === '取消');
+        var needApproveImage = (v === '承認');
+
         if (needReason) {
           wrap.classList.add('is-visible');
           wrap.setAttribute('aria-hidden', 'false');
@@ -1225,10 +1676,24 @@
           wrap.setAttribute('aria-hidden', 'true');
           if (reason) reason.value = '';
         }
+
+        if (approveWrap) {
+          if (needApproveImage) {
+            approveWrap.classList.add('is-visible');
+            approveWrap.setAttribute('aria-hidden', 'false');
+            if (typeof window.syncMainImageApproveSelectFromCarousel === 'function') {
+              window.syncMainImageApproveSelectFromCarousel();
+            }
+          } else {
+            approveWrap.classList.remove('is-visible');
+            approveWrap.setAttribute('aria-hidden', 'true');
+            if (approveImageSelect) approveImageSelect.selectedIndex = 0;
+          }
+        }
       }
 
-      sel.addEventListener('change', toggleReason);
-      toggleReason();
+      sel.addEventListener('change', toggleResultFields);
+      toggleResultFields();
     })();
 
     // 明細行の削除（×ボタン）
