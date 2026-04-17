@@ -90,7 +90,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="hinshitsukensazuankensaku.html">品質検査合格書登録</a></li>
-      <li><a href="hinshitsukensagokakushokensaku.html">品質検査合格書決済</a></li>
+      <li><a href="hinshitsukensagokakushokensaku.html">品質検査合格書決裁</a></li>
     </ul>
   </div>
 
@@ -102,7 +102,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="keiyakushosofuirai.html">契約書送付依頼</a></li>
-      <li><a href="keiyakushosofuiraikakunin.html">注文書作成</a></li>
+      <li><a href="keiyakushosofuiraikakunin.html">契約依頼・発注書作成</a></li>
       <li><a href="hatchujohoMsysemrenkei.html">発注情報Mｼｽﾃﾑ連携</a></li>
       <li><a href="hatchurirekikensaku.html">発注履歴照会</a></li>
     </ul>
