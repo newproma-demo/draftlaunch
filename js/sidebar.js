@@ -101,7 +101,6 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="keiyakushosofuirai.html">契約書送付依頼</a></li>
       <li><a href="keiyakushosofuiraikakunin.html">契約依頼・発注書作成</a></li>
       <li><a href="hatchujohoMsysemrenkei.html">発注情報Mｼｽﾃﾑ連携</a></li>
       <li><a href="hatchurirekikensaku.html">発注履歴照会</a></li>
