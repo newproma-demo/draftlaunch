@@ -78,6 +78,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     .content-area-3 {
@@ -217,6 +218,37 @@
         position: relative;
         z-index: 3;
       }
+
+      /* スマホ: 商品選択モーダルの各入力行を同じ開始位置/幅に揃える */
+      .modal-product-select-page .filter-row .filter-item {
+        display: grid;
+        grid-template-columns: minmax(8.75rem, 10rem) minmax(0, 1fr);
+        align-items: center;
+        column-gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .modal-product-select-page .filter-row .filter-item .filter-label,
+      .modal-product-select-page .filter-row .filter-item label {
+        margin: 0;
+        min-width: 0;
+        max-width: 100%;
+        padding-right: 2px;
+        white-space: normal;
+        word-break: keep-all;
+        line-height: 1.35;
+        align-self: center;
+      }
+
+      .modal-product-select-page .filter-row .filter-item select,
+      .modal-product-select-page .filter-row .filter-item input[type="text"] {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        justify-self: stretch;
+      }
     }
 
     .filter-row {
@@ -238,6 +270,93 @@
     }
 
     /* 商品選択モーダルは css/style.css の .product-select-modal-* を使用 */
+
+    /* 商品選択モーダル：一覧の商品画像サムネイル（セル内で中央揃え） */
+    #productSelectModalDialog .modal-result-table img {
+      max-width: 48px;
+      max-height: 48px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #productSelectModalDialog .modal-result-table td:has(> img) {
+      width: 56px;
+      max-width: 64px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 4px;
+    }
+
+    /* 商品選択モーダル内：商品画像の拡大表示（親ダイアログを覆う absolute） */
+    .modal-product-image-lightbox {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 12px;
+    }
+
+    .modal-product-image-lightbox.is-open {
+      display: flex;
+    }
+
+    .modal-product-image-lightbox__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      cursor: pointer;
+    }
+
+    .modal-product-image-lightbox__close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 22;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--color-text, #1a1a1a);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-product-image-lightbox__close:hover {
+      background: #fff;
+    }
+
+    .modal-product-image-lightbox__frame {
+      position: relative;
+      z-index: 21;
+      max-width: 100%;
+      max-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .modal-product-image-lightbox__img {
+      max-width: min(92vw, 900px);
+      max-height: min(78vh, 720px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: var(--radius-sm, 6px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      background: #fff;
+    }
 
     .btn-sel-product {
       min-width: 120px;
@@ -282,8 +401,10 @@
       margin-bottom: 3px;
       box-sizing: border-box;
       background: #fff;
-      width: 100%;
-      height: 100%;
+      width: 97%;
+      height: 97%;
+      margin-left: auto;
+      margin-right: auto;
       min-height: 0;
       overflow: hidden;
     }
@@ -462,7 +583,7 @@
       flex: none;
       height: 100px;
       min-height: 80px;
-      cursor: pointer;
+      cursor: default;
     }
 
     .detail-row-upload .product-pdf-fallback {
@@ -541,20 +662,9 @@
       <h1>品質検査合格書登録</h1>
       <!-- ========== : 登録画面 ========== -->
       <div class="content-area-1">
+        <button type="button" class="btn-sel-product" id="btnSelProduct">商品を選択</button>
         <table class="detail-table" id="detailTableProductList">
           <tbody id="detailTableProductListBody">
-            <tr>
-              <td>
-                <div class="detail-name">品名サンプル１</div>
-                <div class="detail-meta">定番（2026.01展示会）｜単品タオル｜ミニタオル｜ミッキー</div>
-              </td>
-              <td class="detail-image-cell">
-                <div class="detail-row-upload">
-                  <div class="product-image-wrapper">
-                    <img class="product-image" src="images/zuan003.png" alt="プレビュー">
-                </div>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -564,7 +674,7 @@
       <div class="content-area-2">
         <div class="product-card is-active">
           <div class="product-image-wrapper">
-            <img class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
+            <img id="mainProductPreviewImage" class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
             <div class="product-pdf-canvas-wrap" aria-hidden="true">
               <canvas class="product-pdf-canvas"></canvas>
             </div>
@@ -640,6 +750,15 @@
                 <option>ジブリ</option>
               </select>
             </div>
+            <div class="filter-item">
+              <span class="filter-label">デザイナー</span>
+              <select id="modalSearchDesigner">
+                <option value="" selected disabled>選択してください</option>
+                <option>丸眞太郎</option>
+                <option>丸眞花子</option>
+                <option>丸眞桜子</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="modal-result-table-wrap">
@@ -655,6 +774,8 @@
                 <th>カテゴリー</th>
                 <th>アイテム</th>
                 <th>ブランド・キャラ</th>
+                <th>デザイナー</th>
+                <th>商品画像</th>
               </tr>
             </thead>
             <tbody>
@@ -668,6 +789,8 @@
                 <td>単品タオル</td>
                 <td>ミニタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
+                <td><img src="images/zuan001.png" class="modal-result-product-thumb" alt="商品画像サムネイル"></td>
               </tr>
               <tr>
                 <td class="modal-result-col-check">
@@ -679,6 +802,8 @@
                 <td>単品タオル</td>
                 <td>フェイスタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
+                <td><img src="images/zuan002.png" class="modal-result-product-thumb" alt="商品画像サムネイル"></td>
               </tr>
               <tr>
                 <td class="modal-result-col-check">
@@ -690,6 +815,8 @@
                 <td>単品タオル</td>
                 <td>ウオッシュタオル</td>
                 <td>ミッキー</td>
+                <td>丸眞太郎</td>
+                <td><img src="images/zuan003.png" class="modal-result-product-thumb" alt="商品画像サムネイル"></td>
               </tr>
             </tbody>
           </table>
@@ -700,6 +827,15 @@
       <div class="product-select-modal-footer-actions">
         <button type="button" class="product-select-modal-add" id="productSelectModalAdd">追加</button>
         <button type="button" class="product-select-modal-close" id="productSelectModalClose">閉じる</button>
+      </div>
+    </div>
+    <!-- モーダル内：商品画像クリックで拡大 -->
+    <div id="modalProductImageLightbox" class="modal-product-image-lightbox" aria-hidden="true">
+      <div class="modal-product-image-lightbox__backdrop" role="presentation"></div>
+      <button type="button" class="modal-product-image-lightbox__close" id="modalProductImageLightboxClose"
+        aria-label="拡大表示を閉じる">×</button>
+      <div class="modal-product-image-lightbox__frame">
+        <img id="modalProductImageLightboxImg" class="modal-product-image-lightbox__img" src="" alt="">
       </div>
     </div>
   </div>
@@ -830,6 +966,8 @@
         var fileInput = container.querySelector('.product-image-input');
         if (!wrapper || !img || !fileInput) return;
 
+        var isMainRightPanelCard = fileInput.id === 'productImageInput';
+
         var pdfObjectUrl = null;
 
         function revokePdfUrl() {
@@ -902,7 +1040,19 @@
           r.readAsDataURL(file);
         }
 
-        wrapper.addEventListener('click', function () { fileInput.click(); });
+        wrapper.addEventListener('click', function (e) {
+          if (e.target && e.target.closest && e.target.closest('.product-pdf-open-tab')) {
+            return;
+          }
+          if (!isMainRightPanelCard) {
+            return;
+          }
+          if (wrapper.classList.contains('is-pdf') || wrapper.classList.contains('is-pdf-fallback')) {
+            fileInput.click();
+            return;
+          }
+          fileInput.click();
+        });
         fileInput.addEventListener('change', function (e) { handleFiles(e.target.files); });
 
         var dropZone = container.classList.contains('product-card') ? container :
@@ -956,7 +1106,7 @@
       if (mainInput) {
         bindImageUploader(mainInput.closest('.product-card'));
       }
-      // detail-table 各行の detail-row-upload
+      // detail-table 各行の detail-row-upload（初期行含む）
       document.querySelectorAll('.detail-row-upload').forEach(function (el) {
         bindImageUploader(el);
       });
@@ -969,6 +1119,22 @@
       };
     })();
 
+    // 初期表示 noimage.png
+    (function initMainProductPreviewImage() {
+      var mainImg = document.getElementById('mainProductPreviewImage');
+      var card = document.querySelector('.content-area-2 .product-card');
+      if (!mainImg || !card) return;
+      var wrapper = card.querySelector('.product-image-wrapper');
+      var pdfOpenTab = card.querySelector('.product-pdf-open-tab');
+      mainImg.src = 'images/noimage.png';
+      if (wrapper) {
+        wrapper.classList.remove('is-pdf', 'is-pdf-fallback');
+      }
+      if (pdfOpenTab) {
+        pdfOpenTab.href = '#';
+      }
+    })();
+
     // 商品を選択モーダル（閉じる／追加で閉じる）
     (function () {
       var overlay = document.getElementById('productSelectModalOverlay');
@@ -976,7 +1142,59 @@
       var btnOpen = document.getElementById('btnSelProduct');
       var btnClose = document.getElementById('productSelectModalClose');
       var btnAdd = document.getElementById('productSelectModalAdd');
+      var imageLightbox = document.getElementById('modalProductImageLightbox');
+      var imageLightboxImg = document.getElementById('modalProductImageLightboxImg');
+      var imageLightboxCloseBtn = document.getElementById('modalProductImageLightboxClose');
+      var imageLightboxBackdrop = imageLightbox ? imageLightbox.querySelector('.modal-product-image-lightbox__backdrop') : null;
       if (!overlay || !dialog || !btnOpen || !btnClose) return;
+
+      function closeImageLightbox() {
+        if (!imageLightbox) return;
+        imageLightbox.classList.remove('is-open');
+        imageLightbox.setAttribute('aria-hidden', 'true');
+        if (imageLightboxImg) {
+          imageLightboxImg.removeAttribute('src');
+          imageLightboxImg.alt = '';
+        }
+      }
+
+      function openImageLightbox(src, alt) {
+        if (!imageLightbox || !imageLightboxImg || !src) return;
+        imageLightboxImg.src = src;
+        imageLightboxImg.alt = alt || '商品画像（拡大）';
+        imageLightbox.classList.add('is-open');
+        imageLightbox.setAttribute('aria-hidden', 'false');
+      }
+
+      dialog.addEventListener('click', function (e) {
+        var thumb = e.target && e.target.closest && e.target.closest('img.modal-result-product-thumb');
+        if (!thumb || !dialog.contains(thumb)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var src = (thumb.getAttribute('src') || thumb.src || '').trim();
+        if (!src) return;
+        openImageLightbox(src, thumb.getAttribute('alt') || '');
+      });
+
+      if (imageLightboxCloseBtn) {
+        imageLightboxCloseBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          closeImageLightbox();
+        });
+      }
+      if (imageLightboxBackdrop) {
+        imageLightboxBackdrop.addEventListener('click', function () {
+          closeImageLightbox();
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if (!imageLightbox || !imageLightbox.classList.contains('is-open')) return;
+        e.preventDefault();
+        closeImageLightbox();
+      });
 
       function openModal() {
         overlay.classList.add('is-open');
@@ -991,6 +1209,7 @@
       }
 
       function closeModal() {
+        closeImageLightbox();
         overlay.classList.remove('is-open');
         dialog.classList.remove('is-open');
         overlay.setAttribute('aria-hidden', 'true');
@@ -1021,18 +1240,29 @@
             alert('追加する商品を選択してください。');
             return;
           }
+
           checks.forEach(function (cb) {
             var tr = cb.closest('tr');
             if (!tr) return;
             var tds = tr.querySelectorAll('td');
-            // td[0]=checkbox, [1]=品名, [2]=販売区分, [3]=カテゴリー, [4]=アイテム, [5]=ブランド
-            if (tds.length < 6) return;
+            // td[0]=checkbox, [1]=品名 … [6]=デザイナー, [7]=商品画像（img）
+            if (tds.length < 8) return;
             var hinmei = (tds[1].textContent || '').trim();
             var hanbai = (tds[2].textContent || '').trim();
             var category = (tds[3].textContent || '').trim();
             var item = (tds[4].textContent || '').trim();
             var brand = (tds[5].textContent || '').trim();
-            var meta = [hanbai, category, item, brand].filter(function (s) { return s; }).join('｜');
+            var designer = (tds[6].textContent || '').trim();
+            var imgCell = tds[7];
+            var modalThumb = imgCell ? imgCell.querySelector('img') : null;
+            var imgSrc = '';
+            if (modalThumb) {
+              imgSrc = (modalThumb.getAttribute('src') || modalThumb.src || '').trim();
+            }
+            if (!imgSrc) {
+              imgSrc = 'images/noimage.png';
+            }
+            var meta = [hanbai, category, item, brand, designer].filter(function (s) { return s; }).join('｜');
             var uploadHtml =
               '<td class="detail-image-cell">' +
               '<div class="detail-row-upload">' +
@@ -1055,6 +1285,15 @@
               uploadHtml;
             newTr.querySelector('.detail-name').textContent = hinmei;
             newTr.querySelector('.detail-meta').textContent = meta || '—';
+            var rowWrapper = newTr.querySelector('.detail-row-upload .product-image-wrapper');
+            var rowImg = newTr.querySelector('.detail-row-upload .product-image');
+            if (rowWrapper) {
+              rowWrapper.classList.remove('is-pdf', 'is-pdf-fallback');
+            }
+            if (rowImg) {
+              rowImg.src = imgSrc;
+              rowImg.alt = hinmei ? hinmei + 'のプレビュー' : 'プレビュー';
+            }
             detailTbody.appendChild(newTr);
             var uploadRoot = newTr.querySelector('.detail-row-upload');
             if (uploadRoot && typeof window.bindDetailRowImageUploader === 'function') {
