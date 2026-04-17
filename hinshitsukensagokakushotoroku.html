@@ -249,6 +249,32 @@
         box-sizing: border-box;
         justify-self: stretch;
       }
+
+      /* スマホ: 明細画像をラベル（品名・メタ）の下に配置 */
+      .detail-table tr {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr);
+        grid-template-areas:
+          "delete text"
+          "delete image";
+        align-items: start;
+      }
+
+      .detail-table td.detail-delete-cell {
+        grid-area: delete;
+        vertical-align: top;
+      }
+
+      .detail-table td.detail-image-cell {
+        grid-area: image;
+        width: 100%;
+        max-width: 100%;
+        padding-top: 4px;
+      }
+
+      .detail-table td:not(.detail-delete-cell):not(.detail-image-cell) {
+        grid-area: text;
+      }
     }
 
     .filter-row {
