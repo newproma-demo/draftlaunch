@@ -302,6 +302,14 @@
       line-height: 1.4;
     }
 
+    /* チェック用 label は左列 180px を当てない（あり／なし) などが横に詰まる） */
+    .entry-form .checkbox-label {
+      min-width: 0;
+      max-width: none;
+      padding-top: 0;
+      align-self: center;
+    }
+
     .entry-form .form-row.form-row-hanbai-kubun .filter-label {
       font-weight: 500;
       min-width: 180px;
@@ -1237,6 +1245,89 @@
       .search-toggle-sp {
         display: none;
       }
+
+      /*
+       * エントリーフォーム周りは var(--fs-base)、ページ見出しは 18px。
+       */
+      .content-box .page-title {
+        font-size: 18px;
+      }
+
+      .entry-form,
+      .entry-form label,
+      .entry-form .filter-label,
+      .entry-form input,
+      .entry-form textarea,
+      .entry-form select,
+      .entry-form .autocomplete-input,
+      .entry-form .period-range-input,
+      .entry-form .period-range-calendar-btn,
+      .entry-form .autocomplete-dropdown,
+      .entry-form .autocomplete-dropdown div,
+      .entry-form .sample-count-unit,
+      .entry-form .amount-unit,
+      .entry-form .btn-primary,
+      .entry-form .btn-secondary {
+        font-size: var(--fs-base);
+      }
+
+      /*
+       *（.form-row-hyogenhoho 等の .checkbox-label と同じパターン）
+       */
+      .entry-form .checkbox-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        margin: 0;
+        white-space: nowrap;
+        width: auto;
+        max-width: none;
+      }
+
+      .entry-form .checkbox-label input[type="checkbox"] {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        min-width: 18px;
+        min-height: 18px;
+        margin-top: 0;
+      }
+
+      /*
+       * 進行内容：zuan_sakusei_art・ari・nashi を 1 行で横並び。
+       * 「あり」と「なし)」は内側行だけ gap を小さくし、図案作成ラベルとの間はやや空ける。
+       */
+      .entry-form .form-row-shinkonaiyo .shinkonaiyo-zuan-group {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 6px;
+        width: auto;
+        max-width: 100%;
+      }
+
+      .entry-form .form-row-shinkonaiyo .shinkonaiyo-ari-nashi-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0;
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+      }
+
+      .entry-form .form-row-shinkonaiyo .shinkonaiyo-zuan-group > .checkbox-label:first-of-type,
+      .entry-form .form-row-shinkonaiyo .shinkonaiyo-ari-nashi-row .checkbox-label {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        width: auto;
+        margin: 0;
+      }
     }
 
     .filter-row {
@@ -1457,10 +1548,7 @@
             <div>
               <div class="shinkonaiyo-zuan-group">
                 <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="zuan_sakusei_art">図案作成(アート支給</label>
-                <div class="shinkonaiyo-ari-nashi-row">
-                  <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="ari">あり</label>
-                  <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="nashi">なし)</label>
-                </div>
+                <div class="shinkonaiyo-ari-nashi-row"><label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="ari">あり</label><label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="nashi">なし)</label></div>
               </div>
               <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="shisaku_iraisho">試作依頼書(完成データ支給あり)</label>
               <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="sonota">その他(詳細に記載)</label>
