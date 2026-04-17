@@ -477,11 +477,22 @@
       .search-box-inner .search-row label {
         /* font-size: var(--fs-base);  */
         flex-shrink: 0;
+        width: 100%;
+        text-align: left;
+        align-self: flex-start;
       }
       .search-box-inner .search-row select,
       .search-box-inner .search-row input {
         min-width: 0;
         width: 100%;
+        box-sizing: border-box;
+      }
+      .search-box-inner .search-row .autocomplete {
+        width: 100%;
+      }
+      .search-box-inner .search-row .autocomplete .autocomplete-input {
+        width: 100%;
+        min-width: 0;
         box-sizing: border-box;
       }
 
@@ -1136,10 +1147,14 @@
       if (sel) {
         sel.value = "";
 
-        updateLayout1("2026.03");
+        if (typeof updateLayout1 === "function") {
+          updateLayout1("2026.03");
+        }
 
         sel.addEventListener("change", function () {
-          updateLayout1(this.value);
+          if (typeof updateLayout1 === "function") {
+            updateLayout1(this.value);
+          }
         });
       }
 
@@ -1204,13 +1219,48 @@
       (function () {
         var btn = document.getElementById("searchToggleSp");
         var box = document.getElementById("searchBox");
-        if (btn && box) {
-          btn.addEventListener("click", function () {
-            var isOpen = box.classList.toggle("is-open");
-            btn.setAttribute("aria-expanded", isOpen);
+        var panel = document.getElementById("searchRowsPanel");
+        if (!btn || !box || !panel) return;
+
+        var mobileQuery = window.matchMedia ? window.matchMedia("(max-width: 768px)") : null;
+
+        function setSearchBoxOpen(isOpen) {
+          box.classList.toggle("is-open", isOpen);
+          // CSS依存だけでなく直接表示も制御して、環境差異で開かない問題を回避
+          panel.style.display = isOpen ? "grid" : "none";
+          btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          var textEl = btn.querySelector(".search-toggle-sp-text");
+          if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+        }
+
+        function syncSearchBoxByViewport() {
+          var isMobile = mobileQuery ? mobileQuery.matches : false;
+          if (isMobile) {
+            setSearchBoxOpen(box.classList.contains("is-open"));
+          } else {
+            // PCでは常時表示
+            box.classList.remove("is-open");
+            panel.style.display = "grid";
+            btn.setAttribute("aria-expanded", "true");
             var textEl = btn.querySelector(".search-toggle-sp-text");
-            if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-          });
+            if (textEl) textEl.textContent = "検索条件を閉じる";
+          }
+        }
+
+        btn.addEventListener("click", function () {
+          var isMobile = mobileQuery ? mobileQuery.matches : false;
+          if (!isMobile) return;
+          setSearchBoxOpen(!box.classList.contains("is-open"));
+        });
+
+        syncSearchBoxByViewport();
+
+        if (mobileQuery) {
+          if (typeof mobileQuery.addEventListener === "function") {
+            mobileQuery.addEventListener("change", syncSearchBoxByViewport);
+          } else if (typeof mobileQuery.addListener === "function") {
+            mobileQuery.addListener(syncSearchBoxByViewport);
+          }
         }
       })();
     </script>
