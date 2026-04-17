@@ -669,17 +669,19 @@
         width: 30px;
       }
 
-      .entry-form .form-row.form-row-fileimg {
-        padding-left: 0;
-      }
-
       /*
        * スマホ：入力・チェックの左端を「図案予定期日」のテキストボックス位置に揃える。
-       * 図案予定期日行は .form-field-inline { gap:6px }。左列は「図案予定期日」が1行に収まる幅を確保。
+       * ラベル列幅は --sp-label-col、ラベルと入力の左右のあいだは --sp-label-gap。
        */
       .entry-form {
-        --sp-label-col: 10rem;
-        --sp-label-gap: 6px;
+        --sp-label-col: 9rem;
+        --sp-label-gap: 1px;
+      }
+
+      /* 画像プレビュー：詳細（shosai）テキストエリアの左端にそろえる */
+      .entry-form .form-row.form-row-fileimg {
+        padding-left: calc(var(--sp-label-col) + var(--sp-label-gap));
+        box-sizing: border-box;
       }
 
       /* 単独行のみラベル〜入力の gap を統一（2列ブロックの列間は下記ベースの 24px を維持） */
@@ -719,6 +721,7 @@
         white-space: normal;
         word-break: break-word;
         overflow-wrap: break-word;
+        padding-top: 6px;
       }
 
       .entry-form .form-row.form-row-hanbai-kubun select {
@@ -734,7 +737,7 @@
         min-width: 0;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: var(--sp-label-gap);
         width: auto;
         max-width: none;
       }
@@ -752,7 +755,7 @@
         min-width: 0;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: var(--sp-label-gap);
         width: auto;
         max-width: none;
       }
@@ -835,7 +838,7 @@
         flex-shrink: 0;
         font-weight: 500;
         line-height: 1.35;
-        padding-top: 8px;
+        padding-top: 6px;
       }
 
       .entry-form .form-multi5-matrix .form-multi5-sp-inline-row .autocomplete {
@@ -950,6 +953,23 @@
         width: 100%;
         max-width: 100%;
         text-align: left;
+      }
+
+      /* 進行内容：「あり」「なし）」のみ横並び */
+      .entry-form .form-row-shinkonaiyo .shinkonaiyo-ari-nashi-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .entry-form .form-row-shinkonaiyo .shinkonaiyo-ari-nashi-row .checkbox-label {
+        width: auto;
+        flex: 0 1 auto;
+        max-width: none;
       }
 
       .entry-form .form-row-shinkonaiyo .checkbox-label,
@@ -1437,8 +1457,10 @@
             <div>
               <div class="shinkonaiyo-zuan-group">
                 <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="zuan_sakusei_art">図案作成(アート支給</label>
-                <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="ari">あり</label>
-                <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="nashi">なし)</label>
+                <div class="shinkonaiyo-ari-nashi-row">
+                  <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="ari">あり</label>
+                  <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="nashi">なし)</label>
+                </div>
               </div>
               <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="shisaku_iraisho">試作依頼書(完成データ支給あり)</label>
               <label class="checkbox-label"><input type="checkbox" name="shinkonaiyo" value="sonota">その他(詳細に記載)</label>
