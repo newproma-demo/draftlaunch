@@ -345,6 +345,8 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
+      font-family: var(--font-sans);
+      font-size: 16px;
     }
 
     .btn-fab-new:hover {
@@ -520,8 +522,9 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
-      font-family: inherit;
-      font-size: inherit;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      white-space: nowrap;
     }
 
     .btn-panel-register:hover {
@@ -533,6 +536,37 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    /* ページネーションエリア */
+    #pagenationArea1 {
+      padding-right: 130px;
+    }
+
+    #pagenationArea2 {
+      padding-right: 15px;
+    }
+
+    #pagenationArea3 {
+      padding-right: 20px;
+    }
+
+    /* パネル3：ページネーションとフォーマット選択を同じ高さに揃える */
+    .panel2-with-format {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .panel2-with-format #pagenationArea3 {
+      padding-right: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .panel2-with-format .filter-row {
+      margin-bottom: 0;
     }
 
     .panel2-page-nav {
@@ -633,6 +667,10 @@
       margin-right: 4px;
     }
 
+    label.filter-label[for="carton-mark-format"] {
+      white-space: nowrap;
+    }
+
     .filter-row input[type="text"],
     .filter-row select {
       font-size: 16px;
@@ -686,6 +724,137 @@
         width: 100%;
       }
 
+      /* スマホ: panel1 は imgPanel1 配下に操作エリアを縦積み */
+      #panel1 #imgPanel1.mobile-stacked {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #panel1 #imgPanel1.mobile-stacked > div:empty {
+        display: none;
+      }
+
+      /* 上段: ページネーション */
+      #panel1 #imgPanel1.mobile-stacked #pagenationArea1 {
+        order: 1;
+      }
+
+      /* 上段2: 契約書登録ボタン（panel1内の2つ目の shiyosho-panel2） */
+      #panel1 #imgPanel1.mobile-stacked .shiyosho-panel2:not(#pagenationArea1) {
+        order: 2;
+      }
+
+      /* 中段: 発注書画像 */
+      #panel1 #imgPanel1.mobile-stacked > .shiyosho-item.img-scroll {
+        order: 3;
+      }
+
+      /* 下段: その他操作領域 */
+      #panel1 #imgPanel1.mobile-stacked .shiyosho-panel3 {
+        order: 4;
+      }
+
+      #panel1 #imgPanel1.mobile-stacked #pagenationArea1,
+      #panel1 #imgPanel1.mobile-stacked .shiyosho-panel2,
+      #panel1 #imgPanel1.mobile-stacked .shiyosho-panel3 {
+        width: 100%;
+        padding: 0;
+        justify-content: flex-end;
+      }
+
+      #panel1 #imgPanel1.mobile-stacked #pagenationArea1 .panel2-controls {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      /* スマホ: panel2 は imgPanel2 の上に pagenationArea2 を表示 */
+      #panel2 #imgPanel2.mobile-stacked {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #panel2 #imgPanel2.mobile-stacked > div:empty {
+        display: none;
+      }
+
+      #panel2 #imgPanel2.mobile-stacked #pagenationArea2 {
+        order: 1;
+      }
+
+      #panel2 #imgPanel2.mobile-stacked > .shiyosho-item.img-scroll {
+        order: 2;
+      }
+
+      #panel2 #imgPanel2.mobile-stacked .shiyosho-panel3 {
+        order: 3;
+      }
+
+      #panel2 #imgPanel2.mobile-stacked #pagenationArea2,
+      #panel2 #imgPanel2.mobile-stacked .shiyosho-panel2,
+      #panel2 #imgPanel2.mobile-stacked .shiyosho-panel3 {
+        width: 100%;
+        padding: 0;
+        justify-content: flex-end;
+      }
+
+      #panel2 #imgPanel2.mobile-stacked #pagenationArea2 .panel2-controls {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      /* スマホ: panel3 は imgPanel3 の上にページネーション＋フォーマットを表示 */
+      #panel3 #imgPanel3.mobile-stacked {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #panel3 #imgPanel3.mobile-stacked > div:empty {
+        display: none;
+      }
+
+      #panel3 #imgPanel3.mobile-stacked .panel2-with-format {
+        order: 1;
+        width: 100%;
+        padding: 0;
+        justify-content: flex-end;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+      }
+
+      #panel3 #imgPanel3.mobile-stacked .panel2-with-format #pagenationArea3 {
+        width: 100%;
+      }
+
+      #panel3 #imgPanel3.mobile-stacked .panel2-with-format .filter-row {
+        width: 100%;
+        margin-bottom: 0;
+      }
+
+      #panel3 #imgPanel3.mobile-stacked > .shiyosho-item.img-scroll {
+        order: 2;
+      }
+
+      #panel3 #imgPanel3.mobile-stacked .shiyosho-panel3 {
+        order: 3;
+        width: 100%;
+        padding: 0;
+        justify-content: flex-start;
+      }
+
+    }
+
+    @media (min-width: 769px) {
+      /* スマホ以外: パネル1の shiyosho-panel2 を右上に固定 */
+      #panel1 .shiyosho-panel2 {
+        grid-row: 1;
+        grid-column: 2;
+        align-items: flex-start;
+        justify-content: flex-end;
+      }
     }
 
     /* #endregion */
@@ -729,7 +898,7 @@
     <!--#region メインコンテンツ  -->
     <div class="content">
       <div class="content-area" id="approvalNoticeArea">
-        <h2 class="view-layout-title">発注書作成</h2>
+        <h2 class="view-layout-title">契約依頼・発注書作成</h2>
 
         <ul class="tab-list" role="tablist" aria-label="表示切替">
           <li id="tab1" role="tab" aria-controls="panel1">
@@ -752,11 +921,25 @@
         <!-- パネル1：発注書 -->
         <div id="panel1" class="shiyosho-tabpanel is-active" role="tabpanel" aria-labelledby="tab1">
           <div class="shiyosho-panel-grid">
-            <div class="shiyosho-panel1">
+            <div class="shiyosho-panel1" id="imgPanel1">
               <div class="shiyosho-item img-scroll">
                 <img src="images/帳票/発注書/定番商品発注書.png" alt="定番商品発注書">
               </div>
               <div>
+              </div>
+            </div>
+            <div class="shiyosho-panel2" id="pagenationArea1">
+              <div class="panel2-controls">
+                <div class="panel2-page-nav" id="panel1PaginationNav" aria-label="ページネーション">
+                  <button type="button" class="btn-panel-page" aria-label="前のページ">‹</button>
+                  <button type="button" class="btn-panel-page is-current" aria-current="page">1</button>
+                  <button type="button" class="btn-panel-page">2</button>
+                  <button type="button" class="btn-panel-page">3</button>
+                  <button type="button" class="btn-panel-page">4</button>
+                  <button type="button" class="btn-panel-page is-ellipsis" tabindex="-1" aria-hidden="true">…</button>
+                  <button type="button" class="btn-panel-page" aria-label="次のページ">›</button>
+                </div>
+                <button type="button" class="btn-panel-register" id="panel1AddPageBtn">新規追加</button>
               </div>
             </div>
             <div class="shiyosho-panel2">
@@ -777,12 +960,26 @@
         <!-- パネル2：証紙発注依頼書 -->
         <div id="panel2" class="shiyosho-tabpanel" role="tabpanel" aria-labelledby="tab2" hidden>
           <div class="shiyosho-panel-grid">
-            <div class="shiyosho-panel1">
+            <div class="shiyosho-panel1" id="imgPanel2">
               <div class="shiyosho-item img-scroll">
                 <img src="images/帳票/発注書/証紙発注依頼書.png" alt="証紙発注依頼書">
               </div>
             </div>
             <div class="shiyosho-panel2">
+            </div>
+            <div class="shiyosho-panel2" id="pagenationArea2">
+              <div class="panel2-controls">
+                <div class="panel2-page-nav" id="panel1PaginationNav" aria-label="ページネーション">
+                  <button type="button" class="btn-panel-page" aria-label="前のページ">‹</button>
+                  <button type="button" class="btn-panel-page is-current" aria-current="page">1</button>
+                  <button type="button" class="btn-panel-page">2</button>
+                  <button type="button" class="btn-panel-page">3</button>
+                  <button type="button" class="btn-panel-page">4</button>
+                  <button type="button" class="btn-panel-page is-ellipsis" tabindex="-1" aria-hidden="true">…</button>
+                  <button type="button" class="btn-panel-page" aria-label="次のページ">›</button>
+                </div>
+                <button type="button" class="btn-panel-register" id="panel1AddPageBtn">新規追加</button>
+              </div>
             </div>
             <div class="shiyosho-panel3">
               <div class="panel3-btn-row">
@@ -797,13 +994,26 @@
         <!-- パネル3：カートンマーク -->
         <div id="panel3" class="shiyosho-tabpanel" role="tabpanel" aria-labelledby="tab3" hidden>
           <div class="shiyosho-panel-grid">
-            <div class="shiyosho-panel1">
+            <div class="shiyosho-panel1" id="imgPanel3">
               <div class="shiyosho-item img-scroll">
                 <img id="carton-mark-preview" src="images/帳票/発注書/カートンマーク_高密フォーマット_定番フォーマット.png" alt="カートンマーク_高密フォーマット_定番フォーマット">
               </div>
             </div>
-            <div class="shiyosho-panel2">
-
+            <div class="shiyosho-panel2 panel2-with-format">
+              <div class="shiyosho-panel2" id="pagenationArea3">
+                <div class="panel2-controls">
+                  <div class="panel2-page-nav" id="panel1PaginationNav" aria-label="ページネーション">
+                    <button type="button" class="btn-panel-page" aria-label="前のページ">‹</button>
+                    <button type="button" class="btn-panel-page is-current" aria-current="page">1</button>
+                    <button type="button" class="btn-panel-page">2</button>
+                    <button type="button" class="btn-panel-page">3</button>
+                    <button type="button" class="btn-panel-page">4</button>
+                    <button type="button" class="btn-panel-page is-ellipsis" tabindex="-1" aria-hidden="true">…</button>
+                    <button type="button" class="btn-panel-page" aria-label="次のページ">›</button>
+                  </div>
+                  <button type="button" class="btn-panel-register" id="panel1AddPageBtn">新規追加</button>
+                </div>
+              </div>
               <div class="filter-row">
                 <div class="filter-item">
                   <label class="filter-label" for="carton-mark-format">フォーマット</label>
@@ -940,6 +1150,141 @@
 
       select.addEventListener('change', applySelection);
       applySelection();
+    })();
+
+    function addPanel1PaginationPage() {
+      const paginationNav = document.getElementById('panel1PaginationNav');
+      if (!paginationNav) return;
+
+      if (!document.getElementById('panel1Page2')) {
+        const btn2 = document.createElement('button');
+        btn2.type = 'button';
+        btn2.className = 'btn-panel-page';
+        btn2.id = 'panel1Page2';
+        btn2.textContent = '2';
+        paginationNav.appendChild(btn2);
+        return;
+      }
+
+      if (!document.getElementById('panel1Page3')) {
+        const btn3 = document.createElement('button');
+        btn3.type = 'button';
+        btn3.className = 'btn-panel-page';
+        btn3.id = 'panel1Page3';
+        btn3.textContent = '3';
+        paginationNav.appendChild(btn3);
+        return;
+      }
+
+      if (!document.getElementById('panel1Page4')) {
+        const btn4 = document.createElement('button');
+        btn4.type = 'button';
+        btn4.className = 'btn-panel-page';
+        btn4.id = 'panel1Page4';
+        btn4.textContent = '4';
+        paginationNav.appendChild(btn4);
+        return;
+      }
+
+      if (!document.getElementById('panel1PageEllipsis')) {
+        const ellipsis = document.createElement('button');
+        ellipsis.type = 'button';
+        ellipsis.className = 'btn-panel-page is-ellipsis';
+        ellipsis.id = 'panel1PageEllipsis';
+        ellipsis.textContent = '…';
+        ellipsis.tabIndex = -1;
+        ellipsis.setAttribute('aria-hidden', 'true');
+        paginationNav.appendChild(ellipsis);
+      }
+    }
+
+    (function initPanel1Pagination() {
+      const addBtn = document.getElementById('panel1AddPageBtn');
+      if (!addBtn) return;
+      addBtn.addEventListener('click', addPanel1PaginationPage);
+    })();
+
+    (function initResponsivePanelStacking() {
+      if (!window.matchMedia) return;
+
+      const mobileQuery = window.matchMedia('(max-width: 768px)');
+      const panelConfigs = [
+        { panelSelector: '#panel1 .shiyosho-panel-grid', imgPanelId: 'imgPanel1', paginationId: 'pagenationArea1' },
+        { panelSelector: '#panel2 .shiyosho-panel-grid', imgPanelId: 'imgPanel2', paginationId: 'pagenationArea2' },
+        { panelSelector: '#panel3 .shiyosho-panel-grid', imgPanelId: 'imgPanel3', paginationId: 'pagenationArea3' }
+      ];
+
+      const panelStates = panelConfigs.map(function (config) {
+        return {
+          config: config,
+          initialized: false,
+          isMobileApplied: false,
+          items: []
+        };
+      });
+
+      function initializePanelState(state) {
+        if (state.initialized) return true;
+
+        const panelGrid = document.querySelector(state.config.panelSelector);
+        const imgPanel = document.getElementById(state.config.imgPanelId);
+        const pagination = document.getElementById(state.config.paginationId);
+        if (!panelGrid || !imgPanel || !pagination) return false;
+
+        const children = Array.prototype.slice.call(panelGrid.children);
+        const movable = children.filter(function (el) {
+          return el !== imgPanel;
+        });
+
+        state.items = movable.map(function (el) {
+          const placeholder = document.createComment('mobile-stack-placeholder');
+          el.parentNode.insertBefore(placeholder, el);
+          return { element: el, placeholder: placeholder };
+        });
+        state.panelGrid = panelGrid;
+        state.imgPanel = imgPanel;
+        state.initialized = true;
+        return true;
+      }
+
+      function applyMobileLayout(state) {
+        if (!initializePanelState(state) || state.isMobileApplied) return;
+        state.items.forEach(function (item) {
+          state.imgPanel.appendChild(item.element);
+        });
+        state.imgPanel.classList.add('mobile-stacked');
+        state.isMobileApplied = true;
+      }
+
+      function restoreDesktopLayout(state) {
+        if (!state.initialized || !state.isMobileApplied) return;
+        state.items.forEach(function (item) {
+          if (item.placeholder.parentNode) {
+            item.placeholder.parentNode.insertBefore(item.element, item.placeholder);
+          }
+        });
+        state.imgPanel.classList.remove('mobile-stacked');
+        state.isMobileApplied = false;
+      }
+
+      function syncLayoutByViewport() {
+        const isMobile = mobileQuery.matches;
+        panelStates.forEach(function (state) {
+          if (isMobile) {
+            applyMobileLayout(state);
+          } else {
+            restoreDesktopLayout(state);
+          }
+        });
+      }
+
+      syncLayoutByViewport();
+
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', syncLayoutByViewport);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(syncLayoutByViewport);
+      }
     })();
 
   </script>
