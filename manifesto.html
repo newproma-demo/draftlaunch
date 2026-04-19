@@ -165,10 +165,12 @@
       background: var(--color-surface);
       flex: 1;
       min-height: 0;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       padding: 24px;
       overflow-y: auto;
+      overflow-x: hidden;
       transition: margin-left 0.3s ease, padding-left 0.3s ease;
     }
 
@@ -347,13 +349,6 @@
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
-    }
-
-    #exhibitionFilter,
-    #exhibitionFilter option,
-    #exhibitionFilter optgroup {
-      font-size: var(--fs-xs);
-      font-family: inherit;
     }
 
     .search-row input::placeholder {
@@ -549,12 +544,14 @@
       margin-top: 8px;
       flex: 1;
       min-height: 0;
+      min-width: 0;
       display: flex;
     }
 
     .progress-chart-area {
       flex: 1;
       min-height: 0;
+      min-width: 0;
       padding: 24px;
       background: var(--color-card);
       border-radius: var(--radius-md);
@@ -563,6 +560,7 @@
       flex-direction: column;
       gap: 16px;
       box-sizing: border-box;
+      overflow-x: hidden;
     }
 
     .progress-chart-header {
@@ -615,11 +613,13 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 18px 20px;
       width: 100%;
+      max-width: 100%;
       margin-top: 8px;
-      align-items: start;
+      align-items: stretch;
       flex: 0 0 auto;
       min-height: auto;
-      grid-auto-rows: minmax(320px, auto);
+      min-width: 0;
+      grid-auto-rows: auto;
       align-content: start;
     }
 
@@ -632,22 +632,25 @@
       flex-direction: column;
       padding: 12px 14px 16px;
       box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       height: auto;
-      min-height: 320px;
+      min-height: 280px;
       cursor: pointer;
-      transition: transform 0.18s ease, box-shadow 0.22s ease, border-color 0.18s ease;
+      transition: box-shadow 0.22s ease, border-color 0.18s ease;
     }
 
     .pie-card:hover {
       border-color: var(--pie-accent, var(--color-primary));
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
-      transform: translateY(-3px);
     }
 
     .pie-card-header {
       padding-bottom: 6px;
       border-bottom: 1px solid var(--color-border);
       margin-bottom: 6px;
+      min-width: 0;
     }
 
     .pie-card-title {
@@ -655,6 +658,8 @@
       font-weight: 600;
       color: var(--color-text);
       line-height: 1.4;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .pie-card-body {
@@ -671,6 +676,7 @@
       align-items: center;
       justify-content: center;
       width: 100%;
+      min-width: 0;
       gap: 10px;
     }
 
@@ -710,6 +716,8 @@
       width: 100%;
       height: 100%;
       transform: rotate(-90deg);
+      display: block;
+      shape-rendering: geometricPrecision;
     }
 
     .pie-bg {
@@ -1753,10 +1761,12 @@
   .progress-chart-area {
     flex: none;
     min-height: auto;
+    min-width: 0;
     height: auto;
     padding: 14px 12px 16px;
     gap: 10px;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .progress-chart-header {
@@ -1827,12 +1837,16 @@
     gap: 12px;
     flex: none;
     min-height: auto;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .pie-card {
     max-width: 100%;
+    min-width: 0;
+    width: 100%;
     height: auto;
-    min-height: 320px;
+    min-height: 260px;
     padding: 12px 12px 16px;
   }
 
@@ -1890,33 +1904,6 @@
       <div class="search-box" id="searchBox" aria-label="検索条件">
         <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel"><span class="search-toggle-sp-label"><img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20"><span class="search-toggle-sp-text">検索条件を開く</span></span></button>
         <div class="search-box-inner" id="searchRowsPanel">
-          <div class="search-row search-row-inline">
-            <label for="exhibitionFilter">展示会</label>
-            <select id="exhibitionFilter" aria-label="展示会を選択">
-              <option value="">すべて</option>
-              <optgroup label="2026">
-                <option value="2026">2026（年間）</option>
-                <option value="2026.Q4">2026.Q4</option>
-                <option value="2026.Q3">2026.Q3</option>
-                <option value="2026.Q2">2026.Q2</option>
-                <option value="2026.Q1">2026.Q1</option>
-              </optgroup>
-              <optgroup label="2025">
-                <option value="2025">2025（年間）</option>
-                <option value="2025.Q4">2025.Q4</option>
-                <option value="2025.Q3">2025.Q3</option>
-                <option value="2025.Q2">2025.Q2</option>
-                <option value="2025.Q1">2025.Q1</option>
-              </optgroup>
-              <optgroup label="2024">
-                <option value="2024">2024（年間）</option>
-                <option value="2024.Q4">2024.Q4</option>
-                <option value="2024.Q3">2024.Q3</option>
-                <option value="2024.Q2">2024.Q2</option>
-                <option value="2024.Q1">2024.Q1</option>
-              </optgroup>
-            </select>
-          </div>
           <div class="search-row search-row-inline">
             <div class="type-toggle-inline">
               <div class="rate-toggle-group" role="group" aria-label="定番・別注の条件">
@@ -2290,7 +2277,6 @@
       var modalYearFill = document.getElementById("manifestModalYearFill");
       var modalYearMarkers = document.getElementById("manifestModalYearMarkers");
       var modalYearCurrent = document.getElementById("manifestModalYearCurrent");
-      var exhibitionFilterEl = document.getElementById("exhibitionFilter");
       var typeTeibanBtn = document.getElementById("typeTeibanBtn");
       var typeBetchuBtn = document.getElementById("typeBetchuBtn");
       var arrivalDateFromEl = document.getElementById("arrivalDateFrom");
@@ -2314,9 +2300,6 @@
 
       function setSelectedType(nextType) {
         selectedType = (selectedType === nextType) ? "" : nextType;
-        if (selectedType === "別注" && exhibitionFilterEl) {
-          exhibitionFilterEl.value = "";
-        }
         syncTypeToggleUi();
         runSearch();
       }
@@ -2335,7 +2318,6 @@
 
       function getFilters() {
         return {
-          exhibition: exhibitionFilterEl ? exhibitionFilterEl.value.trim() : "",
           type: selectedType,
           from: arrivalDateFromEl ? arrivalDateFromEl.value : "",
           to: arrivalDateToEl ? arrivalDateToEl.value : ""
@@ -2346,14 +2328,6 @@
         var fromNum = toDateNumber(filters.from);
         var toNum = toDateNumber(filters.to);
         return SHIPMENT_SAMPLE.filter(function (row) {
-          if (filters.exhibition) {
-            var isYearOnly = /^\d{4}$/.test(filters.exhibition);
-            if (isYearOnly) {
-              if (row.exhibition.indexOf(filters.exhibition + ".") !== 0) return false;
-            } else if (row.exhibition !== filters.exhibition) {
-              return false;
-            }
-          }
           if (filters.type && row.type.indexOf(filters.type) === -1) return false;
           var rowNum = toDateNumber(row.firstArrivalDate);
           if (fromNum != null && rowNum != null && rowNum < fromNum) return false;
@@ -2578,13 +2552,11 @@
       if (!container) return;
 
       function getPieCaption(filters) {
-        var noExhibition = !filters.exhibition;
         var noDateRange = !filters.from && !filters.to;
-        if (noExhibition && !filters.type && noDateRange) return "全体達成率";
-        if (noExhibition && filters.type === "定番" && noDateRange) return "【定番】全体達成率";
-        if (noExhibition && filters.type === "別注" && noDateRange) return "【別注】全体達成率";
+        if (!filters.type && noDateRange) return "全体達成率";
+        if (filters.type === "定番" && noDateRange) return "【定番】全体達成率";
+        if (filters.type === "別注" && noDateRange) return "【別注】全体達成率";
         if (filters.type === "別注") return "選択期間達成率";
-        if (filters.exhibition) return filters.exhibition + "達成率";
         return "選択期間達成率";
       }
 
@@ -2680,7 +2652,6 @@
       function runSearch() {
         var filters = getFilters();
         var hasSearchValue = !!(
-          filters.exhibition ||
           filters.type ||
           toDateNumber(filters.from) != null ||
           toDateNumber(filters.to) != null
@@ -2692,21 +2663,6 @@
         }
         var aggregatedData = aggregateByManifest(rowsForAggregation);
         renderChart(aggregatedData, getPieCaption(filters));
-      }
-      if (exhibitionFilterEl) {
-        exhibitionFilterEl.addEventListener("change", function () {
-          if (exhibitionFilterEl.value) {
-            selectedType = "定番";
-          } else {
-            selectedType = "";
-          }
-          syncTypeToggleUi();
-          if (!exhibitionFilterEl.value && !arrivalDateFromEl.value && !arrivalDateToEl.value) {
-            selectedType = "";
-            syncTypeToggleUi();
-          }
-          runSearch();
-        });
       }
       [arrivalDateFromEl, arrivalDateToEl].forEach(function (el) {
         if (!el) return;
@@ -2724,7 +2680,6 @@
       }
       if (clearFilterBtn) {
         clearFilterBtn.addEventListener("click", function () {
-          if (exhibitionFilterEl) exhibitionFilterEl.value = "";
           selectedType = "";
           syncTypeToggleUi();
           if (arrivalDateFromEl) arrivalDateFromEl.value = "";
