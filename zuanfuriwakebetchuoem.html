@@ -344,6 +344,15 @@
       box-shadow: none;
     }
 
+    #searchCategoryMenu .multi-select-option,
+    #searchCategoryMenu .multi-select-option span,
+    #searchBrandCharaMenu .multi-select-option,
+    #searchBrandCharaMenu .multi-select-option span,
+    #searchItemMenu .multi-select-option,
+    #searchItemMenu .multi-select-option span {
+      color: var(--color-text-muted) !important;
+    }
+
     .search-row select:hover,
     .search-row input:not([type="checkbox"]):hover {
       border-color: #b0bdb5;
@@ -458,6 +467,15 @@
 
     .filter-row .filter-label {
       margin-right: 4px;
+    }
+
+    .search-item-label {
+      white-space: nowrap;
+      word-break: keep-all;
+      overflow-wrap: normal;
+      display: inline-block;
+      min-width: max-content;
+      text-align: left;
     }
 
     .filter-row input[type="text"],
@@ -924,6 +942,13 @@
         box-sizing: border-box;
       }
 
+      .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-end;
+      }
+
       .btn-search-cancel {
         display: inline-block;
         padding: 4px 8px;
@@ -1001,19 +1026,19 @@
         content: "販売区分：";
         font-weight: 600;
       }
-      /* カテゴリー */
+      /* 得意先名 */
       #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "カテゴリー：";
+        content: "得意先名：";
         font-weight: 600;
       }
-      /* アイテム */
+      /* 営業担当 */
       #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "アイテム：";
+        content: "営業担当：";
         font-weight: 600;
       }
-      /* 品名 */
+      /* カテゴリー */
       #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "品名：";
+        content: "カテゴリー：";
         font-weight: 600;
       }
       /* ブランド・キャラ */
@@ -1021,48 +1046,53 @@
         content: "ブランド・キャラ：";
         font-weight: 600;
       }
-      /* 図案提出 */
+      /* アイテム */
       #approvalListArea .result-table tbody td:nth-child(6)::before {
+        content: "アイテム：";
+        font-weight: 600;
+      }
+      /* 図案提出 */
+      #approvalListArea .result-table tbody td:nth-child(7)::before {
         content: "図案提出：";
         font-weight: 600;
       }
       /* 図案申請 */
-      #approvalListArea .result-table tbody td:nth-child(7)::before {
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
         content: "図案申請：";
         font-weight: 600;
       }
       /* 試作入稿 */
-      #approvalListArea .result-table tbody td:nth-child(8)::before {
+      #approvalListArea .result-table tbody td:nth-child(9)::before {
         content: "試作入稿：";
         font-weight: 600;
       }
       /* サンプル申請 */
-      #approvalListArea .result-table tbody td:nth-child(9)::before {
+      #approvalListArea .result-table tbody td:nth-child(10)::before {
         content: "サンプル申請：";
         font-weight: 600;
       }
       /* 最終入稿 */
-      #approvalListArea .result-table tbody td:nth-child(10)::before {
+      #approvalListArea .result-table tbody td:nth-child(11)::before {
         content: "最終入稿：";
         font-weight: 600;
       }
       /* 発注 */
-      #approvalListArea .result-table tbody td:nth-child(11)::before {
+      #approvalListArea .result-table tbody td:nth-child(12)::before {
         content: "発注：";
         font-weight: 600;
       }
       /* 手配 */
-      #approvalListArea .result-table tbody td:nth-child(12)::before {
+      #approvalListArea .result-table tbody td:nth-child(13)::before {
         content: "手配：";
         font-weight: 600;
       }
       /* 入荷 */
-      #approvalListArea .result-table tbody td:nth-child(13)::before {
+      #approvalListArea .result-table tbody td:nth-child(14)::before {
         content: "入荷：";
         font-weight: 600;
       }
       /* デザイナー */
-      #approvalListArea .result-table tbody td:nth-child(14)::before {
+      #approvalListArea .result-table tbody td:nth-child(15)::before {
         content: "デザイナー：";
         font-weight: 600;
       }
@@ -1221,6 +1251,15 @@
                     </div>
                   </div>
                 </div>
+                <div class="filter-item">
+                  <label for="searchItem" class="search-item-label">アイテム</label>
+                  <div class="multi-select" id="searchItem" data-list="item">
+                    <button type="button" class="multi-select-toggle" id="searchItemToggle" aria-haspopup="listbox"
+                      aria-expanded="false">選択してください</button>
+                    <div class="multi-select-menu" id="searchItemMenu" role="listbox" aria-multiselectable="true">
+                    </div>
+                  </div>
+                </div>
                 <div class="search-row">
                   <label for="searchDesigner">担当</label>
                   <div class="autocomplete">
@@ -1257,11 +1296,12 @@
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 8%;">販売区分</th>
+                      <th style="width: 6%;">販売区分</th>
+                      <th style="width: 8%;">得意先名</th>
+                      <th style="width: 8%;">営業担当</th>
                       <th style="width: 8%;">カテゴリー</th>
+                      <th style="width: 10%;">ブランド・キャラ</th>
                       <th style="width: 8%;">アイテム</th>
-                      <th style="width: 11%;">品名</th>
-                      <th style="width: 11%;">ブランド・キャラ</th>
                       <th style="width: 9%;">図案提出</th>
                       <th style="width: 9%;">図案申請</th>
                       <th style="width: 9%;">試作入稿</th>
@@ -1277,10 +1317,11 @@
                     <!-- 50行のサンプルデータ -->
                     <tr>
                       <td>別注</td>
+                      <td>得意先名１</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>ミニタオル</td>
-                      <td>ミッキーA柄タオル</td>
                       <td>ディズニー</td>
+                      <td>ミニタオル</td>          
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1293,10 +1334,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名２</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>ミニタオル</td>
-                      <td>ミッキーB柄タオル</td>
                       <td>ディズニー</td>
+                      <td>ミニタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1309,10 +1351,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名３</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>ミニタオル</td>
-                      <td>ミッキーC柄タオル</td>
                       <td>ディズニー</td>
+                      <td>ミニタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1325,10 +1368,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名４</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>ミニタオル</td>
-                      <td>ミッキーD柄タオル</td>
                       <td>ディズニー</td>
+                      <td>ミニタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1341,10 +1385,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
-                      <td>SS</td>
+                      <td>得意先名５</td>
+                      <td>営業太郎</td>
+                      <td>総合</td>
+                      <td>ディズニー</td>
                       <td>フェイルタオル</td>
-                      <td>春限定フラワータオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1358,10 +1403,11 @@
 
                     <tr>
                       <td>別注</td>
+                      <td>得意先名６</td>
+                      <td>営業太郎</td>
                       <td>総合</td>
-                      <td>フェイルタオル</td>
-                      <td>別注ミッキーAセット</td>
                       <td>ディズニー</td>
+                      <td>フェイルタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1374,10 +1420,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名７</td>
+                      <td>営業太郎</td>
                       <td>総合</td>
-                      <td>フェイルタオル</td>
-                      <td>別注ミッキーBセット</td>
                       <td>ディズニー</td>
+                      <td>フェイルタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1390,10 +1437,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名８</td>
+                      <td>営業太郎</td>
                       <td>総合</td>
-                      <td>フェイルタオル</td>
-                      <td>別注無地タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイルタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1406,10 +1454,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
-                      <td>SS</td>
-                      <td>フェイルタオル</td>
-                      <td>夏限定マリンセット</td>
+                      <td>得意先名９</td>
+                      <td>営業太郎</td>
+                      <td>総合</td>
                       <td>ディズニー</td>
+                      <td>フェイルタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1422,10 +1471,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名１０</td>
+                      <td>営業太郎</td>
                       <td>AW</td>
-                      <td>フェイルタオル</td>
-                      <td>秋限定チェックセット</td>
                       <td>ディズニー</td>
+                      <td>フェイルタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1439,10 +1489,11 @@
 
                     <tr>
                       <td>別注</td> 
+                      <td>得意先名１</td>
+                      <td>営業花子</td>
                       <td>AW</td>
+                      <td>サンリオ</td>
                       <td>フェイルタオル</td>
-                      <td>冬限定雪だるまセット</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1455,10 +1506,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名２</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>フェイルタオル</td>
-                      <td>OEMミッキーAタオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1471,10 +1523,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名３</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>フェイルタオル</td>
-                      <td>OEMミッキーBタオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1487,10 +1540,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名４</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>フェイルタオル</td>
-                      <td>OEM無地タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1503,10 +1557,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td> 
+                      <td>得意先名５</td>
+                      <td>営業花子</td>
                       <td>総合</td>
+                      <td>サンリオ</td>
                       <td>バスタオル</td>
-                      <td>OEMギフトセットA</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1519,10 +1574,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名６</td>
+                      <td>営業花子</td>
                       <td>総合</td>
+                      <td>サンリオ</td>
                       <td>バスタオル</td>
-                      <td>OEMギフトセットB</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1537,10 +1593,11 @@
                     <!-- 以降は番号だけ変えたダミー行 -->
                     <tr>
                       <td>別注</td>
+                      <td>得意先名７</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ミニタオル</td>
-                      <td>ミッキーA柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1553,10 +1610,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名８</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ミニタオル</td>
-                      <td>ミッキーB柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1569,10 +1627,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名９</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ミニタオル</td>
-                      <td>ミッキーC柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1585,10 +1644,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名１０</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ミニタオル</td>
-                      <td>ミッキーD柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1601,10 +1661,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名１</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>ミニタオル</td>
-                      <td>ミッキーE柄タオル</td>
                       <td>ディズニー</td>
+                      <td>ミニタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1618,10 +1679,11 @@
 
                     <tr>
                       <td>別注</td>
+                      <td>得意先名２</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
+                      <td>ディズニー</td>
                       <td>ミニタオル</td>
-                      <td>ミッキーF柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1634,10 +1696,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名３</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
+                      <td>ディズニー</td>
                       <td>ミニタオル</td>
-                      <td>ミッキーG柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1650,10 +1713,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名４</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>フェイスタオル</td>
-                      <td>ミニーA柄タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1666,10 +1730,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名５</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>フェイスタオル</td>
-                      <td>ミニーB柄タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1682,10 +1747,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名６</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>フェイスタオル</td>
-                      <td>ミニーA柄タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1699,10 +1765,11 @@
 
                     <tr>
                       <td>別注</td>
+                      <td>得意先名７</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>フェイスタオル</td>
-                      <td>ミニーB柄タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1715,10 +1782,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名８</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>フェイスタオル</td>
-                      <td>ミニーC柄タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1731,10 +1799,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名９</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>フェイスタオル</td>
-                      <td>ミニーD柄タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1747,10 +1816,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名１０</td>
+                      <td>営業太郎</td>
                       <td>単品</td>
-                      <td>フェイスタオル</td>
-                      <td>ミニーE柄タオル</td>
                       <td>ディズニー</td>
+                      <td>フェイスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1763,10 +1833,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名１</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>フェイスタオル</td>
-                      <td>ミニーF柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1781,10 +1852,11 @@
                     <!-- 31〜50行目 -->
                     <tr>
                       <td>別注</td>
+                      <td>得意先名２</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ハンドタオル</td>
-                      <td>ドナルドA柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1797,10 +1869,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名３</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ハンドタオル</td>
-                      <td>ドナルドB柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1813,10 +1886,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名４</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ハンドタオル</td>
-                      <td>ドナルドC柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1829,10 +1903,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名５</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ハンドタオル</td>
-                      <td>ドナルドD柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1845,10 +1920,11 @@
                     </tr>
                     <tr>
                       <td>別注</td>
+                      <td>得意先名６</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ハンドタオル</td>
-                      <td>ドナルドE柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1862,10 +1938,11 @@
 
                     <tr>
                       <td>別注</td>
+                      <td>得意先名７</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>サンリオ</td>
                       <td>ハンドタオル</td>
-                      <td>ドナルドF柄タオル</td>
-                      <td>ディズニー</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1878,10 +1955,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名８</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>ハンドタオル</td>
-                      <td>ジブリキャラクターセットA</td>
                       <td>ジブリ</td>
+                      <td>ハンドタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1894,10 +1972,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名９</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>ハンドタオル</td>
-                      <td>ジブリキャラクターセットB</td>
                       <td>ジブリ</td>
+                      <td>ハンドタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1910,10 +1989,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名１０</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>ハンドタオル</td>
-                      <td>ジブリキャラクターセットC</td>
                       <td>ジブリ</td>
+                      <td>ハンドタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1926,10 +2006,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名１</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>ジブリ</td>
                       <td>バスタオル</td>
-                      <td>無地カラフルタオルA</td>
-                      <td></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1943,10 +2024,11 @@
 
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名２</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>ジブリ</td>
                       <td>バスタオル</td>
-                      <td>無地カラフルタオルB</td>
-                      <td></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1959,10 +2041,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名３</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>ジブリ</td>
                       <td>バスタオル</td>
-                      <td>無地カラフルタオルC</td>
-                      <td></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1975,10 +2058,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名４</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>ジブリ</td>
                       <td>バスタオル</td>
-                      <td>無地カラフルタオルB</td>
-                      <td></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -1991,10 +2075,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名５</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>ジブリ</td>
                       <td>バスタオル</td>
-                      <td>無地カラフルタオルC</td>
-                      <td></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -2007,10 +2092,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名６</td>
+                      <td>営業花子</td>
                       <td>単品</td>
+                      <td>ジブリ</td>
                       <td>バスタオル</td>
-                      <td>無地カラフルタオルD</td>
-                      <td></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -2024,10 +2110,11 @@
 
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名７</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>バスタオル</td>
-                      <td>ムーミンキャラクターセットA</td>
                       <td>ムーミン</td>
+                      <td>バスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -2040,10 +2127,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名８</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>バスタオル</td>
-                      <td>ムーミンキャラクターセットB</td>
                       <td>ムーミン</td>
+                      <td>バスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -2056,10 +2144,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名９</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>バスタオル</td>
-                      <td>ムーミンキャラクターセットC</td>
                       <td>ムーミン</td>
+                      <td>バスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -2072,10 +2161,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名１０</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>バスタオル</td>
-                      <td>ムーミンキャラクターセットD</td>
                       <td>ムーミン</td>
+                      <td>バスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -2088,10 +2178,11 @@
                     </tr>
                     <tr>
                       <td>OEM</td>
+                      <td>得意先名１</td>
+                      <td>営業花子</td>
                       <td>総合</td>
-                      <td>バスタオル</td>
-                      <td>ムーミンキャラクターセットE</td>
                       <td>ムーミン</td>
+                      <td>バスタオル</td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案提出"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="図案申請"></td>
                       <td><input type="date" class="row-date-input" value="" aria-label="試作入稿"></td>
@@ -2147,6 +2238,9 @@
         var categoryWrap = document.getElementById("searchCategory");
         var categoryToggle = document.getElementById("searchCategoryToggle");
         var categoryMenu = document.getElementById("searchCategoryMenu");
+        var itemWrap = document.getElementById("searchItem");
+        var itemToggle = document.getElementById("searchItemToggle");
+        var itemMenu = document.getElementById("searchItemMenu");
         var brandCharaWrap = document.getElementById("searchBrandChara");
         var brandCharaToggle = document.getElementById("searchBrandCharaToggle");
         var brandCharaMenu = document.getElementById("searchBrandCharaMenu");
@@ -2182,10 +2276,12 @@
         }
 
         buildMultiSelectOptionsFromDataList(tenjikaiWrap, tenjikaiMenu);
+        buildMultiSelectOptionsFromDataList(itemWrap, itemMenu);
         buildMultiSelectOptionsFromDataList(categoryWrap, categoryMenu);
         buildMultiSelectOptionsFromDataList(brandCharaWrap, brandCharaMenu);
 
         var tenjikaiChecks = tenjikaiMenu ? tenjikaiMenu.querySelectorAll('input[type="checkbox"]') : [];
+        var itemChecks = itemMenu ? itemMenu.querySelectorAll('input[type="checkbox"]') : [];
         var categoryChecks = categoryMenu ? categoryMenu.querySelectorAll('input[type="checkbox"]') : [];
         var brandCharaChecks = brandCharaMenu ? brandCharaMenu.querySelectorAll('input[type="checkbox"]') : [];
 
@@ -2234,16 +2330,19 @@
         function applyFilter() {
           var visibleCount = 0;
           var condTenjikaiList = getSelectedValues(tenjikaiChecks);
+          var condItemList = getSelectedValues(itemChecks);
           var condCategoryList = getSelectedValues(categoryChecks);
           var condMeisho = inputMeisho ? normalizeText(inputMeisho.value) : "";
 
           Array.prototype.forEach.call(tbody.rows, function (row) {
             var cellTenjikai = row.cells[1] ? normalizeText(row.cells[1].textContent) : "";
+            var cellItem = row.cells[5] ? normalizeText(row.cells[5].textContent) : "";
             var cellCategory = row.cells[2] ? normalizeText(row.cells[2].textContent) : "";
             var cellMeisho = row.cells[3] ? normalizeText(row.cells[3].textContent) : "";
             var match = true;
 
             if (condTenjikaiList.length > 0 && condTenjikaiList.indexOf(cellTenjikai) === -1) match = false;
+            if (condItemList.length > 0 && condItemList.indexOf(cellItem) === -1) match = false;
             if (condCategoryList.length > 0 && condCategoryList.indexOf(cellCategory) === -1) match = false;
             if (condMeisho && cellMeisho.indexOf(condMeisho) === -1) match = false;
 
@@ -2269,6 +2368,13 @@
             categoryToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
           });
         }
+        if (itemToggle && itemWrap) {
+          itemToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = itemWrap.classList.toggle("is-open");
+            itemToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
+        }
 
         if (brandCharaToggle && brandCharaWrap) {
           brandCharaToggle.addEventListener("click", function (event) {
@@ -2288,6 +2394,12 @@
         Array.prototype.forEach.call(categoryChecks, function (cb) {
           cb.addEventListener("change", function () {
             updateToggleLabel(categoryToggle, categoryChecks);
+            applyFilter();
+          });
+        });
+        Array.prototype.forEach.call(itemChecks, function (cb) {
+          cb.addEventListener("change", function () {
+            updateToggleLabel(itemToggle, itemChecks);
             applyFilter();
           });
         });
@@ -2315,6 +2427,10 @@
             categoryWrap.classList.remove("is-open");
             if (categoryToggle) categoryToggle.setAttribute("aria-expanded", "false");
           }
+          if (itemWrap && !itemWrap.contains(target)) {
+            itemWrap.classList.remove("is-open");
+            if (itemToggle) itemToggle.setAttribute("aria-expanded", "false");
+          }
           if (brandCharaWrap && !brandCharaWrap.contains(target)) {
             brandCharaWrap.classList.remove("is-open");
             if (brandCharaToggle) brandCharaToggle.setAttribute("aria-expanded", "false");
@@ -2328,6 +2444,7 @@
         }
 
         updateToggleLabel(tenjikaiToggle, tenjikaiChecks);
+        updateToggleLabel(itemToggle, itemChecks);
         updateToggleLabel(categoryToggle, categoryChecks);
         updateToggleLabel(brandCharaToggle, brandCharaChecks);
         applyFilter();
