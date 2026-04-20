@@ -468,11 +468,6 @@
       min-width: 160px;
     }
 
-    /* 承認通知／検索結果・ボックス共通 */
-    .content-box {
-      /* margin-bottom: 24px; */
-    }
-
     /* 検索条件と検索結果一覧の間の余白（5px） */
     .view-layout-1-group>.content-box:first-of-type {
       margin-bottom: 5px;
@@ -1089,6 +1084,63 @@
       }
 
     }
+
+    /* 振分け：デザイナー別図案数モーダル */
+    .furiwake-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 2100;
+      backdrop-filter: blur(2px);
+    }
+    .furiwake-modal-overlay.is-open {
+      display: block;
+    }
+    .modal-window.furiwake-modal {
+      display: none;
+      z-index: 2110;
+      max-width: 520px;
+      width: 92%;
+      max-height: min(85vh, 640px);
+      padding: 24px 28px;
+      overflow: hidden;
+      box-sizing: border-box;
+      flex-direction: column;
+    }
+    .modal-window.furiwake-modal.is-open {
+      display: flex;
+    }
+    .furiwake-modal-title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+    .furiwake-modal-note {
+      margin: 0 0 16px;
+      font-size: var(--fs-sm, 13px);
+      color: var(--color-text-muted);
+    }
+    .furiwake-modal-table-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      margin-bottom: 20px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .furiwake-summary-table {
+      margin-top: 0;
+    }
+    .furiwake-modal-actions {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: flex-end;
+    }
   </style>
 </head>
 
@@ -1121,7 +1173,7 @@
 
     <!-- 画面右下固定 振分けボタン -->
     <div class="btn-fab-bar">
-      <a href="zuanjohotoroku.html" class="btn-fab-new">振分け</a>
+      <button type="button" class="btn-fab-new" id="btnFuriwake">振分け</button>
     </div>
     <!-- #endregion -->
 
@@ -2062,6 +2114,27 @@
     <!--#region モーダル(通知のリンク)  -->
     <div id="modal-window" class="modal-window">
     </div>
+    <!-- 振分け：デザイナー別図案数 -->
+    <div id="furiwakeModalOverlay" class="furiwake-modal-overlay" aria-hidden="true"></div>
+    <div id="furiwakeModal" class="modal-window furiwake-modal" role="dialog" aria-modal="true"
+      aria-labelledby="furiwakeModalTitle" hidden>
+      <h3 id="furiwakeModalTitle" class="furiwake-modal-title">デザイナー別 図案数</h3>
+      <p class="furiwake-modal-note"></p>
+      <div class="furiwake-modal-table-wrap">
+        <table class="result-table furiwake-summary-table">
+          <thead>
+            <tr>
+              <th style="width: 65%;">デザイナー</th>
+              <th style="width: 35%;">図案数</th>
+            </tr>
+          </thead>
+          <tbody id="furiwakeModalTableBody"></tbody>
+        </table>
+      </div>
+      <div class="furiwake-modal-actions">
+        <button type="button" class="btn-search-cancel" id="furiwakeModalClose">閉じる</button>
+      </div>
+    </div>
     <!-- #endregion -->
 
     <script src="js/sidebar.js"></script>
@@ -2554,6 +2627,99 @@
             if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
           });
         }
+      })();
+
+      // 振分けボタン：デザイナー別図案数モーダル
+      (function () {
+        var btn = document.getElementById("btnFuriwake");
+        var overlay = document.getElementById("furiwakeModalOverlay");
+        var modal = document.getElementById("furiwakeModal");
+        var closeBtn = document.getElementById("furiwakeModalClose");
+        var outBody = document.getElementById("furiwakeModalTableBody");
+        if (!btn || !overlay || !modal || !outBody) return;
+
+        function setModalOpen(open) {
+          if (open) {
+            modal.removeAttribute("hidden");
+            overlay.classList.add("is-open");
+            modal.classList.add("is-open");
+            overlay.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+          } else {
+            overlay.classList.remove("is-open");
+            modal.classList.remove("is-open");
+            overlay.setAttribute("aria-hidden", "true");
+            modal.setAttribute("hidden", "");
+            document.body.style.overflow = "";
+          }
+        }
+
+        function closeFuriwakeModal() {
+          setModalOpen(false);
+        }
+
+        function openFuriwakeModal() {
+          var listTbody = document.querySelector("#approvalListArea .result-table tbody");
+          if (!listTbody) return;
+
+          var counts = Object.create(null);
+          var total = 0;
+          Array.prototype.forEach.call(listTbody.rows, function (row) {
+            if (row.style.display === "none") return;
+            var sel = row.querySelector(".row-designer-select");
+            if (!sel) return;
+            total += 1;
+            var label = "未選択";
+            if (sel.value) {
+              var opt = sel.options[sel.selectedIndex];
+              label = opt ? opt.textContent.trim() : "未選択";
+            }
+            counts[label] = (counts[label] || 0) + 1;
+          });
+
+          outBody.innerHTML = "";
+          var names = Object.keys(counts).sort(function (a, b) {
+            if (a === "未選択") return -1;
+            if (b === "未選択") return 1;
+            return a.localeCompare(b, "ja");
+          });
+
+          var totalTr = document.createElement("tr");
+          var totalNameTd = document.createElement("td");
+          totalNameTd.textContent = "合計";
+          var totalCntTd = document.createElement("td");
+          totalCntTd.textContent = String(total);
+          totalTr.appendChild(totalNameTd);
+          totalTr.appendChild(totalCntTd);
+          outBody.appendChild(totalTr);
+
+          names.forEach(function (name) {
+            var tr = document.createElement("tr");
+            var tdName = document.createElement("td");
+            tdName.textContent = name;
+            var tdCnt = document.createElement("td");
+            tdCnt.textContent = String(counts[name]);
+            tr.appendChild(tdName);
+            tr.appendChild(tdCnt);
+            outBody.appendChild(tr);
+          });
+
+          setModalOpen(true);
+          if (closeBtn) closeBtn.focus();
+        }
+
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          openFuriwakeModal();
+        });
+        overlay.addEventListener("click", closeFuriwakeModal);
+        if (closeBtn) closeBtn.addEventListener("click", closeFuriwakeModal);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && modal.classList.contains("is-open")) {
+            closeFuriwakeModal();
+            btn.focus();
+          }
+        });
       })();
     </script>
 </body>
