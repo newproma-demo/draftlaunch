@@ -2500,6 +2500,20 @@
         table.dataset.datePairApplied = "1";
       })();
 
+      /* PC用に列を結合したあと、幅だけスマホに切り替えると列数とnth-childラベルがずれる。
+         再読み込みで元のテーブル構造に戻し、スマホ版の表示を保証する。 */
+      (function reloadOnViewportLayoutChange() {
+        var mq = window.matchMedia("(max-width: 768px)");
+        function onChange() {
+          window.location.reload();
+        }
+        if (typeof mq.addEventListener === "function") {
+          mq.addEventListener("change", onChange);
+        } else if (typeof mq.addListener === "function") {
+          mq.addListener(onChange);
+        }
+      })();
+
       // スマホ: 検索条件の折りたたみ開閉
       (function () {
         var btn = document.getElementById("searchToggleSp");
