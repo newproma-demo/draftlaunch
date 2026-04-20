@@ -526,37 +526,41 @@
       }
       /* 各列にラベルを付与 */
       #approvalListArea .result-table tbody td:nth-child(1)::before {
-        content: "販売区分：";
+        content: "図案管理番号：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "展示会：";
+        content: "販売区分：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "商品分類：";
+        content: "展示会：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "カテゴリー：";
+        content: "商品分類：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(5)::before {
-        content: "品名：";
+        content: "カテゴリー：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "ブランド・キャラ：";
+        content: "品名：";
         font-weight: 600;
       }
       #approvalListArea .result-table tbody td:nth-child(7)::before {
+        content: "ブランド・キャラ：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
         content: "デザイナー：";
         font-weight: 600;
       }
 
       /* 2段目は販売区分・展示会を横並びで表示 */
-      #approvalListArea .result-table tbody td:nth-child(1),
-      #approvalListArea .result-table tbody td:nth-child(2) {
+      #approvalListArea .result-table tbody td:nth-child(2),
+      #approvalListArea .result-table tbody td:nth-child(3) {
         display: inline-block;
         width: auto;
         margin-right: 12px;
@@ -831,6 +835,73 @@
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border);
     }
+
+    /* 振分け：デザイナー別図案数モーダル */
+    .furiwake-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 2100;
+      backdrop-filter: blur(2px);
+    }
+    .furiwake-modal-overlay.is-open {
+      display: block;
+    }
+    .modal-window.furiwake-modal {
+      display: none;
+      z-index: 2110;
+      max-width: 520px;
+      width: 92%;
+      max-height: min(85vh, 640px);
+      padding: 24px 28px;
+      overflow: hidden;
+      box-sizing: border-box;
+      flex-direction: column;
+    }
+    .modal-window.furiwake-modal.is-open {
+      display: flex;
+    }
+    .furiwake-modal-title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+    .furiwake-modal-note {
+      margin: 0 0 16px;
+      font-size: var(--fs-sm, 13px);
+      color: var(--color-text-muted);
+    }
+    .furiwake-modal-table-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      margin-bottom: 20px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .furiwake-summary-table {
+      margin-top: 0;
+    }
+    .furiwake-summary-table tfoot td {
+      font-weight: 700;
+      background: var(--color-surface);
+    }
+    .furiwake-modal-actions {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-fab-bar .btn-fab-new {
+      font-family: inherit;
+      font-size: inherit;
+      border: none;
+      line-height: inherit;
+    }
   </style>
 </head>
 
@@ -864,7 +935,7 @@
     <!-- 画面右下固定 登録・一括設定 -->
     <div class="btn-fab-bar">
       <a class="btn-fab-new">デザイナー一括設定</a>
-      <a href="zuanjohotoroku.html" class="btn-fab-new">振分け</a>
+      <button type="button" class="btn-fab-new" id="btnFuriwake">振分け</button>
     </div>
     <!-- #endregion -->
 
@@ -936,7 +1007,7 @@
                     </select>
                     </div>
                   <div class="search-cancel-wrapper">
-                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
                   </div>
                 </div>
               </div>
@@ -951,78 +1022,524 @@
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 11%;">販売区分</th>
-                      <th style="width: 11%;">展示会</th>
-                      <th style="width: 12%;">商品分類</th>
+                      <th style="width: 10%;">図案管理番号</th>
+                      <th style="width: 10%;">販売区分</th>
+                      <th style="width: 10%;">展示会</th>
+                      <th style="width: 10%;">商品分類</th>
                       <th style="width: 14%;">カテゴリー</th>
-                      <th style="width: 23%;">品名</th>
-                      <th style="width: 12%;">ブランド・キャラ</th>
-                      <th style="width: 15%;">デザイナー</th>
+                      <th style="width: 22%;">品名</th>
+                      <th style="width: 10%;">ブランド・キャラ</th>
+                      <th style="width: 14%;">デザイナー</th>
                     </tr>
                   </thead>
                   <tbody>
                     <!-- 50行のサンプルデータ -->
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーA柄タオル</td><td>ディズニー</td></tr>
-                    <tr><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーB柄タオル</td><td>ムーミン</td></tr>
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーC柄タオル</td><td>ディズニー</td></tr>
-                    <tr><td>定番加工</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>無地カラフルタオル</td><td>サンリオ</td></tr>
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春限定フラワータオル</td><td>ディズニー</td></tr>
-
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーAセット</td><td>ムーミン</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーBセット</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオル</td><td>ドラえもん</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>夏限定マリンセット</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>秋限定チェックセット</td><td>ディズニー</td></tr>
-
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーAタオル</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーBタオル</td><td>リラックマ</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオル</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットA</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトセットB</td><td>ディズニー</td></tr>
-
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-001</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>ミッキーA柄タオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-002</a></td>
+                      <td>定番加工</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>ミッキーB柄タオル</td>
+                      <td>ムーミン</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-003</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>ミッキーC柄タオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-004</a></td>
+                      <td>定番加工</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>無地カラフルタオル</td>
+                      <td>サンリオ</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-005</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>春限定フラワータオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-006</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ミッキーAセット</td>
+                      <td>ムーミン</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-007</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ミッキーBセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-008</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>別注無地タオル</td>
+                      <td>ドラえもん</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-009</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>夏限定マリンセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-010</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>秋限定チェックセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-011</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>OEMミッキーAタオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-012</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>OEMミッキーBタオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-013</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>OEM無地タオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-014</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMギフトセットA</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-015</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMギフトセットB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
                     <!-- 以降は番号だけ変えたダミー行 -->
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーD柄タオル</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>無地ベーシックタオル</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルA</td><td>すみっコぐらし</td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルB</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.03 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>シーズンタオルC</td><td>ディズニー</td></tr>
-
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ミッキーCセット</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地カラー</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットA</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットB</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトセットC</td><td>ディズニー</td></tr>
-
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットA</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットB</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMタオルセットC</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEMミッキーCタオル</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地ベーシック</td><td>ディズニー</td></tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-016</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>ミッキーD柄タオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      
+                      <td><a href="zuanjohotoroku.html">TBN-2026-017</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>無地ベーシックタオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-018</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>シーズンタオルA</td>
+                      <td>すみっコぐらし</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-019</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>シーズンタオルB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-020</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>シーズンタオルC</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-021</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ミッキーCセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-022</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>別注無地カラー</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-023</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ギフトセットA</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-024</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ギフトセットB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-025</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ギフトセットC</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-026</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMタオルセットA</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-027</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMタオルセットB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-028</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMタオルセットC</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-029</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>OEMミッキーCタオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-030</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>OEM無地ベーシック</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
 
                     <!-- 31〜50行目 -->
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>春企画フラワーセット</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>夏企画マリンセット</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>秋企画チェックセット</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>企画物タオル</td><td>冬企画スノーセット</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.06 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキー総柄タオル</td><td>ディズニー</td></tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-031</a></td>
+                      <td>定番</td>
+                      <td>2026.06 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>春企画フラワーセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-032</a></td>
+                      <td>定番</td>
+                      <td>2026.06 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>夏企画マリンセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-033</a></td>
+                      <td>定番</td>
+                      <td>2026.06 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>秋企画チェックセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-034</a></td>
+                      <td>定番</td>
+                      <td>2026.06 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>冬企画スノーセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-035</a></td>
+                      <td>定番</td>
+                      <td>2026.06 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>ミッキー総柄タオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-036</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注キャラクターセットA</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-037</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注キャラクターセットB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr> 
+                      <td><a href="zuanjohotoroku.html">TBN-2026-038</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注無地タオルセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-039</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ギフトボックスA</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-040</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注ギフトボックスB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
 
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットA</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターセットB</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>別注無地タオルセット</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスA</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注ギフトボックスB</td><td>ディズニー</td></tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-041</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMキャラクターセットA</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-042</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMキャラクターセットB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-043</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>OEM無地タオルセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-044</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMギフトボックスA</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-045</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMギフトボックスB</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
 
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットA</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターセットB</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地タオルセット</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスA</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMギフトボックスB</td><td>ディズニー</td></tr>
-
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーE柄タオル</td><td>ディズニー</td></tr>
-                    <tr><td>定番</td><td>2026.01 展示会</td><td>ミニタオル</td><td>単品タオル</td><td>ミッキーF柄タオル</td><td>ディズニー</td></tr>
-                    <tr><td>別注</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>別注キャラクターコラボ</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>企画物タオル</td><td>OEMキャラクターコラボ</td><td>ディズニー</td></tr>
-                    <tr><td>OEM</td><td></td><td>ミニタオル</td><td>単品タオル</td><td>OEM無地カラーセット</td><td>ディズニー</td></tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-046</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>ミッキーE柄タオル</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-047</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>ミッキーF柄タオル</td>
+                      <td>ディズニー</td> 
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-048</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>別注キャラクターコラボ</td>
+                      <td>ディズニー</td> 
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-049</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>企画物タオル</td>
+                      <td>OEMキャラクターコラボ</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
+                    <tr>
+                      <td><a href="zuanjohotoroku.html">TBN-2026-050</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>ミニタオル</td>
+                      <td>単品タオル</td>
+                      <td>OEM無地カラーセット</td>
+                      <td>ディズニー</td>
+                      <td><select class="row-designer-select" aria-label="デザイナー"><option value=""></option><option value="1">丸眞太郎</option><option value="2">丸眞花子</option><option value="3">丸眞桜子</option></select></td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1035,6 +1552,32 @@
 
     <!--#region モーダル(通知のリンク)  -->
     <div id="modal-window" class="modal-window"> 
+    </div>
+    <!-- 振分け：デザイナー別図案数 -->
+    <div id="furiwakeModalOverlay" class="furiwake-modal-overlay" aria-hidden="true"></div>
+    <div id="furiwakeModal" class="modal-window furiwake-modal" role="dialog" aria-modal="true" aria-labelledby="furiwakeModalTitle" hidden>
+      <h3 id="furiwakeModalTitle" class="furiwake-modal-title">デザイナー別 図案数</h3>
+      <p class="furiwake-modal-note"></p>
+      <div class="furiwake-modal-table-wrap">
+        <table class="result-table furiwake-summary-table">
+          <thead>
+            <tr>
+              <th style="width: 65%;">デザイナー</th>
+              <th style="width: 35%;">図案数</th>
+            </tr>
+          </thead>
+          <tbody id="furiwakeModalTableBody"></tbody>
+          <tfoot>
+            <tr>
+              <td>合計</td>
+              <td id="furiwakeModalTotal">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="furiwake-modal-actions">
+        <button type="button" class="btn-search-cancel" id="furiwakeModalClose">閉じる</button>
+      </div>
     </div>
     <!-- #endregion -->
 
@@ -1222,6 +1765,91 @@
             if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
           });
         }
+      })();
+
+      // 振分けボタン：デザイナー別図案数モーダル
+      (function () {
+        var btn = document.getElementById("btnFuriwake");
+        var overlay = document.getElementById("furiwakeModalOverlay");
+        var modal = document.getElementById("furiwakeModal");
+        var closeBtn = document.getElementById("furiwakeModalClose");
+        var outBody = document.getElementById("furiwakeModalTableBody");
+        var totalEl = document.getElementById("furiwakeModalTotal");
+        if (!btn || !overlay || !modal || !outBody || !totalEl) return;
+
+        function setModalOpen(open) {
+          if (open) {
+            modal.removeAttribute("hidden");
+            overlay.classList.add("is-open");
+            modal.classList.add("is-open");
+            overlay.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+          } else {
+            overlay.classList.remove("is-open");
+            modal.classList.remove("is-open");
+            overlay.setAttribute("aria-hidden", "true");
+            modal.setAttribute("hidden", "");
+            document.body.style.overflow = "";
+          }
+        }
+
+        function closeFuriwakeModal() {
+          setModalOpen(false);
+        }
+
+        function openFuriwakeModal() {
+          var listTbody = document.querySelector("#approvalListArea .result-table tbody");
+          if (!listTbody) return;
+
+          var counts = Object.create(null);
+          var total = 0;
+          Array.prototype.forEach.call(listTbody.rows, function (row) {
+            if (row.style.display === "none") return;
+            var sel = row.querySelector(".row-designer-select");
+            if (!sel) return;
+            total += 1;
+            var label = "未選択";
+            if (sel.value) {
+              var opt = sel.options[sel.selectedIndex];
+              label = opt ? opt.textContent.trim() : "未選択";
+            }
+            counts[label] = (counts[label] || 0) + 1;
+          });
+
+          outBody.innerHTML = "";
+          var names = Object.keys(counts).sort(function (a, b) {
+            if (a === "未選択") return 1;
+            if (b === "未選択") return -1;
+            return a.localeCompare(b, "ja");
+          });
+          names.forEach(function (name) {
+            var tr = document.createElement("tr");
+            var tdName = document.createElement("td");
+            tdName.textContent = name;
+            var tdCnt = document.createElement("td");
+            tdCnt.textContent = String(counts[name]);
+            tr.appendChild(tdName);
+            tr.appendChild(tdCnt);
+            outBody.appendChild(tr);
+          });
+          totalEl.textContent = String(total);
+
+          setModalOpen(true);
+          if (closeBtn) closeBtn.focus();
+        }
+
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          openFuriwakeModal();
+        });
+        overlay.addEventListener("click", closeFuriwakeModal);
+        if (closeBtn) closeBtn.addEventListener("click", closeFuriwakeModal);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && modal.classList.contains("is-open")) {
+            closeFuriwakeModal();
+            btn.focus();
+          }
+        });
       })();
     </script>
 </body>
