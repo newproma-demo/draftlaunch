@@ -505,27 +505,28 @@
     #kobetsuNyukoArea {
       display: grid;
       gap: 16px;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
 
     .nyuko-card {
       background: var(--color-card);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
-      padding: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      padding: 12px 14px;
+      box-shadow: 0 1px 3px rgba(0, 134, 50, 0.06);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .nyuko-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 18px rgba(0, 134, 50, 0.12);
     }
 
     .nyuko-name {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 10px;
     }
 
     .nyuko-count {
@@ -611,44 +612,35 @@
       .filter-row {
         flex-wrap: wrap;
       }
-      /* gauge-card: 1つ表示・3つを横スクロール（横スクロールバー表示） */
-      .gauges-row {
-        display: flex;
+      .tenjikai-status-layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding-bottom: 16px;
+      }
+      .tenjikai-status-layout .filter-row {
+        flex-direction: column;
         flex-wrap: nowrap;
-        gap: 16px;
-        overflow-x: scroll;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        padding-bottom: 12px;
-        margin-bottom: 24px;
-        scrollbar-width: thin;
-        scrollbar-color: var(--color-border) var(--color-surface);
+        align-items: stretch;
+        gap: 8px;
       }
-      .gauges-row::-webkit-scrollbar {
-        height: 8px;
+      .tenjikai-status-layout .filter-row .filter-label {
+        font-size: 15px;
       }
-      .gauges-row::-webkit-scrollbar-track {
-        background: var(--color-surface);
-        border-radius: 4px;
-      }
-      .gauges-row::-webkit-scrollbar-thumb {
-        background: var(--color-border);
-        border-radius: 4px;
-      }
-      .gauges-row::-webkit-scrollbar-thumb:hover {
-        background: var(--color-text-muted);
-      }
-      .gauges-row .gauge-card {
-        flex: 0 0 auto;
-        min-width: min(280px, 85vw);
-        scroll-snap-align: start;
-      }
-      .gauge-semicircle {
+      .tenjikai-status-layout .tenjikai-select-wrap {
         width: 100%;
-        max-width: 200px;
-        margin-left: auto;
-        margin-right: auto;
+      }
+      .gauges-box {
+        margin-bottom: 0;
+        padding-bottom: 16px;
+      }
+      .tenjikai-status-layout .gauges-box {
+        padding: 12px;
+      }
+      .tenjikai-status-layout .gauge-bar-row-label {
+        font-size: 13px;
+      }
+      .tenjikai-status-layout .gauge-bar-row-count {
+        font-size: 13px;
       }
       /* zenkai-tabs-wrap: 2段（上段 図案申請・試作入稿・サンプル申請、下段 最終入稿・発注・入荷） */
       .zenkai-tabs-wrap .zenkai-flow {
@@ -659,16 +651,16 @@
       }
       .zenkai-tabs-wrap .zenkai-item .name { font-size: 11px; }
 
-      /* 個別入稿状況: スマホでヘッダ固定（スクロール時に上部に固定・他ヘッダーと統一） */
+      /* 個別入稿状況: スマホでヘッダ固定（統合カード内は content-area の左右パディングに合わせる） */
       #kobetsuArea #kobetsuTitle {
         position: sticky;
         top: -20px;
         z-index: 20;
         background: var(--color-card);
-        margin-left: -20px;
-        margin-right: -20px;
+        margin-left: -22px;
+        margin-right: -22px;
         margin-bottom: 16px;
-        padding: 20px 20px 12px 20px;
+        padding: 20px 22px 12px 22px;
         transition: box-shadow 0.15s ease;
         border-bottom: none;
       }
@@ -677,8 +669,8 @@
         content: "";
         display: block;
         position: absolute;
-        left: 20px;
-        right: 20px;
+        left: 22px;
+        right: 22px;
         bottom: 0;
         border-bottom: 2px solid var(--color-primary);
       }
@@ -729,31 +721,111 @@
     }
 
 
-    /* 展示会選択セレクト */
-    .dashboard-box select,
-    #tenjikaiSelect {
+    /* 展示会選択（カスタムUI：閉じた表示とリストで同一フォント） */
+    .tenjikai-select-wrap {
+      position: relative;
+      display: inline-block;
+      min-width: 200px;
+      max-width: 100%;
+      vertical-align: middle;
+    }
+    .tenjikai-select-native {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .filter-row .tenjikai-select-native {
+      min-width: 0;
+    }
+    .tenjikai-select-trigger,
+    .tenjikai-select-option {
+      font-family: var(--font-sans);
+      font-size: 12pt;
+      font-weight: 500;
+    }
+    .tenjikai-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
       padding: 10px 14px;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
-      font-family: var(--font-sans);
-      font-size: 16px;
-      font-weight: 500;
       background: var(--color-card);
       color: var(--color-text);
       cursor: pointer;
+      text-align: left;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-
-    #tenjikaiSelect:hover,
-    .dashboard-box select:hover {
+    .tenjikai-select-trigger:hover {
       border-color: var(--color-primary);
     }
-
-    #tenjikaiSelect:focus,
-    .dashboard-box select:focus {
+    .tenjikai-select-trigger:focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+    }
+    .tenjikai-select-trigger-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tenjikai-select-chevron {
+      flex-shrink: 0;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--color-text);
+      opacity: 0.85;
+    }
+    .tenjikai-select-panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      z-index: 100;
+      margin: 0;
+      padding: 4px 0;
+      list-style: none;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .tenjikai-select-option {
+      margin: 0;
+      padding: 10px 14px;
+      cursor: pointer;
+      color: var(--color-text);
+    }
+    .tenjikai-select-option:hover,
+    .tenjikai-select-option:focus {
+      outline: none;
+      background: #f0f0f0;
+    }
+    /* 選択中も他ページの autocomplete 候補と同様（緑ハイライトなし） */
+    .tenjikai-select-option[aria-selected="true"] {
+      background: var(--color-card);
+      color: var(--color-text);
+    }
+    .tenjikai-select-option[aria-selected="true"]:hover,
+    .tenjikai-select-option[aria-selected="true"]:focus {
+      background: #f0f0f0;
+      color: var(--color-text);
     }
 
     .tenjikai-summary,
@@ -780,24 +852,24 @@
     .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
     .view-layout-1-group,
     .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
-    .dashboard-section { width: 100%; display: flex; flex-direction: column; gap: 32px; align-items: stretch; }
+    .dashboard-section { width: 100%; display: flex; flex-direction: column; gap: 24px; align-items: stretch; }
     .view-layout-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--color-primary);
-      margin: 0 0 16px;
-      padding-bottom: 8px;
+      margin: 0 0 18px;
+      padding-bottom: 10px;
       border-bottom: 2px solid var(--color-primary);
     }
 
-    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
+    /* ========== 案①: 横棒グラフ・承認通知・全体・課別 ========== */
     .view-layout-1 { padding: 0; }
 
     .filter-row {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .filter-row .filter-label { font-weight: 600; font-size: 18px; }
     .filter-row input[type="text"], .filter-row select {
@@ -808,81 +880,190 @@
       min-width: 160px;
     }
 
-    /* 半円グラフ（サンプル着・最終入稿・発注） */
-    .gauges-row {
+    /* 展示会別ステータス：左＝展示会選択、右＝進捗横棒（2列） */
+    .tenjikai-status-layout {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 24px;
+      grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+      gap: 16px 28px;
+      align-items: start;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--color-border);
     }
-    .gauge-card {
+    .tenjikai-status-layout .filter-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+    .tenjikai-status-layout .tenjikai-select-wrap {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    /* 横棒グラフ（展示会＋完了件数と同一 content-area 内：ネストした白BOXは付けない） */
+    .gauges-box {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0 0 20px;
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tenjikai-status-layout .gauges-box {
+      margin-bottom: 0;
+      padding: 16px 18px;
+      border-bottom: none;
       background: var(--color-card);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
-      padding: 16px;
-      text-align: center;
       box-shadow: var(--shadow-sm);
     }
-    .gauge-card .gauge-title {
+    .gauge-bar-row {
+      display: grid;
+      grid-template-columns: minmax(5.5em, auto) minmax(0, 1fr) auto;
+      gap: 10px 16px;
+      align-items: start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .gauge-bar-row:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .gauge-bar-row:first-child {
+      padding-top: 0;
+    }
+    .gauge-bar-row-label {
       font-size: 14px;
       font-weight: 600;
       color: var(--color-text);
-      margin-bottom: 12px;
+      line-height: 1.3;
+      padding-top: 2px;
     }
-    .gauge-semicircle {
-      width: 160px;
-      height: 90px;
-      margin: 0 auto 8px;
-      position: relative;
+    .gauge-bar-row-main {
+      min-width: 0;
     }
-    .gauge-semicircle svg {
+    .gauge-hbar-track {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
       width: 100%;
+      height: 16px;
+      background: var(--color-border);
+      border-radius: 0;
+    }
+    .gauge-hbar-seg {
       height: 100%;
-      display: block;
+      flex: 0 0 auto;
+      width: 0;
+      border-radius: 0;
+      transition: width 0.3s ease;
     }
-    /* 半円の軌道（背景）: 左→右の半円、半径40・中心(50,50) */
-    .gauge-track {
-      fill: none;
-      stroke: var(--color-border);
-      stroke-width: 10;
-      stroke-linecap: round;
-    }
-    /* 進捗: 完了(青)・7日前(黄)・遅延(赤)を重ねて表示 */
-    .gauge-fill, .gauge-fill-warn7, .gauge-fill-delay {
-      fill: none;
-      stroke-width: 10;
-      stroke-linecap: round;
-      transition: stroke-dasharray 0.3s ease, stroke-dashoffset 0.3s ease;
-    }
-    .gauge-fill { stroke: #1976d2; }
-    .gauge-fill-warn7 { stroke: #f9a825; }
-    .gauge-fill-delay { stroke: #c62828; }
-    .gauge-count {
-      font-size: 18px;
+    .gauge-hbar-seg--done { background: #1976d2; }
+    .gauge-hbar-seg--warn7 { background: #f9a825; }
+    .gauge-hbar-seg--delay { background: #c62828; }
+    .gauge-bar-row-count {
+      font-size: 15px;
       font-weight: 700;
       color: var(--color-text);
+      white-space: nowrap;
+      line-height: 1.3;
+      padding-top: 2px;
     }
     .gauge-legend {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
+      align-items: center;
+      gap: 8px 12px;
       margin-top: 8px;
-      font-size: 16px;
+      font-size: 13px;
       color: var(--color-text-muted);
     }
     .gauge-legend span { display: inline-flex; align-items: center; gap: 4px; }
-    .gauge-legend .dot-blue { width: 12px; height: 12px; border-radius: 50%; background: #1976d2; }
-    .gauge-legend .dot-yellow { width: 12px; height: 12px; border-radius: 50%; background: #f9a825; }
-    .gauge-legend .dot-red { width: 12px; height: 12px; border-radius: 50%; background: #c62828; }
+    .gauge-legend .dot-blue { width: 12px; height: 12px; border-radius: 0; background: #1976d2; }
+    .gauge-legend .dot-yellow { width: 12px; height: 12px; border-radius: 0; background: #f9a825; }
+    .gauge-legend .dot-red { width: 12px; height: 12px; border-radius: 0; background: #c62828; }
+
+    /* 展示会ステータス: タブレット（横幅圧縮時の崩れ対策） */
+    @media (min-width: 769px) and (max-width: 1100px) {
+      .tenjikai-status-layout {
+        grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+        gap: 14px 18px;
+      }
+      .tenjikai-status-layout .filter-row .filter-label {
+        font-size: 16px;
+      }
+      .tenjikai-status-layout .tenjikai-select-trigger {
+        font-size: 11pt;
+        padding: 9px 12px;
+      }
+      .tenjikai-status-layout .gauges-box {
+        padding: 14px;
+      }
+      .tenjikai-status-layout .gauge-bar-row {
+        grid-template-columns: minmax(4.8em, auto) minmax(0, 1fr);
+        gap: 8px 12px;
+      }
+      .tenjikai-status-layout .gauge-bar-row-count {
+        grid-column: 2;
+        justify-self: end;
+        padding-top: 4px;
+        font-size: 14px;
+      }
+      .tenjikai-status-layout .gauge-legend {
+        gap: 6px 10px;
+        font-size: 12px;
+      }
+    }
+
+    /* 展示会ステータス: スマホ最適化（下に定義してPC指定を確実に上書き） */
+    @media (max-width: 768px) {
+      .tenjikai-status-layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding-bottom: 16px;
+      }
+      .tenjikai-status-layout .filter-row {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 8px;
+        margin-bottom: 0;
+      }
+      .tenjikai-status-layout .filter-row .filter-label {
+        font-size: 15px;
+      }
+      .tenjikai-status-layout .tenjikai-select-wrap {
+        width: 100%;
+        max-width: 100%;
+      }
+      .tenjikai-status-layout .gauges-box {
+        padding: 12px;
+      }
+      .tenjikai-status-layout .gauge-bar-row {
+        grid-template-columns: minmax(4.8em, auto) minmax(0, 1fr);
+        gap: 8px 10px;
+      }
+      .tenjikai-status-layout .gauge-bar-row-count {
+        grid-column: 2;
+        justify-self: end;
+        font-size: 13px;
+        padding-top: 4px;
+      }
+      .tenjikai-status-layout .gauge-legend {
+        gap: 6px 8px;
+        font-size: 12px;
+      }
+    }
 
     /* 承認通知エリア（ボタン＋一覧） */
     .content-area {
       background: var(--color-card);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: 20px;
-      margin-bottom: 24px;
+      padding: 22px;
+      margin-bottom: 20px;
       box-shadow: var(--shadow-sm);
     }
     .content-area h3 {
@@ -895,7 +1076,7 @@
     .status-buttons {
       display: flex;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
     }
     .status-btn {
@@ -931,6 +1112,23 @@
     /* 全体・課別（タブ） */
     .zenkai-tabs-wrap {
       margin-bottom: 24px;
+    }
+    /* 統合カード内のセクション縦間隔（完了件数の上／個別入稿の上で同じ値を使う） */
+    .content-area--tenjikai-zenkai {
+      --tenjikai-gap-before-rule: 28px;
+      --tenjikai-gap-after-rule: 20px;
+    }
+    .content-area--tenjikai-zenkai .zenkai-tabs-wrap {
+      margin-bottom: 0;
+    }
+    /* 横棒下の区切り線〜「完了件数」まで＝個別入稿との縦間隔（margin＋padding）と同じ合計 */
+    .content-area--tenjikai-zenkai .zenkai-in-tenjikai-block {
+      padding-top: calc(var(--tenjikai-gap-before-rule) + var(--tenjikai-gap-after-rule));
+    }
+    /* 統合カード内：個別入稿（完了件数との縦間隔のみ・区切り線なし） */
+    .content-area--tenjikai-zenkai > #kobetsuArea.view-layout-3 {
+      margin-top: var(--tenjikai-gap-before-rule);
+      padding: var(--tenjikai-gap-after-rule) 0 0;
     }
     .zenkai-tab-list {
       font-size: 16px;
@@ -1064,14 +1262,35 @@
     .nyuko-badges {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
+      justify-content: center;
+    }
+    .nyuko-spec-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       margin-top: 8px;
+    }
+    .nyuko-spec-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .nyuko-spec-row + .nyuko-spec-row {
+      padding-top: 8px;
+      border-top: 1px solid var(--color-border);
+    }
+    .nyuko-spec-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      letter-spacing: 0.02em;
     }
 
     .badge {
-      padding: 6px 12px;
-      border-radius: 999px;   
-      font-size: 13px;
+      padding: 5px 10px;
+      border-radius: 0;
+      font-size: 12px;
       font-weight: 600;
     }
 
@@ -1137,100 +1356,85 @@
     <div class="content">
       <div class="dashboard-section" id="dashboardSection">
 
-        <!-- ========== : 半円グラフ・承認通知・全体・課別 ========== -->
+        <!-- ========== : 横棒グラフ・承認通知・全体・課別 ========== -->
         <div class="view-layout view-layout-1-group">
-        <div class="content-area">
+        <div class="content-area content-area--tenjikai-zenkai" id="tenjikaiZenkaiCard">
           <div class="view-layout view-layout-1">
             <h2 class="view-layout-title">展示会別ステータス</h2>
+            <div class="tenjikai-status-layout">
             <div class="filter-row">
-              <span class="filter-label">展示会</span>
-              <select id="tenjikaiSelect">
-                <option value="2026.01">2026.01 展示会</option>
-                <option value="2026.03">2026.03 展示会</option>
-                <option value="2026.06">2026.06 展示会</option>
-              </select>
-            </div>
-
-            <div class="gauges-row">
-              <div class="gauge-card">
-                <div class="gauge-title">サンプル着</div>
-                <div class="gauge-semicircle">
-                  <svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
-                    <path class="gauge-track" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill-delay" id="gaugeSampleFillDelay" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill-warn7" id="gaugeSampleFillWarn7" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill" id="gaugeSampleFill" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="62.8 125.66" />
-                  </svg>
-                </div>
-                <div class="gauge-count"><span id="gaugeSampleDone">50</span>件 / <span id="gaugeSampleTotal">200</span>件</div>
-                <div class="gauge-legend">
-                  <span><i class="dot-blue"></i>完了 <span id="gaugeSampleDoneLegend">50</span>件</span>
-                  <span><i class="dot-yellow"></i>締切7日前 <span id="gaugeSampleWarn7" class="num">0</span>件</span>
-                  <span><i class="dot-red"></i>遅延 <span id="gaugeSampleDelay" class="num">0</span>件</span>
-                </div>
-              </div>
-              <div class="gauge-card">
-                <div class="gauge-title">最終入稿</div>
-                <div class="gauge-semicircle">
-                  <svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
-                    <path class="gauge-track" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill-delay" id="gaugeNyukoFillDelay" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill-warn7" id="gaugeNyukoFillWarn7" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill" id="gaugeNyukoFill" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="0 125.66" />
-                  </svg>
-                </div>
-                <div class="gauge-count"><span id="gaugeNyukoDone">0</span>件 / <span id="gaugeNyukoTotal">200</span>件</div>
-                <div class="gauge-legend">
-                  <span><i class="dot-blue"></i>完了 <span id="gaugeNyukoDoneLegend">0</span>件</span>
-                  <span><i class="dot-yellow"></i>締切7日前 <span id="gaugeNyukoWarn7" class="num">0</span>件</span>
-                  <span><i class="dot-red"></i>遅延 <span id="gaugeNyukoDelay" class="num">0</span>件</span>
-                </div>
-              </div>
-              <div class="gauge-card">
-                <div class="gauge-title">発注</div>
-                <div class="gauge-semicircle">
-                  <svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
-                    <path class="gauge-track" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill-delay" id="gaugeHatchuFillDelay" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill-warn7" id="gaugeHatchuFillWarn7" d="M 10 50 A 40 40 0 0 1 90 50" />
-                    <path class="gauge-fill" id="gaugeHatchuFill" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="0 125.66" />
-                  </svg>
-                </div>
-                <div class="gauge-count"><span id="gaugeHatchuDone">0</span>件 / <span id="gaugeHatchuTotal">200</span>件</div>
-                <div class="gauge-legend">
-                  <span><i class="dot-blue"></i>完了 <span id="gaugeHatchuDoneLegend">0</span>件</span>
-                  <span><i class="dot-yellow"></i>締切7日前 <span id="gaugeHatchuWarn7" class="num">0</span>件</span>
-                  <span><i class="dot-red"></i>遅延 <span id="gaugeHatchuDelay" class="num">0</span>件</span>
-                </div>
+              <span class="filter-label" id="tenjikaiSelectLabel">展示会</span>
+              <div class="tenjikai-select-wrap">
+                <select id="tenjikaiSelect" class="tenjikai-select-native" tabindex="-1" aria-hidden="true">
+                  <option value="2026.01">2026.01 展示会</option>
+                  <option value="2026.03">2026.03 展示会</option>
+                  <option value="2026.06">2026.06 展示会</option>
+                </select>
+                <button type="button" class="tenjikai-select-trigger" id="tenjikaiSelectTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="tenjikaiSelectPanel" aria-labelledby="tenjikaiSelectLabel tenjikaiSelectTriggerText">
+                  <span class="tenjikai-select-trigger-text" id="tenjikaiSelectTriggerText">2026.03 展示会</span>
+                  <span class="tenjikai-select-chevron" aria-hidden="true"></span>
+                </button>
+                <ul class="tenjikai-select-panel" id="tenjikaiSelectPanel" role="listbox" hidden>
+                  <li role="option" class="tenjikai-select-option" tabindex="-1" data-value="2026.01">2026.01 展示会</li>
+                  <li role="option" class="tenjikai-select-option" tabindex="-1" data-value="2026.03">2026.03 展示会</li>
+                  <li role="option" class="tenjikai-select-option" tabindex="-1" data-value="2026.06">2026.06 展示会</li>
+                </ul>
               </div>
             </div>
 
-          </div>
-        </div>
-
-        <div class="content-area" id="approvalNoticeArea">
-            <div class="view-layout view-layout-2">
-              <h2 class="view-layout-title">承認通知<p style="font-size:var(--fs-xs);color:var(--color-text-muted);">詳細ボタンから詳細画面へ遷移し、その画面上で決裁まで行えます。</p></h2>
-              <div class="status-buttons">
-                <button type="button" class="status-btn active" data-status="waiting">
-                  承認待ち <span class="count">12件</span>
-                </button>
-                <button type="button" class="status-btn" data-status="applying">
-                  申請中 <span class="count">5件</span>
-                </button>
-                <button type="button" class="status-btn" data-status="returned">
-                  差し戻し <span class="count">2件</span>
-                </button>
-                <button type="button" class="status-btn" data-status="done">
-                  完了 <span class="count">180件</span>
-                </button>
+            <div class="gauges-box">
+              <div class="gauge-bar-row">
+                <div class="gauge-bar-row-label">サンプル着</div>
+                <div class="gauge-bar-row-main">
+                  <div class="gauge-hbar-track" aria-hidden="true">
+                    <div class="gauge-hbar-seg gauge-hbar-seg--done" id="gaugeSampleBarDone"></div>
+                    <div class="gauge-hbar-seg gauge-hbar-seg--warn7" id="gaugeSampleBarWarn7"></div>
+                    <div class="gauge-hbar-seg gauge-hbar-seg--delay" id="gaugeSampleBarDelay"></div>
+                  </div>
+                  <div class="gauge-legend">
+                    <span><i class="dot-blue"></i>完了 <span id="gaugeSampleDoneLegend">50</span>件</span>
+                    <span><i class="dot-yellow"></i>締切7日前 <span id="gaugeSampleWarn7" class="num">0</span>件</span>
+                    <span><i class="dot-red"></i>遅延 <span id="gaugeSampleDelay" class="num">0</span>件</span>
+                  </div>
+                </div>
+                <div class="gauge-bar-row-count"><span id="gaugeSampleDone">50</span>件 / <span id="gaugeSampleTotal">200</span>件</div>
               </div>
-              <div id="approvalListArea"></div>
-              
+              <div class="gauge-bar-row">
+                <div class="gauge-bar-row-label">最終入稿</div>
+                <div class="gauge-bar-row-main">
+                  <div class="gauge-hbar-track" aria-hidden="true">
+                    <div class="gauge-hbar-seg gauge-hbar-seg--done" id="gaugeNyukoBarDone"></div>
+                    <div class="gauge-hbar-seg gauge-hbar-seg--warn7" id="gaugeNyukoBarWarn7"></div>
+                    <div class="gauge-hbar-seg gauge-hbar-seg--delay" id="gaugeNyukoBarDelay"></div>
+                  </div>
+                  <div class="gauge-legend">
+                    <span><i class="dot-blue"></i>完了 <span id="gaugeNyukoDoneLegend">0</span>件</span>
+                    <span><i class="dot-yellow"></i>締切7日前 <span id="gaugeNyukoWarn7" class="num">0</span>件</span>
+                    <span><i class="dot-red"></i>遅延 <span id="gaugeNyukoDelay" class="num">0</span>件</span>
+                  </div>
+                </div>
+                <div class="gauge-bar-row-count"><span id="gaugeNyukoDone">0</span>件 / <span id="gaugeNyukoTotal">200</span>件</div>
+              </div>
+              <div class="gauge-bar-row">
+                <div class="gauge-bar-row-label">発注</div>
+                <div class="gauge-bar-row-main">
+                  <div class="gauge-hbar-track" aria-hidden="true">
+                    <div class="gauge-hbar-seg gauge-hbar-seg--done" id="gaugeHatchuBarDone"></div>
+                    <div class="gauge-hbar-seg gauge-hbar-seg--warn7" id="gaugeHatchuBarWarn7"></div>
+                    <div class="gauge-hbar-seg gauge-hbar-seg--delay" id="gaugeHatchuBarDelay"></div>
+                  </div>
+                  <div class="gauge-legend">
+                    <span><i class="dot-blue"></i>完了 <span id="gaugeHatchuDoneLegend">0</span>件</span>
+                    <span><i class="dot-yellow"></i>締切7日前 <span id="gaugeHatchuWarn7" class="num">0</span>件</span>
+                    <span><i class="dot-red"></i>遅延 <span id="gaugeHatchuDelay" class="num">0</span>件</span>
+                  </div>
+                </div>
+                <div class="gauge-bar-row-count"><span id="gaugeHatchuDone">0</span>件 / <span id="gaugeHatchuTotal">200</span>件</div>
+              </div>
             </div>
-          </div>
-          <div class="content-area" id="approvalNoticeArea">
-              <div class="view-layout view-layout-2">
+            </div>
+
+            <div class="view-layout view-layout-2 zenkai-in-tenjikai-block">
               <h2 class="view-layout-title">完了件数</h2>
               <div class="zenkai-tabs-wrap">
                 <ul class="zenkai-tab-list" role="tablist" aria-label="表示切替">
@@ -1260,12 +1464,36 @@
                 </div>
               </div>
             </div>
-          <!-- ========== 個別入稿状況（カード表示） ========== -->
+
+          </div>
+
+          <!-- 個別入稿状況（展示会名は updateNyukoTitle で更新） -->
           <div class="view-layout view-layout-3" id="kobetsuArea">
-            <h2 class="view-layout-title" id="kobetsuTitle">
-              個別入稿状況
-            </h2>
+            <h2 class="view-layout-title" id="kobetsuTitle">個別入稿状況</h2>
             <div id="kobetsuNyukoArea"></div>
+          </div>
+        </div>
+
+        <div class="content-area" id="approvalNoticeArea">
+            <div class="view-layout view-layout-2">
+              <h2 class="view-layout-title">承認通知<p style="font-size:var(--fs-xs);color:var(--color-text-muted);">詳細ボタンから詳細画面へ遷移し、その画面上で決裁まで行えます。</p></h2>
+              <div class="status-buttons">
+                <button type="button" class="status-btn active" data-status="waiting">
+                  承認待ち <span class="count">12件</span>
+                </button>
+                <button type="button" class="status-btn" data-status="applying">
+                  申請中 <span class="count">5件</span>
+                </button>
+                <button type="button" class="status-btn" data-status="returned">
+                  差し戻し <span class="count">2件</span>
+                </button>
+                <button type="button" class="status-btn" data-status="done">
+                  完了 <span class="count">180件</span>
+                </button>
+              </div>
+              <div id="approvalListArea"></div>
+              
+            </div>
           </div>
           <!-- #endregion -->            
           </div>
@@ -1596,7 +1824,7 @@
         });
       });
 
-      // 案①：展示会変更で全体・半円グラフを更新
+      // 案①：展示会変更で全体・横棒グラフを更新
       var tenjikaiData = {
         "2026.01": {
           total: 120,
@@ -1718,30 +1946,22 @@
         }
       };
 
-      var GAUGE_ARC_LENGTH = Math.PI * 40;
-      function setGaugeFillSegments(fillId, warn7Id, delayId, done, total, warn7, delay) {
-        var L = GAUGE_ARC_LENGTH;
+      function setGaugeBarWidths(doneBarId, warn7BarId, delayBarId, done, total, warn7, delay) {
         var t = total > 0 ? total : 1;
-        var w7 = (warn7 != null ? warn7 : 0);
-        var dly = (delay != null ? delay : 0);
-        var lenDone = (done / t) * L;
-        var lenWarn7 = (w7 / t) * L;
-        var lenDelay = (dly / t) * L;
-        var el = document.getElementById(fillId);
-        if (el) {
-          el.setAttribute("stroke-dasharray", lenDone.toFixed(2) + " " + L.toFixed(2));
-          el.setAttribute("stroke-dashoffset", "0");
+        var w7 = warn7 != null ? warn7 : 0;
+        var dly = delay != null ? delay : 0;
+        function pct(n) {
+          var v = (Number(n) || 0) / t * 100;
+          if (v < 0) v = 0;
+          if (v > 100) v = 100;
+          return v.toFixed(2) + "%";
         }
-        el = document.getElementById(warn7Id);
-        if (el) {
-          el.setAttribute("stroke-dasharray", lenWarn7.toFixed(2) + " " + L.toFixed(2));
-          el.setAttribute("stroke-dashoffset", (-lenDone).toFixed(2));
-        }
-        el = document.getElementById(delayId);
-        if (el) {
-          el.setAttribute("stroke-dasharray", lenDelay.toFixed(2) + " " + L.toFixed(2));
-          el.setAttribute("stroke-dashoffset", (-(lenDone + lenWarn7)).toFixed(2));
-        }
+        var el = document.getElementById(doneBarId);
+        if (el) el.style.width = pct(done);
+        el = document.getElementById(warn7BarId);
+        if (el) el.style.width = pct(w7);
+        el = document.getElementById(delayBarId);
+        if (el) el.style.width = pct(dly);
       }
       var ZENKAI_NAMES = ["図案申請","試作入稿","サンプル申請","最終入稿","発注","入荷"];
       var KA_RATIO = [67/200, 66/200, 67/200];
@@ -1778,7 +1998,7 @@
         if (data.sample) {
           var el = document.getElementById("gaugeSampleDone"); if (el) el.textContent = data.sample.done;
           el = document.getElementById("gaugeSampleTotal"); if (el) el.textContent = data.sample.total;
-          setGaugeFillSegments("gaugeSampleFill", "gaugeSampleFillWarn7", "gaugeSampleFillDelay", data.sample.done, data.sample.total, data.sample.warn7, data.sample.delay);
+          setGaugeBarWidths("gaugeSampleBarDone", "gaugeSampleBarWarn7", "gaugeSampleBarDelay", data.sample.done, data.sample.total, data.sample.warn7, data.sample.delay);
           el = document.getElementById("gaugeSampleWarn7"); if (el) el.textContent = (data.sample.warn7 != null ? data.sample.warn7 : 0);
           el = document.getElementById("gaugeSampleDelay"); if (el) el.textContent = (data.sample.delay != null ? data.sample.delay : 0);
           el = document.getElementById("gaugeSampleDoneLegend"); if (el) el.textContent = data.sample.done;
@@ -1786,7 +2006,7 @@
         if (data.nyuko) {
           var el = document.getElementById("gaugeNyukoDone"); if (el) el.textContent = data.nyuko.done;
           el = document.getElementById("gaugeNyukoTotal"); if (el) el.textContent = data.nyuko.total;
-          setGaugeFillSegments("gaugeNyukoFill", "gaugeNyukoFillWarn7", "gaugeNyukoFillDelay", data.nyuko.done, data.nyuko.total, data.nyuko.warn7, data.nyuko.delay);
+          setGaugeBarWidths("gaugeNyukoBarDone", "gaugeNyukoBarWarn7", "gaugeNyukoBarDelay", data.nyuko.done, data.nyuko.total, data.nyuko.warn7, data.nyuko.delay);
           el = document.getElementById("gaugeNyukoWarn7"); if (el) el.textContent = (data.nyuko.warn7 != null ? data.nyuko.warn7 : 0);
           el = document.getElementById("gaugeNyukoDelay"); if (el) el.textContent = (data.nyuko.delay != null ? data.nyuko.delay : 0);
           el = document.getElementById("gaugeNyukoDoneLegend"); if (el) el.textContent = data.nyuko.done;
@@ -1794,7 +2014,7 @@
         if (data.hatchu) {
           var el = document.getElementById("gaugeHatchuDone"); if (el) el.textContent = data.hatchu.done;
           el = document.getElementById("gaugeHatchuTotal"); if (el) el.textContent = data.hatchu.total;
-          setGaugeFillSegments("gaugeHatchuFill", "gaugeHatchuFillWarn7", "gaugeHatchuFillDelay", data.hatchu.done, data.hatchu.total, data.hatchu.warn7, data.hatchu.delay);
+          setGaugeBarWidths("gaugeHatchuBarDone", "gaugeHatchuBarWarn7", "gaugeHatchuBarDelay", data.hatchu.done, data.hatchu.total, data.hatchu.warn7, data.hatchu.delay);
           el = document.getElementById("gaugeHatchuWarn7"); if (el) el.textContent = (data.hatchu.warn7 != null ? data.hatchu.warn7 : 0);
           el = document.getElementById("gaugeHatchuDelay"); if (el) el.textContent = (data.hatchu.delay != null ? data.hatchu.delay : 0);
           el = document.getElementById("gaugeHatchuDoneLegend"); if (el) el.textContent = data.hatchu.done;
@@ -1811,14 +2031,6 @@
             }
           }
         }
-      }
-      var sel = document.getElementById("tenjikaiSelect");
-      if (sel) {
-        sel.value = "2026.03";
-        sel.addEventListener("change", function () { 
-          updateLayout1(this.value);
-          renderNyukoPersons(this.value);
-        });
       }
 
       // 全体・1課・2課・3課タブ
@@ -1899,6 +2111,28 @@
       });
 
       //タブ切り替えと個別入稿状況のデータリンク関係
+      function ensurePersonSpecRows(p) {
+        if (p.shisaku && p.saishu && typeof p.shisaku.total === "number" && typeof p.saishu.total === "number") {
+          return;
+        }
+        var t = p.total || 0;
+        var a = Math.ceil(t / 2);
+        p.shisaku = { total: a, done: 0 };
+        p.saishu = { total: t - a, done: 0 };
+      }
+
+      function splitPersonDoneIntoSpecs(p, done) {
+        ensurePersonSpecRows(p);
+        var st = (p.shisaku.total || 0) + (p.saishu.total || 0);
+        if (st <= 0) {
+          p.shisaku.done = 0;
+          p.saishu.done = 0;
+          return;
+        }
+        p.shisaku.done = Math.round(done * ((p.shisaku.total || 0) / st));
+        p.saishu.done = done - p.shisaku.done;
+      }
+
       function calculateNyukoPersons(key) {
 
         const data = tenjikaiData[key];
@@ -1920,6 +2154,7 @@
             allocated += done;
           }
           persons[name].done = done;
+          splitPersonDoneIntoSpecs(persons[name], done);
         });
       }
 
@@ -1931,22 +2166,35 @@
         area.innerHTML = "";
         const persons = tenjikaiData[key].nyukoPersons || {};
 
+        function nyukoBadgesHtml(total, done) {
+          var undone = total - done;
+          return (
+            '<span class="badge badge-undone">未入稿 ' + undone + "</span>" +
+            '<span class="badge badge-done">入稿済み ' + done + "</span>" +
+            '<span class="badge badge-total">全体 ' + total + "</span>"
+          );
+        }
+
         Object.keys(persons).forEach(name => {
           const p = persons[name];
           if (currentSection !== "all" && p.section !== currentSection) {
             return; // フィルタ
           }
+          ensurePersonSpecRows(p);
           const card = document.createElement("div");
-          const undone = p.total - p.done;
           card.className = "nyuko-card";
-          card.innerHTML = `
-            <div class="nyuko-name">${name}（${sectionLabel(p.section)}）</div>
-            <div class="nyuko-badges">
-              <span class="badge badge-undone">未入稿 ${undone}</span>
-              <span class="badge badge-done">入稿済み ${p.done}</span>
-              <span class="badge badge-total">全体 ${p.total}</span>
-            </div>
-          `;
+          card.innerHTML =
+            '<div class="nyuko-name">' + name + "（" + sectionLabel(p.section) + "）</div>" +
+            '<div class="nyuko-spec-rows">' +
+              '<div class="nyuko-spec-row">' +
+                '<div class="nyuko-spec-label">試作仕様書</div>' +
+                '<div class="nyuko-badges">' + nyukoBadgesHtml(p.shisaku.total, p.shisaku.done) + "</div>" +
+              "</div>" +
+              '<div class="nyuko-spec-row">' +
+                '<div class="nyuko-spec-label">最終仕様書</div>' +
+                '<div class="nyuko-badges">' + nyukoBadgesHtml(p.saishu.total, p.saishu.done) + "</div>" +
+              "</div>" +
+            "</div>";
           area.appendChild(card);
         });
       }
@@ -1991,11 +2239,68 @@
         }[section] || "";
       }
 
-      // 初期表示（承認待ち）
+      // 初期表示（承認待ち）・展示会カスタムセレクト
       var sel = document.getElementById("tenjikaiSelect");
+      var syncTenjikaiSelectDisplay = (function initTenjikaiCustomSelect() {
+        var native = document.getElementById("tenjikaiSelect");
+        var trigger = document.getElementById("tenjikaiSelectTrigger");
+        var panel = document.getElementById("tenjikaiSelectPanel");
+        var triggerText = document.getElementById("tenjikaiSelectTriggerText");
+        if (!native || !trigger || !panel || !triggerText) return function () {};
+        var wrap = native.closest(".tenjikai-select-wrap");
+        if (!wrap) return function () {};
+
+        function syncFromNative() {
+          var opt = native.options[native.selectedIndex];
+          triggerText.textContent = opt ? opt.text : "";
+          panel.querySelectorAll(".tenjikai-select-option").forEach(function (li) {
+            li.setAttribute("aria-selected", li.getAttribute("data-value") === native.value ? "true" : "false");
+          });
+        }
+
+        function closePanel() {
+          panel.hidden = true;
+          trigger.setAttribute("aria-expanded", "false");
+        }
+
+        function openPanel() {
+          panel.hidden = false;
+          trigger.setAttribute("aria-expanded", "true");
+        }
+
+        trigger.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (panel.hidden) openPanel();
+          else closePanel();
+        });
+
+        panel.addEventListener("click", function (e) {
+          var li = e.target.closest(".tenjikai-select-option");
+          if (!li) return;
+          e.stopPropagation();
+          native.value = li.getAttribute("data-value");
+          syncFromNative();
+          closePanel();
+          native.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+
+        document.addEventListener("click", function (e) {
+          if (!wrap.contains(e.target)) closePanel();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !panel.hidden) {
+            closePanel();
+            trigger.focus();
+          }
+        });
+
+        native.addEventListener("change", syncFromNative);
+        return syncFromNative;
+      })();
 
       if (sel) {
         sel.value = "2026.03";
+        syncTenjikaiSelectDisplay();
 
         updateLayout1("2026.03");
         renderNyukoPersons("2026.03");
