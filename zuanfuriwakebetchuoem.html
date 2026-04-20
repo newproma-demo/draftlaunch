@@ -1134,9 +1134,11 @@
                 </div>
                 <div class="search-row">
                   <label for="searchBrandChara">ブランド・キャラ</label>
-                  <div class="autocomplete">
-                    <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
-                    <div class="autocomplete-dropdown"></div>
+                  <div class="multi-select" id="searchBrandChara" data-list="brandChara">
+                    <button type="button" class="multi-select-toggle" id="searchBrandCharaToggle" aria-haspopup="listbox"
+                      aria-expanded="false">選択してください</button>
+                    <div class="multi-select-menu" id="searchBrandCharaMenu" role="listbox" aria-multiselectable="true">
+                    </div>
                   </div>
                 </div>
                 <div class="search-row">
@@ -1177,9 +1179,9 @@
                     <tr>
                       <th style="width: 8%;">販売区分</th>
                       <th style="width: 8%;">カテゴリー</th>
-                      <th style="width: 9%;">アイテム</th>
-                      <th style="width: 12%;">品名</th>
-                      <th style="width: 10%;">ブランド・キャラ</th>
+                      <th style="width: 8%;">アイテム</th>
+                      <th style="width: 11%;">品名</th>
+                      <th style="width: 11%;">ブランド・キャラ</th>
                       <th style="width: 9%;">図案提出</th>
                       <th style="width: 9%;">図案申請</th>
                       <th style="width: 9%;">試作入稿</th>
@@ -1188,7 +1190,7 @@
                       <th style="width: 9%;">発注</th>
                       <th style="width: 9%;">手配</th>
                       <th style="width: 9%;">入荷</th>
-                      <th style="width: 9%;">デザイナー</th>
+                      <th style="width: 11%;">デザイナー</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2044,6 +2046,9 @@
         var categoryWrap = document.getElementById("searchCategory");
         var categoryToggle = document.getElementById("searchCategoryToggle");
         var categoryMenu = document.getElementById("searchCategoryMenu");
+        var brandCharaWrap = document.getElementById("searchBrandChara");
+        var brandCharaToggle = document.getElementById("searchBrandCharaToggle");
+        var brandCharaMenu = document.getElementById("searchBrandCharaMenu");
         var inputMeisho = document.getElementById("searchMmeisho");
         var clearBtn = document.getElementById("searchCancelAllBtn");
         var countDisplay = document.getElementById("searchCountDisplay");
@@ -2077,9 +2082,11 @@
 
         buildMultiSelectOptionsFromDataList(tenjikaiWrap, tenjikaiMenu);
         buildMultiSelectOptionsFromDataList(categoryWrap, categoryMenu);
+        buildMultiSelectOptionsFromDataList(brandCharaWrap, brandCharaMenu);
 
         var tenjikaiChecks = tenjikaiMenu ? tenjikaiMenu.querySelectorAll('input[type="checkbox"]') : [];
         var categoryChecks = categoryMenu ? categoryMenu.querySelectorAll('input[type="checkbox"]') : [];
+        var brandCharaChecks = brandCharaMenu ? brandCharaMenu.querySelectorAll('input[type="checkbox"]') : [];
 
         function normalizeText(value) {
           return String(value || "")
@@ -2162,6 +2169,14 @@
           });
         }
 
+        if (brandCharaToggle && brandCharaWrap) {
+          brandCharaToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = brandCharaWrap.classList.toggle("is-open");
+            brandCharaToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
+        }
+
         Array.prototype.forEach.call(tenjikaiChecks, function (cb) {
           cb.addEventListener("change", function () {
             updateToggleLabel(tenjikaiToggle, tenjikaiChecks);
@@ -2172,6 +2187,13 @@
         Array.prototype.forEach.call(categoryChecks, function (cb) {
           cb.addEventListener("change", function () {
             updateToggleLabel(categoryToggle, categoryChecks);
+            applyFilter();
+          });
+        });
+
+        Array.prototype.forEach.call(brandCharaChecks, function (cb) {
+          cb.addEventListener("change", function () {
+            updateToggleLabel(brandCharaToggle, brandCharaChecks);
             applyFilter();
           });
         });
@@ -2192,6 +2214,10 @@
             categoryWrap.classList.remove("is-open");
             if (categoryToggle) categoryToggle.setAttribute("aria-expanded", "false");
           }
+          if (brandCharaWrap && !brandCharaWrap.contains(target)) {
+            brandCharaWrap.classList.remove("is-open");
+            if (brandCharaToggle) brandCharaToggle.setAttribute("aria-expanded", "false");
+          }
         });
 
         if (clearBtn) {
@@ -2202,6 +2228,7 @@
 
         updateToggleLabel(tenjikaiToggle, tenjikaiChecks);
         updateToggleLabel(categoryToggle, categoryChecks);
+        updateToggleLabel(brandCharaToggle, brandCharaChecks);
         applyFilter();
       };
 
