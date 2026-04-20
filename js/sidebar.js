@@ -40,6 +40,7 @@ window.SHARED_SIDEBAR_HTML = `
     <ul class="submenu">
           <li><a href="betchuzuansakuseiiraikensaku.html">別注図案作成依頼登録・申請</a></li>
           <li><a href="betchuzuansakuseiiraishinsei.html">別注図案作成依頼承認</a></li>
+          <li><a href="zuanfuriwakebetchuoem.html">図案振分け（別注/OEM）</a></li>
           <li><a href="zuanteishutsu.html">図案提出</a></li>
           <li><a href="teishutsuzuankensaku.html">図案選定結果登録</a></li>
           <li><a href="zuanshinsei.html">図案申請</a></li>
