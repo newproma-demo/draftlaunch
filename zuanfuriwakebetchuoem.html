@@ -919,6 +919,10 @@
         margin-bottom: 30px;
       }
 
+      #approvalNoticeArea {
+        margin-top: 10px;
+      }
+
       #approvalListArea .result-table {
         min-width: 0;
       }
@@ -2366,11 +2370,20 @@
 
           btn.addEventListener("click", function (event) {
             event.preventDefault();
-            textInput.focus();
             if (typeof picker.showPicker === "function") {
               picker.showPicker();
             } else {
+              // showPicker未対応（主に一部スマホ）向けフォールバック
+              var restoreOpacity = picker.style.opacity;
+              var restorePointerEvents = picker.style.pointerEvents;
+              picker.style.opacity = "0.01";
+              picker.style.pointerEvents = "auto";
+              picker.focus();
               picker.click();
+              window.setTimeout(function () {
+                picker.style.opacity = restoreOpacity;
+                picker.style.pointerEvents = restorePointerEvents;
+              }, 0);
             }
           });
         });
