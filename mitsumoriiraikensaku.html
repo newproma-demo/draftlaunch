@@ -345,6 +345,72 @@
       width: 100%;
     }
 
+    .multi-select {
+      position: relative;
+      width: 100%;
+    }
+
+    .multi-select-toggle {
+      width: 100%;
+      text-align: left;
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .multi-select-toggle:hover {
+      border-color: #b0bdb5;
+    }
+
+    .multi-select.is-open .multi-select-toggle {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .multi-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      max-height: 220px;
+      padding: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    .multi-select.is-open .multi-select-menu {
+      display: block;
+    }
+
+    .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 2px;
+      cursor: pointer;
+      font-size: var(--fs-xs);
+      white-space: nowrap;
+      width: fit-content;
+    }
+
+    .multi-select-option input[type="checkbox"] {
+      margin: 0;
+    }
+
     .search-row option {
       font-size: var(--fs-xs);
     }
@@ -617,6 +683,9 @@
       }
 
       .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        margin-left: 0;
+        display: flex;
         width: 100%;
         justify-content: flex-end;
       }
@@ -751,12 +820,17 @@
         display: none;
       }
 
-      /* PC: 指定項目のみ入力幅を広げる */
-      .filter-row .filter-item .autocomplete-input[data-list="supplier"],
-      .filter-row .filter-item .autocomplete-input[data-list="item"],
-      .filter-row .filter-item .autocomplete-input[data-list="customer"] {
-        min-width: 240px;
-        width: 240px;
+      /* PC: 入力幅を広げる */
+      .search-row .autocomplete-input[data-list="supplier"] {
+        min-width:280px;
+        width: 280px;
+        max-width: 280px;
+      }
+
+      .search-row:has(.autocomplete-input[data-list="supplier"]) .autocomplete {
+        min-width: 280px;
+        width: 280px;
+        max-width: 280px;
       }
     }
 
@@ -971,16 +1045,16 @@
                   </div>
                   <div class="search-row">
                     <label for="supplierInput">仕入得意先</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入得意先検索" id="searchItem">
-                      <div class="autocomplete-dropdown"></div>
+                    <div class="multi-select" id="searchSupplierMulti" data-list="supplier">
+                      <button type="button" class="multi-select-toggle" id="searchSupplierToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchSupplierMenu" role="listbox" aria-multiselectable="true"></div>
                     </div>
                   </div>
                   <div class="search-row">
                     <label for="itemInput">アイテム</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="searchItem">
-                      <div class="autocomplete-dropdown"></div>
+                    <div class="multi-select" id="searchItemMulti" data-list="item">
+                      <button type="button" class="multi-select-toggle" id="searchItemToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchItemMenu" role="listbox" aria-multiselectable="true"></div>
                     </div>
                   </div>
                   <div class="search-row">
@@ -1011,9 +1085,9 @@
                   </div>
                   <div class="search-row">
                     <label for="customerInput">得意先</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="customer" placeholder="得意先検索" id="searchCategory">
-                      <div class="autocomplete-dropdown"></div>
+                    <div class="multi-select" id="searchCustomerMulti" data-list="customer">
+                      <button type="button" class="multi-select-toggle" id="searchCustomerToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchCustomerMenu" role="listbox" aria-multiselectable="true"></div>
                     </div>
                   </div>
                   <div class="search-cancel-wrapper">
@@ -1250,6 +1324,76 @@
         }
       })();
 
+      // 複数選択（仕入得意先・アイテム・得意先）
+      (function () {
+        function buildMultiSelect(wrapId, toggleId, menuId) {
+          var wrap = document.getElementById(wrapId);
+          var toggle = document.getElementById(toggleId);
+          var menu = document.getElementById(menuId);
+          if (!wrap || !toggle || !menu) return null;
+
+          var listKey = wrap.getAttribute("data-list");
+          var source = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS[listKey];
+          if (!Array.isArray(source)) source = [];
+
+          menu.innerHTML = "";
+          source.forEach(function (item) {
+            var label = document.createElement("label");
+            label.className = "multi-select-option";
+
+            var input = document.createElement("input");
+            input.type = "checkbox";
+            input.value = item;
+
+            var span = document.createElement("span");
+            span.textContent = item;
+
+            label.appendChild(input);
+            label.appendChild(span);
+            menu.appendChild(label);
+          });
+
+          function updateLabel() {
+            var checked = menu.querySelectorAll('input[type="checkbox"]:checked');
+            if (checked.length === 0) {
+              toggle.textContent = "選択してください";
+            } else if (checked.length === 1) {
+              toggle.textContent = checked[0].value;
+            } else {
+              toggle.textContent = checked.length + "件選択中";
+            }
+          }
+
+          toggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = wrap.classList.toggle("is-open");
+            toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
+
+          menu.addEventListener("change", updateLabel);
+          updateLabel();
+
+          return { wrap: wrap, toggle: toggle, menu: menu, updateLabel: updateLabel };
+        }
+
+        var controls = [
+          buildMultiSelect("searchSupplierMulti", "searchSupplierToggle", "searchSupplierMenu"),
+          buildMultiSelect("searchItemMulti", "searchItemToggle", "searchItemMenu"),
+          buildMultiSelect("searchCustomerMulti", "searchCustomerToggle", "searchCustomerMenu")
+        ].filter(Boolean);
+
+        document.addEventListener("click", function (event) {
+          controls.forEach(function (ctrl) {
+            if (!ctrl.wrap.contains(event.target)) {
+              ctrl.wrap.classList.remove("is-open");
+              ctrl.toggle.setAttribute("aria-expanded", "false");
+            }
+          });
+        });
+
+        window._mitsumoriMultiSelectControls = controls;
+      })();
+
       // 検索条件クリア
       (function () {
         var clearBtn = document.getElementById("searchCancelAllBtn");
@@ -1263,6 +1407,16 @@
           panel.querySelectorAll("select").forEach(function (select) {
             select.selectedIndex = 0;
           });
+          panel.querySelectorAll('.multi-select-menu input[type="checkbox"]').forEach(function (cb) {
+            cb.checked = false;
+          });
+          if (Array.isArray(window._mitsumoriMultiSelectControls)) {
+            window._mitsumoriMultiSelectControls.forEach(function (ctrl) {
+              ctrl.updateLabel();
+              ctrl.wrap.classList.remove("is-open");
+              ctrl.toggle.setAttribute("aria-expanded", "false");
+            });
+          }
         });
       })();
 
