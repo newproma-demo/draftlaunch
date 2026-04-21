@@ -396,6 +396,149 @@
       gap: 12px;
     }
 
+    /* 追加ボタン（mitsumorijohotoroku.html と同様） */
+    .btn-add-image {
+      align-self: flex-start;
+      padding: 8px 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .btn-add-image:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+
+    .btn-add-image--small {
+      transform: scale(0.75);
+      transform-origin: left top;
+    }
+
+    .label-with-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      min-width: 180px;
+    }
+
+    .label-with-button-vertical {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .label-with-button label {
+      width: 180px;
+      padding-top: 8px;
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    .supplier-inputs-wrapper {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .supplier-input-item {
+      margin-bottom: 8px;
+    }
+
+    .supplier-input-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .supplier-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .supplier-input-row .autocomplete {
+      flex: 0 0 260px;
+      width: 260px;
+      min-width: 260px;
+      max-width: 260px;
+    }
+
+    .supplier-input-row .autocomplete .autocomplete-input {
+      width: 100%;
+    }
+
+    #entryBrandCharaFirst,
+    .supplier-input-row select,
+    .brand-item-pair-field select {
+      flex: 0 0 260px;
+      width: 260px;
+      min-width: 260px;
+      max-width: 260px;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: var(--fs-base);
+      box-sizing: border-box;
+    }
+
+    .brand-item-pair-container {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .brand-item-pair-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .brand-item-pair-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .brand-item-pair-field .autocomplete {
+      flex: 0 0 260px;
+      width: 260px;
+      min-width: 260px;
+      max-width: 260px;
+    }
+
+    /* 仕入得意先・参考画像と同じ丸型×ボタン */
+    .supplier-input-row .btn-delete-supplier,
+    .brand-item-pair-row .btn-delete-supplier {
+      z-index: 2;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .supplier-input-row .btn-delete-supplier:hover,
+    .brand-item-pair-row .btn-delete-supplier:hover {
+      background: rgba(200, 0, 0, 0.9);
+    }
+
     .entry-form .btn-primary,
     .entry-form .btn-secondary {
       min-width: 100px;
@@ -586,10 +729,13 @@
       align-items: center;
       gap: 8px;
     }
-    /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+    /* 画面右下固定 登録ボタン */
     .btn-fab-new {
       display: inline-block;
       text-decoration: none;
+      min-width: 140px;
+      width: 140px;
+      box-sizing: border-box;
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -655,30 +801,12 @@
             <label for="entryLicensor">ライセンサー</label>
             <div>
               <select id="entryLicensor" name="licensor" aria-label="ライセンサー">
-                <option value="">選択してください</option>
-                <option value="ディズニー">ディズニー</option>
-                <option value="ユニバーサル">ユニバーサル</option>
+                <option value="0">選択してください</option>
+                <option value="1">ディズニー</option>
+                <option value="2">ユニバーサル</option>
+                <option value="3">サンリオ</option>
+                <option value="4">ジブリ</option>
               </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <label for="entryItem">ブランド・キャラ</label>
-            <div class="autocomplete">
-              <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラを入力" id="entryItem" name="item" autocomplete="off" aria-label="アイテム">
-              <div class="autocomplete-dropdown"></div>
-            </div>
-          </div>
-          <div class="form-row">
-            <label for="entryItem">アイテム</label>
-            <div class="autocomplete">
-              <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテムを入力" id="entryItem" name="item" autocomplete="off" aria-label="アイテム">
-              <div class="autocomplete-dropdown"></div>
-            </div>
-          </div>
-          <div class="form-row">
-            <label for="entryKanriNo">管理番号</label>
-            <div>
-              <input type="text" id="entryKanriNo" name="kanriNo" placeholder="管理番号を入力" autocomplete="off" aria-label="管理番号">
             </div>
           </div>
           <div class="form-row">
@@ -696,6 +824,54 @@
                   <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
                   <button type="button" class="period-range-calendar-btn" aria-label="契約期間（To）をカレンダーで選択">📅</button>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="label-with-button">
+              <label for="entryBrandCharaFirst">ブランド・キャラ</label>
+            </div>
+            <div>
+              <select id="entryBrandCharaFirst" name="brandChara[]" aria-label="ブランド・キャラ">
+                <option value="0">選択してください</option>
+                <option value="1">ミッキーマウス</option>
+                <option value="2">ミニーマウス</option>
+                <option value="3">ドナルドダック</option>
+                <option value="4">デイジーダッグ</option>
+                <option value="5">グーフィー</option>
+              </select>
+            </div>
+<!--
+            <div class="supplier-inputs-wrapper">
+              <div id="brandCharaInputsContainer" class="js-brand-chara-container">
+                <div class="supplier-input-item">
+                  <div class="supplier-input-row">
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラを入力" id="entryBrandCharaFirst" name="brandChara[]" autocomplete="off" aria-label="ブランド・キャラ">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+-->
+          </div>
+          <div class="form-row">
+            <div class="label-with-button label-with-button-vertical">
+              <label for="entryItemFirst">アイテム</label>
+              <button type="button" class="btn-add-image btn-add-image--small js-add-brand-item" title="ブランド・キャラとアイテムを追加">追加</button>
+            </div>
+            <div class="supplier-inputs-wrapper">
+              <div id="itemInputsContainer" class="js-item-container">
+                <div class="supplier-input-item">
+                  <div class="supplier-input-row">
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテムを入力" id="entryItemFirst" name="item[]" autocomplete="off" aria-label="アイテム">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="brandItemPairContainer" class="brand-item-pair-container"></div>
               </div>
             </div>
           </div>
@@ -768,6 +944,104 @@
       }
 
       loadSharedSidebar();
+
+      // ブランド・キャラ / アイテム: アイテム配下にペアで追加と削除
+      (function initDynamicBrandItemRows() {
+        function createPairRow() {
+          var item = document.createElement("div");
+          item.className = "brand-item-pair-row";
+
+          function createAutocompleteField(listKey, placeholder, inputName, ariaLabel) {
+            var field = document.createElement("div");
+            field.className = "brand-item-pair-field";
+
+            var autocompleteDiv = document.createElement("div");
+            autocompleteDiv.className = "autocomplete";
+
+            var input = document.createElement("input");
+            input.type = "text";
+            input.className = "autocomplete-input";
+            input.setAttribute("data-list", listKey);
+            input.placeholder = placeholder;
+            input.setAttribute("name", inputName);
+            input.setAttribute("autocomplete", "off");
+            input.setAttribute("aria-label", ariaLabel);
+
+            var dropdown = document.createElement("div");
+            dropdown.className = "autocomplete-dropdown";
+
+            autocompleteDiv.appendChild(input);
+            autocompleteDiv.appendChild(dropdown);
+            field.appendChild(autocompleteDiv);
+            return field;
+          }
+
+          function createBrandSelectField() {
+            var field = document.createElement("div");
+            field.className = "brand-item-pair-field";
+
+            var baseSelect = document.getElementById("entryBrandCharaFirst");
+            var select = document.createElement("select");
+            select.setAttribute("name", "brandChara[]");
+            select.setAttribute("aria-label", "ブランド・キャラ");
+
+            if (baseSelect && baseSelect.options) {
+              Array.prototype.forEach.call(baseSelect.options, function (opt) {
+                select.appendChild(opt.cloneNode(true));
+              });
+            } else {
+              var fallback = document.createElement("option");
+              fallback.value = "";
+              fallback.textContent = "選択してください";
+              select.appendChild(fallback);
+            }
+
+            field.appendChild(select);
+            return field;
+          }
+
+          var fieldsWrap = document.createElement("div");
+          fieldsWrap.className = "brand-item-pair-fields";
+
+          var brandField = createBrandSelectField();
+          var itemField = createAutocompleteField("item", "アイテムを入力", "item[]", "アイテム");
+
+          var deleteBtn = document.createElement("button");
+          deleteBtn.type = "button";
+          deleteBtn.className = "btn-delete-supplier";
+          deleteBtn.innerHTML = "×";
+          deleteBtn.title = "削除";
+          deleteBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            item.remove();
+          });
+
+          fieldsWrap.appendChild(brandField);
+          fieldsWrap.appendChild(itemField);
+          item.appendChild(fieldsWrap);
+          item.appendChild(deleteBtn);
+          return item;
+        }
+
+        document.addEventListener("click", function (e) {
+          var addBoth = e.target.closest(".js-add-brand-item");
+          if (!addBoth) return;
+          e.preventDefault();
+
+          var pairContainer = document.getElementById("brandItemPairContainer");
+          if (!pairContainer) return;
+          var pairRow = createPairRow();
+          pairContainer.appendChild(pairRow);
+
+          if (window.initAutocomplete) {
+            var autocompletes = pairRow.querySelectorAll(".autocomplete");
+            Array.prototype.forEach.call(autocompletes, function (ac) {
+              window.initAutocomplete(ac);
+            });
+          }
+        });
+      })();
 
     </script>
 </body>
