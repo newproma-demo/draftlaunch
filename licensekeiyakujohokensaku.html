@@ -1963,6 +1963,70 @@
         });
       })();
 
+      // 検索条件「契約期間」: yyyymmdd入力とカレンダーボタン連携（スマホ対応）
+      (function initContractPeriodRange() {
+        function isoToYyyymmdd(iso) {
+          if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return "";
+          return iso.replace(/-/g, "");
+        }
+
+        function yyyymmddToIso(text) {
+          if (!text || !/^\d{8}$/.test(text)) return "";
+          var y = text.slice(0, 4);
+          var m = text.slice(4, 6);
+          var d = text.slice(6, 8);
+          var dt = new Date(y + "-" + m + "-" + d + "T00:00:00");
+          if (
+            dt.getFullYear() !== Number(y) ||
+            dt.getMonth() + 1 !== Number(m) ||
+            dt.getDate() !== Number(d)
+          ) return "";
+          return y + "-" + m + "-" + d;
+        }
+
+        var fields = document.querySelectorAll("#contractPeriodFilterItem .period-range-field");
+        Array.prototype.forEach.call(fields, function (field) {
+          var textInput = field.querySelector(".period-range-input");
+          var picker = field.querySelector(".period-range-picker");
+          var btn = field.querySelector(".period-range-calendar-btn");
+          if (!textInput || !picker || !btn) return;
+
+          textInput.addEventListener("input", function () {
+            textInput.value = textInput.value.replace(/\D/g, "").slice(0, 8);
+            var iso = yyyymmddToIso(textInput.value);
+            picker.value = iso;
+          });
+
+          textInput.addEventListener("blur", function () {
+            var iso = yyyymmddToIso(textInput.value);
+            if (iso) textInput.value = isoToYyyymmdd(iso);
+          });
+
+          picker.addEventListener("change", function () {
+            textInput.value = isoToYyyymmdd(picker.value);
+          });
+
+          btn.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (typeof picker.showPicker === "function") {
+              picker.showPicker();
+            } else {
+              // showPicker未対応（主に一部スマホ）向けフォールバック
+              var restoreOpacity = picker.style.opacity;
+              var restorePointerEvents = picker.style.pointerEvents;
+              picker.style.opacity = "0.01";
+              picker.style.pointerEvents = "auto";
+              picker.focus();
+              picker.click();
+              window.setTimeout(function () {
+                picker.style.opacity = restoreOpacity;
+                picker.style.pointerEvents = restorePointerEvents;
+              }, 0);
+            }
+          });
+        });
+      })();
+
       // 一覧の日付入力にカレンダーボタンを付与（図案予定期日と同様）
       (function initRowDateCalendarButtons() {
         function isoToYyyymmdd(iso) {
