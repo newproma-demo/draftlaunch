@@ -888,38 +888,31 @@
             </div>
           </div>
           <div class="form-row">
-            <div class="label-with-button">
+            <div class="label-with-button label-with-button-vertical">
               <label for="entryBrandCharaFirst">ブランド・キャラ</label>
+              <button type="button" class="btn-add-image btn-add-image--small js-add-brand-chara" title="ブランド・キャラを追加">追加</button>
             </div>
-            <div>
-              <select id="entryBrandCharaFirst" name="brandChara[]" aria-label="ブランド・キャラ">
-                <option value="0">選択してください</option>
-                <option value="1">ミッキーマウス</option>
-                <option value="2">ミニーマウス</option>
-                <option value="3">ドナルドダック</option>
-                <option value="4">デイジーダッグ</option>
-                <option value="5">グーフィー</option>
-              </select>
-            </div>
-<!--
             <div class="supplier-inputs-wrapper">
               <div id="brandCharaInputsContainer" class="js-brand-chara-container">
                 <div class="supplier-input-item">
                   <div class="supplier-input-row">
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラを入力" id="entryBrandCharaFirst" name="brandChara[]" autocomplete="off" aria-label="ブランド・キャラ">
-                      <div class="autocomplete-dropdown"></div>
-                    </div>
+                    <select id="entryBrandCharaFirst" name="brandChara[]" aria-label="ブランド・キャラ">
+                      <option value="0">選択してください</option>
+                      <option value="1">ミッキーマウス</option>
+                      <option value="2">ミニーマウス</option>
+                      <option value="3">ドナルドダック</option>
+                      <option value="4">デイジーダッグ</option>
+                      <option value="5">グーフィー</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
--->
           </div>
           <div class="form-row">
             <div class="label-with-button label-with-button-vertical">
               <label for="entryItemFirst">アイテム</label>
-              <button type="button" class="btn-add-image btn-add-image--small js-add-brand-item" title="ブランド・キャラとアイテムを追加">追加</button>
+              <button type="button" class="btn-add-image btn-add-image--small js-add-item" title="アイテムを追加">追加</button>
             </div>
             <div class="supplier-inputs-wrapper">
               <div id="itemInputsContainer" class="js-item-container">
@@ -931,7 +924,6 @@
                     </div>
                   </div>
                 </div>
-                <div id="brandItemPairContainer" class="brand-item-pair-container"></div>
               </div>
             </div>
           </div>
@@ -1069,67 +1061,9 @@
         });
       })();
 
-      // ブランド・キャラ / アイテム: アイテム配下にペアで追加と削除
-      (function initDynamicBrandItemRows() {
-        function createPairRow() {
-          var item = document.createElement("div");
-          item.className = "brand-item-pair-row";
-
-          function createAutocompleteField(listKey, placeholder, inputName, ariaLabel) {
-            var field = document.createElement("div");
-            field.className = "brand-item-pair-field";
-
-            var autocompleteDiv = document.createElement("div");
-            autocompleteDiv.className = "autocomplete";
-
-            var input = document.createElement("input");
-            input.type = "text";
-            input.className = "autocomplete-input";
-            input.setAttribute("data-list", listKey);
-            input.placeholder = placeholder;
-            input.setAttribute("name", inputName);
-            input.setAttribute("autocomplete", "off");
-            input.setAttribute("aria-label", ariaLabel);
-
-            var dropdown = document.createElement("div");
-            dropdown.className = "autocomplete-dropdown";
-
-            autocompleteDiv.appendChild(input);
-            autocompleteDiv.appendChild(dropdown);
-            field.appendChild(autocompleteDiv);
-            return field;
-          }
-
-          function createBrandSelectField() {
-            var field = document.createElement("div");
-            field.className = "brand-item-pair-field";
-
-            var baseSelect = document.getElementById("entryBrandCharaFirst");
-            var select = document.createElement("select");
-            select.setAttribute("name", "brandChara[]");
-            select.setAttribute("aria-label", "ブランド・キャラ");
-
-            if (baseSelect && baseSelect.options) {
-              Array.prototype.forEach.call(baseSelect.options, function (opt) {
-                select.appendChild(opt.cloneNode(true));
-              });
-            } else {
-              var fallback = document.createElement("option");
-              fallback.value = "";
-              fallback.textContent = "選択してください";
-              select.appendChild(fallback);
-            }
-
-            field.appendChild(select);
-            return field;
-          }
-
-          var fieldsWrap = document.createElement("div");
-          fieldsWrap.className = "brand-item-pair-fields";
-
-          var brandField = createBrandSelectField();
-          var itemField = createAutocompleteField("item", "アイテムを入力", "item[]", "アイテム");
-
+      // ブランド・キャラ / アイテム: それぞれ個別に追加と削除
+      (function initDynamicBrandAndItemRows() {
+        function createDeleteButton(targetRow) {
           var deleteBtn = document.createElement("button");
           deleteBtn.type = "button";
           deleteBtn.className = "btn-delete-supplier";
@@ -1138,31 +1072,86 @@
           deleteBtn.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            item.remove();
+            targetRow.remove();
           });
+          return deleteBtn;
+        }
 
-          fieldsWrap.appendChild(brandField);
-          fieldsWrap.appendChild(itemField);
-          item.appendChild(fieldsWrap);
-          item.appendChild(deleteBtn);
+        function createBrandRow() {
+          var baseSelect = document.getElementById("entryBrandCharaFirst");
+          var item = document.createElement("div");
+          item.className = "supplier-input-item";
+
+          var row = document.createElement("div");
+          row.className = "supplier-input-row";
+
+          var select = document.createElement("select");
+          select.setAttribute("name", "brandChara[]");
+          select.setAttribute("aria-label", "ブランド・キャラ");
+
+          if (baseSelect && baseSelect.options) {
+            Array.prototype.forEach.call(baseSelect.options, function (opt) {
+              select.appendChild(opt.cloneNode(true));
+            });
+          }
+
+          row.appendChild(select);
+          row.appendChild(createDeleteButton(item));
+          item.appendChild(row);
+          return item;
+        }
+
+        function createItemRow() {
+          var item = document.createElement("div");
+          item.className = "supplier-input-item";
+
+          var row = document.createElement("div");
+          row.className = "supplier-input-row";
+
+          var autocompleteDiv = document.createElement("div");
+          autocompleteDiv.className = "autocomplete";
+
+          var input = document.createElement("input");
+          input.type = "text";
+          input.className = "autocomplete-input";
+          input.setAttribute("data-list", "item");
+          input.placeholder = "アイテムを入力";
+          input.setAttribute("name", "item[]");
+          input.setAttribute("autocomplete", "off");
+          input.setAttribute("aria-label", "アイテム");
+
+          var dropdown = document.createElement("div");
+          dropdown.className = "autocomplete-dropdown";
+
+          autocompleteDiv.appendChild(input);
+          autocompleteDiv.appendChild(dropdown);
+          row.appendChild(autocompleteDiv);
+          row.appendChild(createDeleteButton(item));
+          item.appendChild(row);
           return item;
         }
 
         document.addEventListener("click", function (e) {
-          var addBoth = e.target.closest(".js-add-brand-item");
-          if (!addBoth) return;
-          e.preventDefault();
+          var addBrand = e.target.closest(".js-add-brand-chara");
+          if (addBrand) {
+            e.preventDefault();
+            var brandContainer = document.getElementById("brandCharaInputsContainer");
+            if (!brandContainer) return;
+            brandContainer.appendChild(createBrandRow());
+            return;
+          }
 
-          var pairContainer = document.getElementById("brandItemPairContainer");
-          if (!pairContainer) return;
-          var pairRow = createPairRow();
-          pairContainer.appendChild(pairRow);
+          var addItem = e.target.closest(".js-add-item");
+          if (!addItem) return;
+          e.preventDefault();
+          var itemContainer = document.getElementById("itemInputsContainer");
+          if (!itemContainer) return;
+          var itemRow = createItemRow();
+          itemContainer.appendChild(itemRow);
 
           if (window.initAutocomplete) {
-            var autocompletes = pairRow.querySelectorAll(".autocomplete");
-            Array.prototype.forEach.call(autocompletes, function (ac) {
-              window.initAutocomplete(ac);
-            });
+            var ac = itemRow.querySelector(".autocomplete");
+            if (ac) window.initAutocomplete(ac);
           }
         });
       })();
