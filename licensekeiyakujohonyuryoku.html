@@ -441,6 +441,10 @@
       flex: 0 0 auto;
     }
 
+    .sp-label-break {
+      display: none;
+    }
+
     .supplier-inputs-wrapper {
       flex: 1;
       min-width: 0;
@@ -757,34 +761,55 @@
       padding-top: 4px;
     }
 
-    /* スマホ: ラベルと入力項目の余白を狭くする */
+    /* スマホ:  */
     @media (max-width: 768px) {
       .entry-form .form-row {
-        gap: 0;
+        gap: 10px;
         margin-bottom: 2px;
       }
 
       .entry-form label {
         padding-top: 2px;
-        width: 135px;
+        width: 110px;
       }
 
       .label-with-button {
-        min-width: 135px;
+        min-width: 110px;
         gap: 2px;
       }
 
       .label-with-button label {
-        width: 135px;
+        width: 110px;
         padding-top: 2px;
+      }
+
+      .form-row-brand-chara .label-with-button {
+        min-width: 110px;
+      }
+
+      .form-row-brand-chara .label-with-button label {
+        width: 110px;
+        line-height: 1.2;
+      }
+
+      .sp-label-break {
+        display: inline;
+      }
+
+      .entry-form label[for="entryLicensor"] {
+        width: 110px;
+        white-space: nowrap;
       }
 
       /* スマホ: ブランド・キャラ / アイテムをライセンサーselectと同幅にする */
       #entryLicensor,
-      #entryBrandCharaFirst {
+      #entryBrandCharaFirst,
+      #entryItemFirst {
+        flex: 1 1 auto;
         width: 100%;
         min-width: 0;
         max-width: 100%;
+        box-sizing: border-box;
       }
 
       #brandCharaInputsContainer .supplier-input-row select,
@@ -797,17 +822,16 @@
       }
 
       /* スマホ: 動的追加行は×ボタンで幅が狭くならないよう静的入力と同幅にする */
-      #brandCharaInputsContainer .supplier-input-row,
-      #itemInputsContainer .supplier-input-row {
+      #brandCharaInputsContainer .supplier-input-row.is-dynamic-row,
+      #itemInputsContainer .supplier-input-row.is-dynamic-row {
         position: relative;
-        padding-right: 30px;
       }
 
-      #brandCharaInputsContainer .supplier-input-row .btn-delete-supplier,
-      #itemInputsContainer .supplier-input-row .btn-delete-supplier {
+      #brandCharaInputsContainer .supplier-input-row.is-dynamic-row .btn-delete-supplier,
+      #itemInputsContainer .supplier-input-row.is-dynamic-row .btn-delete-supplier {
         position: absolute;
         top: 0;
-        right: 0;
+        right: -30px;
       }
     }
   </style>
@@ -881,9 +905,9 @@
               </div>
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row form-row-brand-chara">
             <div class="label-with-button label-with-button-vertical">
-              <label for="entryBrandCharaFirst">ブランド・キャラ</label>
+              <label for="entryBrandCharaFirst">ブランド・<span class="sp-label-break"><br></span>キャラ</label>
               <button type="button" class="btn-add-image btn-add-image--small js-add-brand-chara" title="ブランド・キャラを追加">追加</button>
             </div>
             <div class="supplier-inputs-wrapper">
@@ -1077,7 +1101,7 @@
           item.className = "supplier-input-item";
 
           var row = document.createElement("div");
-          row.className = "supplier-input-row";
+          row.className = "supplier-input-row is-dynamic-row";
 
           var select = document.createElement("select");
           select.setAttribute("name", "brandChara[]");
@@ -1100,7 +1124,7 @@
           item.className = "supplier-input-item";
 
           var row = document.createElement("div");
-          row.className = "supplier-input-row";
+          row.className = "supplier-input-row is-dynamic-row";
 
           var autocompleteDiv = document.createElement("div");
           autocompleteDiv.className = "autocomplete";
