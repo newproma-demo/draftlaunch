@@ -1376,7 +1376,15 @@
         var cancelAllBtn = document.getElementById("searchCancelAllBtn");
         if (cancelAllBtn) {
           cancelAllBtn.addEventListener("click", function () {
-            // 初期表示へ戻す（リフレッシュ）
+            // 入力値のみ初期化（再読み込みはしない）
+            var panel = document.getElementById("searchRowsPanel");
+            if (!panel) return;
+            panel.querySelectorAll("input[type='text']").forEach(function (input) {
+              input.value = "";
+            });
+            panel.querySelectorAll("select").forEach(function (select) {
+              select.selectedIndex = 0;
+            });
             panel.querySelectorAll(".multi-select-menu input[type='checkbox']").forEach(function (cb) {
               cb.checked = false;
             });
@@ -1387,7 +1395,7 @@
                 ctrl.toggle.setAttribute("aria-expanded", "false");
               });
             }
-            window.location.reload();
+            applyFilter();
           });
         }
         applyFilter();
