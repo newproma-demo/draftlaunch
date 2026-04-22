@@ -15,8 +15,7 @@
     body {
       display: flex;
       flex-direction: column;
-      height: 100dvh;
-      max-height: 100dvh;
+      min-height: 100dvh;
       overflow: hidden;
     }
 
@@ -231,6 +230,7 @@
       border: 1px solid #d7e0d9;
       border-radius: var(--radius-sm);
       padding: 10px;
+      padding-bottom: 14px;
       margin-bottom: 10px;
       background: #fff;
     }
@@ -239,6 +239,7 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px 10px;
+      padding-bottom: 4px;
     }
 
     .mobile-matrix-checkbox-grid label {
@@ -251,9 +252,13 @@
 
     .permission-table-wrap {
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;
       border: 1px solid #d7e0d9;
       border-radius: var(--radius-sm);
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 0;
     }
 
     .permission-matrix-body {
@@ -543,15 +548,23 @@
       .content {
         padding: 20px 14px 0;
         margin-left: -220px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
       }
 
       .screen-body {
+        flex: none;
+        min-height: auto;
+        height: auto;
         grid-template-columns: 1fr;
         gap: 12px;
       }
 
       .panel {
         overflow: visible;
+        min-height: auto;
+        height: auto;
       }
 
       .panel-header {
@@ -560,6 +573,10 @@
       }
 
       .panel-body {
+        flex: none;
+        min-height: 0;
+        height: auto;
+        max-height: none;
         padding: 10px 12px;
         overflow: visible;
       }
@@ -575,7 +592,7 @@
       .role-panel .role-list {
         flex: none;
         max-height: none !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         margin-bottom: 0;
         padding-right: 0;
       }
@@ -585,7 +602,7 @@
       }
 
       .role-panel .role-list .role-item.is-active {
-        display: block;
+        display: block !important;
       }
 
       .role-panel .panel-body {
@@ -641,6 +658,7 @@
       }
 
       .content-footer {
+        position: static;
         padding: 6px 8px 4px;
       }
 
@@ -660,8 +678,30 @@
         max-height: none !important;
       }
 
+      .matrix-panel {
+        overflow: visible !important;
+      }
+
+      .matrix-panel .panel-body {
+        display: block;
+        height: auto;
+        min-height: 0;
+        padding-bottom: 12px;
+      }
+
+      .matrix-panel .panel-body {
+        padding-bottom: 12px;
+      }
+
+      .mobile-matrix-editor {
+        overflow: visible !important;
+        padding-bottom: 14px;
+        margin-bottom: 0;
+      }
+
       .mobile-matrix-checkbox-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
         gap: 8px;
       }
 
@@ -763,7 +803,9 @@
         flex: 1;
         min-height: 0;
         overflow-y: auto;
-        overflow-x: hidden;
+        overflow-x: auto;
+        max-width: 100%;
+        box-sizing: border-box;
       }
     }
 
@@ -871,7 +913,7 @@
         </section>
 
         <section class="panel matrix-panel">
-          <div class="panel-header">権限マトリクス（管理者）</div>
+          <div class="panel-header">権限マトリックス（管理者）</div>
           <div class="panel-body">
             <div class="matrix-selectors" id="matrixSelectors">
               <select id="matrixMenuSelect" aria-label="メニュー選択"></select>
@@ -1442,7 +1484,7 @@
     function updateMatrixHeader(roleName) {
       const header = document.querySelector('.screen-body .panel:nth-child(2) .panel-header');
       if (!header) return;
-      header.textContent = '権限マトリクス（' + roleName + '）';
+      header.textContent = '権限マトリックス（' + roleName + '）';
     }
 
     function switchRole(nextRoleName) {
