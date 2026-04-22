@@ -104,6 +104,18 @@
       box-sizing: border-box;
     }
 
+    .role-select {
+      display: none;
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #204331;
+    }
+
     .role-list {
       list-style: none;
       margin: 0;
@@ -131,6 +143,11 @@
     .role-list-actions {
       display: flex;
       justify-content: flex-end;
+      padding-top: 8px;
+    }
+
+    .role-list-actions .small-btn {
+      line-height: 1.2;
     }
 
     .role-item {
@@ -187,6 +204,49 @@
       border-color: var(--color-primary);
       background: var(--color-primary);
       color: #fff;
+    }
+
+    .matrix-selectors {
+      display: none;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .matrix-selectors select {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: #204331;
+      box-sizing: border-box;
+    }
+
+    .matrix-selectors select + select {
+      margin-top: 12px;
+    }
+
+    .mobile-matrix-editor {
+      display: none;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+
+    .mobile-matrix-checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 10px;
+    }
+
+    .mobile-matrix-checkbox-grid label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #173425;
     }
 
     .permission-table-wrap {
@@ -487,14 +547,225 @@
 
       .screen-body {
         grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .panel-header {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .panel-body {
+        padding: 10px 12px;
+      }
+
+      .role-panel .role-list {
+        max-height: min(36dvh, 320px);
+      }
+
+      .permission-matrix-body .permission-table-wrap {
+        overflow-x: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .permission-table {
+        min-width: 620px;
+        font-size: 12px;
+      }
+
+      .permission-table th,
+      .permission-table td {
+        padding: 8px 6px;
+      }
+
+      .permission-table th:first-child,
+      .permission-table td:first-child {
+        width: 320px;
+        overflow: visible;
+        text-overflow: clip;
       }
 
       .content-footer {
         padding: 6px 8px 4px;
       }
 
+      .info-list {
+        white-space: normal;
+      }
+
       .confirm-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      #roleSearchInput {
+        display: none;
+      }
+
+      #roleSelectInput {
+        display: block;
+      }
+
+      .role-panel .panel-body {
+        display: grid;
+        grid-template-rows: auto auto auto auto;
+        row-gap: 10px;
+        flex: none;
+        overflow: hidden;
+        padding-bottom: 12px;
+        box-sizing: border-box;
+      }
+
+      .role-panel {
+        overflow: visible;
+      }
+
+      .role-panel .role-list {
+        flex: none;
+        max-height: none;
+        overflow: hidden;
+        margin-bottom: 0;
+        padding-right: 0;
+      }
+
+      .role-panel .role-list .role-item {
+        display: none;
+      }
+
+      .role-panel .role-list .role-item.is-active {
+        display: block;
+      }
+
+      .role-list-actions {
+        display: flex;
+        flex-shrink: 0;
+        margin-top: 0;
+        padding-top: 0;
+      }
+
+      .toolbar-row,
+      .permission-table-wrap {
+        display: none;
+      }
+
+      .matrix-selectors,
+      .mobile-matrix-editor {
+        display: block;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .content {
+        padding: 12px 10px 0 10px;
+      }
+
+      .screen-body {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: minmax(300px, 1fr) minmax(440px, 2fr);
+        grid-template-areas:
+          "role impact"
+          "matrix matrix";
+        gap: 12px;
+      }
+
+      .role-panel {
+        grid-area: role;
+      }
+
+      .matrix-panel {
+        grid-area: matrix;
+      }
+
+      .impact-panel {
+        grid-area: impact;
+      }
+
+      /* iPad縦ではマトリクスをPC同等表示に戻す */
+      .matrix-panel .toolbar-row,
+      .matrix-panel .permission-table-wrap {
+        display: block;
+      }
+
+      .matrix-panel .matrix-selectors,
+      .matrix-panel .mobile-matrix-editor {
+        display: none;
+      }
+
+      .matrix-panel .panel-body {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .matrix-panel .permission-table-wrap {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .content {
+        padding: 14px 10px 0;
+      }
+
+      .page-title {
+        margin-bottom: 12px;
+        font-size: 17px;
+      }
+
+      .panel-header {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .panel-body {
+        padding: 8px 10px;
+      }
+
+      .role-item {
+        padding: 10px;
+        min-height: 82px;
+      }
+
+      .role-list-actions {
+        margin-top: 10px;
+      }
+
+      .role-list-actions .small-btn.primary {
+        min-width: 124px;
+        padding: 7px 10px;
+      }
+
+      .matrix-selectors select {
+        padding: 8px 9px;
+      }
+
+      .mobile-matrix-editor {
+        padding: 10px;
+        min-height: 110px;
+      }
+
+      .mobile-matrix-checkbox-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .impact-box {
+        min-height: 96px;
+        padding: 12px;
+      }
+
+      .content-footer {
+        padding: 6px 4px 4px;
+      }
+
+      .content-footer .btn-fab-new {
+        min-width: 60px;
       }
     }
   </style>
@@ -525,8 +796,9 @@
       <div class="screen-body">
         <section class="panel role-panel">
           <div class="panel-header">権限グループ一覧</div>
-          <div class="panel-body permission-matrix-body">
+          <div class="panel-body">
             <input class="search-input" id="roleSearchInput" type="text" placeholder="グループ名で検索">
+            <select class="role-select" id="roleSelectInput" aria-label="権限グループを選択"></select>
             <ul class="role-list" id="roleList">
               <li class="role-item is-active">
                 <div class="role-name">読み込み中...</div>
@@ -539,9 +811,21 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel matrix-panel">
           <div class="panel-header">権限マトリクス（管理者）</div>
           <div class="panel-body">
+            <div class="matrix-selectors" id="matrixSelectors">
+              <select id="matrixMenuSelect" aria-label="メニュー選択"></select>
+              <select id="matrixSubmenuSelect" aria-label="サブメニュー選択"></select>
+            </div>
+            <div class="mobile-matrix-editor" id="mobileMatrixEditor">
+              <div class="mobile-matrix-checkbox-grid">
+                <label><input type="checkbox" id="mobilePermView">閲覧</label>
+                <label><input type="checkbox" id="mobilePermEdit">編集</label>
+                <label><input type="checkbox" id="mobilePermApprove">決裁</label>
+                <label><input type="checkbox" id="mobilePermNone">アクセス権無</label>
+              </div>
+            </div>
             <div class="toolbar-row">
               <div class="toolbar-left">
                 <button type="button" class="small-btn">全ON</button>
@@ -571,13 +855,9 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel impact-panel">
           <div class="panel-header">影響範囲・変更差分</div>
           <div class="panel-body">
-            <div class="impact-box">
-              <div class="impact-label">対象ユーザー数</div>
-              <div class="impact-value" id="impactUserCount">38名</div>
-            </div>
             <div class="impact-box">
               <div class="impact-label">追加予定権限</div>
               <ul class="info-list" id="impactAddedList">
@@ -643,6 +923,8 @@
     const ACTION_LABELS = ['閲覧', '編集', '決裁', 'アクセス権無'];
     let baselinePermissions = new Set();
     let activeRoleName = '';
+    let activeMatrixRow = null;
+    let syncingMobileEditor = false;
     const rolePermissionStore = {};
     const roleBaselineStore = {};
 
@@ -711,6 +993,7 @@
 
     function bindRoleItemClick() {
       const roleItems = document.querySelectorAll('#roleList .role-item');
+      const roleSelect = document.getElementById('roleSelectInput');
       roleItems.forEach((item) => {
         item.addEventListener('click', () => {
           const roleNameEl = item.querySelector('.role-name');
@@ -718,12 +1001,13 @@
           if (!roleName || roleName === '該当なし') return;
           roleItems.forEach((row) => row.classList.remove('is-active'));
           item.classList.add('is-active');
+          if (roleSelect) roleSelect.value = roleName;
           switchRole(roleName);
         });
       });
     }
 
-    function renderRoleListFromAutocomplete(filterText) {
+    function renderRoleListFromAutocomplete(filterText, exactMatch) {
       const roleList = document.getElementById('roleList');
       if (!roleList) return;
 
@@ -731,7 +1015,9 @@
         ? window.AUTOCOMPLETE_LISTS.kengengroup
         : [];
       const normalizedFilter = String(filterText || '').trim().toLowerCase();
-      const visibleRoles = source.filter((role) => String(role).toLowerCase().indexOf(normalizedFilter) !== -1);
+      const visibleRoles = exactMatch
+        ? source.filter((role) => String(role).toLowerCase() === normalizedFilter)
+        : source.filter((role) => String(role).toLowerCase().indexOf(normalizedFilter) !== -1);
 
       roleList.innerHTML = '';
       if (visibleRoles.length === 0) {
@@ -742,9 +1028,10 @@
         return;
       }
 
+      const defaultRoleName = '営業部一般';
       const selectedRole = activeRoleName && visibleRoles.indexOf(activeRoleName) !== -1
         ? activeRoleName
-        : visibleRoles[0];
+        : (visibleRoles.indexOf(defaultRoleName) !== -1 ? defaultRoleName : visibleRoles[0]);
       activeRoleName = selectedRole;
 
       visibleRoles.forEach((roleName) => {
@@ -753,13 +1040,49 @@
       bindRoleItemClick();
     }
 
+    function populateRoleSelectOptions() {
+      const roleSelect = document.getElementById('roleSelectInput');
+      if (!roleSelect) return;
+      const source = window.AUTOCOMPLETE_LISTS && Array.isArray(window.AUTOCOMPLETE_LISTS.kengengroup)
+        ? window.AUTOCOMPLETE_LISTS.kengengroup
+        : [];
+      const defaultRoleName = '営業部一般';
+      roleSelect.innerHTML = '';
+      source.forEach((roleName) => {
+        const option = document.createElement('option');
+        option.value = roleName;
+        option.textContent = roleName;
+        roleSelect.appendChild(option);
+      });
+      if (activeRoleName) {
+        roleSelect.value = activeRoleName;
+      } else if (source.indexOf(defaultRoleName) !== -1) {
+        roleSelect.value = defaultRoleName;
+        activeRoleName = defaultRoleName;
+      } else if (source.length > 0) {
+        roleSelect.value = source[0];
+        activeRoleName = source[0];
+      }
+    }
+
     function initRoleListFromAutocomplete() {
       const searchInput = document.getElementById('roleSearchInput');
+      const roleSelect = document.getElementById('roleSelectInput');
       renderRoleListFromAutocomplete('');
-      if (!searchInput) return;
-      searchInput.addEventListener('input', () => {
-        renderRoleListFromAutocomplete(searchInput.value);
-      });
+      populateRoleSelectOptions();
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          renderRoleListFromAutocomplete(searchInput.value);
+        });
+      }
+      if (roleSelect) {
+        roleSelect.addEventListener('change', () => {
+          renderRoleListFromAutocomplete(roleSelect.value, true);
+          if (roleSelect.value) {
+            switchRole(roleSelect.value);
+          }
+        });
+      }
     }
 
     function createPermissionCheckboxCell(rowIndex, actionIndex, checked) {
@@ -861,6 +1184,123 @@
           subMenuRow.classList.remove('is-disabled-submenu');
         }
       });
+    }
+
+    function getMenuRows() {
+      return Array.from(document.querySelectorAll('.permission-table tbody tr[data-row-type="menu"]'));
+    }
+
+    function getSubmenuRowsByMenu(menuName) {
+      return Array.from(document.querySelectorAll('.permission-table tbody tr[data-row-type="submenu"]'))
+        .filter((row) => row.dataset.menuName === menuName);
+    }
+
+    function getRowByMenuAndSubmenu(menuName, subMenuName) {
+      return document.querySelector(
+        '.permission-table tbody tr[data-row-type="submenu"][data-menu-name="' + menuName + '"][data-sub-menu-name="' + subMenuName + '"]'
+      );
+    }
+
+    function syncMobileEditorFromRow() {
+      const editor = document.getElementById('mobileMatrixEditor');
+      const view = document.getElementById('mobilePermView');
+      const edit = document.getElementById('mobilePermEdit');
+      const approve = document.getElementById('mobilePermApprove');
+      const none = document.getElementById('mobilePermNone');
+      if (!editor || !view || !edit || !approve || !none) return;
+
+      if (!activeMatrixRow) {
+        [view, edit, approve, none].forEach((cb) => {
+          cb.checked = false;
+          cb.disabled = true;
+        });
+        return;
+      }
+
+      const rowChecks = getRowCheckboxes(activeMatrixRow);
+      if (rowChecks.length !== 4) return;
+      syncingMobileEditor = true;
+      view.checked = rowChecks[0].checked;
+      edit.checked = rowChecks[1].checked;
+      approve.checked = rowChecks[2].checked;
+      none.checked = rowChecks[3].checked;
+      view.disabled = rowChecks[0].disabled;
+      edit.disabled = rowChecks[1].disabled;
+      approve.disabled = rowChecks[2].disabled;
+      none.disabled = rowChecks[3].disabled;
+      syncingMobileEditor = false;
+    }
+
+    function setActiveMatrixRowBySelect() {
+      const menuSelect = document.getElementById('matrixMenuSelect');
+      const submenuSelect = document.getElementById('matrixSubmenuSelect');
+      if (!menuSelect || !submenuSelect) return;
+      activeMatrixRow = getRowByMenuAndSubmenu(menuSelect.value, submenuSelect.value);
+      syncMobileEditorFromRow();
+    }
+
+    function populateSubmenuSelect(menuName, preferredSubmenu) {
+      const submenuSelect = document.getElementById('matrixSubmenuSelect');
+      if (!submenuSelect) return;
+      const subRows = getSubmenuRowsByMenu(menuName);
+      submenuSelect.innerHTML = '';
+      subRows.forEach((row) => {
+        const option = document.createElement('option');
+        option.value = row.dataset.subMenuName || '';
+        option.textContent = row.dataset.subMenuName || '';
+        submenuSelect.appendChild(option);
+      });
+      if (preferredSubmenu && subRows.some((row) => row.dataset.subMenuName === preferredSubmenu)) {
+        submenuSelect.value = preferredSubmenu;
+      } else if (subRows.length > 0) {
+        submenuSelect.value = subRows[0].dataset.subMenuName || '';
+      }
+      setActiveMatrixRowBySelect();
+    }
+
+    function initMobileMatrixSelectors() {
+      const menuSelect = document.getElementById('matrixMenuSelect');
+      const submenuSelect = document.getElementById('matrixSubmenuSelect');
+      const view = document.getElementById('mobilePermView');
+      const edit = document.getElementById('mobilePermEdit');
+      const approve = document.getElementById('mobilePermApprove');
+      const none = document.getElementById('mobilePermNone');
+      if (!menuSelect || !submenuSelect || !view || !edit || !approve || !none) return;
+
+      const menuRows = getMenuRows();
+      menuSelect.innerHTML = '';
+      menuRows.forEach((row) => {
+        const option = document.createElement('option');
+        option.value = row.dataset.menuName || '';
+        option.textContent = row.dataset.menuName || '';
+        menuSelect.appendChild(option);
+      });
+      if (menuRows.length > 0) {
+        menuSelect.value = menuRows[0].dataset.menuName || '';
+      }
+      populateSubmenuSelect(menuSelect.value, '');
+
+      menuSelect.addEventListener('change', () => {
+        populateSubmenuSelect(menuSelect.value, '');
+      });
+      submenuSelect.addEventListener('change', () => {
+        setActiveMatrixRowBySelect();
+      });
+
+      function bindMobileCheckbox(mobileCheckbox, index) {
+        mobileCheckbox.addEventListener('change', () => {
+          if (syncingMobileEditor || !activeMatrixRow) return;
+          const rowChecks = getRowCheckboxes(activeMatrixRow);
+          if (rowChecks.length !== 4) return;
+          rowChecks[index].checked = mobileCheckbox.checked;
+          rowChecks[index].dispatchEvent(new Event('change', { bubbles: true }));
+          syncMobileEditorFromRow();
+        });
+      }
+      bindMobileCheckbox(view, 0);
+      bindMobileCheckbox(edit, 1);
+      bindMobileCheckbox(approve, 2);
+      bindMobileCheckbox(none, 3);
     }
 
     function handleAccessNoneRule(checkbox) {
@@ -968,6 +1408,7 @@
       baselinePermissions = new Set(roleBaselineStore[nextRoleName]);
       updateMatrixHeader(nextRoleName);
       updateImpactPanel();
+      setActiveMatrixRowBySelect();
     }
 
     function initializePermissionMeta() {
@@ -1125,6 +1566,7 @@
             rolePermissionStore[activeRoleName] = collectCheckedPermissionKeys();
           }
           updateImpactPanel();
+          syncMobileEditorFromRow();
         });
       });
 
@@ -1160,6 +1602,7 @@
     loadSharedSidebar();
     initRoleListFromAutocomplete();
     initPermissionConfirmFlow();
+    initMobileMatrixSelectors();
     if (activeRoleName) switchRole(activeRoleName);
 
     const icon = document.querySelector('.header-account_circle');
