@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      max-height: 100dvh;
+      overflow: hidden;
+    }
+
+    body>.header {
+      flex-shrink: 0;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      margin-top: 0;
+    }
+
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 0 0 32px;
+      overflow: hidden;
+      transition: margin-left 0.3s ease;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 33px;
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .screen-body {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr) 460px;
+      gap: 16px;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-md);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #dfe7e1;
+      background: #f6faf7;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f3e2e;
+    }
+
+    .panel-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .role-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .role-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .role-panel .role-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 2px;
+    }
+
+    .role-list-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .role-item {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .role-item.is-active {
+      border-color: var(--color-primary);
+      background: #edf8f0;
+    }
+
+    .role-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #173425;
+      margin-bottom: 3px;
+    }
+
+    .role-meta {
+      font-size: 12px;
+      color: #66786f;
+    }
+
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .small-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .small-btn.primary {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .permission-table-wrap {
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+    }
+
+    .permission-matrix-body {
+      overflow: hidden !important;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .permission-matrix-body .permission-table-wrap {
+      flex: 1;
+      min-height: 0;
+      max-height: 100%;
+      position: relative;
+    }
+
+    .permission-table {
+      width: 100%;
+      min-width: 0;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 13px;
+      table-layout: fixed;
+    }
+
+    .permission-table th,
+    .permission-table td {
+      border-bottom: 1px solid #e4ebe6;
+      padding: 9px 10px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .permission-table th:first-child,
+    .permission-table td:first-child {
+      text-align: left;
+      width: 46%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 1;
+    }
+
+    .permission-table th:nth-child(2),
+    .permission-table td:nth-child(2),
+    .permission-table th:nth-child(3),
+    .permission-table td:nth-child(3),
+    .permission-table th:nth-child(4),
+    .permission-table td:nth-child(4) {
+      width: 12%;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    .permission-table th:nth-child(5),
+    .permission-table td:nth-child(5) {
+      width: 18%;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    .permission-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 6;
+    }
+
+    .permission-table thead th {
+      position: static;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .permission-table thead th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 7;
+    }
+
+    .section-row td {
+      background: #f9fcfa;
+      font-weight: 700;
+      color: #2b4f3a;
+    }
+
+    .submenu-row.is-disabled-submenu td {
+      background: #f3f5f4;
+      color: #97a39d;
+    }
+
+    .submenu-row.is-disabled-submenu td:first-child {
+      color: #97a39d;
+    }
+
+    .info-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #1e3a2c;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
+
+    .impact-box {
+      border: 1px dashed #b9cbbf;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fcfefc;
+    }
+
+    .impact-label {
+      font-size: 12px;
+      color: #66786f;
+      margin-bottom: 4px;
+    }
+
+    .impact-value {
+      font-size: 19px;
+      font-weight: 700;
+      color: #113222;
+    }
+
+    .content-footer {
+      flex-shrink: 0;
+      margin-top: 8px;
+      border-top: 1px solid #cfdad2;
+      min-height: 46px;
+      padding: 6px 10px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      z-index: 5;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(22, 39, 30, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 4000;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .confirm-overlay.is-open {
+      display: flex;
+    }
+
+    .confirm-modal {
+      width: min(680px, 100%);
+      max-height: 90dvh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #d7e0d9;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.2);
+    }
+
+    .confirm-modal-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid #e1e9e3;
+      font-size: 16px;
+      font-weight: 700;
+      color: #173425;
+    }
+
+    .confirm-modal-body {
+      padding: 14px 16px;
+    }
+
+    .confirm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .confirm-card {
+      border: 1px solid #d7e0d9;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fcfefc;
+    }
+
+    .confirm-card-label {
+      font-size: 12px;
+      color: #66786f;
+      margin-bottom: 4px;
+    }
+
+    .confirm-card-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #113222;
+    }
+
+    .confirm-list-wrap {
+      border: 1px solid #d7e0d9;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+
+    .confirm-list-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #21402f;
+      margin-bottom: 6px;
+    }
+
+    .confirm-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #1e3a2c;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .confirm-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    .btn-secondary {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    @media (max-width: 767px) {
+      .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        padding: 20px 14px 0;
+        margin-left: -220px;
+      }
+
+      .screen-body {
+        grid-template-columns: 1fr;
+      }
+
+      .content-footer {
+        padding: 6px 8px 4px;
+      }
+
+      .confirm-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div id="sidebarMount"></div>
+
+    <div class="content">
+      <h2 class="page-title">権限グループマスタメンテナンス</h2>
+      <div class="screen-body">
+        <section class="panel role-panel">
+          <div class="panel-header">権限グループ一覧</div>
+          <div class="panel-body permission-matrix-body">
+            <input class="search-input" id="roleSearchInput" type="text" placeholder="グループ名で検索">
+            <ul class="role-list" id="roleList">
+              <li class="role-item is-active">
+                <div class="role-name">読み込み中...</div>
+                <div class="role-meta">更新: --/--/--</div>
+              </li>
+            </ul>
+            <div class="role-list-actions">
+              <button type="button" class="small-btn primary">新規グループ作成</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">権限マトリクス（管理者）</div>
+          <div class="panel-body">
+            <div class="toolbar-row">
+              <div class="toolbar-left">
+                <button type="button" class="small-btn">全ON</button>
+                <button type="button" class="small-btn">全OFF</button>
+                <button type="button" class="small-btn">複製</button>
+              </div>
+            </div>
+            <div class="permission-table-wrap">
+              <table class="permission-table">
+                <thead>
+                  <tr>
+                    <th>機能</th>
+                    <th>閲覧</th>
+                    <th>編集</th>
+                    <th>決裁</th>
+                    <th>アクセス権無</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>読み込み中...</td>
+                    <td colspan="4">サイドバー情報を展開しています</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">影響範囲・変更差分</div>
+          <div class="panel-body">
+            <div class="impact-box">
+              <div class="impact-label">対象ユーザー数</div>
+              <div class="impact-value" id="impactUserCount">38名</div>
+            </div>
+            <div class="impact-box">
+              <div class="impact-label">追加予定権限</div>
+              <ul class="info-list" id="impactAddedList">
+                <li>なし</li>
+              </ul>
+            </div>
+            <div class="impact-box">
+              <div class="impact-label">削除予定権限</div>
+              <ul class="info-list" id="impactRemovedList">
+                <li>なし</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="content-footer">
+        <button type="button" class="btn-fab-new" id="saveButton">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confirm-overlay" id="saveConfirmOverlay" aria-hidden="true">
+    <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="saveConfirmTitle">
+      <div class="confirm-modal-header" id="saveConfirmTitle">権限変更の確認</div>
+      <div class="confirm-modal-body">
+        <div class="confirm-grid">
+          <div class="confirm-card">
+            <div class="confirm-card-label">対象ユーザー数</div>
+            <div class="confirm-card-value" id="confirmUserCount">0名</div>
+          </div>
+          <div class="confirm-card">
+            <div class="confirm-card-label">追加予定権限数</div>
+            <div class="confirm-card-value" id="confirmAddedCount">0件</div>
+          </div>
+          <div class="confirm-card">
+            <div class="confirm-card-label">削除予定権限数</div>
+            <div class="confirm-card-value" id="confirmRemovedCount">0件</div>
+          </div>
+        </div>
+        <div class="confirm-list-wrap">
+          <div class="confirm-list-title">追加予定権限</div>
+          <ul class="confirm-list" id="confirmAddedList">
+            <li>なし</li>
+          </ul>
+        </div>
+        <div class="confirm-list-wrap">
+          <div class="confirm-list-title">削除予定権限</div>
+          <ul class="confirm-list" id="confirmRemovedList">
+            <li>なし</li>
+          </ul>
+        </div>
+      </div>
+      <div class="confirm-modal-actions">
+        <button type="button" class="btn-secondary" id="cancelSaveButton">キャンセル</button>
+        <button type="button" class="btn-fab-new" id="confirmSaveButton">この内容で保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/autocomplete.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script>
+    const ACTION_LABELS = ['閲覧', '編集', '決裁', 'アクセス権無'];
+    let baselinePermissions = new Set();
+    let activeRoleName = '';
+    const rolePermissionStore = {};
+    const roleBaselineStore = {};
+
+    function loadSharedSidebar() {
+      const mount = document.getElementById('sidebarMount');
+      if (!mount) return;
+      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) return;
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+        if (toggleImg) {
+          toggleImg.src = sidebar.classList.contains('closed')
+            ? 'images/chevron_right_20dp_FFFFF.svg'
+            : 'images/chevron_left_20dp_FFFFF.svg';
+        }
+      });
+      toggle.dataset.bound = '1';
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('show', sidebar.classList.contains('active'));
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    function getRoleUpdater(roleName) {
+      const candidates = ['丸眞 太郎', '丸眞 花子', '山田 一郎', '鈴木 次郎', '高橋 三郎'];
+      let hash = 0;
+      for (let i = 0; i < roleName.length; i++) {
+        hash += roleName.charCodeAt(i);
+      }
+      return candidates[hash % candidates.length];
+    }
+
+    function buildRoleItemElement(roleName, isActive) {
+      const li = document.createElement('li');
+      li.className = 'role-item' + (isActive ? ' is-active' : '');
+      const updater = getRoleUpdater(roleName);
+      li.innerHTML =
+        '<div class="role-name">' + roleName + '</div>' +
+        '<div class="role-meta">更新者：' + updater + '</div>' +
+        '<div class="role-meta">更新: --/--/--</div>';
+      return li;
+    }
+
+    function bindRoleItemClick() {
+      const roleItems = document.querySelectorAll('#roleList .role-item');
+      roleItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          const roleNameEl = item.querySelector('.role-name');
+          const roleName = roleNameEl ? roleNameEl.textContent.trim() : '';
+          if (!roleName || roleName === '該当なし') return;
+          roleItems.forEach((row) => row.classList.remove('is-active'));
+          item.classList.add('is-active');
+          switchRole(roleName);
+        });
+      });
+    }
+
+    function renderRoleListFromAutocomplete(filterText) {
+      const roleList = document.getElementById('roleList');
+      if (!roleList) return;
+
+      const source = window.AUTOCOMPLETE_LISTS && Array.isArray(window.AUTOCOMPLETE_LISTS.kengengroup)
+        ? window.AUTOCOMPLETE_LISTS.kengengroup
+        : [];
+      const normalizedFilter = String(filterText || '').trim().toLowerCase();
+      const visibleRoles = source.filter((role) => String(role).toLowerCase().indexOf(normalizedFilter) !== -1);
+
+      roleList.innerHTML = '';
+      if (visibleRoles.length === 0) {
+        const empty = document.createElement('li');
+        empty.className = 'role-item';
+        empty.innerHTML = '<div class="role-name">該当なし</div><div class="role-meta">kengengroup リストに一致なし</div>';
+        roleList.appendChild(empty);
+        return;
+      }
+
+      const selectedRole = activeRoleName && visibleRoles.indexOf(activeRoleName) !== -1
+        ? activeRoleName
+        : visibleRoles[0];
+      activeRoleName = selectedRole;
+
+      visibleRoles.forEach((roleName) => {
+        roleList.appendChild(buildRoleItemElement(roleName, roleName === selectedRole));
+      });
+      bindRoleItemClick();
+    }
+
+    function initRoleListFromAutocomplete() {
+      const searchInput = document.getElementById('roleSearchInput');
+      renderRoleListFromAutocomplete('');
+      if (!searchInput) return;
+      searchInput.addEventListener('input', () => {
+        renderRoleListFromAutocomplete(searchInput.value);
+      });
+    }
+
+    function createPermissionCheckboxCell(rowIndex, actionIndex, checked) {
+      const td = document.createElement('td');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = !!checked;
+      checkbox.dataset.permissionKey = 'p' + rowIndex + '_' + actionIndex;
+      td.appendChild(checkbox);
+      return td;
+    }
+
+    function buildPermissionMatrixFromSidebar() {
+      const tbody = document.querySelector('.permission-table tbody');
+      if (!tbody) return;
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(window.SHARED_SIDEBAR_HTML || '', 'text/html');
+      const menuItems = Array.from(doc.querySelectorAll('.menu-item'));
+      let rowIndex = 0;
+
+      tbody.innerHTML = '';
+      menuItems.forEach((menuItem) => {
+        const menuTitleEl = menuItem.querySelector('.menu-title span');
+        const menuTitle = menuTitleEl ? menuTitleEl.textContent.trim() : '';
+        if (!menuTitle) return;
+        const parentRowIndex = rowIndex;
+
+        const parentRow = document.createElement('tr');
+        parentRow.className = 'section-row';
+        parentRow.dataset.menuName = menuTitle;
+        parentRow.dataset.subMenuName = '';
+        parentRow.dataset.rowType = 'menu';
+        parentRow.dataset.rowIndex = String(parentRowIndex);
+        const parentCell = document.createElement('td');
+        parentCell.textContent = menuTitle;
+        parentRow.appendChild(parentCell);
+        parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 0, false));
+        parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 1, false));
+        parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 2, false));
+        parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 3, true));
+        tbody.appendChild(parentRow);
+        rowIndex++;
+
+        const links = Array.from(menuItem.querySelectorAll('.submenu li a'));
+        links.forEach((link) => {
+          const subMenuName = link.textContent.trim();
+          if (!subMenuName) return;
+          const subMenuRow = document.createElement('tr');
+          subMenuRow.className = 'submenu-row';
+          subMenuRow.dataset.menuName = menuTitle;
+          subMenuRow.dataset.subMenuName = subMenuName;
+          subMenuRow.dataset.rowType = 'submenu';
+          subMenuRow.dataset.parentRowIndex = String(parentRowIndex);
+          subMenuRow.dataset.rowIndex = String(rowIndex);
+          const featureCell = document.createElement('td');
+          featureCell.textContent = '└ ' + subMenuName;
+          subMenuRow.appendChild(featureCell);
+          subMenuRow.appendChild(createPermissionCheckboxCell(rowIndex, 0, false));
+          subMenuRow.appendChild(createPermissionCheckboxCell(rowIndex, 1, false));
+          subMenuRow.appendChild(createPermissionCheckboxCell(rowIndex, 2, false));
+          subMenuRow.appendChild(createPermissionCheckboxCell(rowIndex, 3, true));
+          tbody.appendChild(subMenuRow);
+          rowIndex++;
+        });
+      });
+    }
+
+    function getRowCheckboxes(row) {
+      if (!row) return [];
+      return Array.from(row.querySelectorAll('input[type="checkbox"]'));
+    }
+
+    function applySubmenuDisableByParent() {
+      const menuRows = Array.from(document.querySelectorAll('.permission-table tbody tr[data-row-type="menu"]'));
+      const menuRowMap = {};
+      menuRows.forEach((menuRow) => {
+        menuRowMap[menuRow.dataset.rowIndex] = menuRow;
+      });
+
+      const subMenuRows = Array.from(document.querySelectorAll('.permission-table tbody tr[data-row-type="submenu"]'));
+      subMenuRows.forEach((subMenuRow) => {
+        const parentRow = menuRowMap[subMenuRow.dataset.parentRowIndex || ''];
+        const parentChecks = getRowCheckboxes(parentRow);
+        const parentNoneCheck = parentChecks[3];
+        const shouldDisable = !!(parentNoneCheck && parentNoneCheck.checked);
+        const subChecks = getRowCheckboxes(subMenuRow);
+
+        if (shouldDisable) {
+          subChecks.forEach((checkbox) => {
+            checkbox.checked = false;
+            checkbox.disabled = true;
+          });
+          subMenuRow.classList.add('is-disabled-submenu');
+        } else {
+          subChecks.forEach((checkbox) => {
+            checkbox.disabled = false;
+          });
+          subMenuRow.classList.remove('is-disabled-submenu');
+        }
+      });
+    }
+
+    function handleAccessNoneRule(checkbox) {
+      const row = checkbox.closest('tr');
+      if (!row) return;
+      const rowChecks = row.querySelectorAll('input[type="checkbox"]');
+      if (rowChecks.length !== 4) return;
+
+      const noneCheck = rowChecks[3];
+      if (checkbox === noneCheck && checkbox.checked) {
+        rowChecks[0].checked = false;
+        rowChecks[1].checked = false;
+        rowChecks[2].checked = false;
+      }
+      if (checkbox !== noneCheck && checkbox.checked) {
+        noneCheck.checked = false;
+      }
+      if (!rowChecks[0].checked && !rowChecks[1].checked && !rowChecks[2].checked && !noneCheck.checked) {
+        noneCheck.checked = true;
+      }
+    }
+
+    function getPermissionRows() {
+      return Array.from(document.querySelectorAll('.permission-table tbody tr'));
+    }
+
+    function getPermissionCheckboxes() {
+      return Array.from(document.querySelectorAll('.permission-table input[type="checkbox"]'));
+    }
+
+    function buildMockRolePermission(roleName) {
+      const keys = new Set();
+      const rows = getPermissionRows();
+      rows.forEach((_, rowIndex) => {
+        const hash = (roleName.length + rowIndex) % 4;
+        if (hash === 0) keys.add('p' + rowIndex + '_0');
+        if (hash === 1) {
+          keys.add('p' + rowIndex + '_0');
+          keys.add('p' + rowIndex + '_1');
+        }
+        if (hash === 2) {
+          keys.add('p' + rowIndex + '_0');
+          keys.add('p' + rowIndex + '_1');
+          keys.add('p' + rowIndex + '_2');
+        }
+        if (hash === 3) keys.add('p' + rowIndex + '_3');
+      });
+      return keys;
+    }
+
+    function applyPermissionState(permissionKeys) {
+      const keySet = permissionKeys instanceof Set ? permissionKeys : new Set();
+      const checkboxes = getPermissionCheckboxes();
+      checkboxes.forEach((checkbox) => {
+        const key = checkbox.dataset.permissionKey;
+        checkbox.checked = !!(key && keySet.has(key));
+      });
+      getPermissionRows().forEach((row) => {
+        const rowChecks = row.querySelectorAll('input[type="checkbox"]');
+        if (rowChecks.length !== 4) return;
+        if (!rowChecks[0].checked && !rowChecks[1].checked && !rowChecks[2].checked) {
+          rowChecks[3].checked = true;
+        } else if (rowChecks[3].checked) {
+          rowChecks[3].checked = false;
+        }
+      });
+      applySubmenuDisableByParent();
+    }
+
+    function collectCheckedPermissionKeys() {
+      const keys = new Set();
+      getPermissionCheckboxes().forEach((checkbox) => {
+        if (!checkbox.checked) return;
+        const key = checkbox.dataset.permissionKey;
+        if (key) keys.add(key);
+      });
+      return keys;
+    }
+
+    function updateMatrixHeader(roleName) {
+      const header = document.querySelector('.screen-body .panel:nth-child(2) .panel-header');
+      if (!header) return;
+      header.textContent = '権限マトリクス（' + roleName + '）';
+    }
+
+    function switchRole(nextRoleName) {
+      if (!nextRoleName) return;
+
+      if (activeRoleName) {
+        rolePermissionStore[activeRoleName] = collectCheckedPermissionKeys();
+      }
+
+      if (!rolePermissionStore[nextRoleName]) {
+        rolePermissionStore[nextRoleName] = buildMockRolePermission(nextRoleName);
+      }
+
+      activeRoleName = nextRoleName;
+      applyPermissionState(rolePermissionStore[nextRoleName]);
+
+      const normalizedCurrentKeys = collectCheckedPermissionKeys();
+      rolePermissionStore[nextRoleName] = new Set(normalizedCurrentKeys);
+      if (!roleBaselineStore[nextRoleName]) {
+        roleBaselineStore[nextRoleName] = new Set(normalizedCurrentKeys);
+      }
+      baselinePermissions = new Set(roleBaselineStore[nextRoleName]);
+      updateMatrixHeader(nextRoleName);
+      updateImpactPanel();
+    }
+
+    function initializePermissionMeta() {
+      const rows = getPermissionRows();
+      rows.forEach((row, rowIndex) => {
+        const featureName = (row.cells[0] && row.cells[0].textContent || '').trim();
+        const menuName = row.dataset.menuName || featureName.replace(/^└\s*/, '');
+        const subMenuName = row.dataset.subMenuName || '';
+        const targetLabel = subMenuName ? (menuName + 'ー' + subMenuName) : menuName;
+        for (let i = 1; i < row.cells.length; i++) {
+          const checkbox = row.cells[i].querySelector('input[type="checkbox"]');
+          if (!checkbox) continue;
+          const actionLabel = ACTION_LABELS[i - 1] || ('権限' + i);
+          checkbox.dataset.permissionLabel = featureName + ' / ' + actionLabel;
+          checkbox.dataset.permissionTarget = targetLabel;
+        }
+      });
+    }
+
+    function collectCheckedPermissions() {
+      const result = new Map();
+      const checkboxes = document.querySelectorAll('.permission-table input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        if (!checkbox.checked) return;
+        const key = checkbox.dataset.permissionKey;
+        const label = checkbox.dataset.permissionLabel;
+        if (key && label) {
+          result.set(key, label);
+        }
+      });
+      return result;
+    }
+
+    function renderList(listElement, items) {
+      if (!listElement) return;
+      listElement.innerHTML = '';
+      if (items.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'なし';
+        listElement.appendChild(li);
+        return;
+      }
+      items.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        listElement.appendChild(li);
+      });
+    }
+
+    function getCurrentDiff() {
+      const currentPermissions = collectCheckedPermissions();
+      const baselineStateByTarget = {};
+      const currentStateByTarget = {};
+      const knownTargets = new Set();
+
+      function markState(stateMap, target, isPositivePermission) {
+        if (!target) return;
+        if (!Object.prototype.hasOwnProperty.call(stateMap, target)) {
+          stateMap[target] = false;
+        }
+        if (isPositivePermission) {
+          stateMap[target] = true;
+        }
+      }
+
+      const allCheckboxes = document.querySelectorAll('.permission-table input[type="checkbox"]');
+      allCheckboxes.forEach((checkbox) => {
+        const key = checkbox.dataset.permissionKey || '';
+        const target = checkbox.dataset.permissionTarget || '';
+        if (!key || !target) return;
+        knownTargets.add(target);
+      });
+
+      baselinePermissions.forEach((key) => {
+        const checkbox = document.querySelector('.permission-table input[data-permission-key="' + key + '"]');
+        if (!checkbox) return;
+        const target = checkbox.dataset.permissionTarget || '';
+        const actionIndex = Number((key.split('_')[1] || '').trim());
+        const isPositivePermission = actionIndex >= 0 && actionIndex <= 2;
+        markState(baselineStateByTarget, target, isPositivePermission);
+        if (target) knownTargets.add(target);
+      });
+
+      currentPermissions.forEach((label, key) => {
+        const checkbox = document.querySelector('.permission-table input[data-permission-key="' + key + '"]');
+        if (!checkbox) return;
+        const target = checkbox.dataset.permissionTarget || '';
+        const actionIndex = Number((key.split('_')[1] || '').trim());
+        const isPositivePermission = actionIndex >= 0 && actionIndex <= 2;
+        markState(currentStateByTarget, target, isPositivePermission);
+        if (target) knownTargets.add(target);
+      });
+
+      const addedTargets = [];
+      const removedTargets = [];
+      knownTargets.forEach((target) => {
+        const beforeEnabled = !!baselineStateByTarget[target];
+        const afterEnabled = !!currentStateByTarget[target];
+        if (!beforeEnabled && afterEnabled) addedTargets.push(target);
+        if (beforeEnabled && !afterEnabled) removedTargets.push(target);
+      });
+
+      return {
+        added: addedTargets.sort(),
+        removed: removedTargets.sort(),
+        currentKeys: new Set(currentPermissions.keys())
+      };
+    }
+
+    function updateImpactPanel() {
+      const diff = getCurrentDiff();
+      const addedList = document.getElementById('impactAddedList');
+      const removedList = document.getElementById('impactRemovedList');
+      renderList(addedList, diff.added);
+      renderList(removedList, diff.removed);
+    }
+
+    function openSaveConfirmModal() {
+      const overlay = document.getElementById('saveConfirmOverlay');
+      const userCount = document.getElementById('impactUserCount');
+      const confirmUserCount = document.getElementById('confirmUserCount');
+      const confirmAddedCount = document.getElementById('confirmAddedCount');
+      const confirmRemovedCount = document.getElementById('confirmRemovedCount');
+      const confirmAddedList = document.getElementById('confirmAddedList');
+      const confirmRemovedList = document.getElementById('confirmRemovedList');
+      if (!overlay) return;
+
+      const diff = getCurrentDiff();
+      if (confirmUserCount && userCount) confirmUserCount.textContent = userCount.textContent;
+      if (confirmAddedCount) confirmAddedCount.textContent = diff.added.length + '件';
+      if (confirmRemovedCount) confirmRemovedCount.textContent = diff.removed.length + '件';
+      renderList(confirmAddedList, diff.added);
+      renderList(confirmRemovedList, diff.removed);
+
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSaveConfirmModal() {
+      const overlay = document.getElementById('saveConfirmOverlay');
+      if (!overlay) return;
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function initPermissionConfirmFlow() {
+      buildPermissionMatrixFromSidebar();
+      initializePermissionMeta();
+
+      document.querySelectorAll('.permission-table input[type="checkbox"]').forEach((checkbox) => {
+        checkbox.addEventListener('change', () => {
+          handleAccessNoneRule(checkbox);
+          applySubmenuDisableByParent();
+          if (activeRoleName) {
+            rolePermissionStore[activeRoleName] = collectCheckedPermissionKeys();
+          }
+          updateImpactPanel();
+        });
+      });
+
+      const saveButton = document.getElementById('saveButton');
+      const cancelSaveButton = document.getElementById('cancelSaveButton');
+      const confirmSaveButton = document.getElementById('confirmSaveButton');
+      const saveConfirmOverlay = document.getElementById('saveConfirmOverlay');
+
+      if (saveButton) saveButton.addEventListener('click', openSaveConfirmModal);
+      if (cancelSaveButton) cancelSaveButton.addEventListener('click', closeSaveConfirmModal);
+      if (saveConfirmOverlay) {
+        saveConfirmOverlay.addEventListener('click', (event) => {
+          if (event.target === saveConfirmOverlay) closeSaveConfirmModal();
+        });
+      }
+
+      if (confirmSaveButton) {
+        confirmSaveButton.addEventListener('click', () => {
+          if (activeRoleName) {
+            const currentKeys = collectCheckedPermissionKeys();
+            rolePermissionStore[activeRoleName] = new Set(currentKeys);
+            roleBaselineStore[activeRoleName] = new Set(currentKeys);
+            baselinePermissions = new Set(currentKeys);
+          } else {
+            baselinePermissions = new Set(collectCheckedPermissions().keys());
+          }
+          updateImpactPanel();
+          closeSaveConfirmModal();
+        });
+      }
+    }
+
+    loadSharedSidebar();
+    initRoleListFromAutocomplete();
+    initPermissionConfirmFlow();
+    if (activeRoleName) switchRole(activeRoleName);
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+    if (icon && menu) {
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+    }
+  </script>
+</body>
+
+</html>
