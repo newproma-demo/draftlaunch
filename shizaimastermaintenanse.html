@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    body>.header {
+      flex-shrink: 0;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      margin-top: 0;
+    }
+
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 0 0 32px;
+      overflow: hidden;
+      transition: margin-left 0.3s ease;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 33px;
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .screen-body {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr) 320px;
+      gap: 16px;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-md);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #dfe7e1;
+      background: #f6faf7;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f3e2e;
+    }
+
+    .panel-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .material-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .material-item {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .material-item.is-active {
+      border-color: var(--color-primary);
+      background: #edf8f0;
+    }
+
+    .material-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #173425;
+      margin-bottom: 4px;
+    }
+
+    .material-meta {
+      font-size: 12px;
+      color: #66786f;
+      line-height: 1.4;
+    }
+
+    .action-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .small-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .small-btn.primary {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 12px;
+    }
+
+    .material-image-box {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      background: #f9fcfa;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+
+    .material-assets-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .material-asset-panel {
+      min-width: 0;
+    }
+
+    .material-image-label {
+      font-size: 12px;
+      color: #446354;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .material-image-preview {
+      width: 100%;
+      height: 210px;
+      border: 1px solid #cfdad2;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .material-image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .material-image-preview img.is-clickable {
+      cursor: zoom-in;
+    }
+
+    .material-image-preview iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #fff;
+      pointer-events: none;
+    }
+
+    .material-image-fallback {
+      font-size: 12px;
+      color: #75867e;
+    }
+
+    .material-image-upload {
+      margin-top: 8px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .material-image-upload input[type="file"] {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      font-size: 12px;
+      color: #355646;
+    }
+
+    .material-image-preview.is-dragover {
+      border-color: var(--color-primary);
+      background: #edf8f0;
+    }
+
+    .material-spec-box {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      background: #f9fcfa;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+
+    .material-spec-label {
+      font-size: 12px;
+      color: #446354;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .material-spec-preview {
+      width: 100%;
+      height: 210px;
+      border: 1px solid #cfdad2;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .material-spec-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .material-spec-fallback {
+      font-size: 12px;
+      color: #75867e;
+    }
+
+    .material-spec-meta {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #4e665a;
+      line-height: 1.4;
+    }
+
+    .material-spec-link {
+      margin-top: 4px;
+      display: inline-block;
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .material-spec-link:hover {
+      text-decoration: underline;
+    }
+
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 5000;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .image-lightbox.is-open {
+      display: flex;
+    }
+
+    .image-lightbox img {
+      max-width: min(92vw, 1320px);
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: #446354;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      padding: 8px 9px;
+      font-size: 13px;
+      color: #173425;
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 74px;
+      resize: vertical;
+    }
+
+    .field-value {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 8px 9px;
+      font-size: 13px;
+      color: #173425;
+      background: #f4f8f6;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-note {
+      font-size: 11px;
+      color: #75867e;
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 2px;
+    }
+
+    .status-row label {
+      font-size: 13px;
+      color: #173425;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .info-card {
+      border: 1px dashed #b9cbbf;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fcfefc;
+    }
+
+    .info-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: #66786f;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #113222;
+      word-break: break-word;
+    }
+
+    .info-sub {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #4e665a;
+      line-height: 1.5;
+    }
+
+    .history-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #1e3a2c;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .content-footer {
+      flex-shrink: 0;
+      margin-top: 8px;
+      border-top: 1px solid #cfdad2;
+      min-height: 46px;
+      padding: 6px 10px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      z-index: 5;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #4e665a;
+      min-height: 1.4em;
+    }
+
+    .message.is-error {
+      color: #9a1f1f;
+    }
+
+    @media (max-width: 767px) {
+      .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        padding: 20px 14px 0;
+        margin-left: -220px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen-body {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .panel {
+        overflow: visible;
+        min-height: auto;
+      }
+
+      .panel-header {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .panel-body {
+        height: auto;
+        max-height: none;
+        padding: 10px 12px;
+        overflow: visible;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .material-assets-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .content-footer {
+        position: static;
+        padding: 6px 8px 4px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .content {
+        padding: 12px 10px 0 10px;
+      }
+
+      .screen-body {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+          "list info"
+          "detail detail";
+        gap: 12px;
+      }
+
+      .list-panel {
+        grid-area: list;
+      }
+
+      .detail-panel {
+        grid-area: detail;
+      }
+
+      .info-panel {
+        grid-area: info;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .content {
+        padding: 14px 10px 0;
+      }
+
+      .page-title {
+        margin-bottom: 12px;
+        font-size: 17px;
+      }
+
+      .panel-header {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .panel-body {
+        padding: 8px 10px;
+      }
+
+      .material-item {
+        padding: 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div id="sidebarMount"></div>
+
+    <div class="content">
+      <h2 class="page-title">資材マスタメンテナンス</h2>
+      <div class="screen-body">
+        <section class="panel list-panel">
+          <div class="panel-header">資材一覧</div>
+          <div class="panel-body">
+            <input id="materialSearchInput" class="search-input" type="text" placeholder="資材コード/資材名で検索">
+            <ul id="materialList" class="material-list"></ul>
+            <div class="action-row">
+              <button type="button" class="small-btn primary" id="createMaterialBtn">新規作成</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel detail-panel">
+          <div class="panel-header">資材情報編集</div>
+          <div class="panel-body">
+            <div class="material-assets-grid">
+              <div class="material-asset-panel material-image-box">
+                <div class="material-image-label">資材画像</div>
+                <div class="material-image-preview">
+                  <img id="materialImagePreview" alt="資材画像プレビュー">
+                  <iframe id="materialPdfPreview" title="資材PDFプレビュー"></iframe>
+                  <div id="materialImageFallback" class="material-image-fallback">画像が設定されていません</div>
+                </div>
+                <div class="material-image-upload">
+                  <input id="materialImageFile" type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.ai" aria-label="資材画像ファイルを選択">
+                </div>
+              </div>
+
+              <div class="material-asset-panel material-spec-box">
+                <div class="material-spec-label">資材仕様書</div>
+                <div class="material-spec-preview">
+                  <img id="materialSpecPreviewImage" alt="資材仕様書プレビュー">
+                  <div id="materialSpecFallback" class="material-spec-fallback">仕様書が設定されていません</div>
+                </div>
+                <div id="materialSpecTitle" class="material-spec-meta">帳票: -</div>
+                <a id="materialSpecOpenLink" class="material-spec-link" href="shiyoshosakusei_teiban.html#panel6" target="_blank" rel="noopener noreferrer">仕様書作成画面を開く</a>
+              </div>
+            </div>
+            <form id="materialForm">
+              <div class="form-grid">
+                <div class="field">
+                  <label class="field-label" for="materialCode">資材コード</label>
+                  <input id="materialCode" name="code" type="text" maxlength="20" required>
+                </div>
+                <div class="field">
+                  <label class="field-label">商品コード（商品マスタ連携）</label>
+                  <div id="materialProductCodeDisplay" class="field-value">-</div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="materialName">資材名</label>
+                  <input id="materialName" name="name" type="text" maxlength="60" required>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="materialType">資材区分</label>
+                  <select id="materialType" name="materialType">
+                    <option value="副資材" selected>副資材</option>
+                    <option value="メイン資材">メイン資材</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="linkedMainMaterialCode">紐づけメイン資材コード</label>
+                  <input id="linkedMainMaterialCode" name="linkedMainCode" type="text" maxlength="20" placeholder="副資材のみ必須">
+                </div>
+                <div class="field">
+                  <label class="field-label" for="materialUnit">単位</label>
+                  <select id="materialUnit" name="unit">
+                    <option value="">選択してください</option>
+                    <option>kg</option>
+                    <option>m</option>
+                    <option>枚</option>
+                    <option>本</option>
+                    <option>箱</option>
+                    <option>式</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="materialSupplier">主要仕入先</label>
+                  <select id="materialSupplier" name="supplier"></select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="materialStandardCost">標準単価 (円)</label>
+                  <input id="materialStandardCost" name="standardCost" type="number" min="0" step="1">
+                </div>
+                <div class="field full">
+                  <label class="field-label" for="materialUsage">使用商品例</label>
+                  <input id="materialUsage" name="usage" type="text" maxlength="80" placeholder="例: 80丈マキタオル / フェイスタオル">
+                </div>
+                <div class="field full">
+                  <span class="field-label">利用状態</span>
+                  <div class="status-row">
+                    <label><input type="radio" name="status" value="有効" checked>有効</label>
+                    <label><input type="radio" name="status" value="停止">停止</label>
+                  </div>
+                </div>
+                <div class="field full">
+                  <label class="field-label" for="materialNote">備考</label>
+                  <textarea id="materialNote" name="note" maxlength="200"></textarea>
+                  <div class="field-note">最大200文字</div>
+                </div>
+              </div>
+            </form>
+            <div id="formMessage" class="message"></div>
+          </div>
+        </section>
+
+        <section class="panel info-panel">
+          <div class="panel-header">資材サマリー</div>
+          <div class="panel-body">
+            <div class="info-card">
+              <div class="info-label">選択中資材</div>
+              <div class="info-value" id="summaryName">-</div>
+              <div class="info-sub" id="summaryCode">コード: -</div>
+            </div>
+            <div class="info-card">
+              <div class="info-label">在庫・コスト</div>
+              <div class="info-sub" id="summaryUnit">単位: -</div>
+              <div class="info-sub" id="summaryCost">標準単価: - 円</div>
+              <div class="info-sub" id="summaryUsage">使用商品例: -</div>
+            </div>
+            <div class="info-card">
+              <div class="info-label">更新履歴</div>
+              <ul class="history-list" id="historyList">
+                <li>更新履歴はありません</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="content-footer">
+        <button type="button" class="btn-secondary" id="deleteButton">削除</button>
+        <button type="button" class="btn-fab-new" id="saveButton">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
+    <img id="imageLightboxPreview" alt="資材画像拡大表示">
+  </div>
+
+  <script src="js/autocomplete.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script>
+    const MATERIALS = [
+      {
+        code: "SZ-EC-0001",
+        productCode: "PRD-500101",
+        name: "シャーリングタオル生地 320匁",
+        materialType: "メイン資材",
+        linkedMainCode: "",
+        unit: "kg",
+        supplier: "今治ソフトパイル株式会社",
+        imageUrl: "images/singleitem.jpg",
+        standardCost: 920,
+        status: "有効",
+        usage: "フェイスタオル / タオルハンカチ",
+        note: "吸水性重視の標準生地"
+      },
+      {
+        code: "SZ-EC-0108",
+        productCode: "PRD-500108",
+        name: "巻きタオル用ゴムバンド 80cm",
+        materialType: "副資材",
+        linkedMainCode: "SZ-EC-0001",
+        unit: "本",
+        supplier: "モダン・ヘム縫製",
+        imageUrl: "images/singleitem.jpg",
+        standardCost: 64,
+        status: "有効",
+        usage: "80丈マキタオル / 100丈マキタオル",
+        note: "サマー商材向けに増産中"
+      },
+      {
+        code: "SZ-EC-0212",
+        productCode: "PRD-500212",
+        name: "刺繍ネームタグ 台紙セット",
+        materialType: "副資材",
+        linkedMainCode: "SZ-EC-0001",
+        unit: "枚",
+        supplier: "スピード刺しゅう工業",
+        imageUrl: "images/singleitem.jpg",
+        standardCost: 38,
+        status: "有効",
+        usage: "ポーチ付きエコバッグ / キャラジャン",
+        note: "キャラクター雑貨向け副資材"
+      }
+    ];
+
+    const materialStore = MATERIALS.map((item) => ({ ...item, updatedBy: "丸眞 太郎", updatedAt: new Date() }));
+    const SPEC_DOC_BY_PRODUCT_CODE = {
+      "PRD-500101": {
+        title: "最終資材仕様書",
+        image: "images/帳票/仕様書/通常/定番/④最終資材仕様書.png",
+        link: "shiyoshosakusei_teiban.html#panel6"
+      },
+      "PRD-500108": {
+        title: "資材試作依頼書",
+        image: "images/帳票/仕様書/通常/定番/②資材試作依頼書.png",
+        link: "shiyoshosakusei_teiban.html#panel6"
+      },
+      "PRD-500212": {
+        title: "柄別_最終校正・資材指示書",
+        image: "images/帳票/仕様書/通常/定番/⑤柄別_最終校正・資材指示書.png",
+        link: "shiyoshosakusei_teiban.html#panel6"
+      }
+    };
+    let activeMaterialCode = materialStore.length > 0 ? materialStore[0].code : "";
+    let isCreateMode = false;
+    let pendingImageDataUrl = "";
+    let pendingAiFileName = "";
+    let pendingAiPreviewUrl = "";
+
+    function setPendingAiPreviewUrl(url) {
+      if (pendingAiPreviewUrl && pendingAiPreviewUrl.indexOf("blob:") === 0) {
+        try {
+          URL.revokeObjectURL(pendingAiPreviewUrl);
+        } catch (_) {
+          // no-op
+        }
+      }
+      pendingAiPreviewUrl = url || "";
+    }
+
+    function loadSharedSidebar() {
+      const mount = document.getElementById("sidebarMount");
+      if (!mount) return;
+      if (typeof window.SHARED_SIDEBAR_HTML !== "string" || !window.SHARED_SIDEBAR_HTML.trim()) return;
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector(".sidebar");
+      const toggle = document.querySelector(".sidebar-toggle");
+      const content = document.querySelector(".content");
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === "1") return;
+
+      const toggleImg = toggle.querySelector("img");
+      toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("closed");
+        content.classList.toggle("expanded");
+        if (toggleImg) {
+          toggleImg.src = sidebar.classList.contains("closed")
+            ? "images/chevron_right_20dp_FFFFF.svg"
+            : "images/chevron_left_20dp_FFFFF.svg";
+        }
+      });
+      toggle.dataset.bound = "1";
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.querySelector(".overlay");
+      if (!sidebar || !overlay) return;
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("show", sidebar.classList.contains("active"));
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.querySelector(".overlay");
+      if (!sidebar || !overlay) return;
+      sidebar.classList.remove("active");
+      overlay.classList.remove("show");
+    }
+
+    function getFormMessageElement() {
+      return document.getElementById("formMessage");
+    }
+
+    function showMessage(text, isError) {
+      const messageEl = getFormMessageElement();
+      if (!messageEl) return;
+      messageEl.textContent = text || "";
+      messageEl.classList.toggle("is-error", !!isError);
+    }
+
+    function getMaterialByCode(code) {
+      return materialStore.find((material) => material.code === code) || null;
+    }
+
+    function toDateLabel(value) {
+      if (!value) return "--/--/--";
+      const date = value instanceof Date ? value : new Date(value);
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return y + "/" + m + "/" + d;
+    }
+
+    function renderMaterialList(filterText) {
+      const list = document.getElementById("materialList");
+      if (!list) return;
+      const normalized = String(filterText || "").trim().toLowerCase();
+      const visible = materialStore.filter((material) => {
+        if (!normalized) return true;
+        return (
+          material.code.toLowerCase().includes(normalized) ||
+          material.name.toLowerCase().includes(normalized)
+        );
+      });
+
+      list.innerHTML = "";
+      if (visible.length === 0) {
+        const empty = document.createElement("li");
+        empty.className = "material-item";
+        empty.innerHTML = "<div class=\"material-name\">該当なし</div><div class=\"material-meta\">検索条件に一致する資材がありません</div>";
+        list.appendChild(empty);
+        return;
+      }
+
+      visible.forEach((material) => {
+        const li = document.createElement("li");
+        li.className = "material-item" + (material.code === activeMaterialCode ? " is-active" : "");
+        li.dataset.code = material.code;
+        li.innerHTML =
+          "<div class=\"material-name\">" + material.name + "</div>" +
+          "<div class=\"material-meta\">コード: " + material.code + "</div>" +
+          "<div class=\"material-meta\">商品コード: " + (material.productCode || "-") + " / 区分: " + (material.materialType || "副資材") + "</div>" +
+          "<div class=\"material-meta\">更新: " + toDateLabel(material.updatedAt) + "</div>";
+        list.appendChild(li);
+      });
+    }
+
+    function setStatusValue(status) {
+      const radios = document.querySelectorAll("input[name=\"status\"]");
+      radios.forEach((radio) => {
+        radio.checked = radio.value === status;
+      });
+    }
+
+    function getStatusValue() {
+      const selected = document.querySelector("input[name=\"status\"]:checked");
+      return selected ? selected.value : "有効";
+    }
+
+    function fillForm(material) {
+      const form = document.getElementById("materialForm");
+      const linkedMainCodeInput = document.getElementById("linkedMainMaterialCode");
+      const productCodeDisplay = document.getElementById("materialProductCodeDisplay");
+      if (!form) return;
+      if (!material) {
+        form.reset();
+        setStatusValue("有効");
+        if (productCodeDisplay) productCodeDisplay.textContent = "保存時に自動採番";
+        if (linkedMainCodeInput) {
+          linkedMainCodeInput.disabled = false;
+          linkedMainCodeInput.placeholder = "副資材のみ必須";
+        }
+        pendingImageDataUrl = "";
+        pendingAiFileName = "";
+        setPendingAiPreviewUrl("");
+        clearImageFileInput();
+        updateImagePreview("");
+        updateSpecPreviewByProductCode("");
+        return;
+      }
+      form.code.value = material.code || "";
+      if (productCodeDisplay) productCodeDisplay.textContent = material.productCode || "-";
+      form.name.value = material.name || "";
+      form.materialType.value = material.materialType || "副資材";
+      form.linkedMainCode.value = material.linkedMainCode || "";
+      form.unit.value = material.unit || "";
+      form.supplier.value = material.supplier || "";
+      form.standardCost.value = material.standardCost ?? "";
+      setStatusValue(material.status || "有効");
+      form.usage.value = material.usage || "";
+      form.note.value = material.note || "";
+      if (linkedMainCodeInput) {
+        if ((material.materialType || "副資材") === "メイン資材") {
+          linkedMainCodeInput.disabled = true;
+          linkedMainCodeInput.placeholder = "メイン資材では不要";
+        } else {
+          linkedMainCodeInput.disabled = false;
+          linkedMainCodeInput.placeholder = "副資材のみ必須";
+        }
+      }
+      pendingImageDataUrl = "";
+      pendingAiFileName = "";
+      setPendingAiPreviewUrl("");
+      clearImageFileInput();
+      if (material.aiFileName) {
+        if (material.aiPreviewUrl) {
+          showPdfPreview(material.aiPreviewUrl, material.aiFileName);
+        } else {
+          showAiFallback(material.aiFileName);
+        }
+      } else {
+        resetImageFallbackText();
+        updateImagePreview(material.imageUrl || "");
+      }
+      updateSpecPreviewByProductCode(material.productCode || "");
+    }
+
+    function clearImageFileInput() {
+      const fileInput = document.getElementById("materialImageFile");
+      if (!fileInput) return;
+      fileInput.value = "";
+    }
+
+    function updateImagePreview(imageUrl) {
+      const imageEl = document.getElementById("materialImagePreview");
+      const pdfEl = document.getElementById("materialPdfPreview");
+      const fallbackEl = document.getElementById("materialImageFallback");
+      if (!imageEl || !pdfEl || !fallbackEl) return;
+      const src = String(imageUrl || "").trim();
+      if (!src) {
+        imageEl.style.display = "none";
+        imageEl.classList.remove("is-clickable");
+        pdfEl.style.display = "none";
+        pdfEl.removeAttribute("src");
+        resetImageFallbackText();
+        fallbackEl.style.display = "block";
+        return;
+      }
+      imageEl.style.display = "block";
+      imageEl.classList.add("is-clickable");
+      pdfEl.style.display = "none";
+      pdfEl.removeAttribute("src");
+      fallbackEl.style.display = "none";
+      imageEl.src = src;
+      imageEl.onerror = () => {
+        imageEl.style.display = "none";
+        fallbackEl.style.display = "block";
+      };
+      imageEl.onload = () => {
+        fallbackEl.style.display = "none";
+      };
+    }
+
+    function showAiFallback(fileName) {
+      const imageEl = document.getElementById("materialImagePreview");
+      const pdfEl = document.getElementById("materialPdfPreview");
+      const fallbackEl = document.getElementById("materialImageFallback");
+      if (!imageEl || !pdfEl || !fallbackEl) return;
+      imageEl.style.display = "none";
+      imageEl.classList.remove("is-clickable");
+      pdfEl.style.display = "none";
+      pdfEl.removeAttribute("src");
+      fallbackEl.style.display = "block";
+      fallbackEl.textContent = ".ai ファイル選択済み: " + fileName;
+    }
+
+    function resetImageFallbackText() {
+      const fallbackEl = document.getElementById("materialImageFallback");
+      if (!fallbackEl) return;
+      fallbackEl.textContent = "画像が設定されていません";
+    }
+
+    function updateSpecPreviewByProductCode(productCode) {
+      const specImage = document.getElementById("materialSpecPreviewImage");
+      const specFallback = document.getElementById("materialSpecFallback");
+      const specTitle = document.getElementById("materialSpecTitle");
+      const specLink = document.getElementById("materialSpecOpenLink");
+      if (!specImage || !specFallback || !specTitle || !specLink) return;
+
+      const key = String(productCode || "").trim();
+      const specDoc = SPEC_DOC_BY_PRODUCT_CODE[key];
+      if (!specDoc) {
+        specImage.style.display = "none";
+        specImage.removeAttribute("src");
+        specFallback.style.display = "block";
+        specTitle.textContent = "帳票: -";
+        specLink.href = "shiyoshosakusei_teiban.html#panel6";
+        return;
+      }
+
+      specTitle.textContent = "帳票: " + specDoc.title;
+      specLink.href = specDoc.link || "shiyoshosakusei_teiban.html#panel6";
+      specImage.style.display = "block";
+      specFallback.style.display = "none";
+      specImage.src = specDoc.image;
+      specImage.onerror = () => {
+        specImage.style.display = "none";
+        specFallback.style.display = "block";
+      };
+    }
+
+    function showPdfPreview(pdfUrl, fileName) {
+      const imageEl = document.getElementById("materialImagePreview");
+      const pdfEl = document.getElementById("materialPdfPreview");
+      const fallbackEl = document.getElementById("materialImageFallback");
+      if (!imageEl || !pdfEl || !fallbackEl) return;
+      if (!pdfUrl) {
+        showAiFallback(fileName || "untitled.ai");
+        return;
+      }
+      imageEl.style.display = "none";
+      imageEl.classList.remove("is-clickable");
+      fallbackEl.style.display = "none";
+      pdfEl.style.display = "block";
+      pdfEl.src = pdfUrl;
+      pdfEl.onerror = () => {
+        showAiFallback(fileName || "untitled.ai");
+      };
+    }
+
+    function openImageLightbox(src) {
+      const overlay = document.getElementById("imageLightbox");
+      const preview = document.getElementById("imageLightboxPreview");
+      if (!overlay || !preview || !src) return;
+      preview.src = src;
+      overlay.classList.add("is-open");
+      overlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeImageLightbox() {
+      const overlay = document.getElementById("imageLightbox");
+      const preview = document.getElementById("imageLightboxPreview");
+      if (!overlay || !preview) return;
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
+      preview.removeAttribute("src");
+    }
+
+    function processImageFile(file) {
+      if (!file) return;
+      const fileName = String(file.name || "").toLowerCase();
+      if (fileName.endsWith(".ai")) {
+        pendingAiFileName = String(file.name || "untitled.ai");
+        pendingImageDataUrl = "";
+        const pdfBlob = new Blob([file], { type: "application/pdf" });
+        setPendingAiPreviewUrl(URL.createObjectURL(pdfBlob));
+        showPdfPreview(pendingAiPreviewUrl, pendingAiFileName);
+        showMessage(".ai ファイルを選択しました。PDF互換がある場合はプレビュー表示されます。");
+        return;
+      }
+      pendingAiFileName = "";
+      setPendingAiPreviewUrl("");
+      resetImageFallbackText();
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        showMessage("画像ファイルを選択してください。", true);
+        clearImageFileInput();
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        pendingImageDataUrl = typeof reader.result === "string" ? reader.result : "";
+        updateImagePreview(pendingImageDataUrl);
+        showMessage("画像を選択しました。保存で確定されます。");
+      };
+      reader.onerror = () => {
+        showMessage("画像の読み込みに失敗しました。", true);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleImageFileChange(event) {
+      const input = event.target;
+      if (!input || !input.files || input.files.length === 0) return;
+      processImageFile(input.files[0]);
+    }
+
+    function updateSummary(material) {
+      const summaryName = document.getElementById("summaryName");
+      const summaryCode = document.getElementById("summaryCode");
+      const summaryUnit = document.getElementById("summaryUnit");
+      const summaryCost = document.getElementById("summaryCost");
+      const summaryUsage = document.getElementById("summaryUsage");
+      const historyList = document.getElementById("historyList");
+      if (!summaryName || !summaryCode || !summaryUnit || !summaryCost || !summaryUsage || !historyList) return;
+
+      if (!material) {
+        summaryName.textContent = "-";
+        summaryCode.textContent = "コード: -";
+        summaryUnit.textContent = "単位: -";
+        summaryCost.textContent = "標準単価: - 円";
+        summaryUsage.textContent = "使用商品例: -";
+        historyList.innerHTML = "<li>更新履歴はありません</li>";
+        return;
+      }
+
+      summaryName.textContent = material.name || "-";
+      summaryCode.textContent = "資材コード: " + (material.code || "-") + " / 商品コード: " + (material.productCode || "-");
+      summaryUnit.textContent = "単位: " + (material.unit || "-");
+      summaryCost.textContent = "標準単価: " + (material.standardCost ?? "-") + " 円";
+      summaryUsage.textContent = "使用商品例: " + (material.usage || "-");
+      historyList.innerHTML =
+        "<li>資材区分: " + (material.materialType || "副資材") + "</li>" +
+        "<li>紐づけメイン資材: " + (material.linkedMainCode || "-") + "</li>" +
+        "<li>最終更新者: " + (material.updatedBy || "未設定") + "</li>" +
+        "<li>最終更新日: " + toDateLabel(material.updatedAt) + "</li>" +
+        "<li>利用状態: " + (material.status || "有効") + "</li>";
+    }
+
+    function switchMaterial(code) {
+      const material = getMaterialByCode(code);
+      if (!material) return;
+      activeMaterialCode = code;
+      isCreateMode = false;
+      fillForm(material);
+      renderMaterialList(document.getElementById("materialSearchInput").value);
+      updateSummary(material);
+      showMessage("");
+    }
+
+    function populateSupplierSelect() {
+      const supplierSelect = document.getElementById("materialSupplier");
+      if (!supplierSelect) return;
+      supplierSelect.innerHTML = "<option value=\"\">選択してください</option>";
+      const source = window.AUTOCOMPLETE_LISTS && Array.isArray(window.AUTOCOMPLETE_LISTS.supplier)
+        ? window.AUTOCOMPLETE_LISTS.supplier
+        : [];
+      source.forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        supplierSelect.appendChild(option);
+      });
+    }
+
+    function collectFormValues() {
+      const form = document.getElementById("materialForm");
+      if (!form) return null;
+      return {
+        code: String(form.code.value || "").trim(),
+        name: String(form.name.value || "").trim(),
+        materialType: String(form.materialType.value || "副資材").trim(),
+        linkedMainCode: String(form.linkedMainCode.value || "").trim(),
+        unit: String(form.unit.value || "").trim(),
+        supplier: String(form.supplier.value || "").trim(),
+        standardCost: form.standardCost.value === "" ? null : Number(form.standardCost.value),
+        status: getStatusValue(),
+        usage: String(form.usage.value || "").trim(),
+        note: String(form.note.value || "").trim()
+      };
+    }
+
+    function validateMaterial(material, currentCode) {
+      if (!material.code) return "資材コードを入力してください。";
+      if (!material.name) return "資材名を入力してください。";
+      if (material.materialType === "副資材" && !material.linkedMainCode) {
+        return "副資材の場合は紐づけメイン資材コードが必須です。";
+      }
+      if (material.materialType === "副資材" && material.linkedMainCode === material.code) {
+        return "副資材の紐づけメイン資材コードに自分自身は指定できません。";
+      }
+      if (material.materialType === "副資材") {
+        const linkedMain = materialStore.find((item) => item.code === material.linkedMainCode);
+        if (!linkedMain) return "紐づけメイン資材コードが存在しません。";
+        if (linkedMain.materialType !== "メイン資材") return "紐づけ先はメイン資材を指定してください。";
+      }
+      const duplicate = materialStore.some((item) => item.code === material.code && item.code !== currentCode);
+      if (duplicate) return "同一の資材コードが既に存在します。";
+      return "";
+    }
+
+    function generateProductCodeFromMaterialCode(materialCode) {
+      const raw = String(materialCode || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+      const tail = raw.slice(-8).padStart(8, "0");
+      return "PRD-" + tail;
+    }
+
+    function handleCreate() {
+      isCreateMode = true;
+      activeMaterialCode = "";
+      pendingImageDataUrl = "";
+      pendingAiFileName = "";
+      fillForm(null);
+      updateSummary(null);
+      renderMaterialList(document.getElementById("materialSearchInput").value);
+      showMessage("新規作成モードです。入力後に保存してください。");
+    }
+
+    function handleDelete() {
+      if (!activeMaterialCode) {
+        showMessage("削除対象を選択してください。", true);
+        return;
+      }
+      const index = materialStore.findIndex((item) => item.code === activeMaterialCode);
+      if (index === -1) return;
+      const targetName = materialStore[index].name;
+      const ok = window.confirm("「" + targetName + "」を削除します。よろしいですか？");
+      if (!ok) return;
+      materialStore.splice(index, 1);
+      activeMaterialCode = materialStore.length > 0 ? materialStore[0].code : "";
+      if (activeMaterialCode) {
+        switchMaterial(activeMaterialCode);
+      } else {
+        fillForm(null);
+        updateSummary(null);
+      }
+      renderMaterialList(document.getElementById("materialSearchInput").value);
+      showMessage("資材を削除しました。");
+    }
+
+    function handleSave() {
+      const values = collectFormValues();
+      if (!values) return;
+      const currentCode = isCreateMode ? "" : activeMaterialCode;
+      const error = validateMaterial(values, currentCode);
+      if (error) {
+        showMessage(error, true);
+        return;
+      }
+
+      const now = new Date();
+      const currentProductCode = (getMaterialByCode(activeMaterialCode) || {}).productCode || "";
+      const productCodeToSave = currentProductCode || generateProductCodeFromMaterialCode(values.code);
+      const duplicateProductCode = materialStore.some((item) => item.productCode === productCodeToSave && item.code !== (isCreateMode ? "" : activeMaterialCode));
+      if (duplicateProductCode) {
+        showMessage("同一の商品コードが既に存在します。資材コードを変更してください。", true);
+        return;
+      }
+      const currentImageUrl = (getMaterialByCode(activeMaterialCode) || {}).imageUrl || "";
+      const currentAiFileName = (getMaterialByCode(activeMaterialCode) || {}).aiFileName || "";
+      const currentAiPreviewUrl = (getMaterialByCode(activeMaterialCode) || {}).aiPreviewUrl || "";
+      const imageUrlToSave = pendingAiFileName ? "" : (pendingImageDataUrl || currentImageUrl || "");
+      const aiFileNameToSave = pendingAiFileName || currentAiFileName || "";
+      const aiPreviewUrlToSave = pendingAiFileName ? (pendingAiPreviewUrl || "") : currentAiPreviewUrl;
+      if (isCreateMode || !activeMaterialCode) {
+        materialStore.unshift({
+          ...values,
+          productCode: productCodeToSave,
+          imageUrl: imageUrlToSave,
+          aiFileName: aiFileNameToSave,
+          aiPreviewUrl: aiPreviewUrlToSave,
+          updatedBy: "丸眞 太郎",
+          updatedAt: now
+        });
+        activeMaterialCode = values.code;
+        isCreateMode = false;
+        showMessage("資材を新規登録しました。");
+      } else {
+        const target = getMaterialByCode(activeMaterialCode);
+        if (!target) return;
+        Object.assign(target, values, { productCode: productCodeToSave, imageUrl: imageUrlToSave, aiFileName: aiFileNameToSave, aiPreviewUrl: aiPreviewUrlToSave, updatedBy: "丸眞 太郎", updatedAt: now });
+        activeMaterialCode = values.code;
+        showMessage("資材情報を更新しました。");
+      }
+
+      renderMaterialList(document.getElementById("materialSearchInput").value);
+      switchMaterial(activeMaterialCode);
+    }
+
+    function bindEvents() {
+      const list = document.getElementById("materialList");
+      const searchInput = document.getElementById("materialSearchInput");
+      const createButton = document.getElementById("createMaterialBtn");
+      const saveButton = document.getElementById("saveButton");
+      const deleteButton = document.getElementById("deleteButton");
+      const imageFileInput = document.getElementById("materialImageFile");
+      const imagePreview = document.querySelector(".material-image-preview");
+      const imagePreviewImg = document.getElementById("materialImagePreview");
+      const imageLightbox = document.getElementById("imageLightbox");
+      const materialTypeSelect = document.getElementById("materialType");
+      const linkedMainCodeInput = document.getElementById("linkedMainMaterialCode");
+      const form = document.getElementById("materialForm");
+      if (!list || !searchInput || !createButton || !saveButton || !deleteButton || !imageFileInput || !imagePreview || !imagePreviewImg || !imageLightbox || !materialTypeSelect || !linkedMainCodeInput || !form) return;
+
+      list.addEventListener("click", (event) => {
+        const item = event.target.closest(".material-item");
+        if (!item || !item.dataset.code) return;
+        switchMaterial(item.dataset.code);
+      });
+
+      searchInput.addEventListener("input", () => {
+        renderMaterialList(searchInput.value);
+      });
+
+      createButton.addEventListener("click", handleCreate);
+      saveButton.addEventListener("click", handleSave);
+      deleteButton.addEventListener("click", handleDelete);
+      imageFileInput.addEventListener("change", handleImageFileChange);
+      imagePreview.addEventListener("dragenter", (event) => {
+        event.preventDefault();
+        imagePreview.classList.add("is-dragover");
+      });
+      imagePreview.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        imagePreview.classList.add("is-dragover");
+      });
+      imagePreview.addEventListener("dragleave", (event) => {
+        event.preventDefault();
+        if (!imagePreview.contains(event.relatedTarget)) {
+          imagePreview.classList.remove("is-dragover");
+        }
+      });
+      imagePreview.addEventListener("drop", (event) => {
+        event.preventDefault();
+        imagePreview.classList.remove("is-dragover");
+        const files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
+        if (!files || files.length === 0) return;
+        processImageFile(files[0]);
+      });
+      imagePreviewImg.addEventListener("click", () => {
+        if (imagePreviewImg.style.display === "none") return;
+        if (!imagePreviewImg.src) return;
+        openImageLightbox(imagePreviewImg.src);
+      });
+      imageLightbox.addEventListener("click", (event) => {
+        if (event.target === imageLightbox) {
+          closeImageLightbox();
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeImageLightbox();
+        }
+      });
+      materialTypeSelect.addEventListener("change", () => {
+        if (materialTypeSelect.value === "メイン資材") {
+          linkedMainCodeInput.value = "";
+          linkedMainCodeInput.disabled = true;
+          linkedMainCodeInput.placeholder = "メイン資材では不要";
+        } else {
+          linkedMainCodeInput.disabled = false;
+          linkedMainCodeInput.placeholder = "副資材のみ必須";
+        }
+      });
+
+      form.addEventListener("input", () => {
+        const values = collectFormValues();
+        if (!values) return;
+        const currentProductCode = (getMaterialByCode(activeMaterialCode) || {}).productCode || "";
+        const previewProductCode = currentProductCode || generateProductCodeFromMaterialCode(values.code);
+        updateSpecPreviewByProductCode(previewProductCode);
+        updateSummary({
+          ...values,
+          productCode: previewProductCode,
+          imageUrl: pendingImageDataUrl || (getMaterialByCode(activeMaterialCode) || {}).imageUrl || "",
+          updatedBy: "編集中",
+          updatedAt: new Date()
+        });
+      });
+    }
+
+    function initPage() {
+      loadSharedSidebar();
+      populateSupplierSelect();
+      renderMaterialList("");
+      if (activeMaterialCode) {
+        switchMaterial(activeMaterialCode);
+      } else {
+        fillForm(null);
+        updateSummary(null);
+      }
+      bindEvents();
+
+      // ブラウザ標準のファイルオープン/ダウンロード動作を抑止
+      document.addEventListener("dragover", (event) => event.preventDefault());
+      document.addEventListener("drop", (event) => event.preventDefault());
+    }
+
+    initPage();
+
+    const icon = document.querySelector(".header-account_circle");
+    const menu = document.querySelector(".account-menu");
+    if (icon && menu) {
+      icon.addEventListener("click", (event) => {
+        event.stopPropagation();
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+      });
+    }
+  </script>
+</body>
+
+</html>
