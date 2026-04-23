@@ -250,6 +250,14 @@
       color: #173425;
     }
 
+    .mobile-matrix-editor.is-menu-permission-only .mobile-matrix-checkbox-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .mobile-matrix-editor.is-menu-permission-only .mobile-matrix-checkbox-grid label:nth-child(-n + 3) {
+      display: none;
+    }
+
     .permission-table-wrap {
       overflow-y: auto;
       overflow-x: auto;
@@ -705,6 +713,10 @@
         gap: 8px;
       }
 
+      .mobile-matrix-editor.is-menu-permission-only .mobile-matrix-checkbox-grid label:nth-child(-n + 3) {
+        display: none;
+      }
+
       .info-list {
         white-space: normal;
       }
@@ -1022,6 +1034,8 @@
   <script src="js/sidebar.js"></script>
   <script>
     const ACTION_LABELS = ['閲覧', '編集', '決裁', 'アクセス権無'];
+    /** サブメニュー選択でメニュー見出し行（アクセス権無のみ）を対象にする内部値 */
+    const MATRIX_SUBMENU_MENU_ONLY = '__MATRIX_MENU_ONLY__';
     let baselinePermissions = new Set();
     let activeRoleName = '';
     let activeMatrixRow = null;
@@ -1073,7 +1087,7 @@
     }
 
     function getRoleUpdater(roleName) {
-      const candidates = ['丸眞 太郎', '丸眞 花子', '山田 一郎', '鈴木 次郎', '高橋 三郎'];
+      const candidates = ['丸眞 太郎', '丸眞 花子', '丸眞 一郎', '丸眞 次郎', '丸眞三郎'];
       let hash = 0;
       for (let i = 0; i < roleName.length; i++) {
         hash += roleName.charCodeAt(i);
@@ -1192,8 +1206,17 @@
       checkbox.type = 'checkbox';
       checkbox.checked = !!checked;
       checkbox.dataset.permissionKey = 'p' + rowIndex + '_' + actionIndex;
+      checkbox.dataset.actionIndex = String(actionIndex);
       td.appendChild(checkbox);
       return td;
+    }
+
+    function getRowNoneCheckbox(row) {
+      if (!row) return null;
+      const byAttr = row.querySelector('input[type="checkbox"][data-action-index="3"]');
+      if (byAttr) return byAttr;
+      const checks = getRowCheckboxes(row);
+      return checks.length >= 4 ? checks[3] : checks[checks.length - 1] || null;
     }
 
     function buildPermissionMatrixFromSidebar() {
@@ -1221,9 +1244,10 @@
         const parentCell = document.createElement('td');
         parentCell.textContent = menuTitle;
         parentRow.appendChild(parentCell);
-        parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 0, false));
-        parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 1, false));
-        parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 2, false));
+        const menuSpanTd = document.createElement('td');
+        menuSpanTd.colSpan = 3;
+        menuSpanTd.className = 'permission-menu-title-span';
+        parentRow.appendChild(menuSpanTd);
         parentRow.appendChild(createPermissionCheckboxCell(rowIndex, 3, true));
         tbody.appendChild(parentRow);
         rowIndex++;
@@ -1267,8 +1291,7 @@
       const subMenuRows = Array.from(document.querySelectorAll('.permission-table tbody tr[data-row-type="submenu"]'));
       subMenuRows.forEach((subMenuRow) => {
         const parentRow = menuRowMap[subMenuRow.dataset.parentRowIndex || ''];
-        const parentChecks = getRowCheckboxes(parentRow);
-        const parentNoneCheck = parentChecks[3];
+        const parentNoneCheck = getRowNoneCheckbox(parentRow);
         const shouldDisable = !!(parentNoneCheck && parentNoneCheck.checked);
         const subChecks = getRowCheckboxes(subMenuRow);
 
@@ -1302,6 +1325,12 @@
       );
     }
 
+    function getMenuRowByMenuName(menuName) {
+      return document.querySelector(
+        '.permission-table tbody tr[data-row-type="menu"][data-menu-name="' + menuName + '"]'
+      );
+    }
+
     function syncMobileEditorFromRow() {
       const editor = document.getElementById('mobileMatrixEditor');
       const view = document.getElementById('mobilePermView');
@@ -1311,6 +1340,7 @@
       if (!editor || !view || !edit || !approve || !none) return;
 
       if (!activeMatrixRow) {
+        editor.classList.remove('is-menu-permission-only');
         [view, edit, approve, none].forEach((cb) => {
           cb.checked = false;
           cb.disabled = true;
@@ -1318,6 +1348,27 @@
         return;
       }
 
+      if (activeMatrixRow.dataset.rowType === 'menu') {
+        editor.classList.add('is-menu-permission-only');
+        const noneInput = getRowNoneCheckbox(activeMatrixRow);
+        if (!noneInput) {
+          editor.classList.remove('is-menu-permission-only');
+          return;
+        }
+        syncingMobileEditor = true;
+        view.checked = false;
+        edit.checked = false;
+        approve.checked = false;
+        none.checked = noneInput.checked;
+        view.disabled = true;
+        edit.disabled = true;
+        approve.disabled = true;
+        none.disabled = noneInput.disabled;
+        syncingMobileEditor = false;
+        return;
+      }
+
+      editor.classList.remove('is-menu-permission-only');
       const rowChecks = getRowCheckboxes(activeMatrixRow);
       if (rowChecks.length !== 4) return;
       syncingMobileEditor = true;
@@ -1336,7 +1387,11 @@
       const menuSelect = document.getElementById('matrixMenuSelect');
       const submenuSelect = document.getElementById('matrixSubmenuSelect');
       if (!menuSelect || !submenuSelect) return;
-      activeMatrixRow = getRowByMenuAndSubmenu(menuSelect.value, submenuSelect.value);
+      if (submenuSelect.value === MATRIX_SUBMENU_MENU_ONLY) {
+        activeMatrixRow = getMenuRowByMenuName(menuSelect.value);
+      } else {
+        activeMatrixRow = getRowByMenuAndSubmenu(menuSelect.value, submenuSelect.value);
+      }
       syncMobileEditorFromRow();
     }
 
@@ -1345,16 +1400,24 @@
       if (!submenuSelect) return;
       const subRows = getSubmenuRowsByMenu(menuName);
       submenuSelect.innerHTML = '';
+      const menuOnlyOption = document.createElement('option');
+      menuOnlyOption.value = MATRIX_SUBMENU_MENU_ONLY;
+      menuOnlyOption.textContent = 'ー';
+      submenuSelect.appendChild(menuOnlyOption);
       subRows.forEach((row) => {
         const option = document.createElement('option');
         option.value = row.dataset.subMenuName || '';
         option.textContent = row.dataset.subMenuName || '';
         submenuSelect.appendChild(option);
       });
-      if (preferredSubmenu && subRows.some((row) => row.dataset.subMenuName === preferredSubmenu)) {
+      if (preferredSubmenu === MATRIX_SUBMENU_MENU_ONLY) {
+        submenuSelect.value = MATRIX_SUBMENU_MENU_ONLY;
+      } else if (preferredSubmenu && subRows.some((row) => row.dataset.subMenuName === preferredSubmenu)) {
         submenuSelect.value = preferredSubmenu;
       } else if (subRows.length > 0) {
         submenuSelect.value = subRows[0].dataset.subMenuName || '';
+      } else {
+        submenuSelect.value = MATRIX_SUBMENU_MENU_ONLY;
       }
       setActiveMatrixRowBySelect();
     }
@@ -1391,6 +1454,15 @@
       function bindMobileCheckbox(mobileCheckbox, index) {
         mobileCheckbox.addEventListener('change', () => {
           if (syncingMobileEditor || !activeMatrixRow) return;
+          if (activeMatrixRow.dataset.rowType === 'menu') {
+            if (index !== 3) return;
+            const noneInput = getRowNoneCheckbox(activeMatrixRow);
+            if (!noneInput) return;
+            noneInput.checked = mobileCheckbox.checked;
+            noneInput.dispatchEvent(new Event('change', { bubbles: true }));
+            syncMobileEditorFromRow();
+            return;
+          }
           const rowChecks = getRowCheckboxes(activeMatrixRow);
           if (rowChecks.length !== 4) return;
           rowChecks[index].checked = mobileCheckbox.checked;
@@ -1407,6 +1479,9 @@
     function handleAccessNoneRule(checkbox) {
       const row = checkbox.closest('tr');
       if (!row) return;
+      if (row.dataset.rowType === 'menu') {
+        return;
+      }
       const rowChecks = row.querySelectorAll('input[type="checkbox"]');
       if (rowChecks.length !== 4) return;
 
@@ -1435,8 +1510,12 @@
     function buildMockRolePermission(roleName) {
       const keys = new Set();
       const rows = getPermissionRows();
-      rows.forEach((_, rowIndex) => {
+      rows.forEach((row, rowIndex) => {
         const hash = (roleName.length + rowIndex) % 4;
+        if (row.dataset.rowType === 'menu') {
+          if (hash === 3) keys.add('p' + rowIndex + '_3');
+          return;
+        }
         if (hash === 0) keys.add('p' + rowIndex + '_0');
         if (hash === 1) {
           keys.add('p' + rowIndex + '_0');
@@ -1460,6 +1539,9 @@
         checkbox.checked = !!(key && keySet.has(key));
       });
       getPermissionRows().forEach((row) => {
+        if (row.dataset.rowType === 'menu') {
+          return;
+        }
         const rowChecks = row.querySelectorAll('input[type="checkbox"]');
         if (rowChecks.length !== 4) return;
         if (!rowChecks[0].checked && !rowChecks[1].checked && !rowChecks[2].checked) {
@@ -1522,7 +1604,10 @@
         for (let i = 1; i < row.cells.length; i++) {
           const checkbox = row.cells[i].querySelector('input[type="checkbox"]');
           if (!checkbox) continue;
-          const actionLabel = ACTION_LABELS[i - 1] || ('権限' + i);
+          const actionIdx = Number(checkbox.dataset.actionIndex);
+          const actionLabel = Number.isFinite(actionIdx) && ACTION_LABELS[actionIdx]
+            ? ACTION_LABELS[actionIdx]
+            : ACTION_LABELS[i - 1] || ('権限' + i);
           checkbox.dataset.permissionLabel = featureName + ' / ' + actionLabel;
           checkbox.dataset.permissionTarget = targetLabel;
         }
