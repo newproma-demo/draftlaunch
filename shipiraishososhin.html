@@ -265,12 +265,6 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      background: var(--color-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-      overflow: hidden;
     }
 
     /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
@@ -286,6 +280,24 @@
 
     .content-box .search-box {
       flex-shrink: 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
     }
 
     /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
@@ -304,6 +316,73 @@
     .content-box .content-section {
       flex: 1;
       min-height: 0;
+    }
+
+    /* PCでは検索条件を横並び表示 */
+    .search-box .search-box-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 24px;
+      width: 100%;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .search-row label {
+      margin: 0;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .search-row select,
+    .search-row input:not([type="checkbox"]) {
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-row .autocomplete {
+      min-width: 160px;
+      width: 160px;
+    }
+
+    .search-row .autocomplete .autocomplete-input {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .search-row option {
+      font-size: var(--fs-xs);
+    }
+
+    .search-row select:hover,
+    .search-row input:not([type="checkbox"]):hover {
+      border-color: #b0bdb5;
+    }
+
+    .search-row select:focus,
+    .search-row input:not([type="checkbox"]):focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .search-row input::placeholder {
+      color: #9ca89f;
     }
 
     /* 検索条件エリア右端：クリアボタン */
@@ -403,6 +482,7 @@
         width: 100%;
         box-sizing: border-box;
         padding: 8px;
+        flex: none;
         min-height: 0;
       }
 
@@ -412,6 +492,30 @@
       }
       .filter-item {
         flex: 1 1 100%;
+      }
+
+      .search-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0px;
+      }
+
+      .search-row label {
+        font-size: var(--fs-xs);
+        flex-shrink: 0;
+      }
+
+      .search-row select,
+      .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-row .autocomplete {
+        min-width: 0;
+        width: 100%;
       }
 
       /* スマホ: 検索条件は折りたたみ式 */
@@ -454,14 +558,29 @@
         background: transparent;
         border: none;
         box-shadow: none;
+        overflow: hidden;
       }
-       .search-box-inner {
+
+      .search-box .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px 16px;
+        visibility: hidden;
       }
+
+      .search-box:not(.is-open) .search-box-inner {
+        display: none !important;
+        height: 0;
+        opacity: 0;
+        overflow: hidden;
+        visibility: hidden;
+      }
+
       .search-box.is-open .search-box-inner {
         display: grid;
+        height: auto;
+        opacity: 1;
+        visibility: visible;
       }
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
@@ -538,22 +657,30 @@
         font-weight: 600;
       }
       .approval-list-area .result-table tbody td:nth-child(3)::before {
-        content: "定番/別注：";
+        content: "Ship予定日：";
         font-weight: 600;
       }
       .approval-list-area .result-table tbody td:nth-child(4)::before {
-        content: "デザイナー：";
+        content: "目的港：";
         font-weight: 600;
       }
       .approval-list-area .result-table tbody td:nth-child(5)::before {
-        content: "商品コード：";
+        content: "定番/別注：";
         font-weight: 600;
       }
       .approval-list-area .result-table tbody td:nth-child(6)::before {
-        content: "商品名：";
+        content: "得意先：";
         font-weight: 600;
       }
       .approval-list-area .result-table tbody td:nth-child(7)::before {
+        content: "商品コード：";
+        font-weight: 600;
+      }
+      .approval-list-area .result-table tbody td:nth-child(8)::before {
+        content: "商品名：";
+        font-weight: 600;
+      }
+      .approval-list-area .result-table tbody td:nth-child(9)::before {
         content: "数量：";
         font-weight: 600;
       }
@@ -640,15 +767,6 @@
       max-width: 100%;
     }
 
-    /* 承認通知／検索結果・ボックス共通 */
-    .content-box {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    }
     /* 検索条件と検索結果一覧の間の余白（5px） */
     .view-layout-1-group > .content-box:first-of-type {
       margin-bottom: 5px;
@@ -1024,55 +1142,85 @@
                 </span>
               </button>
               <div class="search-box-inner" id="searchRowsPanel">
-                <div class="filter-row">
-                  <div class="filter-item">
-                    <label class="filter-label manufacturer-label">メーカー</label>
-                    <div class="manufacturer-row input-actions">
-                      <div class="autocomplete">
-                        <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
-                        <div class="autocomplete-dropdown"></div>
-                      </div>
+                <div class="search-row">
+                  <label for="searchItem">メーカー</label>
+                  <div class="manufacturer-row input-actions">
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索" id="searchItem">
+                      <div class="autocomplete-dropdown"></div>
                     </div>
                   </div>
-                  <div class="filter-item">
-                    <label>管理番号</label>
-                    <input type="text" placeholder="管理番号を入力">
-                  </div>
-                  <div class="filter-item">
-                    <span class="filter-label">定番/別注</span>
-                    <select id="searchHanbaiKubun">
-                      <option value="">すべて</option>
-                      <option value="teiban">定番</option>
-                      <option value="betchu">別注</option>
-                    </select>
-                  </div>
-                  <div class="filter-item">
-                    <span class="filter-label">デザイナー</span>
-                    <select id="tenjikaiSelect">
-                      <option value="">すべて</option>
-                      <option value="">丸眞太郎</option>
-                      <option value="">丸眞花子</option>
-                      <option value="">丸眞桜子</option>
-                    </select>
-                  </div>     
                 </div>
-                <div class="filter-row">
-                  <div class="filter-item">
-                    <label class="filter-label">商品コード</label>
-                    <select id="productCodeSelect">
-                      <option value="">選択してください</option>
-                      <option value="1" data-product-name="商品名1">999991</option>
-                      <option value="2" data-product-name="商品名2">999992</option>
-                      <option value="3" data-product-name="商品名3">999993</option>
-                    </select>
+                <div class="search-row">
+                  <label for="searchItem">管理番号</label>
+                  <input type="text" placeholder="管理番号を入力">
+                </div>
+                <div class="search-row">
+                  <label for="searchItem">Ship予定日</label>
+                  <select id="kubunSelect">
+                    <option value="">選択してください</option>
+                    <option value="1">中国：2026/05/09</option>
+                    <option value="2">ベトナム：2026/05/11</option>
+                    <option value="3">中国：2026/05/16</option>
+                    <option value="4">ベトナム：2026/05/18</option>
+                    <option value="5">中国：2026/05/23</option>
+                    <option value="6">ベトナム：2026/05/25</option>
+                  </select>
+                </div>
+                <div class="search-row">
+                  <label for="searchItem">目的港</label>
+                  <select id="shipDateSelect">
+                    <option value="">選択してください</option>
+                    <option value="1">名古屋港＿直流</option>
+                    <option value="2">名古屋港＿瀬戸</option>
+                    <option value="3">東京港＿直流</option>
+                    <option value="4">横浜港＿直流</option>
+                    <option value="5">神戸港＿直流</option>
+                    <option value="6">大阪港＿直流</option>
+                    <option value="7">門司港＿直流</option>
+                    <option value="8">しまむら＿直流</option>
+                    <option value="9">しまむら＿アストライン</option>
+                  </select>
+                </div>
+                <div class="search-row">
+                  <label for="searchItem">得意先</label>
+                  <div class="autocomplete">
+                    <input type="text" class="autocomplete-input" data-list="customer" placeholder="得意先名検索" id="searchTokuisaki">
+                    <div class="autocomplete-dropdown"></div>
                   </div>
-                  <div class="filter-item">
-                    <label>品名</label>
-                    <input type="text" placeholder="品名を入力">
-                  </div>
-                  <div class="search-cancel-wrapper">
-                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
-                  </div>
+                </div>
+                <div class="search-row">
+                  <label for="searchItem">定番/別注</label>
+                  <select id="searchHanbaiKubun">
+                    <option value="">すべて</option>
+                    <option value="teiban">定番</option>
+                     <option value="betchu">別注</option>
+                  </select>
+                </div>
+                <div class="search-row">
+                  <label for="searchItem">デザイナー</label>
+                  <select id="tenjikaiSelect">
+                    <option value="">すべて</option>
+                    <option value="">丸眞太郎</option>
+                    <option value="">丸眞花子</option>
+                    <option value="">丸眞桜子</option>
+                  </select>
+                </div>     
+                <div class="search-row">
+                  <label for="searchItem">商品コード</label>
+                  <select id="productCodeSelect">
+                    <option value="">選択してください</option>
+                    <option value="1" data-product-name="商品名1">999991</option>
+                    <option value="2" data-product-name="商品名2">999992</option>
+                    <option value="3" data-product-name="商品名3">999993</option>
+                  </select>
+                </div>
+                <div class="search-row">
+                  <label for="searchItem">品名</label>
+                  <input type="text" placeholder="品名を入力">
+                </div>
+                <div class="search-cancel-wrapper">
+                  <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
                 </div>
               </div>
             </div>
@@ -1087,33 +1235,184 @@
                   <thead>
                     <tr>
                       <th style="width: 5%;"><input type="checkbox" id="selectAllLeft"></th>
-                      <th style="width: 20%;">管理番号</th>
-                      <th style="width: 15%;">定番/別注</th>
-                      <th style="width: 20%;">デザイナー</th>
-                      <th style="width: 15%;">商品コード</th>
-                      <th style="width: 20%;">商品名</th>
-                      <th style="width: 10%;">数量</th>
+                      <th style="width: 10%;">管理番号</th>
+                      <th style="width: 15%;">Ship予定日</th>
+                      <th style="width: 20%;">目的港</th>
+                      <th style="width: 10%;">定番/別注</th>
+                      <th style="width: 15%;">得意先</th>
+                      <th style="width: 7%;">商品コード</th>
+                      <th style="width: 10%;">商品名</th>
+                      <th style="width: 5%;">数量</th>
                     </tr>
                   </thead>
                   <tbody id="approvalListTbodyLeft" aria-multiselectable="true">
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999991</td><td>商品名1</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999992</td><td>商品名2</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999993</td><td>商品名3</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999994</td><td>商品名4</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999995</td><td>商品名5</td><td>10</td></tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999991</td>
+                      <td>商品名1</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999992</td>
+                      <td>商品名2</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999993</td>
+                      <td>商品名3</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999994</td>
+                      <td>商品名4</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999995</td>
+                      <td>商品名5</td>
+                      <td>10</td>
+                    </tr>
 
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999996</td><td>商品名6</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999997</td><td>商品名7</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999998</td><td>商品名8</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999999</td><td>商品名9</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999990</td><td>商品名0</td><td>10</td></tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999991</td>
+                      <td>商品名1</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999992</td>
+                      <td>商品名2</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999993</td>
+                      <td>商品名3</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999994</td>
+                      <td>商品名4</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999995</td>
+                      <td>商品名5</td>
+                      <td>10</td>
+                    </tr>
 
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-002</td><td>定番</td><td>丸眞花子</td><td>999991</td><td>商品名1</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-002</td><td>定番</td><td>丸眞花子</td><td>999992</td><td>商品名2</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-002</td><td>定番</td><td>丸眞花子</td><td>999993</td><td>商品名3</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-002</td><td>別注</td><td>丸眞桜子</td><td>999996</td><td>商品名6</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-002</td><td>別注</td><td>丸眞桜子</td><td>999997</td><td>商品名7</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-002</td><td>別注</td><td>丸眞桜子</td><td>999998</td><td>商品名8</td><td>10</td></tr>  
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999991</td>
+                      <td>商品名1</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999992</td>
+                      <td>商品名2</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999993</td>
+                      <td>商品名3</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999994</td>
+                      <td>商品名4</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999995</td>
+                      <td>商品名5</td>
+                      <td>10</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1130,37 +1429,189 @@
               </div>
               <div class="result-list-col">
               <div class="approval-list-area">
-                <div class="right-volume-label" id="rightVisibleCountLabel">0㎥</div>
+                <div class="right-volume-label" id="rightVisibleCountLabel">積載量：0㎥ 積載率：20F（0%）40F（0%）</div>
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 5%;"><input type="checkbox" id="selectAllRight"></th>
-                      <th style="width: 20%;">管理番号</th>
-                      <th style="width: 15%;">定番/別注</th>
-                      <th style="width: 20%;">デザイナー</th>
-                      <th style="width: 15%;">商品コード</th>
-                      <th style="width: 20%;">商品名</th>
-                      <th style="width: 10%;">数量</th>
+                      <th style="width: 5%;"><input type="checkbox" id="selectAllLeft"></th>
+                      <th style="width: 10%;">管理番号</th>
+                      <th style="width: 15%;">Ship予定日</th>
+                      <th style="width: 20%;">目的港</th>
+                      <th style="width: 10%;">定番/別注</th>
+                      <th style="width: 15%;">得意先</th>
+                      <th style="width: 7%;">商品コード</th>
+                      <th style="width: 10%;">商品名</th>
+                      <th style="width: 5%;">数量</th>
                     </tr>
                   </thead>
                   <tbody id="approvalListTbodyRight" aria-multiselectable="true">
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999991</td><td>商品名1</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999992</td><td>商品名2</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999993</td><td>商品名3</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999994</td><td>商品名4</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-001</td><td>定番</td><td>丸眞太郎</td><td>999995</td><td>商品名5</td><td>10</td></tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999991</td>
+                      <td>商品名1</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999992</td>
+                      <td>商品名2</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999993</td>
+                      <td>商品名3</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999994</td>
+                      <td>商品名4</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-001</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名１</td>
+                      <td>999995</td>
+                      <td>商品名5</td>
+                      <td>10</td>
+                    </tr>
 
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999996</td><td>商品名6</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999997</td><td>商品名7</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999998</td><td>商品名8</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999999</td><td>商品名9</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-001</td><td>別注</td><td>丸眞桜子</td><td>999990</td><td>商品名0</td><td>10</td></tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999991</td>
+                      <td>商品名1</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999992</td>
+                      <td>商品名2</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999993</td>
+                      <td>商品名3</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999994</td>
+                      <td>商品名4</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/09</td>
+                      <td>名古屋港＿瀬戸</td>
+                      <td>定番</td>
+                      <td>得意先名２</td>
+                      <td>999995</td>
+                      <td>商品名5</td>
+                      <td>10</td>
+                    </tr>
 
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-002</td><td>定番</td><td>丸眞花子</td><td>999991</td><td>商品名1</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-002</td><td>定番</td><td>丸眞花子</td><td>999992</td><td>商品名2</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>TBN-2026-002</td><td>定番</td><td>丸眞花子</td><td>999993</td><td>商品名3</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-002</td><td>別注</td><td>丸眞桜子</td><td>999996</td><td>商品名6</td><td>10</td></tr>
-                    <tr><td><input type="checkbox" /></td><td>BTC-2026-002</td><td>別注</td><td>丸眞桜子</td><td>999997</td><td>商品名7</td><td>10</td></tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999991</td>
+                      <td>商品名1</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999992</td>
+                      <td>商品名2</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999993</td>
+                      <td>商品名3</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999994</td>
+                      <td>商品名4</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td>TBN-2026-002</td>
+                      <td>中国：2026/05/16</td>
+                      <td>東京港＿直流</td>
+                      <td>定番</td>
+                      <td>得意先名３</td>
+                      <td>999995</td>
+                      <td>商品名5</td>
+                      <td>10</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1336,6 +1787,14 @@
         }
       })();
 
+      (function () {
+        var cancelAllBtn = document.getElementById("searchCancelAllBtn");
+        if (!cancelAllBtn) return;
+        cancelAllBtn.addEventListener("click", function () {
+          window.location.reload();
+        });
+      })();
+
       // 二つの一覧間：行の選択と移動（リンク・フォーム操作は除外）
       (function () {
         var approvalNoticeArea = document.getElementById("approvalNoticeArea");
@@ -1366,10 +1825,16 @@
         function updateRightVisibleCountLabel() {
           if (!rightVisibleCountLabel) return;
           var count = 0;
+          var count20F = 0;
+          var count40F = 0;
           Array.prototype.forEach.call(tbodyRight.rows, function (tr) {
             if (tr.classList.contains("is-right-visible")) count++;
           });
-          rightVisibleCountLabel.textContent = count + "㎥";
+          count = count * 2;
+          count20F = Math.ceil(count / 33.0 * 100);
+          count40F = Math.ceil(count / 67.4 * 100);
+          
+          rightVisibleCountLabel.textContent = "積載量：" + count + "㎥" + "　" + "積載率：20F（" + count20F + "%）40F（" + count40F + "%）";   
         }
 
         function syncLeftHeightToRight() {
