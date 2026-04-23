@@ -158,7 +158,7 @@ window.SHARED_SIDEBAR_HTML = `
     </ul>
   </div>
 
-  <div class="menu-item master-menu">
+  <div class="menu-item">
     <div class="menu-title">
       <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
       <span>マスタ管理</span>
@@ -168,11 +168,10 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="costkanrihyo.html">コスト管理表</a></li>
       <li><a href="shohinjohoichiran.html">商品情報照会</a></li>
       <li><a href="systemsettingsmastermaintenance.html">システム設定マスタメンテナンス</a></li>
-      <li><a href="kengengroupmastermaintenanse.html">権限グループマスタメンテナンス</a></li>
+      <li><a href="#">権限グループマスタメンテナンス</a></li>
       <li><a href="usermasterkensaku.html">ユーザーマスタメンテナンス</a></li>
       <li><a href="licenmastermaintenance.html">ライセンスマスタメンテナンス</a></li>
-      <li><a href="#">ブランドマスタメンテナンス</a></li>
-      <li><a href="#">キャラクタマスタメンテナンス</a></li>
+      <li><a href="licensehimozukemastermaintenance.html">ライセンス/ブランド/キャラクタ紐づけマスタメンテナンス</a></li>
       <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
       <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
       <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
