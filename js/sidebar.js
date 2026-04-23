@@ -158,7 +158,7 @@ window.SHARED_SIDEBAR_HTML = `
     </ul>
   </div>
 
-  <div class="menu-item">
+  <div class="menu-item master-menu">
     <div class="menu-title">
       <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
       <span>マスタ管理</span>
