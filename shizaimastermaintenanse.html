@@ -389,6 +389,43 @@
       color: #75867e;
     }
 
+    .size-input-row {
+      display: grid;
+      grid-template-columns: 72px auto 72px auto;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .size-separator {
+      font-size: 13px;
+      color: #4e665a;
+      white-space: nowrap;
+    }
+
+    .size-unit-fixed {
+      font-size: 13px;
+      color: #4e665a;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .size-field {
+      max-width: 220px;
+    }
+
+    .status-field {
+      justify-content: flex-end;
+    }
+
+    .status-field .field-label {
+      margin-bottom: 6px;
+    }
+
+    .status-field .status-row {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+    }
+
     .status-row {
       display: flex;
       flex-wrap: wrap;
@@ -645,7 +682,7 @@
         <section class="panel list-panel">
           <div class="panel-header">資材一覧</div>
           <div class="panel-body">
-            <input id="materialSearchInput" class="search-input" type="text" placeholder="資材コード/資材名で検索">
+            <input id="materialSearchInput" class="search-input" type="text" placeholder="資材品番/資材名で検索">
             <ul id="materialList" class="material-list"></ul>
             <div class="action-row">
               <button type="button" class="small-btn primary" id="createMaterialBtn">新規作成</button>
@@ -658,14 +695,14 @@
           <div class="panel-body">
             <div class="material-assets-grid">
               <div class="material-asset-panel material-image-box">
-                <div class="material-image-label">資材画像</div>
+                <div class="material-image-label">デザイン</div>
                 <div class="material-image-preview">
-                  <img id="materialImagePreview" alt="資材画像プレビュー">
+                  <img id="materialImagePreview" alt="デザインプレビュー">
                   <iframe id="materialPdfPreview" title="資材PDFプレビュー"></iframe>
                   <div id="materialImageFallback" class="material-image-fallback">画像が設定されていません</div>
                 </div>
                 <div class="material-image-upload">
-                  <input id="materialImageFile" type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.ai" aria-label="資材画像ファイルを選択">
+                  <input id="materialImageFile" type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.ai" aria-label="デザインファイルを選択">
                 </div>
               </div>
 
@@ -682,11 +719,11 @@
             <form id="materialForm">
               <div class="form-grid">
                 <div class="field">
-                  <label class="field-label" for="materialCode">資材コード</label>
+                  <label class="field-label" for="materialCode">資材品番</label>
                   <input id="materialCode" name="code" type="text" maxlength="20" required>
                 </div>
                 <div class="field">
-                  <label class="field-label">商品コード（商品マスタ連携）</label>
+                  <label class="field-label">商品コード</label>
                   <div id="materialProductCodeDisplay" class="field-value">-</div>
                 </div>
                 <div class="field">
@@ -700,9 +737,38 @@
                     <option value="メイン資材">メイン資材</option>
                   </select>
                 </div>
-                <div class="field">
-                  <label class="field-label" for="linkedMainMaterialCode">紐づけメイン資材コード</label>
+                <div class="field full">
+                  <label class="field-label" for="linkedMainMaterialCode">メイン資材品番</label>
                   <input id="linkedMainMaterialCode" name="linkedMainCode" type="text" maxlength="20" placeholder="副資材のみ必須">
+                </div>
+                <div class="field size-field">
+                  <label class="field-label" for="materialSize">サイズ</label>
+                  <div class="size-input-row">
+                    <input id="materialSizeHeight" name="sizeHeight" type="text" maxlength="20" placeholder="縦H">
+                    <span class="size-separator">×</span>
+                    <input id="materialSizeWidth" name="sizeWidth" type="text" maxlength="20" placeholder="横W">
+                    <span class="size-unit-fixed">cm</span>
+                  </div>
+                </div>
+                <div class="field status-field">
+                  <span class="field-label">利用状態</span>
+                  <div class="status-row">
+                    <label><input type="radio" name="status" value="有効" checked>有効</label>
+                    <label><input type="radio" name="status" value="停止">停止</label>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="materialCountry">原産国</label>
+                  <select id="materialCountry" name="country">
+                    <option value="">選択してください</option>
+                    <option>日本</option>
+                    <option>中国</option>
+                    <option>ベトナム</option>
+                    <option>インド</option>
+                    <option>パキスタン</option>
+                    <option>トルコ</option>
+                    <option>その他</option>
+                  </select>
                 </div>
                 <div class="field">
                   <label class="field-label" for="materialUnit">単位</label>
@@ -717,7 +783,7 @@
                   </select>
                 </div>
                 <div class="field">
-                  <label class="field-label" for="materialSupplier">主要仕入先</label>
+                  <label class="field-label" for="materialSupplier">メーカー</label>
                   <select id="materialSupplier" name="supplier"></select>
                 </div>
                 <div class="field">
@@ -727,13 +793,6 @@
                 <div class="field full">
                   <label class="field-label" for="materialUsage">使用商品例</label>
                   <input id="materialUsage" name="usage" type="text" maxlength="80" placeholder="例: 80丈マキタオル / フェイスタオル">
-                </div>
-                <div class="field full">
-                  <span class="field-label">利用状態</span>
-                  <div class="status-row">
-                    <label><input type="radio" name="status" value="有効" checked>有効</label>
-                    <label><input type="radio" name="status" value="停止">停止</label>
-                  </div>
                 </div>
                 <div class="field full">
                   <label class="field-label" for="materialNote">備考</label>
@@ -778,7 +837,7 @@
   </div>
 
   <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
-    <img id="imageLightboxPreview" alt="資材画像拡大表示">
+    <img id="imageLightboxPreview" alt="デザイン拡大表示">
   </div>
 
   <script src="js/autocomplete.js"></script>
@@ -787,10 +846,13 @@
     const MATERIALS = [
       {
         code: "SZ-EC-0001",
-        productCode: "PRD-500101",
+        productCode: "4900000001",
         name: "シャーリングタオル生地 320匁",
         materialType: "メイン資材",
         linkedMainCode: "",
+        sizeHeight: "320",
+        sizeWidth: "320",
+        country: "日本",
         unit: "kg",
         supplier: "今治ソフトパイル株式会社",
         imageUrl: "images/singleitem.jpg",
@@ -801,10 +863,13 @@
       },
       {
         code: "SZ-EC-0108",
-        productCode: "PRD-500108",
+        productCode: "4900000002",
         name: "巻きタオル用ゴムバンド 80cm",
         materialType: "副資材",
         linkedMainCode: "SZ-EC-0001",
+        sizeHeight: "80",
+        sizeWidth: "80",
+        country: "中国",
         unit: "本",
         supplier: "モダン・ヘム縫製",
         imageUrl: "images/singleitem.jpg",
@@ -815,10 +880,13 @@
       },
       {
         code: "SZ-EC-0212",
-        productCode: "PRD-500212",
+        productCode: "4900000003",
         name: "刺繍ネームタグ 台紙セット",
         materialType: "副資材",
         linkedMainCode: "SZ-EC-0001",
+        sizeHeight: "45",
+        sizeWidth: "60",
+        country: "日本",
         unit: "枚",
         supplier: "スピード刺しゅう工業",
         imageUrl: "images/singleitem.jpg",
@@ -831,17 +899,17 @@
 
     const materialStore = MATERIALS.map((item) => ({ ...item, updatedBy: "丸眞 太郎", updatedAt: new Date() }));
     const SPEC_DOC_BY_PRODUCT_CODE = {
-      "PRD-500101": {
+      "4900000001": {
         title: "最終資材仕様書",
         image: "images/帳票/仕様書/通常/定番/④最終資材仕様書.png",
         link: "shiyoshosakusei_teiban.html#panel6"
       },
-      "PRD-500108": {
+      "4900000002": {
         title: "資材試作依頼書",
         image: "images/帳票/仕様書/通常/定番/②資材試作依頼書.png",
         link: "shiyoshosakusei_teiban.html#panel6"
       },
-      "PRD-500212": {
+      "4900000003": {
         title: "柄別_最終校正・資材指示書",
         image: "images/帳票/仕様書/通常/定番/⑤柄別_最終校正・資材指示書.png",
         link: "shiyoshosakusei_teiban.html#panel6"
@@ -1003,6 +1071,19 @@
       form.name.value = material.name || "";
       form.materialType.value = material.materialType || "副資材";
       form.linkedMainCode.value = material.linkedMainCode || "";
+      const legacySize = String(material.size || "");
+      if (material.sizeHeight || material.sizeWidth) {
+        form.sizeHeight.value = material.sizeHeight || "";
+        form.sizeWidth.value = material.sizeWidth || "";
+      } else if (legacySize && legacySize.indexOf("×") !== -1) {
+        const parts = legacySize.split("×");
+        form.sizeHeight.value = String(parts[0] || "").replace(/[^\dA-Za-z.-]/g, "");
+        form.sizeWidth.value = String(parts[1] || "").replace(/[^\dA-Za-z.-]/g, "");
+      } else {
+        form.sizeHeight.value = "";
+        form.sizeWidth.value = "";
+      }
+      form.country.value = material.country || "";
       form.unit.value = material.unit || "";
       form.supplier.value = material.supplier || "";
       form.standardCost.value = material.standardCost ?? "";
@@ -1215,13 +1296,13 @@
       }
 
       summaryName.textContent = material.name || "-";
-      summaryCode.textContent = "資材コード: " + (material.code || "-") + " / 商品コード: " + (material.productCode || "-");
+      summaryCode.textContent = "資材品番: " + (material.code || "-") + " / 商品コード: " + (material.productCode || "-");
       summaryUnit.textContent = "単位: " + (material.unit || "-");
       summaryCost.textContent = "標準単価: " + (material.standardCost ?? "-") + " 円";
       summaryUsage.textContent = "使用商品例: " + (material.usage || "-");
       historyList.innerHTML =
         "<li>資材区分: " + (material.materialType || "副資材") + "</li>" +
-        "<li>紐づけメイン資材: " + (material.linkedMainCode || "-") + "</li>" +
+        "<li>メイン資材品番: " + (material.linkedMainCode || "-") + "</li>" +
         "<li>最終更新者: " + (material.updatedBy || "未設定") + "</li>" +
         "<li>最終更新日: " + toDateLabel(material.updatedAt) + "</li>" +
         "<li>利用状態: " + (material.status || "有効") + "</li>";
@@ -1261,6 +1342,9 @@
         name: String(form.name.value || "").trim(),
         materialType: String(form.materialType.value || "副資材").trim(),
         linkedMainCode: String(form.linkedMainCode.value || "").trim(),
+        sizeHeight: String(form.sizeHeight.value || "").trim(),
+        sizeWidth: String(form.sizeWidth.value || "").trim(),
+        country: String(form.country.value || "").trim(),
         unit: String(form.unit.value || "").trim(),
         supplier: String(form.supplier.value || "").trim(),
         standardCost: form.standardCost.value === "" ? null : Number(form.standardCost.value),
@@ -1271,28 +1355,34 @@
     }
 
     function validateMaterial(material, currentCode) {
-      if (!material.code) return "資材コードを入力してください。";
+      if (!material.code) return "資材品番を入力してください。";
       if (!material.name) return "資材名を入力してください。";
+      if ((material.sizeHeight && !material.sizeWidth) || (!material.sizeHeight && material.sizeWidth)) {
+        return "サイズは縦Hと横Wを両方入力してください。";
+      }
       if (material.materialType === "副資材" && !material.linkedMainCode) {
-        return "副資材の場合は紐づけメイン資材コードが必須です。";
+        return "副資材の場合はメイン資材品番が必須です。";
       }
       if (material.materialType === "副資材" && material.linkedMainCode === material.code) {
-        return "副資材の紐づけメイン資材コードに自分自身は指定できません。";
+        return "副資材のメイン資材品番に自分自身は指定できません。";
       }
       if (material.materialType === "副資材") {
         const linkedMain = materialStore.find((item) => item.code === material.linkedMainCode);
-        if (!linkedMain) return "紐づけメイン資材コードが存在しません。";
-        if (linkedMain.materialType !== "メイン資材") return "紐づけ先はメイン資材を指定してください。";
+        if (!linkedMain) return "メイン資材品番が存在しません。";
+        if (linkedMain.materialType !== "メイン資材") return "メイン資材品番にはメイン資材を指定してください。";
       }
       const duplicate = materialStore.some((item) => item.code === material.code && item.code !== currentCode);
-      if (duplicate) return "同一の資材コードが既に存在します。";
+      if (duplicate) return "同一の資材品番が既に存在します。";
       return "";
     }
 
-    function generateProductCodeFromMaterialCode(materialCode) {
-      const raw = String(materialCode || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-      const tail = raw.slice(-8).padStart(8, "0");
-      return "PRD-" + tail;
+    function generateProductCodeFromMaterialCode() {
+      const productCodes = materialStore
+        .map((item) => String(item.productCode || "").trim())
+        .filter((code) => /^\d{10}$/.test(code) && code.indexOf("490") === 0)
+        .map((code) => Number(code));
+      const currentMax = productCodes.length > 0 ? Math.max(...productCodes) : 4900000000;
+      return String(currentMax + 1);
     }
 
     function handleCreate() {
@@ -1343,7 +1433,7 @@
       const productCodeToSave = currentProductCode || generateProductCodeFromMaterialCode(values.code);
       const duplicateProductCode = materialStore.some((item) => item.productCode === productCodeToSave && item.code !== (isCreateMode ? "" : activeMaterialCode));
       if (duplicateProductCode) {
-        showMessage("同一の商品コードが既に存在します。資材コードを変更してください。", true);
+        showMessage("同一の商品コードが既に存在します。資材品番を変更してください。", true);
         return;
       }
       const currentImageUrl = (getMaterialByCode(activeMaterialCode) || {}).imageUrl || "";
