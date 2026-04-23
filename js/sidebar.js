@@ -176,7 +176,7 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="#">アイテム大分類マスタメンテナンス</a></li>
       <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
       <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
-      <li><a href="#">資材マスタメンテナンス</a></li>
+      <li><a href="shizaimastermaintenanse.html">資材マスタメンテナンス</a></li>
     </ul>
   </div>
 
