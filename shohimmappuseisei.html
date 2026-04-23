@@ -809,6 +809,7 @@
             <label><input type="radio" name="useType" value="internal" checked> 社内用</label>
             <label><input type="radio" name="useType" value="sales"> 営業用</label>
             <label><input type="radio" name="useType" value="maker"> メーカー用</label>
+            <label><input type="radio" name="useType" value="tanto"> 担当者別</label>
           </div>
         </div>
       </div>
@@ -853,9 +854,19 @@
                   </select>
                 </div>
                 <div class="filter-item">
+                  <label class="filter-label manufacturer-label">メーカー</label>
+                  <div class="manufacturer-row input-actions">
+                    <div class="autocomplete">
+                      <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索"
+                        id="searchItem">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-item">
                   <span class="filter-label">カテゴリー</span>
                   <div class="autocomplete">
-                    <input type="text" class="autocomplete-input" data-list="category" placeholder="カテゴリー検索" id="searchCategory">
+                    <input type="text" class="autocomplete-input" data-list="category2" placeholder="カテゴリー検索" id="searchCategory">
                     <div class="autocomplete-dropdown"></div>
                   </div>
                 </div>
@@ -936,6 +947,13 @@
                   <input type="text" id="searchName" placeholder="品名を入力">
                 </div>
                 <div class="filter-item">
+                  <span class="filter-label">ブランド・キャラ</span>
+                  <div class="autocomplete">
+                    <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
+                    <div class="autocomplete-dropdown"></div>
+                  </div>
+                </div>
+                <div class="filter-item">
                   <span class="filter-label">アイテム</span>
                   <div class="autocomplete">
                     <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="searchItem">
@@ -943,11 +961,13 @@
                   </div>
                 </div>
                 <div class="filter-item">
-                  <span class="filter-label">ブランド・キャラ</span>
-                  <div class="autocomplete">
-                    <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
-                    <div class="autocomplete-dropdown"></div>
-                  </div>
+                  <span class="filter-label">デザイナー</span>
+                  <select id="tenjikaiSelect">
+                    <option value="">すべて</option>
+                    <option value="">丸眞太郎</option>
+                    <option value="">丸眞花子</option>
+                    <option value="">丸眞桜子</option>
+                  </select>
                 </div>
                 <div class="search-cancel-wrapper">
                   <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
@@ -1096,6 +1116,10 @@
                   <tr>
                     <th>備考</th>
                     <td colspan="5"><input type="text" name="biko" class="half-field" disabled></td>
+                  </tr>
+                  <tr>
+                    <th>デザイナー</th>
+                    <td colspan="5"><input type="text" name="designer" class="half-field" disabled></td>
                   </tr>
                   <tr>
                     <td colspan="6">
@@ -1283,6 +1307,25 @@
         "備考"
       ];
 
+      // 「担当者別」選択時に表示する項目名
+      var TANTO_VISIBLE_FIELDS = [
+        "品名",
+        "アイテム",
+        "商品コード",
+        "JAN",
+        "固定上代",
+        "入数",
+        "サイズ/重量",
+        "カラー",
+        "原産国",
+        "組成",
+        "仕様",
+        "JAN有無",
+        "納品形態",
+        "備考",
+        "デザイナー"
+      ];
+
       // 利用区分（社内用／営業用／メーカー用）に応じて、カード内の行表示を制御
       function applyUseTypeToCard(card, useType) {
         var rows = card.querySelectorAll(".product-table tbody tr");
@@ -1303,6 +1346,13 @@
           } else if (useType === "maker") {
             // メーカー用：メーカー用リストに含まれる項目のみ表示
             if (MAKER_VISIBLE_FIELDS.indexOf(label) !== -1) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          } else if (useType === "tanto") {
+            // 担当者別：担当者別リストに含まれる項目のみ表示
+            if (TANTO_VISIBLE_FIELDS.indexOf(label) !== -1) {
               row.style.display = "";
             } else {
               row.style.display = "none";
