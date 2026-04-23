@@ -750,6 +750,79 @@
         padding: 20px;
         margin-left: -220px;
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: visible;
+      }
+
+      /* PC の height:88% がスマホ flex 内で不定になり、子の % 高さが潰れるのを防ぐ */
+      .content-area {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        height: auto;
+        min-height: 0;
+        flex: 1 1 auto;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .shiyosho-tabpanel {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        height: auto;
+        min-height: 0;
+        flex: 1 1 auto;
+        overflow: visible;
+      }
+
+      /* display:none はベースのまま。表示中だけ flex 列にしてグリッドが縦に伸びる */
+      .shiyosho-tabpanel.is-active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /*
+        スマホ: JS で操作ブロックを imgPanel 内へ移すと、グリッドの直接の子は
+        shiyosho-panel1 のみになる。2列指定のままだと第1列(6.5fr)にだけ収まる。
+        height:105% + overflow:hidden は高さ0付近で中身が消えるため auto/visible に。
+      */
+      .shiyosho-panel-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        max-width: 100%;
+        height: auto;
+        min-height: 0;
+        flex: 1 1 auto;
+        overflow: visible;
+      }
+
+      .shiyosho-panel1 {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        min-width: 0;
+        min-height: min(42vh, 380px);
+        flex-shrink: 0;
+      }
+
+      .shiyosho-panel1 .shiyosho-item {
+        max-width: 100%;
+        width: 100%;
+        align-self: stretch;
+        box-sizing: border-box;
+      }
+
+      /* flex:1 の basis 0% と不定高さの組み合わせで高さ0になるのを避ける */
+      .shiyosho-panel1 .shiyosho-item.img-scroll {
+        max-width: 100%;
+        align-self: stretch;
+        flex: 1 1 auto;
+        min-height: 200px;
+        overflow-y: auto;
       }
 
       /* スマホ: panel1 は imgPanel1 配下に操作エリアを縦積み */
