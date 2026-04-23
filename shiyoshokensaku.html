@@ -260,17 +260,12 @@
       margin-top: 0;
     }
 
-    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示（keiyakushosofuiraikakunin.html と同じ） */
     .content-box {
       display: flex;
       flex-direction: column;
       flex: 1;
-      background: var(--color-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-      overflow: hidden;
+      /* overflow: hidden; */
     }
 
     /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
@@ -286,6 +281,31 @@
 
     .content-box .search-box {
       flex-shrink: 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      text-align: left;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+
+    .search-box-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 24px;
+      width: 100%;
     }
 
     /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
@@ -429,10 +449,10 @@
         border: none;
         box-shadow: none;
       }
-       .search-box-inner {
+      .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px 16px;
+        gap: 16px 20px;
       }
       .search-box.is-open .search-box-inner {
         display: grid;
@@ -459,7 +479,10 @@
         min-width: 0;
       }
       .search-box-inner .filter-item .filter-label {
-        margin-right: 0;
+        display: block;
+        margin: 0 0 2px 0;
+        font-weight: 500;
+        order: -1;
       }
       .search-box-inner .filter-item select,
       .search-box-inner .filter-item input[type="text"] {
@@ -467,41 +490,43 @@
         width: 100%;
         box-sizing: border-box;
       }
-      /* flex-start だと子が内容幅のままになり .autocomplete が 250px のまま残る */
-      .search-box-inner .search-row {
+      /* keiyakushosofuiraikakunin.html の .search-row（スマホ）と同じ */
+      #searchRowsPanel .search-row {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 6px;
+        gap: 0;
         min-width: 0;
         width: 100%;
       }
-      .search-box-inner .search-row label {
-        /* font-size: var(--fs-base);  */
+      #searchRowsPanel .search-row label {
+        font-size: var(--fs-xs);
         flex-shrink: 0;
-        align-self: flex-start;
-        width: auto;
-        max-width: 100%;
         text-align: left;
+        align-self: flex-start;
       }
-      .search-box-inner .search-row select,
-      .search-box-inner .search-row input {
+      #searchRowsPanel .search-row select,
+      #searchRowsPanel .search-row input:not([type="checkbox"]) {
+        font-size: var(--fs-xs);
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px 12px;
+        font-family: inherit;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        background: var(--color-card);
+        color: var(--color-text);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      #searchRowsPanel .search-row .autocomplete {
         min-width: 0;
         width: 100%;
         box-sizing: border-box;
       }
-      /* style.css の .autocomplete{width:250px} を上書き。グリッドセル＝仕様書No. の入力と同じ横幅 */
-      .search-box-inner .search-row .autocomplete {
-        align-self: stretch;
-        width: 100%;
-        max-width: 100%;
+      #searchRowsPanel .search-row .autocomplete .autocomplete-input {
         min-width: 0;
-        box-sizing: border-box;
-      }
-
-      .search-box-inner .search-row .autocomplete-input {
         width: 100%;
-        max-width: 100%;
         box-sizing: border-box;
       }
 
@@ -517,10 +542,16 @@
 
       #searchRowsPanel #searchRowCategory .autocomplete,
       #searchRowsPanel #searchRowCategory .autocomplete-input,
+      #searchRowsPanel #searchRowCategory .multi-select,
+      #searchRowsPanel #searchRowCategory .multi-select-toggle,
       #searchRowsPanel #searchRowItem .autocomplete,
       #searchRowsPanel #searchRowItem .autocomplete-input,
+      #searchRowsPanel #searchRowItem .multi-select,
+      #searchRowsPanel #searchRowItem .multi-select-toggle,
       #searchRowsPanel #searchRowBrandChara .autocomplete,
-      #searchRowsPanel #searchRowBrandChara .autocomplete-input {
+      #searchRowsPanel #searchRowBrandChara .autocomplete-input,
+      #searchRowsPanel #searchRowBrandChara .multi-select,
+      #searchRowsPanel #searchRowBrandChara .multi-select-toggle {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -697,27 +728,56 @@
     /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
     .view-layout-1 { padding: 0; }
 
-    /* PCでは検索条件開閉ボタンを非表示。search-row の横並び・min-width は PC のみ（スマホは後段の max-width 768 で上書きされるため、ここに閉じないとカスケードで負ける） */
+    /* keiyakushosofuiraikakunin.html と同じ: PC 用 search-row（#searchRowsPanel のみ。スマホは max-width:768 側） */
     @media (min-width: 769px) {
       .search-toggle-sp {
         display: none;
       }
 
-      .search-box-inner .search-row {
+      .search-box {
+        flex-direction: row;
+      }
+
+      #searchRowsPanel .search-row {
         display: flex;
         align-items: center;
         gap: 8px;
         min-width: 0;
+        flex: 0 0 auto;
       }
 
-      .search-box-inner .search-row label {
+      #searchRowsPanel .search-row label {
         margin: 0;
+        font-size: var(--fs-xs);
+        font-weight: 500;
+        color: var(--color-text-muted);
         white-space: nowrap;
       }
 
-      .search-box-inner .search-row select,
-      .search-box-inner .search-row input {
+      #searchRowsPanel .search-row select,
+      #searchRowsPanel .search-row input:not([type="checkbox"]) {
+        font-size: var(--fs-xs);
         min-width: 160px;
+        padding: 3px 12px;
+        font-family: inherit;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        background: var(--color-card);
+        color: var(--color-text);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      #searchRowsPanel .search-row .autocomplete,
+      #searchRowsPanel .search-row .multi-select {
+        min-width: 160px;
+        width: 160px;
+        box-sizing: border-box;
+      }
+
+      #searchRowsPanel .search-row .autocomplete .autocomplete-input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
       }
     }
 
@@ -744,31 +804,88 @@
       min-width: 160px;
     }
 
-    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
-    .search-box-inner .search-row .autocomplete-dropdown,
-    .search-box-inner .search-row .autocomplete-dropdown div {
-      font-size: var(--fs-base);
+    #searchRowsPanel .search-row .autocomplete-dropdown,
+    #searchRowsPanel .search-row .autocomplete-dropdown div {
+      font-size: var(--fs-xs);
       font-weight: 500;
     }
-    .search-box-inner .search-row select,
-    .search-box-inner .search-row input {
-      padding: 10px 12px;
+
+    #searchRowsPanel .search-row option {
+      font-size: var(--fs-xs);
+    }
+
+    #searchRowsPanel .search-row .multi-select {
+      position: relative;
+      width: 100%;
+    }
+
+    #searchRowsPanel .search-row .multi-select-toggle {
+      width: 100%;
+      text-align: left;
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .search-box-inner .search-row select:hover,
-    .search-box-inner .search-row input:hover {
+
+    #searchRowsPanel .search-row .multi-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 20;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      max-height: 220px;
+      padding: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    #searchRowsPanel .search-row .multi-select.is-open .multi-select-menu {
+      display: block;
+    }
+
+    #searchRowsPanel .search-row .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 2px;
+      cursor: pointer;
+      font-size: var(--fs-xs);
+      white-space: nowrap;
+      width: fit-content;
+    }
+
+    #searchRowsPanel .search-row .multi-select-option input[type="checkbox"] {
+      margin: 0;
+    }
+
+    #searchRowsPanel .search-row select:hover,
+    #searchRowsPanel .search-row input:not([type="checkbox"]):hover,
+    #searchRowsPanel .search-row .multi-select-toggle:hover {
       border-color: #b0bdb5;
     }
-    .search-box-inner .search-row select:focus,
-    .search-box-inner .search-row input:focus {
+
+    #searchRowsPanel .search-row select:focus,
+    #searchRowsPanel .search-row input:not([type="checkbox"]):focus,
+    #searchRowsPanel .search-row .multi-select.is-open .multi-select-toggle {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
     }
-    .search-box-inner .search-row input::placeholder {
+
+    #searchRowsPanel .search-row input::placeholder {
       color: #9ca89f;
     }
 
@@ -797,15 +914,6 @@
       color: #fff;
     }
 
-    /* 承認通知／検索結果・ボックス共通 */
-    .content-box {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    }
     /* 検索条件と検索結果一覧の間の余白（5px） */
     .view-layout-1-group > .content-box:first-of-type {
       margin-bottom: 5px;
@@ -901,13 +1009,6 @@
       border-bottom: 1px solid var(--color-border);
     }
 
-    @media (max-width: 768px) {
-      #searchRowsPanel #searchRowCategory .autocomplete-input,
-      #searchRowsPanel #searchRowItem .autocomplete-input,
-      #searchRowsPanel #searchRowBrandChara .autocomplete-input {
-        padding: 8px 12px;
-      }
-    }
   </style>
 </head>
 
@@ -963,16 +1064,16 @@
               </button>
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="filter-row">
-                  <div class="filter-item">
-                    <span class="filter-label">仕様書No.</span>
+                  <div class="search-row">
+                    <label for="searchShiyoshoNo">仕様書No.</label>
                     <input type="text" id="searchShiyoshoNo" placeholder="仕様書No.を入力">
                   </div>
-                  <div class="filter-item">
+                  <div class="search-row">
                     <span class="filter-label">柄共通No.</span>
                     <input type="text" id="searchKaraKyotsuNo" placeholder="柄共通No.を入力">
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">販売区分</span>
+                  <div class="search-row">
+                    <label for="searchHanbaiKubun">販売区分</label>
                     <select id="searchHanbaiKubun">
                       <option value="">すべて</option>
                       <option value="teiban">定番</option>
@@ -981,8 +1082,8 @@
                       <option value="oem">OEM</option>
                     </select>
                   </div>
-                  <div class="filter-item" id="tenjikaiFilterItem">
-                    <span class="filter-label">展示会</span>
+                  <div class="search-row" id="tenjikaiFilterItem">
+                    <label for="searchShowsai">展示会</label>
                     <select id="tenjikaiSelect">
                       <option value="">すべて</option>
                       <option value="2026.06">2026.06 展示会</option>
@@ -991,32 +1092,32 @@
                     </select>
                   </div>
                   <div class="search-row" id="searchRowCategory">
-                    <label>カテゴリー</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="category" placeholder="カテゴリー検索" id="searchCategory">
-                      <div class="autocomplete-dropdown"></div>
-                    </div>
-                  </div>
-                  <div class="filter-item">
-                    <span class="filter-label">品名</span>
-                    <input type="text" id="searchHinmei" placeholder="品名を入力">
-                  </div>
-                  <div class="search-row" id="searchRowItem">
-                    <label>アイテム</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="searchItem">
-                      <div class="autocomplete-dropdown"></div>
+                    <label for="searchCategoryToggle">カテゴリー</label>
+                    <div class="multi-select" id="searchCategoryMulti" data-list="category2">
+                      <button type="button" class="multi-select-toggle" id="searchCategoryToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchCategoryMenu" role="listbox" aria-multiselectable="true"></div>
                     </div>
                   </div>
                   <div class="search-row" id="searchRowBrandChara">
-                    <label>ブランド・キャラ</label>
-                    <div class="autocomplete">
-                      <input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="searchBrandChara">
-                      <div class="autocomplete-dropdown"></div>
+                    <label for="searchBrandCharaToggle">ブランド・キャラ</label>
+                    <div class="multi-select" id="searchBrandCharaMulti" data-list="brandChara">
+                      <button type="button" class="multi-select-toggle" id="searchBrandCharaToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchBrandCharaMenu" role="listbox" aria-multiselectable="true"></div>
                     </div>
                   </div>
-                  <div class="filter-item" id="searchDesignerFilterItem">
-                    <span class="filter-label">デザイナー</span>
+                  <div class="search-row" id="searchRowItem">
+                    <label for="searchItemToggle">アイテム</label>
+                    <div class="multi-select" id="searchItemMulti" data-list="item">
+                      <button type="button" class="multi-select-toggle" id="searchItemToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchItemMenu" role="listbox" aria-multiselectable="true"></div>
+                    </div>
+                  </div>
+                  <div class="search-row">
+                    <label for="searchHinmei">品名</label>
+                    <input type="text" id="searchHinmei" placeholder="品名を入力">
+                  </div>              
+                  <div class="search-row" id="searchDesignerFilterItem">
+                    <label for="searchDesigner">デザイナー</label>
                     <select id="tenjikaiSelect">
                       <option value="">すべて</option>
                       <option value="">丸眞太郎</option>
@@ -1178,6 +1279,86 @@
       }
 
       loadSharedSidebar();
+
+      // 複数選択（カテゴリー・アイテム・ブランド・キャラ）
+      (function () {
+        function buildMultiSelect(wrapId, toggleId, menuId) {
+          var wrap = document.getElementById(wrapId);
+          var toggle = document.getElementById(toggleId);
+          var menu = document.getElementById(menuId);
+          if (!wrap || !toggle || !menu) return null;
+
+          var listKey = wrap.getAttribute("data-list");
+          var source = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS[listKey];
+          if (!Array.isArray(source)) source = [];
+
+          menu.innerHTML = "";
+          source.forEach(function (item) {
+            var label = document.createElement("label");
+            label.className = "multi-select-option";
+
+            var input = document.createElement("input");
+            input.type = "checkbox";
+            input.value = item;
+
+            var span = document.createElement("span");
+            span.textContent = item;
+
+            label.appendChild(input);
+            label.appendChild(span);
+            menu.appendChild(label);
+          });
+
+          function getValues() {
+            return Array.prototype.slice.call(
+              menu.querySelectorAll('input[type="checkbox"]:checked')
+            ).map(function (input) {
+              return input.value;
+            });
+          }
+
+          function updateLabel() {
+            var values = getValues();
+            if (values.length === 0) {
+              toggle.textContent = "選択してください";
+            } else if (values.length === 1) {
+              toggle.textContent = values[0];
+            } else {
+              toggle.textContent = values.length + "件選択中";
+            }
+          }
+
+          toggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = wrap.classList.toggle("is-open");
+            toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
+
+          menu.addEventListener("change", updateLabel);
+          updateLabel();
+
+          return { wrap: wrap, toggle: toggle, menu: menu, getValues: getValues, updateLabel: updateLabel };
+        }
+
+        var controls = {
+          category: buildMultiSelect("searchCategoryMulti", "searchCategoryToggle", "searchCategoryMenu"),
+          item: buildMultiSelect("searchItemMulti", "searchItemToggle", "searchItemMenu"),
+          brandChara: buildMultiSelect("searchBrandCharaMulti", "searchBrandCharaToggle", "searchBrandCharaMenu")
+        };
+
+        document.addEventListener("click", function (event) {
+          Object.keys(controls).forEach(function (key) {
+            var ctrl = controls[key];
+            if (!ctrl) return;
+            if (!ctrl.wrap.contains(event.target)) {
+              ctrl.wrap.classList.remove("is-open");
+              ctrl.toggle.setAttribute("aria-expanded", "false");
+            }
+          });
+        });
+
+        window._shiyoshoMultiSelectControls = controls;
+      })();
       
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
@@ -1196,10 +1377,10 @@
         var inpKaraKyotsuNo = document.getElementById("searchKaraKyotsuNo");
         var selHanbai = document.getElementById("searchHanbaiKubun");
         var selTenjikai = document.getElementById("tenjikaiSelect");
-        var selCategory = document.getElementById("searchCategory");
+        var multiCategory = window._shiyoshoMultiSelectControls && window._shiyoshoMultiSelectControls.category;
         var inpHinmei = document.getElementById("searchHinmei");
-        var selItem = document.getElementById("searchItem");
-        var selBrandChara = document.getElementById("searchBrandChara");
+        var multiItem = window._shiyoshoMultiSelectControls && window._shiyoshoMultiSelectControls.item;
+        var multiBrandChara = window._shiyoshoMultiSelectControls && window._shiyoshoMultiSelectControls.brandChara;
         var tbody = document.querySelector("#approvalListArea .result-table tbody");
         if (!tbody) return;
 
@@ -1212,24 +1393,16 @@
           }[value] || "";
         }
 
-        function mapCategory(value) {
-          return {
-            tanpin: "単品タオル",
-            kikaku: "企画物タオル"
-          }[value] || "";
-        }
-
         function applyFilter() {
           var condShiyoshoNo = inpShiyoshoNo ? inpShiyoshoNo.value.trim() : "";
           var condKaraKyotsuNo = inpKaraKyotsuNo ? inpKaraKyotsuNo.value.trim() : "";
           var condHanbai = selHanbai ? selHanbai.value : "";
           var condTenjikai = selTenjikai ? selTenjikai.value : "";
-          var condCategory = selCategory ? selCategory.value : "";
+          var condCategory = multiCategory ? multiCategory.getValues() : [];
           var condHinmei = inpHinmei ? inpHinmei.value.trim() : "";
-          var condItem = selItem ? (selItem.tagName === "SELECT" ? selItem.value : selItem.value.trim()) : "";
-          var condBrandChara = selBrandChara ? (selBrandChara.tagName === "SELECT" ? selBrandChara.value : selBrandChara.value.trim()) : "";
+          var condItem = multiItem ? multiItem.getValues() : [];
+          var condBrandChara = multiBrandChara ? multiBrandChara.getValues() : [];
           var hanbaiLabel = mapHanbai(condHanbai);
-          var categoryLabel = selCategory && selCategory.tagName === "SELECT" ? mapCategory(condCategory) : (condCategory || "").trim();
 
           Array.prototype.forEach.call(tbody.rows, function (row) {
             // 先頭セルはチェックボックス列のため、各項目は1つ後ろのインデックス
@@ -1260,13 +1433,13 @@
             if (condTenjikai) {
               if (!cellTenjikai || cellTenjikai.indexOf(condTenjikai) !== 0) match = false;
             }
-            if (condCategory && cellCategory !== categoryLabel) match = false;
+            if (condCategory.length > 0 && condCategory.indexOf(cellCategory) === -1) match = false;
 
             if (condHinmei && cellHinmei.indexOf(condHinmei) === -1) match = false;
 
-            if (condItem && cellItem !== condItem) match = false;
+            if (condItem.length > 0 && condItem.indexOf(cellItem) === -1) match = false;
 
-            if (condBrandChara && cellBrandChara !== condBrandChara) match = false;
+            if (condBrandChara.length > 0 && condBrandChara.indexOf(cellBrandChara) === -1) match = false;
 
             row.style.display = match ? "" : "none";
           });
@@ -1275,18 +1448,9 @@
         [selHanbai, selTenjikai].forEach(function (el) {
           if (el) el.addEventListener("change", applyFilter);
         });
-        if (selCategory) {
-          selCategory.addEventListener("change", applyFilter);
-          if (selCategory.tagName === "INPUT") selCategory.addEventListener("input", applyFilter);
-        }
-        if (selItem) {
-          selItem.addEventListener("change", applyFilter);
-          if (selItem.tagName === "INPUT") selItem.addEventListener("input", applyFilter);
-        }
-        if (selBrandChara) {
-          selBrandChara.addEventListener("change", applyFilter);
-          if (selBrandChara.tagName === "INPUT") selBrandChara.addEventListener("input", applyFilter);
-        }
+        [multiCategory, multiItem, multiBrandChara].forEach(function (ctrl) {
+          if (ctrl && ctrl.menu) ctrl.menu.addEventListener("change", applyFilter);
+        });
         if (inpHinmei) {
           inpHinmei.addEventListener("input", applyFilter);
           inpHinmei.addEventListener("change", applyFilter);
