@@ -81,6 +81,19 @@
     /* #region レスポンシブ対応 */
     /* 画面の幅が768px以下ならスマホ*/
     @media (max-width: 767px) {
+      html,
+      body {
+        height: auto;
+        min-height: 100%;
+        overflow-y: auto;
+      }
+
+      .main-wrapper {
+        height: auto;
+        min-height: calc(100vh - 48px);
+        overflow: visible;
+      }
+
       .pc-only {
         display: none;
       }
@@ -118,6 +131,7 @@
         padding: 20px;
         margin-left: -220px;
         width: 100%;
+        overflow: visible;
       }
 
       .dashboard-section {
@@ -129,6 +143,20 @@
         padding-bottom: 20px;
       }
 
+      .content-area .filter-item label input[name="useType"] {
+        margin-right: 4px;
+      }
+
+      .content-area .filter-item label {
+        font-size: 15px;
+      }
+
+      .use-type-toggle-wrapper {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-end;
+      }
+
       /* イメージ案①: スマホ用 */
       .filter-row {
         flex-wrap: wrap;
@@ -138,15 +166,25 @@
         flex: 1 1 100%;
       }
 
-      .print-header-bulk-row {
+      .content-area .print-header-bulk-row {
         flex-direction: column;
         align-items: stretch;
+        gap: 2px;
+      }
+
+      .print-header-bulk-label {
+        display: block;
+        width: 100%;
+        align-self: flex-start;
+        text-align: left;
+        margin: 0;
       }
 
       .print-header-bulk-input {
         min-width: 0;
         width: 100%;
         flex: none;
+        margin: 0;
       }
 
       .btn-print-header-bulk {
@@ -204,15 +242,14 @@
       .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px 16px;
+        gap: 18px 20px;
         margin-top: 10px;
       }
 
       .search-box.is-open .search-box-inner {
         display: grid;
-        max-height: calc(100vh - 250px);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        max-height: none;
+        overflow: visible;
       }
 
       .search-box.is-open .search-toggle-sp::after {
@@ -226,18 +263,32 @@
       .search-box-inner .filter-item {
         flex-direction: column;
         align-items: stretch;
-        gap: 6px;
+        gap: 2px;
         min-width: 0;
+        padding-top: 6px;
+        padding-bottom: 6px;
       }
 
       .search-box-inner .filter-item .filter-label {
         margin-right: 0;
+        font-size: 16px;
+        line-height: 1.2;
       }
 
       .search-box-inner .filter-item select,
       .search-box-inner .filter-item input[type="text"] {
         min-width: 0;
         width: 100%;
+      }
+
+      #searchTenjikai,
+      #searchProductCode,
+      #searchJanCode,
+      #searchName,
+      #tenjikaiSelect {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
       }
 
       .search-box-inner .search-cancel-wrapper {
@@ -251,6 +302,10 @@
       .timeline-line {
         left: 20px;
         right: 20px;
+      }
+
+      #approvalNoticeArea {
+        overflow: visible;
       }
     }
 
@@ -266,6 +321,30 @@
       align-items: center;
       gap: 4px;
       flex-wrap: nowrap;
+    }
+
+    .use-type-toggle-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-use-type-toggle {
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .btn-use-type-toggle:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
     }
 
     .filter-row .filter-label {
@@ -338,6 +417,7 @@
       right: 24px;
       bottom: 12px;
       z-index: 2001;
+      min-width: 100px;
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -645,7 +725,7 @@
 
     .btn-search-cancel {
       display: inline-block;
-      min-width: 140px;
+      min-width: 100px;
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -822,6 +902,9 @@
             <label><input type="radio" name="useType" value="sales"> 営業用</label>
             <label><input type="radio" name="useType" value="maker"> メーカー用</label>
             <label><input type="radio" name="useType" value="tanto"> 担当者別</label>
+          </div>
+          <div class="use-type-toggle-wrapper">
+            <button type="button" class="btn-use-type-toggle" id="switchActualImageBtn">現物画像へ切り替え</button>
           </div>
         </div>
       </div>
@@ -1866,6 +1949,20 @@
         pagesContainer.querySelectorAll(".print-header-input").forEach(function (el) {
           el.value = v;
         });
+      });
+    })();
+
+    (function () {
+      var switchBtn = document.getElementById("switchActualImageBtn");
+      if (!switchBtn) return;
+
+      switchBtn.addEventListener("click", function () {
+        var currentLabel = (switchBtn.textContent || "").trim();
+        if (currentLabel === "現物画像へ切り替え") {
+          switchBtn.textContent = "商品画像へ切り替え";
+        } else {
+          switchBtn.textContent = "現物画像へ切り替え";
+        }
       });
     })();
 
