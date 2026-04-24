@@ -261,7 +261,7 @@
       width: 100%;
       text-align: left;
       font-size: var(--fs-xs);
-      min-width: 160px;
+      min-width: 400px;
       padding: 3px 12px;
       font-family: inherit;
       border: 1px solid var(--color-border);
@@ -838,7 +838,7 @@
 
       .search-box .search-box-inner {
         display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         padding: 12px 0 0;
         gap: 12px 16px;
       }
@@ -912,6 +912,16 @@
         min-width: 0;
         width: 100%;
         box-sizing: border-box;
+      }
+
+      .search-cancel-wrapper {
+        margin-left: auto;
+        width: auto;
+        justify-content: flex-end;
+      }
+
+      .search-cancel-wrapper .btn-search-cancel {
+        width: auto;
       }
 
       .btn-edit {
@@ -1027,7 +1037,6 @@
         white-space: normal;
       }
 
-      /* 1行目: ライセンサー（左）+ 編集ボタン（右上・高さ影響なし） */
       #approvalListArea .result-table tbody td:nth-child(1) {
         padding-right: 58px;
       }
@@ -1039,21 +1048,21 @@
         padding: 0;
       }
 
-      /* ライセンサー */
+      /* アイテム大分類 */
       #approvalListArea .result-table tbody td:nth-child(1)::before {
-        content: "ライセンサー：";
+        content: "アイテム大分類：";
         font-weight: 600;
       }
 
-      /* ブランド */
+      /* アイテム中分類 */
       #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "ブランド：";
+        content: "アイテム中分類：";
         font-weight: 600;
       }
 
-      /* キャラ */
+      /* アイテム小分類 */
       #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "キャラ：";
+        content: "アイテム小分類：";
         font-weight: 600;
       }
 
@@ -1095,7 +1104,7 @@
     <!--#region メインコンテンツ  -->
     <div class="content">
       <div class="content-box">
-        <h2 class="page-title">ライセンス/ブランド/キャラクタ紐づけマスタメンテナンス</h2>
+        <h2 class="page-title">アイテム大分類/中分類/小分類紐づけマスタメンテナンス</h2>
 
         <!-- ========== 検索条件・検索結果一覧 ========== -->
         <div class="view-layout view-layout-1-group">
@@ -1111,35 +1120,38 @@
               </button>
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="search-row">
-                  <label for="searchLicensor">ライセンサー</label>
-                  <div class="multi-select" id="searchLicensor" data-list="licensor">
-                    <button type="button" class="multi-select-toggle" id="searchLicensorToggle" aria-haspopup="listbox"
-                      aria-expanded="false">
+                  <label for="searchItemcategory">アイテム大分類</label>
+                  <div class="multi-select" id="searchItemcategory" data-list="itemcategory">
+                    <button type="button" class="multi-select-toggle" id="searchItemcategoryToggle"
+                      aria-haspopup="listbox" aria-expanded="false">
                       選択してください
                     </button>
-                    <div class="multi-select-menu" id="searchLicensorMenu" role="listbox" aria-multiselectable="true">
+                    <div class="multi-select-menu" id="searchItemcategoryMenu" role="listbox"
+                      aria-multiselectable="true">
                     </div>
                   </div>
                 </div>
                 <div class="search-row">
-                  <label for="searchBrandToggle">ブランド</label>
-                  <div class="multi-select" id="searchBrand" data-list="brand2">
-                    <button type="button" class="multi-select-toggle" id="searchBrandToggle" aria-haspopup="listbox"
-                      aria-expanded="false">
+                  <label for="searchItemsubcategoryToggle">アイテム中分類</label>
+                  <div class="multi-select" id="searchItemsubcategory" data-list="itemsubcategory">
+                    <button type="button" class="multi-select-toggle" id="searchItemsubcategoryToggle"
+                      aria-haspopup="listbox" aria-expanded="false">
                       選択してください
                     </button>
-                    <div class="multi-select-menu" id="searchBrandMenu" role="listbox" aria-multiselectable="true">
+                    <div class="multi-select-menu" id="searchItemsubcategoryMenu" role="listbox"
+                      aria-multiselectable="true">
                     </div>
                   </div>
                 </div>
                 <div class="search-row">
-                  <label for="searchCharaToggle">キャラ</label>
-                  <div class="multi-select" id="searchChara" data-list="chara">
-                    <button type="button" class="multi-select-toggle" id="searchCharaToggle" aria-haspopup="listbox"
-                      aria-expanded="false">
+                  <label for="searchItemsubsubcategoryToggle">アイテム小分類</label>
+                  <div class="multi-select" id="searchItemsubsubcategory" data-list="itemsubsubcategory">
+                    <button type="button" class="multi-select-toggle" id="searchItemsubsubcategoryToggle"
+                      aria-haspopup="listbox" aria-expanded="false">
                       選択してください
                     </button>
-                    <div class="multi-select-menu" id="searchCharaMenu" role="listbox" aria-multiselectable="true">
+                    <div class="multi-select-menu" id="searchItemsubsubcategoryMenu" role="listbox"
+                      aria-multiselectable="true">
                     </div>
                   </div>
                 </div>
@@ -1161,233 +1173,155 @@
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 10%;">ライセンサー</th>
-                      <th style="width: 15%;">ブランド</th>
-                      <th style="width: 15%;">キャラ</th>
+                      <th style="width: 10%;">アイテム大分類</th>
+                      <th style="width: 15%;">アイテム中分類</th>
+                      <th style="width: 15%;">アイテム小分類</th>
                       <th style="width: 15%;"></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>ディズニー</td>
-                      <td>ミッキー ＆ フレンズ</td>
-                      <td>ミッキー</td>
+                      <td>白タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ダイカットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ジブリ</td>
-                      <td>となりのトトロ</td>
-                      <td>トトロ</td>
+                      <td>白タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ポケットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ジブリ</td>
-                      <td>となりのトトロ</td>
-                      <td>ネコバス</td>
+                      <td>白タオル</td>
+                      <td>ミニタオル</td>
+                      <td>タオルハンカチ</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ジブリ</td>
-                      <td>魔女の宅急便</td>
-                      <td>キキ</td>
+                      <td>白タオル</td>
+                      <td>フェイスタオル</td>
+                      <td>ロングフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ジブリ</td>
-                      <td>魔女の宅急便</td>
-                      <td>ジジ</td>
+                      <td>白タオル</td>
+                      <td>フェイスタオル</td>
+                      <td>ループ付きフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ジブリ</td>
-                      <td>崖の上のポニョ</td>
-                      <td>ポニョ</td>
+                      <td>白タオル</td>
+                      <td>フェイスタオル</td>
+                      <td>ダイカットフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ジブリ</td>
-                      <td>崖の上のポニョ</td>
-                      <td>宗介</td>
+                      <td>カタログ掲載品（単品）</td>
+                      <td>ミニタオル</td>
+                      <td>ダイカットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ディズニー</td>
-                      <td>ミッキー ＆ フレンズ</td>
-                      <td>ミッキー</td>
+                      <td>カタログ掲載品（単品）</td>
+                      <td>ミニタオル</td>
+                      <td>ポケットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ディズニー</td>
-                      <td>ミッキー ＆ フレンズ</td>
-                      <td>ミニー</td>
+                      <td>カタログ掲載品（単品）</td>
+                      <td>ミニタオル</td>
+                      <td>タオルハンカチ</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ディズニー</td>
-                      <td>スター・ウォーズ</td>
-                      <td>ダース・ベイダー</td>
+                      <td>カタログ掲載品（単品）</td>
+                      <td>フェイスタオル</td>
+                      <td>ロングフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ディズニー</td>
-                      <td>スター・ウォーズ</td>
-                      <td>C-3PO</td>
+                      <td>カタログ掲載品（単品）</td>
+                      <td>フェイスタオル</td>
+                      <td>ループ付きフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ディズニー</td>
-                      <td>トイ・ストーリー</td>
-                      <td>ウッディ</td>
+                      <td>カタログ掲載品（単品）</td>
+                      <td>フェイスタオル</td>
+                      <td>ダイカットフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ディズニー</td>
-                      <td>トイ・ストーリー</td>
-                      <td>バズ</td>
+                      <td>カタログ掲載品（ギフト）</td>
+                      <td>ミニタオル</td>
+                      <td>ダイカットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ワーナー・ブラザーズ</td>
-                      <td>ハリー・ポッター</td>
-                      <td>ハリー</td>
+                      <td>カタログ掲載品（ギフト）</td>
+                      <td>ミニタオル</td>
+                      <td>ポケットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ワーナー・ブラザーズ</td>
-                      <td>ハリー・ポッター</td>
-                      <td>ヴォルデモート</td>
+                      <td>カタログ掲載品（ギフト）</td>
+                      <td>ミニタオル</td>
+                      <td>タオルハンカチ</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ワーナー・ブラザーズ</td>
-                      <td>トムとジェリー</td>
-                      <td>トム</td>
+                      <td>カタログ掲載品（ギフト）</td>
+                      <td>フェイスタオル</td>
+                      <td>ロングフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ワーナー・ブラザーズ</td>
-                      <td>トムとジェリー</td>
-                      <td>ジェリー</td>
+                      <td>カタログ掲載品（ギフト）</td>
+                      <td>フェイスタオル</td>
+                      <td>ループ付きフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ワーナー・ブラザーズ</td>
-                      <td>マトリックス</td>
-                      <td>ネオ</td>
+                      <td>カタログ掲載品（ギフト）</td>
+                      <td>フェイスタオル</td>
+                      <td>ダイカットフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ワーナー・ブラザーズ</td>
-                      <td>マトリックス</td>
-                      <td>トリニティ</td>
+                      <td>定番外ギフト</td>
+                      <td>ミニタオル</td>
+                      <td>ダイカットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ユニバーサル</td>
-                      <td>ミニオンズ</td>
-                      <td>ケビン</td>
+                      <td>定番外ギフト</td>
+                      <td>ミニタオル</td>
+                      <td>ポケットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ユニバーサル</td>
-                      <td>ミニオンズ</td>
-                      <td>ボブ</td>
+                      <td>定番外ギフト</td>
+                      <td>ミニタオル</td>
+                      <td>タオルハンカチ</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ユニバーサル</td>
-                      <td>ジュラシック・ワールド</td>
-                      <td>ブルー</td>
+                      <td>定番外ギフト</td>
+                      <td>フェイスタオル</td>
+                      <td>ロングフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ユニバーサル</td>
-                      <td>ジュラシック・ワールド</td>
-                      <td>オーウェン</td>
+                      <td>定番外ギフト</td>
+                      <td>フェイスタオル</td>
+                      <td>ループ付きフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>ユニバーサル</td>
-                      <td>E.T.</td>
-                      <td>E.T.</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>ユニバーサル</td>
-                      <td>E.T.</td>
-                      <td>エリオット</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>サンリオ</td>
-                      <td>ハローキティ</td>
-                      <td>キティ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>サンリオ</td>
-                      <td>ハローキティ</td>
-                      <td>ミミィ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>サンリオ</td>
-                      <td>マイメロディ</td>
-                      <td>マイメロディ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>サンリオ</td>
-                      <td>マイメロディ</td>
-                      <td>クロミ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>サンリオ</td>
-                      <td>シナモロール</td>
-                      <td>シナモン</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>サンリオ</td>
-                      <td>シナモロール</td>
-                      <td>カプチーノ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>ムーミン</td>
-                      <td>ムーミンパパ・ムーミンママ</td>
-                      <td>ムーミンパパ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>ムーミン</td>
-                      <td>ムーミンパパ・ムーミンママ</td>
-                      <td>ムーミンママ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>カラー</td>
-                      <td>ヱヴァンゲリヲン</td>
-                      <td>シンジ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>カラー</td>
-                      <td>ヱヴァンゲリヲン</td>
-                      <td>アスカ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>カラー</td>
-                      <td>シン・ウルトラマン"</td>
-                      <td>ウルトラマン</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>カラー</td>
-                      <td>シン・ウルトラマン"</td>
-                      <td>ゼットン"</td>
+                      <td>定番外ギフト</td>
+                      <td>フェイスタオル</td>
+                      <td>ダイカットフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                   </tbody>
@@ -1405,24 +1339,24 @@
       <h2 id="editModalTitle" class="modal-title">編集</h2>
       <form id="editModalForm">
         <div class="modal-form-grid">
-          <label for="modalLicensor">ライセンサー</label>
+          <label for="modalItemcategory">アイテム大分類</label>
           <div class="autocomplete">
-            <input id="modalLicensor" name="licensor" type="text" class="autocomplete-input" data-list="licensor"
+            <input id="modalItemcategory" name="itemcategory" type="text" class="autocomplete-input" data-list="itemcategory"
               autocomplete="off">
             <div class="autocomplete-dropdown"></div>
           </div>
 
-          <label for="modalBrand">ブランド</label>
+          <label for="modalItemsubcategory">アイテム中分類</label>
           <div class="autocomplete">
-            <input id="modalBrand" name="brand" type="text" class="autocomplete-input" data-list="brand2"
-              autocomplete="off">
+            <input id="modalItemsubcategory" name="itemsubcategory" type="text" class="autocomplete-input"
+              data-list="itemsubcategory" autocomplete="off">
             <div class="autocomplete-dropdown"></div>
           </div>
 
-          <label for="modalChara">キャラ</label>
+          <label for="modalItemsubsubcategory">アイテム小分類</label>
           <div class="autocomplete">
-            <input id="modalChara" name="chara" type="text" class="autocomplete-input" data-list="chara"
-              autocomplete="off">
+            <input id="modalItemsubsubcategory" name="itemsubsubcategory" type="text" class="autocomplete-input"
+              data-list="itemsubsubcategory" autocomplete="off">
             <div class="autocomplete-dropdown"></div>
           </div>
         </div>
@@ -1438,15 +1372,15 @@
     <script>
       // 図案情報検索ページ専用: 検索条件による一覧絞り込み（クリアボタン含む）
       window.initZuankensakuFilters = function () {
-        var licensorWrap = document.getElementById("searchLicensor");
-        var licensorToggle = document.getElementById("searchLicensorToggle");
-        var licensorMenu = document.getElementById("searchLicensorMenu");
-        var brandWrap = document.getElementById("searchBrand");
-        var brandToggle = document.getElementById("searchBrandToggle");
-        var brandMenu = document.getElementById("searchBrandMenu");
-        var charaWrap = document.getElementById("searchChara");
-        var charaToggle = document.getElementById("searchCharaToggle");
-        var charaMenu = document.getElementById("searchCharaMenu");
+        var licensorWrap = document.getElementById("searchItemcategory");
+        var licensorToggle = document.getElementById("searchItemcategoryToggle");
+        var licensorMenu = document.getElementById("searchItemcategoryMenu");
+        var itemsubcategoryWrap = document.getElementById("searchItemsubcategory");
+        var itemsubcategoryToggle = document.getElementById("searchItemsubcategoryToggle");
+        var itemsubcategoryMenu = document.getElementById("searchItemsubcategoryMenu");
+        var itemsubsubcategoryWrap = document.getElementById("searchItemsubsubcategory");
+        var itemsubsubcategoryToggle = document.getElementById("searchItemsubsubcategoryToggle");
+        var itemsubsubcategoryMenu = document.getElementById("searchItemsubsubcategoryMenu");
         var clearBtn = document.getElementById("searchCancelAllBtn");
         var countDisplay = document.getElementById("searchCountDisplay");
         var tbody = document.querySelector("#approvalListArea .result-table tbody");
@@ -1478,12 +1412,12 @@
         }
 
         buildMultiSelectOptionsFromDataList(licensorWrap, licensorMenu);
-        buildMultiSelectOptionsFromDataList(brandWrap, brandMenu);
-        buildMultiSelectOptionsFromDataList(charaWrap, charaMenu);
+        buildMultiSelectOptionsFromDataList(itemsubcategoryWrap, itemsubcategoryMenu);
+        buildMultiSelectOptionsFromDataList(itemsubsubcategoryWrap, itemsubsubcategoryMenu);
 
         var licensorChecks = licensorMenu ? licensorMenu.querySelectorAll('input[type="checkbox"]') : [];
-        var brandChecks = brandMenu ? brandMenu.querySelectorAll('input[type="checkbox"]') : [];
-        var charaChecks = charaMenu ? charaMenu.querySelectorAll('input[type="checkbox"]') : [];
+        var itemsubcategoryChecks = itemsubcategoryMenu ? itemsubcategoryMenu.querySelectorAll('input[type="checkbox"]') : [];
+        var itemsubsubcategoryChecks = itemsubsubcategoryMenu ? itemsubsubcategoryMenu.querySelectorAll('input[type="checkbox"]') : [];
 
         function normalizeText(value) {
           return String(value || "")
@@ -1529,19 +1463,19 @@
 
         function applyFilter() {
           var visibleCount = 0;
-          var condLicensorList = getSelectedValues(licensorChecks);
-          var condBrandList = getSelectedValues(brandChecks);
-          var condCharaList = getSelectedValues(charaChecks);
+          var condItemcategoryList = getSelectedValues(licensorChecks);
+          var condItemsubcategoryList = getSelectedValues(itemsubcategoryChecks);
+          var condItemsubsubcategoryList = getSelectedValues(itemsubsubcategoryChecks);
 
           Array.prototype.forEach.call(tbody.rows, function (row) {
-            var cellLicensor = row.cells[0] ? normalizeText(row.cells[0].textContent) : "";
-            var cellBrand = row.cells[1] ? normalizeText(row.cells[1].textContent) : "";
-            var cellChara = row.cells[2] ? normalizeText(row.cells[2].textContent) : "";
+            var cellItemcategory = row.cells[0] ? normalizeText(row.cells[0].textContent) : "";
+            var cellItemsubcategory = row.cells[1] ? normalizeText(row.cells[1].textContent) : "";
+            var cellItemsubsubcategory = row.cells[2] ? normalizeText(row.cells[2].textContent) : "";
             var match = true;
 
-            if (condLicensorList.length > 0 && condLicensorList.indexOf(cellLicensor) === -1) match = false;
-            if (condBrandList.length > 0 && condBrandList.indexOf(cellBrand) === -1) match = false;
-            if (condCharaList.length > 0 && condCharaList.indexOf(cellChara) === -1) match = false;
+            if (condItemcategoryList.length > 0 && condItemcategoryList.indexOf(cellItemcategory) === -1) match = false;
+            if (condItemsubcategoryList.length > 0 && condItemsubcategoryList.indexOf(cellItemsubcategory) === -1) match = false;
+            if (condItemsubsubcategoryList.length > 0 && condItemsubsubcategoryList.indexOf(cellItemsubsubcategory) === -1) match = false;
 
             row.style.display = match ? "" : "none";
             if (match) visibleCount++;
@@ -1558,19 +1492,19 @@
           });
         }
 
-        if (brandToggle && brandWrap) {
-          brandToggle.addEventListener("click", function (event) {
+        if (itemsubcategoryToggle && itemsubcategoryWrap) {
+          itemsubcategoryToggle.addEventListener("click", function (event) {
             event.stopPropagation();
-            var isOpen = brandWrap.classList.toggle("is-open");
-            brandToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            var isOpen = itemsubcategoryWrap.classList.toggle("is-open");
+            itemsubcategoryToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
           });
         }
 
-        if (charaToggle && charaWrap) {
-          charaToggle.addEventListener("click", function (event) {
+        if (itemsubsubcategoryToggle && itemsubsubcategoryWrap) {
+          itemsubsubcategoryToggle.addEventListener("click", function (event) {
             event.stopPropagation();
-            var isOpen = charaWrap.classList.toggle("is-open");
-            charaToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            var isOpen = itemsubsubcategoryWrap.classList.toggle("is-open");
+            itemsubsubcategoryToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
           });
         }
 
@@ -1581,16 +1515,16 @@
           });
         });
 
-        Array.prototype.forEach.call(brandChecks, function (cb) {
+        Array.prototype.forEach.call(itemsubcategoryChecks, function (cb) {
           cb.addEventListener("change", function () {
-            updateToggleLabel(brandToggle, brandChecks);
+            updateToggleLabel(itemsubcategoryToggle, itemsubcategoryChecks);
             applyFilter();
           });
         });
 
-        Array.prototype.forEach.call(charaChecks, function (cb) {
+        Array.prototype.forEach.call(itemsubsubcategoryChecks, function (cb) {
           cb.addEventListener("change", function () {
-            updateToggleLabel(charaToggle, charaChecks);
+            updateToggleLabel(itemsubsubcategoryToggle, itemsubsubcategoryChecks);
             applyFilter();
           });
         });
@@ -1601,31 +1535,31 @@
             licensorWrap.classList.remove("is-open");
             if (licensorToggle) licensorToggle.setAttribute("aria-expanded", "false");
           }
-          if (brandWrap && !brandWrap.contains(target)) {
-            brandWrap.classList.remove("is-open");
-            if (brandToggle) brandToggle.setAttribute("aria-expanded", "false");
+          if (itemsubcategoryWrap && !itemsubcategoryWrap.contains(target)) {
+            itemsubcategoryWrap.classList.remove("is-open");
+            if (itemsubcategoryToggle) itemsubcategoryToggle.setAttribute("aria-expanded", "false");
           }
-          if (charaWrap && !charaWrap.contains(target)) {
-            charaWrap.classList.remove("is-open");
-            if (charaToggle) charaToggle.setAttribute("aria-expanded", "false");
+          if (itemsubsubcategoryWrap && !itemsubsubcategoryWrap.contains(target)) {
+            itemsubsubcategoryWrap.classList.remove("is-open");
+            if (itemsubsubcategoryToggle) itemsubsubcategoryToggle.setAttribute("aria-expanded", "false");
           }
         });
 
         if (clearBtn) {
           clearBtn.addEventListener("click", function () {
             Array.prototype.forEach.call(licensorChecks, function (cb) { cb.checked = false; });
-            Array.prototype.forEach.call(brandChecks, function (cb) { cb.checked = false; });
-            Array.prototype.forEach.call(charaChecks, function (cb) { cb.checked = false; });
+            Array.prototype.forEach.call(itemsubcategoryChecks, function (cb) { cb.checked = false; });
+            Array.prototype.forEach.call(itemsubsubcategoryChecks, function (cb) { cb.checked = false; });
             updateToggleLabel(licensorToggle, licensorChecks);
-            updateToggleLabel(brandToggle, brandChecks);
-            updateToggleLabel(charaToggle, charaChecks);
+            updateToggleLabel(itemsubcategoryToggle, itemsubcategoryChecks);
+            updateToggleLabel(itemsubsubcategoryToggle, itemsubsubcategoryChecks);
             applyFilter();
           });
         }
 
         updateToggleLabel(licensorToggle, licensorChecks);
-        updateToggleLabel(brandToggle, brandChecks);
-        updateToggleLabel(charaToggle, charaChecks);
+        updateToggleLabel(itemsubcategoryToggle, itemsubcategoryChecks);
+        updateToggleLabel(itemsubsubcategoryToggle, itemsubsubcategoryChecks);
         applyFilter();
       };
 
@@ -1737,12 +1671,12 @@
         var cancelBtn = document.getElementById("modalCancelBtn");
         var form = document.getElementById("editModalForm");
         var title = document.getElementById("editModalTitle");
-        var licensorInput = document.getElementById("modalLicensor");
-        var brandInput = document.getElementById("modalBrand");
-        var charaInput = document.getElementById("modalChara");
+        var licensorInput = document.getElementById("modalItemcategory");
+        var itemsubcategoryInput = document.getElementById("modalItemsubcategory");
+        var itemsubsubcategoryInput = document.getElementById("modalItemsubsubcategory");
         var modalAutocompleteBoxes = modal.querySelectorAll(".autocomplete");
 
-        if (!modal || !backdrop || !form || !title || !licensorInput || !brandInput || !charaInput) return;
+        if (!modal || !backdrop || !form || !title || !licensorInput || !itemsubcategoryInput || !itemsubsubcategoryInput) return;
         if (window.initAutocomplete) {
           Array.prototype.forEach.call(modalAutocompleteBoxes, function (box) {
             window.initAutocomplete(box);
@@ -1753,8 +1687,8 @@
 
         function setModalValues(data) {
           licensorInput.value = data.licensor || "";
-          brandInput.value = data.brand || "";
-          charaInput.value = data.chara || "";
+          itemsubcategoryInput.value = data.itemsubcategory || "";
+          itemsubsubcategoryInput.value = data.itemsubsubcategory || "";
         }
 
         function openModal(mode, row) {
@@ -1764,12 +1698,12 @@
             title.textContent = "編集";
             setModalValues({
               licensor: row.cells[0].textContent.trim(),
-              brand: row.cells[1].textContent.trim(),
-              chara: row.cells[2].textContent.trim()
+              itemsubcategory: row.cells[1].textContent.trim(),
+              itemsubsubcategory: row.cells[2].textContent.trim()
             });
           } else {
             title.textContent = "新規登録";
-            setModalValues({ licensor: "", brand: "", chara: "" });
+            setModalValues({ licensor: "", itemsubcategory: "", itemsubsubcategory: "" });
           }
 
           modal.classList.add("is-open");
