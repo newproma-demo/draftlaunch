@@ -173,8 +173,6 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="licenmastermaintenance.html">ライセンスマスタメンテナンス</a></li>
       <li><a href="licensehimozukemastermaintenance.html">ライセンス/ブランド/キャラクタ紐づけマスタメンテナンス</a></li>
       <li><a href="itembunruihimozukemastermaintenance.html">アイテム大分類/中分類/小分類紐づけマスタメンテナンス</a></li>
-      <li><a href="#">アイテム中分類マスタメンテナンス</a></li>
-      <li><a href="#">アイテム小分類マスタメンテナンス</a></li>
       <li><a href="shizaimastermaintenanse.html">資材マスタメンテナンス</a></li>
     </ul>
   </div>
