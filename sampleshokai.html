@@ -338,19 +338,6 @@
     /* #region レスポンシブ対応 */
     /* 画面の幅が650px以下ならスマホ*/
     @media (max-width: 768px) {
-      /* スマホ: 内側スクロールバーは表示しない */
-      .content,
-      #approvalListArea,
-      .search-box .search-box-inner {
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE/Edge legacy */
-      }
-      .content::-webkit-scrollbar,
-      #approvalListArea::-webkit-scrollbar,
-      .search-box .search-box-inner::-webkit-scrollbar {
-        display: none; /* Chrome/Safari */
-      }
-
       .pc-only {
         display: none;
       }
@@ -397,6 +384,14 @@
         padding: 20px 20px 56px 20px;
         margin-left: -220px;
         width: 100%;
+      }
+
+      .content {
+          padding: 12px 12px 56px 12px;
+      }
+
+      .content:not(.expanded) {
+          padding-left: 12px;
       }
 
       .content-box {
@@ -459,21 +454,11 @@
        .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 12px 0 0;
         gap: 12px 16px;
       }
       .search-box.is-open .search-box-inner {
         display: grid;
-        max-height: none;
-        overflow: visible;
-        padding-right: 0;
-      }
-
-      /* 検索条件オープン時でも画面全体スクロールを許可 */
-      .search-box,
-      .search-box .search-box-inner,
-      #searchRowsPanel {
-        touch-action: pan-y;
-        overscroll-behavior: auto;
       }
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
@@ -640,14 +625,16 @@
 
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
       #approvalListArea {
-        overflow-x: visible;
         max-height: none;
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE/Edge legacy */
+        overflow-x: visible;
+        overflow-y: visible;
+        margin-bottom: 30px;
       }
-      #approvalListArea::-webkit-scrollbar {
-        display: none; /* Chrome/Safari */
+
+      #approvalNoticeArea {
+        margin-top: 10px;
       }
+
       #approvalListArea .result-table {
         min-width: 0;
       }
@@ -1098,6 +1085,13 @@
 
     /* 定義順の上書き対策: スマホ時のlistbox内文字を左寄せ固定 */
     @media (max-width: 768px) {
+      /* スマホ最終上書き: 明細は内部スクロールせず、全体1本スクロール */
+      #approvalListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+      }
+
       /* アイテムのlistbox開始位置・幅をカテゴリと同一にする */
       #searchCategoryMenu,
       #searchItemMenu {
@@ -1658,11 +1652,6 @@
             btn.setAttribute("aria-expanded", isOpen);
             var textEl = btn.querySelector(".search-toggle-sp-text");
             if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-
-            // 開閉に関わらずスクロールロックを解除して、ページ全体をスクロール可能にする
-            document.body.style.overflow = "";
-            var content = document.querySelector(".content");
-            if (content) content.style.overflowY = "auto";
           });
         }
       })();
