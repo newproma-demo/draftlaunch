@@ -265,12 +265,7 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      background: var(--color-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-      overflow: hidden;
+      /* overflow: hidden; */
     }
 
     /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
@@ -286,6 +281,23 @@
 
     .content-box .search-box {
       flex-shrink: 0;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
     }
 
     /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
@@ -429,10 +441,12 @@
         border: none;
         box-shadow: none;
       }
-       .search-box-inner {
+      .search-box .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px 16px;
+        width: 100%;
+        box-sizing: border-box;
       }
       .search-box.is-open .search-box-inner {
         display: grid;
@@ -452,6 +466,11 @@
       .search-box-inner .filter-row {
         display: contents;
       }
+      .search-box-inner .filter-row > * {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
       .search-box-inner .filter-item {
         flex-direction: column;
         align-items: stretch;
@@ -467,11 +486,123 @@
         width: 100%;
         box-sizing: border-box;
       }
+      .search-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0px;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      .search-row label {
+        font-size: var(--fs-xs);
+        flex-shrink: 0;
+        width: 100%;
+        text-align: left;
+      }
+      .search-row select,
+      .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 36px;
+        line-height: 1.4;
+        padding: 6px 10px;
+      }
+      .search-row textarea {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 36px;
+        line-height: 1.4;
+        padding: 6px 10px;
+        resize: vertical;
+      }
+      .search-row .autocomplete {
+        width: 100%;
+      }
+      .search-row .autocomplete .autocomplete-input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 36px;
+        line-height: 1.4;
+        padding: 6px 10px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+      }
+      #searchRowsPanel .search-row:has(#searchItem) > :not(label),
+      #searchRowsPanel .search-row:has(#searchItem) .manufacturer-row,
+      #searchRowsPanel .search-row:has(#searchItem) .autocomplete,
+      #searchRowsPanel .search-row:has(#searchItem) .autocomplete-input,
+      #searchRowsPanel .search-row:has(#searchsohincd) > :not(label),
+      #searchRowsPanel .search-row:has(#searchsohincd) textarea {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        box-sizing: border-box;
+        align-self: stretch;
+      }
+      .search-clear-wrapper {
+        grid-column: 2;
+        width: auto;
+        margin-left: 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        align-self: end;
+      }
+      .btn-search-clear {
+        padding: 4px 8px;
+      }
+      #searchRowsPanel {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px 16px !important;
+      }
+      #searchRowsPanel > .filter-row > *,
+      #searchRowsPanel > .filter-row > .search-row,
+      #searchRowsPanel > .filter-row > .search-clear-wrapper {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      /* スマホ時: 指定ペアで2列横並びを固定 */
+      #searchRowsPanel > .filter-row > .search-row:nth-child(1),
+      #searchRowsPanel > .filter-row > .search-row:nth-child(3),
+      #searchRowsPanel > .filter-row > .search-row:nth-child(5),
+      #searchRowsPanel > .filter-row > .search-row:nth-child(7) {
+        grid-column: 1;
+      }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(2),
+      #searchRowsPanel > .filter-row > .search-row:nth-child(4),
+      #searchRowsPanel > .filter-row > .search-row:nth-child(6),
+      #searchRowsPanel > .filter-row > .search-row:nth-child(8) {
+        grid-column: 2;
+      }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(1) { grid-row: 1; }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(2) { grid-row: 1; }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(3) { grid-row: 2; }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(4) { grid-row: 2; }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(5) { grid-row: 3; }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(6) { grid-row: 3; }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(7) { grid-row: 4; }
+      #searchRowsPanel > .filter-row > .search-row:nth-child(8) { grid-row: 4; }
+      #searchRowsPanel > .filter-row > .search-clear-wrapper {
+        grid-column: 2;
+        grid-row: 5;
+        justify-self: end;
+      }
 
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
       #approvalListArea {
         overflow-x: visible;
+        overflow-y: visible;
         max-height: none;
+        margin-bottom: 30px;
+      }
+      #approvalNoticeArea {
+        margin-top: 10px;
       }
       #approvalListArea .result-table {
         min-width: 0;
@@ -598,6 +729,9 @@
       .search-toggle-sp {
         display: none;
       }
+      .search-box .search-box-inner .filter-row {
+        margin-bottom: 0;
+      }
 
       /* スマホ以外：得意先は左寄せのまま、数量合計・金額合計列のみ右寄せ */
       #approvalListArea .result-table thead th:nth-child(6),
@@ -634,16 +768,64 @@
       border-radius: var(--radius-sm);
       min-width: 160px;
     }
+    .search-box .search-box-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 24px;
+      width: 100%;
+    }
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .search-row label {
+      margin: 0;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    .search-row select,
+    .search-row input:not([type="checkbox"]) {
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-row .autocomplete {
+      min-width: 160px;
+      width: 160px;
+    }
+    .search-row .autocomplete .autocomplete-input {
+      min-width: 0;
+      width: 100%;
+    }
+    .search-row option {
+      font-size: var(--fs-xs);
+    }
+    .search-row select:hover,
+    .search-row input:not([type="checkbox"]):hover {
+      border-color: #b0bdb5;
+    }
+    .search-row select:focus,
+    .search-row input:not([type="checkbox"]):focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+    .search-row input::placeholder {
+      color: #9ca89f;
+    }
 
     /* 承認通知／検索結果・ボックス共通 */
-    .content-box {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    }
     /* 検索条件と検索結果一覧の間の余白（5px） */
     .view-layout-1-group > .content-box:first-of-type {
       margin-bottom: 5px;
@@ -761,6 +943,20 @@
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border);
     }
+    /* スマホ最終上書き: 閉じたとき検索条件は非表示 */
+    @media (max-width: 768px) {
+      #searchBox #searchRowsPanel {
+        display: none !important;
+      }
+      #searchBox.is-open #searchRowsPanel {
+        display: grid !important;
+      }
+      #approvalListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+      }
+    }
   </style>
 </head>
 
@@ -813,12 +1009,12 @@
               </button>
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="filter-row">
-                  <div class="filter-item">
-                    <label>管理No.</label>
+                  <div class="search-row">
+                    <label for="searchKbn">管理No.</label>
                     <input type="text" placeholder="管理No.を入力">
                   </div>                  
-                  <div class="filter-item">
-                    <span class="filter-label">区分</span>
+                  <div class="search-row">
+                    <label for="searchKbn">区分</label>
                     <select id="searchHanbaiKubun">
                       <option value="">すべて</option>
                       <option value="teiban">Ship依頼書（定番）</option>
@@ -826,8 +1022,8 @@
                       <option value="kokunai">国内手配書</option>
                     </select>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">依頼者</span>
+                  <div class="search-row">
+                    <label for="searchKbn">依頼者</label>
                     <select id="tenjikaiSelect">
                       <option value="">すべて</option>
                       <option value="">丸眞太郎</option>
@@ -835,8 +1031,8 @@
                       <option value="">丸眞桜子</option>
                     </select>
                   </div>
-                  <div class="filter-item">
-                    <label class="filter-label manufacturer-label">メーカー</label>
+                  <div class="search-row">
+                    <label for="searchManufacturer">メーカー</label>
                     <div class="manufacturer-row input-actions">
                       <div class="autocomplete">
                         <input type="text" class="autocomplete-input" data-list="supplier" placeholder="メーカー検索"
@@ -845,7 +1041,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="filter-item">
+                  <div class="search-row">
                     <label class="filter-label">得意先</label>
                     <select id="productCodeSelect">
                       <option value="">すべて</option>
@@ -854,21 +1050,16 @@
                       <option value="3" data-product-name="得意先3">得意先名３</option>
                     </select>
                   </div>
-                  <div class="filter-item">
-                    <label class="filter-label">商品コード</label>
-                    <select id="productCodeSelect">
-                      <option value="">すべて</option>
-                      <option value="1" data-product-name="商品名1">999991</option>
-                      <option value="2" data-product-name="商品名2">999992</option>
-                      <option value="3" data-product-name="商品名3">999993</option>
-                    </select>
+                  <div class="search-row">
+                    <label for="searchsohincd">商品コード</label>
+                    <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力"></textarea>
                   </div>
-                  <div class="filter-item">
-                    <label>品名</label>
+                  <div class="search-row">
+                    <label for="searchHinmei">品名</label>
                     <input type="text" placeholder="品名を入力">
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">ステータス</span>
+                  <div class="search-row">
+                    <label for="searchStatus">ステータス</label>
                     <select id="tenjikaiSelect">
                       <option value="">すべて</option>
                       <option value="">作成中</option>
