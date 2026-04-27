@@ -265,12 +265,7 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      background: var(--color-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-      overflow: hidden;
+      /* overflow: hidden; */
     }
 
     /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
@@ -286,6 +281,24 @@
 
     .content-box .search-box {
       flex-shrink: 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
     }
 
     /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
@@ -420,6 +433,7 @@
         width: 100%;
         box-sizing: border-box;
         padding: 8px;
+        flex: none;
         min-height: 0;
       }
 
@@ -503,6 +517,8 @@
       }
       .search-box-inner .filter-item .filter-label {
         margin-right: 0;
+        width: 100%;
+        text-align: left;
       }
       .search-box-inner .filter-item select,
       .search-box-inner .filter-item input[type="text"] {
@@ -510,22 +526,68 @@
         width: 100%;
         box-sizing: border-box;
       }
-      .search-box-inner .search-row {
+      .search-row {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 6px;
-        min-width: 0;
+        gap: 0px;
       }
-      .search-box-inner .search-row label {
-        /* font-size: var(--fs-base);  */
+
+      .search-row label {
+        font-size: var(--fs-xs);
         flex-shrink: 0;
+        width: 100%;
+        text-align: left;
       }
-      .search-box-inner .search-row select,
-      .search-box-inner .search-row input {
+
+      .search-row select,
+      .search-row input {
         min-width: 0;
         width: 100%;
         box-sizing: border-box;
+      }
+
+      .search-row textarea,
+      .search-row .multi-select,
+      .search-row .multi-select-toggle {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* スマホ: 指定項目を「品名」と同じ入力幅に統一 */
+      #searchsohincd,
+      #searchBrandChara,
+      #searchBrandChara .multi-select-toggle,
+      #searchItem,
+      #searchItem .multi-select-toggle,
+      .search-box-inner .filter-item select {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #searchItem {
+        width: 100%;
+      }
+
+      .multi-select-menu {
+        text-align: left;
+      }
+
+      .multi-select-option {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        justify-content: flex-start;
+        justify-items: start;
+        column-gap: 8px;
+        text-align: left;
+      }
+
+      .multi-select-option span {
+        justify-self: start;
+        text-align: left;
       }
 
       .search-cancel-wrapper {
@@ -709,53 +771,156 @@
       min-width: 160px;
     }
 
-    /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
-    .search-box-inner .search-row {
+    .search-row {
       display: flex;
       align-items: center;
       gap: 8px;
       min-width: 0;
     }
-    .search-box-inner .search-row label {
+
+    .search-row label {
       margin: 0;
-      /* font-size: var(--fs-base); */
-      /* font-weight: 500; */
-      /* color: var(--color-text-muted); */
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
       white-space: nowrap;
     }
-    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
-    .search-box-inner .search-row .autocomplete-dropdown,
-    .search-box-inner .search-row .autocomplete-dropdown div {
-      font-size: var(--fs-base);
-      font-weight: 500;
-    }
-    .search-box-inner .search-row select,
-    .search-box-inner .search-row input {
-      /* font-size: var(--fs-base); */
+
+    .search-row select,
+    .search-row input:not([type="checkbox"]) {
+      font-size: var(--fs-xs);
       min-width: 160px;
-      padding: 10px 12px;
-      /* font-family: inherit; */
+      padding: 3px 12px;
+      font-family: inherit;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       background: var(--color-card);
-      /* color: var(--color-text); */
+      color: var(--color-text);
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .search-box-inner .search-row select:hover,
-    .search-box-inner .search-row input:hover {
+
+    .search-row .autocomplete {
+      min-width: 160px;
+      width: 160px;
+    }
+
+    .search-row .autocomplete .autocomplete-input {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .search-row option {
+      font-size: var(--fs-xs);
+    }
+
+    .multi-select {
+      position: relative;
+      width: 100%;
+    }
+
+    #searchItem {
+      width: 220px;
+    }
+
+    .multi-select-toggle {
+      width: 100%;
+      text-align: left;
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .multi-select-toggle:hover {
       border-color: #b0bdb5;
     }
-    .search-box-inner .search-row select:focus,
-    .search-box-inner .search-row input:focus {
+
+    .multi-select.is-open .multi-select-toggle {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .multi-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      max-height: 220px;
+      padding: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    .multi-select.is-open .multi-select-menu {
+      display: block;
+    }
+
+    .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 2px;
+      cursor: pointer;
+      font-size: var(--fs-xs);
+      white-space: normal;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #searchItem .multi-select-toggle,
+    #searchItem .multi-select-option {
+      color: var(--color-text);
+    }
+
+    #searchBrandCharaMenu .multi-select-option,
+    #searchBrandCharaMenu .multi-select-option span,
+    #searchCategoryMenu .multi-select-option,
+    #searchCategoryMenu .multi-select-option span,
+    #searchItemMenu .multi-select-option,
+    #searchItemMenu .multi-select-option span {
+      color: var(--color-text-muted) !important;
+    }
+
+    .multi-select-option input[type="checkbox"] {
+      margin: 0;
+    }
+
+    .multi-select-option input[type="checkbox"]:focus,
+    .multi-select-option input[type="checkbox"]:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .search-row select:hover,
+    .search-row input:not([type="checkbox"]):hover {
+      border-color: #b0bdb5;
+    }
+
+    .search-row select:focus,
+    .search-row input:not([type="checkbox"]):focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
     }
-    .search-box-inner .search-row input::placeholder {
+
+    .search-row input::placeholder {
       color: #9ca89f;
     }
 
-    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    /* 検索条件エリア右端：クリアボタン（登録ボタンと同スタイル） */
     .search-cancel-wrapper {
       margin-left: auto;
       display: flex;
@@ -781,14 +946,6 @@
     }
 
     /* 承認通知／検索結果・ボックス共通 */
-    .content-box {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    }
     /* 検索条件と検索結果一覧の間の余白（5px） */
     .view-layout-1-group > .content-box:first-of-type {
       margin-bottom: 5px;
@@ -888,6 +1045,41 @@
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border);
     }
+
+    /* スタイル定義順の上書き対策: スマホ時のlistbox内文字を左寄せ固定 */
+    @media (max-width: 768px) {
+      /* アイテム: listboxの開始位置と幅を「品名」入力欄に合わせる */
+      #searchItem,
+      #searchItem .multi-select-toggle {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      #searchItemMenu {
+        left: 0;
+        right: auto;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      #searchCategoryMenu .multi-select-option,
+      #searchBrandCharaMenu .multi-select-option,
+      #searchItemMenu .multi-select-option {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        justify-items: start;
+        text-align: left;
+      }
+
+      #searchCategoryMenu .multi-select-option span,
+      #searchBrandCharaMenu .multi-select-option span,
+      #searchItemMenu .multi-select-option span {
+        display: block;
+        width: 100%;
+        text-align: left;
+      }
+    }
   </style>
 </head>
 
@@ -936,8 +1128,8 @@
               </button>
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="filter-row">
-                  <div class="filter-item">
-                    <span class="filter-label">販売区分</span>
+                  <div class="search-row" id="searchHanbaiKubunFilterItem">
+                    <label for="searchHanbaiKubun">販売区分</label>
                     <select id="searchHanbaiKubun">
                       <option value="">すべて</option>
                       <option value="teiban">定番</option>
@@ -946,8 +1138,8 @@
                       <option value="oem">OEM</option>
                     </select>
                   </div>
-                  <div class="filter-item" id="tenjikaiFilterItem">
-                    <span class="filter-label">展示会</span>
+                  <div class="search-row" id="tenjikaiFilterItem">
+                    <label for="tenjikaiSelect">展示会</label>
                     <select id="tenjikaiSelect">
                       <option value="">すべて</option>
                       <option value="2026.06">2026.06 展示会</option>
@@ -955,378 +1147,51 @@
                       <option value="2026.01">2026.01 展示会</option>
                     </select>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">ステータス</span>
+                  <div class="search-row">
+                    <label for="searchStatus">ステータス</label>
                     <select id="searchStatus">
                       <option value="">すべて</option>
-                      <option value="申請中">申請中</option>
+                      <option value="承認待ち">承認待ち</option>
                       <option value="承認済">承認済</option>
-                      <option value="差戻し">差戻し</option>
+                      <option value="差し戻し">差し戻し</option>
                     </select>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">カテゴリー</span>
-                    <select id="searchCategory">
-                      <option value="">すべて</option>
-                      <option value="tanpin">単品タオル</option>
-                      <option value="kikaku">企画物タオル</option>
-                    </select>
+                  <div class="search-row">
+                    <label for="searchCategoryToggle">カテゴリー</label>
+                    <div class="multi-select" id="searchCategory" data-list="category2">
+                      <button type="button" class="multi-select-toggle" id="searchCategoryToggle" aria-haspopup="listbox"
+                        aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchCategoryMenu" role="listbox" aria-multiselectable="true">
+                      </div>
+                    </div>
                   </div>
-                  <div class="filter-item">
-                    <label class="filter-label">商品コード</label>
-                    <select id="productCodeSelect">
-                      <option value="">選択してください</option>
-                      <option value="1" data-product-name="商品名1">999991</option>
-                      <option value="2" data-product-name="商品名2">999992</option>
-                      <option value="3" data-product-name="商品名3">999993</option>
-                    </select>
+                  <div class="search-row">
+                    <label for="searchsohincd">商品コード</label>
+                    <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力"></textarea>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">品名</span>
+                  <div class="search-row">
+                    <label for="searchHinmei">品名</label>
                     <input type="text" id="searchHinmei" placeholder="品名を入力">
                   </div>
-                  <div class="filter-item" id="tenjikaiFilterItem">
-                    <span class="filter-label">アイテム</span>
-                    <select id="tenjikaiSelect">
-                      <option value="">すべて</option>
-                      <option>ミニタオル</option>
-                      <option>ウォッシュタオル</option>
-                      <option>フェイスタオル</option>
-                      <option>バスタオル</option>
-                      <option>マフラータオル</option>
-                      <option>お出かけタオル</option>
-                      <option>ビックバスタオル</option>
-                      <option>ループタオル</option>
-                      <option>ポケット2P</option>
-                      <option>ミニタオル３Ｐ</option>
-                      <option>ファスナー付き</option>
-                      <option>ポケット付き</option>
-                      <option>ドレスタオル</option>
-                      <option>タオルバスマット</option>
-                      <option>ヘアーバンド</option>
-                      <option>3色ミニハンカチ</option>
-                      <option>ガーゼハンカチ</option>
-                      <option>タオル枕カバー</option>
-                      <option>手ぬぐい</option>
-                      <option>マキタオル６０</option>
-                      <option>マキタオル８０</option>
-                      <option>マキタオル１００</option>
-                      <option>その他マキタオル</option>
-                      <option>バスローブ</option>
-                      <option>Dビーチタオル</option>
-                      <option>ビーチスティック</option>
-                      <option>フード付きタオル</option>
-                      <option>フード付きポンチョ</option>
-                      <option>タオルケープ</option>
-                      <option>レジャーバスタオル</option>
-                      <option>スポーツタオル</option>
-                      <option>ジュニアバスタオル</option>
-                      <option>お昼寝ケット</option>
-                      <option>タオルケット</option>
-                      <option>ラウンドビーチ</option>
-                      <option>キャップタオル</option>
-                      <option>ビーチバック</option>
-                      <option>ひざ掛け</option>
-                      <option>ハーフ毛布</option>
-                      <option>毛布</option>
-                      <option>敷きパット</option>
-                      <option>ラップ毛布</option>
-                      <option>ジュニア毛布</option>
-                      <option>着る毛布</option>
-                      <option>ケープ</option>
-                      <option>スリーパー</option>
-                      <option>お昼寝セット</option>
-                      <option>ジュニア枕</option>
-                      <option>ラウンド毛布</option>
-                      <option>ネックウォーマー</option>
-                      <option>ポーチ</option>
-                      <option>バック</option>
-                      <option>巾着</option>
-                      <option>口金ポーチ</option>
-                      <option>ランチョンマット</option>
-                      <option>ストール</option>
-                      <option>ハンカチーフ</option>
-                      <option>ランチーフ</option>
-                      <option>キッチンタオル</option>
-                      <option>マルチクロス</option>
-                      <option>キッチンミトン</option>
-                      <option>鍋敷き</option>
-                      <option>お風呂タオル</option>
-                      <option>エプロン</option>
-                      <option>作務衣・甚平・はんてん</option>
-                      <option>ポンチョ</option>
-                      <option>クッションカバー</option>
-                      <option>クッション（綿入り）</option>
-                      <option>スクールクッション</option>
-                      <option>シートクッション</option>
-                      <option>トイレタリー</option>
-                      <option>ペーパーホルダー</option>
-                      <option>バスマット</option>
-                      <option>キッチンマット</option>
-                      <option>ティッシュＢＯＸカバー</option>
-                      <option>ラグマット</option>
-                      <option>マルチカバー</option>
-                      <option>スリッパ</option>
-                      <option>ルームシューズ</option>
-                      <option>掛けカバー</option>
-                      <option>敷きカバー</option>
-                      <option>ピロケース</option>
-                      <option>こたつ</option>
-                      <option>その他ギフト</option>
-                      <option>とじものWT1P</option>
-                      <option>とじものWT2P</option>
-                      <option>とじものWT3P</option>
-                      <option>とじものFT1P</option>
-                      <option>とじものFT2P</option>
-                      <option>とじものBT1P</option>
-                      <option>マーメイドB/K</option>
-                      <option>B/Kinポーチ</option>
-                      <option>玄関マット</option>
-                      <option>マルチケース</option>
-                      <option>ベビー雑貨</option>
-                      <option>ベビー寝装</option>
-                      <option>ベビータオル</option>
-                      <option>ベビーインテリア</option>
-                      <option>キッチン雑貨</option>
-                      <option>その他タオル</option>
-                      <option>その他サマー</option>
-                      <option>その他寝装</option>
-                      <option>その他インテリア</option>
-                      <option>その他雑貨</option>
-                      <option>その他新入学</option>
-                      <option>パックタオル</option>
-                      <option>ぞうきん</option>
-                      <option>カバーリング</option>
-                      <option>ギフト（タオル）</option>
-                      <option>ギフト（寝装）</option>
-                      <option>ギフト（インテリア）</option>
-                      <option>パーソナルギフト</option>
-                      <option>オーナメントギフト</option>
-                      <option>バンダナ・風呂敷</option>
-                      <option>チェアシート</option>
-                      <option>刺繍ブローチ</option>
-                      <option>コースター</option>
-                      <option>ランドリーバッグ</option>
-                      <option>頭巻きタオル</option>
-                      <option>新入学ミニタオル</option>
-                      <option>腹巻き</option>
-                      <option>収納ボックス</option>
-                      <option>マスコットネックピロ</option>
-                      <option>タオルエプロン</option>
-                      <option>カレンダーギフト</option>
-                      <option>ジュニアエコバック</option>
-                      <option>ナップサック</option>
-                      <option>シューズバッグ</option>
-                      <option>レッスンバッグ</option>
-                      <option>ポケットポーチ</option>
-                      <option>レジャーシート</option>
-                      <option>お出かけシート</option>
-                      <option>ピクニックマット</option>
-                      <option>新入学ハンカチーフ</option>
-                      <option>新入学ランチーフ</option>
-                      <option>背当てタオル</option>
-                      <option>湯上げタオル</option>
-                      <option>新入学リュックサック</option>
-                      <option>レジャーバッグ</option>
-                      <option>キャリータオル</option>
-                      <option>スキニータオル</option>
-                      <option>スカジャン</option>
-                      <option>エコバッグ</option>
-                      <option>腰あてクッション</option>
-                      <option>文房具</option>
-                      <option>氷のう</option>
-                      <option>ゴルフ企画</option>
-                      <option>水野商品</option>
-                      <option>スポンジ</option>
-                      <option>トラベル商品</option>
-                      <option>湯たんぽ</option>
-                      <option>タブレットケース</option>
-                      <option>スタジャン</option>
-                      <option>アロハシャツ</option>
-                      <option>Tシャツ</option>
-                      <option>ジージャン</option>
-                      <option>ジャージ</option>
-                      <option>ペットボトルカバー</option>
-                      <option>ネームタグ</option>
-                      <option>エアタグ</option>
-                      <option>靴下</option>
-                      <option>ペット商品</option>
-                      <option>カー用品</option>
-                      <option>その他</option>
-                    </select>
+                  <div class="search-row">
+                    <label for="searchBrandChara">ブランド・キャラ</label>
+                    <div class="multi-select" id="searchBrandChara" data-list="brandChara">
+                      <button type="button" class="multi-select-toggle" id="searchBrandCharaToggle" aria-haspopup="listbox"
+                        aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchBrandCharaMenu" role="listbox" aria-multiselectable="true">
+                      </div>
+                    </div>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">ブランド・キャラ</span>
-                    <select id="searchCategory">
-                      <option value="">すべて</option>
-                      <option>ジブリ</option>
-                      <option>ムーミン</option>
-                      <option>ディズニー</option>
-                      <option>マーベル</option>
-                      <option>スターウォーズ</option>
-                      <option>サンリオ</option>
-                      <option>ミッフィー</option>
-                      <option>トーマス</option>
-                      <option>くまのがっこう</option>
-                      <option>オサムグッズ</option>
-                      <option>スタジオ地図</option>
-                      <option>スタジオポノック</option>
-                      <option>ＪＡＬ</option>
-                      <option>Wendy's</option>
-                      <option>いないいないばあ</option>
-                      <option>バービー</option>
-                      <option>ピーターラビット</option>
-                      <option>リサ＆ガスパール</option>
-                      <option>カレルチャペック</option>
-                      <option>リサ・ラーソン</option>
-                      <option>ドラえもん</option>
-                      <option>ベイビーシャーク</option>
-                      <option>クマーバ</option>
-                      <option>ユニバーサル</option>
-                      <option>ペッパピッグ</option>
-                      <option>名探偵コナン</option>
-                      <option>ウォーリーをさがせ</option>
-                      <option>ミニオンズ</option>
-                      <option>オブチアキコ</option>
-                      <option>おさるのジョージ</option>
-                      <option>もふさんど</option>
-                      <option>マイリトルポニー</option>
-                      <option>コウペンちゃん</option>
-                      <option>ポテトヘッド</option>
-                      <option>スイマー</option>
-                      <option>シンプソンズ</option>
-                      <option>エヴァンゲリオン</option>
-                      <option>星のカービィー</option>
-                      <option>バーバパパ</option>
-                      <option>ケアベア</option>
-                      <option>エルマー</option>
-                      <option>HALEIWA</option>
-                      <option>ドラゴンボール</option>
-                      <option>fantti</option>
-                      <option>100日後に死ぬワニ</option>
-                      <option>インゲラ</option>
-                      <option>フィンレイソン</option>
-                      <option>ピンクリボン</option>
-                      <option>アアリッカ</option>
-                      <option>SOUSOU</option>
-                      <option>ベネトン</option>
-                      <option>ちいかわ</option>
-                      <option>オリンピック</option>
-                      <option>ＳＵＮ　ＨＥＡＲＴ</option>
-                      <option>北斎</option>
-                      <option>鳥獣戯画</option>
-                      <option>アノラック</option>
-                      <option>チャンピオン</option>
-                      <option>アドミラル</option>
-                      <option>イーストボーイ</option>
-                      <option>しままる</option>
-                      <option>porukkapattern</option>
-                      <option>piccolino</option>
-                      <option>polku</option>
-                      <option>yup!</option>
-                      <option>キキプリ</option>
-                      <option>ガッツ</option>
-                      <option>今治タオル・ギフト</option>
-                      <option>泉州タオル・ギフト</option>
-                      <option>高級カラータオル</option>
-                      <option>輸入ギフト</option>
-                      <option>平安閣・互助会</option>
-                      <option>一般マキタオル</option>
-                      <option>一般サマー</option>
-                      <option>タオルケット</option>
-                      <option>ポルトガル</option>
-                      <option>トルコ</option>
-                      <option>その他ＥＵ</option>
-                      <option>LINEクリエイターズ</option>
-                      <option>寝装</option>
-                      <option>ぐっこすぱ</option>
-                      <option>インテリア</option>
-                      <option>わんだふるぴーす</option>
-                      <option>雑貨</option>
-                      <option>エコットン</option>
-                      <option>メニーメニー</option>
-                      <option>ベビー</option>
-                      <option>ライセンス終了</option>
-                      <option>輸入タオル別注</option>
-                      <option>国内タオル別注</option>
-                      <option>ＯＬＣ別注</option>
-                      <option>輸入タオル単品</option>
-                      <option>輸入組タオル</option>
-                      <option>輸入寝装・ｲﾝﾃﾘｱ別注</option>
-                      <option>その他キャラクター</option>
-                      <option>過去商品用</option>
-                      <option>資材（箱・雑品）</option>
-                      <option>証紙</option>
-                      <option>その他</option>
-                      <option>テスト</option>
-                      <option>リラックマ</option>
-                      <option>すみっコぐらし</option>
-                      <option>マリオ</option>
-                      <option>スプラトゥーン</option>
-                      <option>どうぶつの森</option>
-                      <option>LINE</option>
-                      <option>BT21</option>
-                      <option>TRUZ</option>
-                      <option>ハリーポッター</option>
-                      <option>トムとジェリー</option>
-                      <option>DC</option>
-                      <option>ルーニー・テューンズ</option>
-                      <option>パワーパフガールズ</option>
-                      <option>その他ワーナー</option>
-                      <option>アンパンマン</option>
-                      <option>鬼滅の刃</option>
-                      <option>呪術廻戦</option>
-                      <option>ワンピース</option>
-                      <option>セーラームーン</option>
-                      <option>ウルトラマン</option>
-                      <option>仮面ライダー</option>
-                      <option>僕のﾋｰﾛｰｱｶﾃﾞﾐｱ</option>
-                      <option>その他バンダイ</option>
-                      <option>ケロッグ</option>
-                      <option>モコモカ</option>
-                      <option>チロルチョコ</option>
-                      <option>珈琲関係</option>
-                      <option>マウントレーニア</option>
-                      <option>プリッとチャンネル</option>
-                      <option>八木春</option>
-                      <option>スパイファミリー</option>
-                      <option>ガーフィールド</option>
-                      <option>ウルポとトゥルポ</option>
-                      <option>水野(売)</option>
-                      <option>WDZY</option>
-                      <option>ねずみのアンディ</option>
-                      <option>umao</option>
-                      <option>アリス</option>
-                      <option>オリオンビール</option>
-                      <option>スパム</option>
-                      <option>助六の日常</option>
-                      <option>可愛い嘘のカワウソ</option>
-                      <option>ネパール</option>
-                      <option>SWEDY</option>
-                      <option>あにまるバス</option>
-                      <option>ﾑｰﾐﾝｱﾆﾒｰｼｮﾝ</option>
-                      <option>みいつけた</option>
-                      <option>星の王子さま</option>
-                      <option>シナぷしゅ</option>
-                      <option>to:alla</option>
-                      <option>ピクミン</option>
-                      <option>その他任天堂</option>
-                      <option>大阪万博</option>
-                      <option>パンダのおさじ</option>
-                      <option>ガチャピン</option>
-                      <option>パンどろぼう</option>
-                      <option>カンボジア</option>
-                      <option>しまじろう</option>
-                      <option>たまごっち</option>
-                      <option>なんでもいきもの</option>
-                      <option>ドナ・ウィルソン</option>
-                      <option>ｻﾝｴｯｸｽﾚｼﾞｪﾝﾄﾞｷｬﾗ</option>
-                      <option>ピンクパンサー</option>
-                      <option>ﾌｼﾞﾃﾚﾋﾞｷｬﾗｸﾀｰ</option>
-                      <option>ソニック</option>
-                      <option>水野(買)</option>
-                    </select>
+                  <div class="search-row">
+                    <label for="searchItem">アイテム</label>
+                    <div class="multi-select" id="searchItem" data-list="item">
+                      <button type="button" class="multi-select-toggle" id="searchItemToggle" aria-haspopup="listbox"
+                        aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchItemMenu" role="listbox" aria-multiselectable="true">
+                      </div>
+                    </div>
                   </div>
+                  
                   <div class="filter-item">
                     <span class="filter-label">デザイナー</span>
                     <select id="tenjikaiSelect">
@@ -1337,7 +1202,7 @@
                     </select>
                   </div>
                   <div class="search-cancel-wrapper">
-                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
                   </div>
                 </div>
               </div>
@@ -1368,48 +1233,629 @@
                   </thead>
                   <tbody>
                     <!-- 35行のサンプルデータ -->
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番<br>別注<br>OEM</td><td>2026.01 展示会<br>&nbsp;<br>&nbsp;</td><td>単品タオル<br>単品タオル<br>単品タオル</td><td>999991<br>999992<br>999993</td><td>品名サンプル1<br>品名サンプル2<br>品名サンプル3</td><td>ミニタオル<br>ミニタオル<br>ミニタオル</td><td>ディズニー<br>ディズニー<br>ディズニー</td><td>丸眞太郎<br>丸眞太郎<br>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番加工<br>定番加工</td><td></td><td>単品タオル<br>単品タオル</td><td>999994<br>999995</td><td>商品名4<br>商品名5</td><td>ウォッシュタオル<br>フェイスタオル</td><td>サンリオ<br>ムーミン</td><td>丸眞花子<br>丸眞桜子</td><td>承認済</td><td>2025/01/10</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番<br>定番</td><td>2026.01 展示会<br>2026.01 展示会</td><td>単品タオル<br>単品タオル</td><td>999996<br>999997</td><td>商品名6<br>商品名7</td><td>フェイスタオル<br>フェイスタオル</td><td>ムーミン<br>ムーミン</td><td>丸眞桜子<br>丸眞桜子</td><td>差戻し</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番加工</td><td></td><td>単品タオル</td><td>999901</td><td>無地カラフルタオル</td><td>バスタオル</td><td>サンリオ</td><td>丸眞花子</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>企画物タオル</td><td>999902</td><td>春限定フラワータオル</td><td>マフラータオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/22</td></tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>定番<br>別注<br>OEM</td>
+                      <td>2026.01 展示会<br>&nbsp;<br>&nbsp;</td>
+                      <td>単品タオル<br>単品タオル<br>単品タオル</td>
+                      <td>999991<br>999992<br>999993</td>
+                      <td>品名サンプル1<br>品名サンプル2<br>品名サンプル3</td>
+                      <td>ミニタオル<br>ミニタオル<br>ミニタオル</td>
+                      <td>ディズニー<br>ディズニー<br>ディズニー</td>
+                      <td>丸眞太郎<br>丸眞太郎<br>丸眞太郎</td>
+                      <td>承認待ち</td><td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番加工<br>定番加工</td>
+                      <td></td>
+                      <td>単品タオル<br>単品タオル</td>
+                      <td>999994<br>999995</td>
+                      <td>商品名4<br>商品名5</td>
+                      <td>ウォッシュタオル<br>フェイスタオル</td><td>サンリオ<br>ムーミン</td>
+                      <td>丸眞花子<br>丸眞桜子</td>
+                      <td>承認済</td>
+                      <td>2025/01/10</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番<br>定番</td>
+                      <td>2026.01 展示会<br>2026.01 展示会</td>
+                      <td>単品タオル<br>単品タオル</td>
+                      <td>999996<br>999997</td>
+                      <td>商品名6<br>商品名7</td>
+                      <td>フェイスタオル<br>フェイスタオル</td>
+                      <td>ムーミン<br>ムーミン</td>
+                      <td>丸眞桜子<br>丸眞桜子</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/13</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>定番加工</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>999901</td>
+                      <td>無地カラフルタオル</td>
+                      <td>バスタオル</td>
+                      <td>サンリオ</td>
+                      <td>丸眞花子</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>企画物タオル</td>
+                      <td>999902</td>
+                      <td>春限定フラワータオル</td>
+                      <td>マフラータオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/22</td>
+                    </tr>
 
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999903</td><td>別注ミッキーAセット</td><td>ミニタオル</td><td>ムーミン</td><td>丸眞桜子</td><td>差戻し</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999904</td><td>別注ミッキーBセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>単品タオル</td><td>888801</td><td>別注無地タオル</td><td>ミニタオル</td><td>ドラえもん</td><td>丸眞桜子</td><td>承認済</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999905</td><td>夏限定マリンセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999906</td><td>秋限定チェックセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td></td>&nbsp;</tr>
-
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888802</td><td>OEMミッキーAタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888803</td><td>OEM無地タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999907</td><td>OEMギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999908</td><td>OEMギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/22</td></tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999903</td>
+                      <td>別注ミッキーAセット</td>
+                      <td>ミニタオル</td>
+                      <td>ムーミン</td>
+                      <td>丸眞桜子</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/05</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999904</td>
+                      <td>別注ミッキーBセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999904</td>
+                      <td>別注ミッキーBセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888801</td>
+                      <td>別注無地タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ドラえもん</td>
+                      <td>丸眞桜子</td>
+                      <td>承認済</td>
+                      <td>2025/01/13</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888801</td>
+                      <td>別注無地タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ドラえもん</td>
+                      <td>丸眞桜子</td>
+                      <td>承認済</td>
+                      <td>2025/01/13</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999905</td>
+                      <td>夏限定マリンセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/17</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999905</td>
+                      <td>夏限定マリンセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/17</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999906</td>
+                      <td>秋限定チェックセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999906</td>
+                      <td>秋限定チェックセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888802</td>
+                      <td>OEMミッキーAタオル</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/05</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888803</td>
+                      <td>OEM無地タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888803</td>
+                      <td>OEM無地タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999907</td>
+                      <td>OEMギフトセットA</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/17</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999908</td>
+                      <td>OEMギフトセットB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/22</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999908</td>
+                      <td>OEMギフトセットB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/22</td>
+                    </tr>
 
                     <!-- 以降は番号だけ変えたダミー行 -->
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>888804</td><td>ミッキーD柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>単品タオル</td><td>888805</td><td>無地ベーシックタオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/10</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>999909</td><td>シーズンタオルA</td><td>ミニタオル</td><td>すみっコぐらし</td><td>丸眞花子</td><td>差戻し</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>999910</td><td>シーズンタオルB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.03 展示会</td><td>企画物タオル</td><td>999911</td><td>シーズンタオルC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/22</td></tr>
-
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999912</td><td>別注ミッキーCセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>単品タオル</td><td>888806</td><td>別注無地カラー</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999913</td><td>別注ギフトセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999914</td><td>別注ギフトセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999915</td><td>別注ギフトセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999916</td><td>OEMタオルセットA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/05</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999917</td><td>OEMタオルセットB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/10</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999918</td><td>OEMタオルセットC</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888807</td><td>OEM無地タオルセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999919</td><td>OEMギフトボックスA</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/22</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999920</td><td>OEMギフトボックスB</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>888808</td><td>ミッキーE柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>定番</td><td>2026.01 展示会</td><td>単品タオル</td><td>888809</td><td>ミッキーF柄タオル</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/13</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>別注</td><td></td><td>企画物タオル</td><td>999921</td><td>別注キャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>差戻し</td><td>2025/01/17</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td><td>OEM</td><td></td><td>企画物タオル</td><td>999922</td><td>OEMキャラクターコラボ</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>申請中</td><td>&nbsp;</td></tr>
-                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td><td>OEM</td><td></td><td>単品タオル</td><td>888810</td><td>OEM無地カラーセット</td><td>ミニタオル</td><td>ディズニー</td><td>丸眞太郎</td><td>承認済</td><td>2025/01/05</td></tr>
+                    <tr><td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>単品タオル</td>
+                      <td>888804</td>
+                      <td>ミッキーD柄タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>単品タオル</td>
+                      <td>888805</td>
+                      <td>無地ベーシックタオル</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/10</td>
+                    </tr>
+                    <tr> 
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>企画物タオル</td>
+                      <td>999909</td>
+                      <td>シーズンタオルA</td>
+                      <td>ミニタオル</td>
+                      <td>すみっコぐらし</td>
+                      <td>丸眞花子</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/13</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>企画物タオル</td>
+                      <td>999910</td>
+                      <td>シーズンタオルB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>企画物タオル</td>
+                      <td>999910</td>
+                      <td>シーズンタオルB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>企画物タオル</td>
+                      <td>999911</td>
+                      <td>シーズンタオルC</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/22</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番</td>
+                      <td>2026.03 展示会</td>
+                      <td>企画物タオル</td>
+                      <td>999911</td>
+                      <td>シーズンタオルC</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999912</td>
+                      <td>別注ミッキーCセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888806</td>
+                      <td>別注無地カラー</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999913</td>
+                      <td>別注ギフトセットA</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/13</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999914</td>
+                      <td>別注ギフトセットB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/17</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999915</td>
+                      <td>別注ギフトセットC</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999915</td>
+                      <td>別注ギフトセットC</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td> 
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999916</td>
+                      <td>OEMタオルセットA</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/05</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999917</td>
+                      <td>OEMタオルセットB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/10</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999918</td>
+                      <td>OEMタオルセットC</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999918</td>
+                      <td>OEMタオルセットC</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888807</td>
+                      <td>OEM無地タオルセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/17</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999919</td>
+                      <td>OEMギフトボックスA</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/22</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999920</td>
+                      <td>OEMギフトボックスB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999920</td>
+                      <td>OEMギフトボックスB</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999921</td>
+                      <td>OEMギフトボックスC</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>単品タオル</td>
+                      <td>888808</td>
+                      <td>ミッキーE柄タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>定番</td>
+                      <td>2026.01 展示会</td>
+                      <td>単品タオル</td>
+                      <td>888809</td>
+                      <td>ミッキーF柄タオル</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/17</td>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>別注</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999921</td>
+                      <td>別注キャラクターコラボ</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>差し戻し</td>
+                      <td>2025/01/17</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999922</td>
+                      <td>OEMキャラクターコラボ</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果登録</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>企画物タオル</td>
+                      <td>999922</td>
+                      <td>OEMキャラクターコラボ</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認待ち</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td><a href="hinshitsukensagokakushokessai.html">結果照会</a></td>
+                      <td>OEM</td>
+                      <td></td>
+                      <td>単品タオル</td>
+                      <td>888810</td>
+                      <td>OEM無地カラーセット</td>
+                      <td>ミニタオル</td>
+                      <td>ディズニー</td>
+                      <td>丸眞太郎</td>
+                      <td>承認済</td>
+                      <td>2025/01/05</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1551,12 +1997,51 @@
         var selHanbai = document.getElementById("searchHanbaiKubun");
         var selTenjikai = document.getElementById("tenjikaiSelect");
         var selStatus = document.getElementById("searchStatus");
-        var selCategory = document.getElementById("searchCategory");
+        var categoryWrap = document.getElementById("searchCategory");
+        var categoryToggle = document.getElementById("searchCategoryToggle");
+        var categoryMenu = document.getElementById("searchCategoryMenu");
         var inpHinmei = document.getElementById("searchHinmei");
-        var selItem = document.getElementById("searchItem");
-        var selBrandChara = document.getElementById("searchBrandChara");
+        var itemWrap = document.getElementById("searchItem");
+        var itemToggle = document.getElementById("searchItemToggle");
+        var itemMenu = document.getElementById("searchItemMenu");
+        var brandCharaWrap = document.getElementById("searchBrandChara");
+        var brandCharaToggle = document.getElementById("searchBrandCharaToggle");
+        var brandCharaMenu = document.getElementById("searchBrandCharaMenu");
         var tbody = document.querySelector("#approvalListArea .result-table tbody");
         if (!tbody) return;
+
+        function buildMultiSelectOptionsFromDataList(wrap, menu) {
+          if (!wrap || !menu) return;
+          var listKey = wrap.getAttribute("data-list");
+          if (!listKey) return;
+          var source = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS[listKey];
+          if (!Array.isArray(source)) return;
+
+          menu.innerHTML = "";
+          source.forEach(function (item) {
+            var label = document.createElement("label");
+            label.className = "multi-select-option";
+
+            var input = document.createElement("input");
+            input.type = "checkbox";
+            input.value = item;
+
+            var span = document.createElement("span");
+            span.textContent = item;
+
+            label.appendChild(input);
+            label.appendChild(span);
+            menu.appendChild(label);
+          });
+        }
+
+        buildMultiSelectOptionsFromDataList(categoryWrap, categoryMenu);
+        buildMultiSelectOptionsFromDataList(itemWrap, itemMenu);
+        buildMultiSelectOptionsFromDataList(brandCharaWrap, brandCharaMenu);
+
+        var categoryChecks = categoryMenu ? categoryMenu.querySelectorAll('input[type="checkbox"]') : [];
+        var itemChecks = itemMenu ? itemMenu.querySelectorAll('input[type="checkbox"]') : [];
+        var brandCharaChecks = brandCharaMenu ? brandCharaMenu.querySelectorAll('input[type="checkbox"]') : [];
 
         // 販売区分の前に品質画像検査合格書列を追加（承認結果ごとに画像を割り当て）
         (function ensureImageCells() {
@@ -1582,16 +2067,6 @@
           });
         })();
 
-        // ステータス列は表示しないため、デモでは各行へdata-statusを付与して絞り込み可能にする
-        (function ensureRowStatuses() {
-          var statuses = ["申請中", "承認済", "差戻し"];
-          Array.prototype.forEach.call(tbody.rows, function (row, idx) {
-            if (!row.getAttribute("data-status")) {
-              row.setAttribute("data-status", statuses[idx % statuses.length]);
-            }
-          });
-        })();
-
         function mapHanbai(value) {
           return {
             teiban: "定番",
@@ -1601,33 +2076,63 @@
           }[value] || "";
         }
 
-        function mapCategory(value) {
-          return {
-            tanpin: "単品タオル",
-            kikaku: "企画物タオル"
-          }[value] || "";
+        function normalizeStatus(value) {
+          var text = (value || "").trim();
+          if (text === "差し戻し") return "差戻し";
+          return text;
+        }
+
+        function normalizeText(value) {
+          return String(value || "")
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .replace(/．/g, ".")
+            .replace(/。/g, ".");
+        }
+
+        function getSelectedValues(checks) {
+          var values = [];
+          Array.prototype.forEach.call(checks, function (cb) {
+            if (cb.checked) values.push(normalizeText(cb.value));
+          });
+          return values;
+        }
+
+        function updateToggleLabel(toggle, checks) {
+          if (!toggle) return;
+          var checked = [];
+          Array.prototype.forEach.call(checks, function (cb) {
+            if (cb.checked) checked.push(cb.value);
+          });
+          if (checked.length === 0) {
+            toggle.textContent = "選択してください";
+          } else if (checked.length === 1) {
+            toggle.textContent = checked[0];
+          } else {
+            toggle.textContent = checked.length + "件選択中";
+          }
         }
 
         function applyFilter() {
           var condHanbai = selHanbai ? selHanbai.value : "";
           var condTenjikai = selTenjikai ? selTenjikai.value : "";
           var condStatus = selStatus ? selStatus.value : "";
-          var condCategory = selCategory ? selCategory.value : "";
+          var condCategoryList = getSelectedValues(categoryChecks);
           var condHinmei = inpHinmei ? inpHinmei.value.trim() : "";
-          var condItem = selItem ? (selItem.tagName === "SELECT" ? selItem.value : selItem.value.trim()) : "";
-          var condBrandChara = selBrandChara ? (selBrandChara.tagName === "SELECT" ? selBrandChara.value : selBrandChara.value.trim()) : "";
+          var condItemList = getSelectedValues(itemChecks);
+          var condBrandCharaList = getSelectedValues(brandCharaChecks);
           var hanbaiLabel = mapHanbai(condHanbai);
-          var categoryLabel = selCategory && selCategory.tagName === "SELECT" ? mapCategory(condCategory) : (condCategory || "").trim();
 
           Array.prototype.forEach.call(tbody.rows, function (row) {
             // 先頭セルはチェックボックス列のため、各項目は1つ後ろのインデックス
             var cellHanbai = row.cells[2] ? row.cells[2].textContent.trim() : "";
             var cellTenjikai = row.cells[3] ? row.cells[3].textContent.trim() : "";
-            var cellCategory = row.cells[4] ? row.cells[4].textContent.trim() : "";
+            var cellCategory = row.cells[4] ? normalizeText(row.cells[4].textContent) : "";
             var cellHinmei = row.cells[6] ? row.cells[6].textContent.trim() : "";
-            var cellItem = row.cells[7] ? row.cells[7].textContent.trim() : "";
-            var cellBrandChara = row.cells[8] ? row.cells[8].textContent.trim() : "";
-            var rowStatus = (row.getAttribute("data-status") || "").trim();
+            var cellItem = row.cells[7] ? normalizeText(row.cells[7].textContent) : "";
+            var cellBrandChara = row.cells[8] ? normalizeText(row.cells[8].textContent) : "";
+            var rowStatus = normalizeStatus(row.cells[10] ? row.cells[10].textContent : "");
             var match = true;
 
             if (condHanbai === "teiban_else") {
@@ -1639,14 +2144,14 @@
             if (condTenjikai) {
               if (!cellTenjikai || cellTenjikai.indexOf(condTenjikai) !== 0) match = false;
             }
-            if (condStatus && rowStatus !== condStatus) match = false;
-            if (condCategory && cellCategory !== categoryLabel) match = false;
+            if (condStatus && rowStatus !== normalizeStatus(condStatus)) match = false;
+            if (condCategoryList.length > 0 && condCategoryList.indexOf(cellCategory) === -1) match = false;
 
             if (condHinmei && cellHinmei.indexOf(condHinmei) === -1) match = false;
 
-            if (condItem && cellItem !== condItem) match = false;
+            if (condItemList.length > 0 && condItemList.indexOf(cellItem) === -1) match = false;
 
-            if (condBrandChara && cellBrandChara !== condBrandChara) match = false;
+            if (condBrandCharaList.length > 0 && condBrandCharaList.indexOf(cellBrandChara) === -1) match = false;
 
             row.style.display = match ? "" : "none";
           });
@@ -1655,18 +2160,46 @@
         [selHanbai, selTenjikai, selStatus].forEach(function (el) {
           if (el) el.addEventListener("change", applyFilter);
         });
-        if (selCategory) {
-          selCategory.addEventListener("change", applyFilter);
-          if (selCategory.tagName === "INPUT") selCategory.addEventListener("input", applyFilter);
+        if (categoryToggle && categoryWrap) {
+          categoryToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = categoryWrap.classList.toggle("is-open");
+            categoryToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
         }
-        if (selItem) {
-          selItem.addEventListener("change", applyFilter);
-          if (selItem.tagName === "INPUT") selItem.addEventListener("input", applyFilter);
+        if (itemToggle && itemWrap) {
+          itemToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = itemWrap.classList.toggle("is-open");
+            itemToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
         }
-        if (selBrandChara) {
-          selBrandChara.addEventListener("change", applyFilter);
-          if (selBrandChara.tagName === "INPUT") selBrandChara.addEventListener("input", applyFilter);
+        if (brandCharaToggle && brandCharaWrap) {
+          brandCharaToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = brandCharaWrap.classList.toggle("is-open");
+            brandCharaToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
         }
+
+        Array.prototype.forEach.call(categoryChecks, function (cb) {
+          cb.addEventListener("change", function () {
+            updateToggleLabel(categoryToggle, categoryChecks);
+            applyFilter();
+          });
+        });
+        Array.prototype.forEach.call(itemChecks, function (cb) {
+          cb.addEventListener("change", function () {
+            updateToggleLabel(itemToggle, itemChecks);
+            applyFilter();
+          });
+        });
+        Array.prototype.forEach.call(brandCharaChecks, function (cb) {
+          cb.addEventListener("change", function () {
+            updateToggleLabel(brandCharaToggle, brandCharaChecks);
+            applyFilter();
+          });
+        });
         if (inpHinmei) {
           inpHinmei.addEventListener("input", applyFilter);
           inpHinmei.addEventListener("change", applyFilter);
@@ -1679,6 +2212,26 @@
             window.location.reload();
           });
         }
+
+        document.addEventListener("click", function (event) {
+          var target = event.target;
+          if (categoryWrap && !categoryWrap.contains(target)) {
+            categoryWrap.classList.remove("is-open");
+            if (categoryToggle) categoryToggle.setAttribute("aria-expanded", "false");
+          }
+          if (itemWrap && !itemWrap.contains(target)) {
+            itemWrap.classList.remove("is-open");
+            if (itemToggle) itemToggle.setAttribute("aria-expanded", "false");
+          }
+          if (brandCharaWrap && !brandCharaWrap.contains(target)) {
+            brandCharaWrap.classList.remove("is-open");
+            if (brandCharaToggle) brandCharaToggle.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        updateToggleLabel(categoryToggle, categoryChecks);
+        updateToggleLabel(itemToggle, itemChecks);
+        updateToggleLabel(brandCharaToggle, brandCharaChecks);
         applyFilter();
       })();
 
