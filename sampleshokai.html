@@ -338,6 +338,19 @@
     /* #region レスポンシブ対応 */
     /* 画面の幅が650px以下ならスマホ*/
     @media (max-width: 768px) {
+      /* スマホ: 内側スクロールバーは表示しない */
+      .content,
+      #approvalListArea,
+      .search-box .search-box-inner {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge legacy */
+      }
+      .content::-webkit-scrollbar,
+      #approvalListArea::-webkit-scrollbar,
+      .search-box .search-box-inner::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+      }
+
       .pc-only {
         display: none;
       }
@@ -453,6 +466,14 @@
         max-height: none;
         overflow: visible;
         padding-right: 0;
+      }
+
+      /* 検索条件オープン時でも画面全体スクロールを許可 */
+      .search-box,
+      .search-box .search-box-inner,
+      #searchRowsPanel {
+        touch-action: pan-y;
+        overscroll-behavior: auto;
       }
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
@@ -1637,6 +1658,11 @@
             btn.setAttribute("aria-expanded", isOpen);
             var textEl = btn.querySelector(".search-toggle-sp-text");
             if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+
+            // 開閉に関わらずスクロールロックを解除して、ページ全体をスクロール可能にする
+            document.body.style.overflow = "";
+            var content = document.querySelector(".content");
+            if (content) content.style.overflowY = "auto";
           });
         }
       })();
