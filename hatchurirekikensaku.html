@@ -86,10 +86,19 @@
       flex-shrink: 0;
     }
 
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      /* overflow: hidden; */
+    }
+
+    .content-box .search-box,
     .content .search-box {
       flex-shrink: 0;
     }
 
+    .content-box .pc-only,
     .content .pc-only {
       flex: 1;
       min-height: 0;
@@ -97,14 +106,33 @@
       flex-direction: column;
     }
 
+    .content-box .sp-only,
     .content .sp-only {
       flex: 1;
       min-height: 0;
     }
 
+    .content-box .content-section,
     .content .content-section {
       flex: 1;
       min-height: 0;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
     }
 
     .content>.view-layout-1-group {
@@ -201,58 +229,66 @@
     }
 
     /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
-    .search-box-inner .search-row {
+    .search-row {
       display: flex;
       align-items: center;
       gap: 8px;
       min-width: 0;
     }
 
-    .search-box-inner .search-row label {
+    .search-row label {
       margin: 0;
-      /* font-size: var(--fs-base); */
-      /* font-weight: 500; */
-      /* color: var(--color-text-muted); */
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
       white-space: nowrap;
     }
 
     /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
-    .search-box-inner .search-row .autocomplete-dropdown,
-    .search-box-inner .search-row .autocomplete-dropdown div {
-      font-size: var(--fs-base);
-      font-weight: 500;
-    }
-
-    .search-box-inner .search-row select,
-    .search-box-inner .search-row input {
-      /* font-size: var(--fs-base); */
+    .search-row select,
+    .search-row input:not([type="checkbox"]) {
+      font-size: var(--fs-xs);
       min-width: 160px;
-      padding: 10px 12px;
-      /* font-family: inherit; */
+      padding: 3px 12px;
+      font-family: inherit;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       background: var(--color-card);
-      /* color: var(--color-text); */
+      color: var(--color-text);
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .search-box-inner .search-row select:hover,
-    .search-box-inner .search-row input:hover {
+    .search-row .autocomplete {
+      min-width: 160px;
+      width: 160px;
+    }
+
+    .search-row .autocomplete .autocomplete-input {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .search-row option {
+      font-size: var(--fs-xs);
+    }
+
+    .search-row select:hover,
+    .search-row input:not([type="checkbox"]):hover {
       border-color: #b0bdb5;
     }
 
-    .search-box-inner .search-row select:focus,
-    .search-box-inner .search-row input:focus {
+    .search-row select:focus,
+    .search-row input:not([type="checkbox"]):focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
     }
 
-    .search-box-inner .search-row input::placeholder {
+    .search-row input::placeholder {
       color: #9ca89f;
     }
 
-    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    /* 検索条件エリア右端：クリアボタン（登録ボタンと同スタイル） */
     .search-cancel-wrapper {
       margin-left: auto;
       display: flex;
@@ -261,7 +297,7 @@
 
     .btn-search-cancel {
       display: inline-block;
-      min-width: 140px;
+      min-width: 0;
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -269,7 +305,7 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
-      font-weight: 600;
+      font-weight: 400;
       font-family: inherit;
       white-space: nowrap;
     }
@@ -674,7 +710,7 @@
       .main-wrapper {
         flex: 1;
         min-height: 0;
-        overflow: hidden;
+        overflow: visible;
       }
 
       .hamburger {
@@ -702,10 +738,6 @@
         padding-right: max(20px, env(safe-area-inset-right, 0px));
         width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
       }
 
       /* イメージ案①: スマホ用 */
@@ -772,6 +804,9 @@
       .search-box.is-open .search-box-inner {
         display: grid;
       }
+      #searchBox.is-open #searchRowsPanel {
+        display: grid !important;
+      }
 
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
@@ -808,13 +843,15 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 6px;
+        gap: 0px;
         min-width: 0;
       }
 
       .search-box-inner .search-row label {
-        /* font-size: var(--fs-base);  */
+        font-size: var(--fs-xs);
         flex-shrink: 0;
+        width: 100%;
+        text-align: left;
       }
 
       .search-box-inner .search-row select,
@@ -823,18 +860,35 @@
         width: 100%;
         box-sizing: border-box;
       }
+      #searchRowsPanel .search-row:has(#searchsohincd) > :not(label),
+      #searchRowsPanel .search-row:has(#searchsohincd) textarea {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        box-sizing: border-box;
+        align-self: stretch;
+      }
 
       .search-cancel-wrapper {
-        grid-column: 1 / -1;
+        grid-column: 2;
+        width: auto;
+        display: flex;
         justify-content: flex-end;
+        align-items: flex-end;
+        align-self: end;
         margin-left: 0;
+      }
+      .btn-search-cancel {
+        padding: 4px 8px;
       }
 
       /* 検索結果一覧：スマホ時はカード形式 */
       #approvalListArea {
         overflow-x: visible;
+        overflow-y: visible;
         max-height: none;
-      --result-row-height: 270px;
+        margin-bottom: 30px;
+        --result-row-height: 270px;
       }
 
       #approvalListArea .result-table {
@@ -926,6 +980,39 @@
       .search-toggle-sp {
         display: none;
       }
+      .search-box {
+        flex-direction: row;
+      }
+      .search-box-inner {
+        display: block !important;
+        width: 100%;
+      }
+      .search-row {
+        flex: 0 0 auto;
+      }
+      .search-box .search-box-inner .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        margin-bottom: 0;
+        align-items: flex-end;
+      }
+      .search-cancel-wrapper {
+        margin-left: auto;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex: 0 0 auto;
+      }
+    }
+
+    /* スマホ最終上書き: 明細は内部スクロールせず、全体1本スクロール */
+    @media (max-width: 768px) {
+      #approvalListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+      }
     }
   </style>
 </head>
@@ -1002,8 +1089,8 @@
                     <div class="autocomplete-dropdown"></div>
                   </div>
                 </div>
-                <div class="filter-item">
-                  <span class="filter-label">販売区分</span>
+                <div class="search-row">
+                  <label for="searchHanbaiKubun">販売区分</label>
                   <select id="searchHanbaiKubun">
                     <option value="">すべて</option>
                     <option value="teiban">定番</option>
@@ -1012,20 +1099,12 @@
                     <option value="oem">OEM</option>
                   </select>
                 </div>
-                <div class="filter-item">
-                  <span class="filter-label">商品コード</span>
-                  <select id="searchShohinCode">
-                    <option value="">すべて</option>
-                    <option value="4900000001">4900000001</option>
-                    <option value="4900000002">4900000002</option>
-                    <option value="4900000003">4900000003</option>
-                    <option value="4900000004">4900000004</option>
-                    <option value="4900000005">4900000005</option>
-                    <option value="4900000006">4900000006</option>
-                  </select>
+                <div class="search-row">
+                  <label for="searchsohincd">商品コード</label>
+                  <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力"></textarea>
                 </div>
                 <div class="search-cancel-wrapper">
-                  <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
+                  <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
                 </div>
               </div>
             </div>
@@ -1236,8 +1315,12 @@
       var selCategory = document.getElementById("searchCategory");
       var selItem = document.getElementById("searchItem");
       var selBrandChara = document.getElementById("searchBrandChara");
+      var btnRenkeiAll = document.getElementById("renkeiAll");
+      var btnRenkeiLinked = document.getElementById("renkeiLinked");
+      var btnRenkeiUnlinked = document.getElementById("renkeiUnlinked");
       var tbody = document.querySelector("#approvalListArea .result-table tbody");
       if (!tbody) return;
+      var renkeiMode = "all";
 
       function mapHanbai(value) {
         return {
@@ -1291,7 +1374,7 @@
             row.style.display = "";
             return;
           }
-
+          var isLinked = statusPill.classList.contains("linked");
 
           var showRow =
             renkeiMode === "all" ||
@@ -1325,6 +1408,26 @@
         el.addEventListener("blur", applyFilter);
       }
 
+      function setRenkeiMode(mode) {
+        renkeiMode = mode;
+        if (btnRenkeiAll) {
+          var isAll = mode === "all";
+          btnRenkeiAll.classList.toggle("is-active", isAll);
+          btnRenkeiAll.setAttribute("aria-pressed", isAll ? "true" : "false");
+        }
+        if (btnRenkeiLinked) {
+          var isLinkedMode = mode === "linked";
+          btnRenkeiLinked.classList.toggle("is-active", isLinkedMode);
+          btnRenkeiLinked.setAttribute("aria-pressed", isLinkedMode ? "true" : "false");
+        }
+        if (btnRenkeiUnlinked) {
+          var isUnlinked = mode === "unlinked";
+          btnRenkeiUnlinked.classList.toggle("is-active", isUnlinked);
+          btnRenkeiUnlinked.setAttribute("aria-pressed", isUnlinked ? "true" : "false");
+        }
+        applyFilter();
+      }
+
       bindLiveFilter(txtOrderNo);
       bindLiveFilter(txtMaker);
       if (selHanbai) selHanbai.addEventListener("change", applyFilter);
@@ -1341,6 +1444,9 @@
         selBrandChara.addEventListener("change", applyFilter);
         if (selBrandChara.tagName === "INPUT") selBrandChara.addEventListener("input", applyFilter);
       }
+      if (btnRenkeiAll) btnRenkeiAll.addEventListener("click", function () { setRenkeiMode("all"); });
+      if (btnRenkeiLinked) btnRenkeiLinked.addEventListener("click", function () { setRenkeiMode("linked"); });
+      if (btnRenkeiUnlinked) btnRenkeiUnlinked.addEventListener("click", function () { setRenkeiMode("unlinked"); });
 
       // オートコンプリート候補クリック時（inputイベントが発火しないケース）も反映
       var searchRowsPanel = document.getElementById("searchRowsPanel");
@@ -1367,13 +1473,48 @@
     (function () {
       var btn = document.getElementById("searchToggleSp");
       var box = document.getElementById("searchBox");
-      if (btn && box) {
-        btn.addEventListener("click", function () {
-          var isOpen = box.classList.toggle("is-open");
-          btn.setAttribute("aria-expanded", isOpen);
+      var panel = document.getElementById("searchRowsPanel");
+      if (!btn || !box || !panel) return;
+
+      var mobileQuery = window.matchMedia ? window.matchMedia("(max-width: 768px)") : null;
+
+      function setSearchBoxOpen(isOpen) {
+        box.classList.toggle("is-open", isOpen);
+        // CSS依存だけでなく直接表示も制御して、環境差異で開かない問題を回避
+        panel.style.setProperty("display", isOpen ? "grid" : "none", "important");
+        btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        var textEl = btn.querySelector(".search-toggle-sp-text");
+        if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+      }
+
+      function syncSearchBoxByViewport() {
+        var isMobile = mobileQuery ? mobileQuery.matches : false;
+        if (isMobile) {
+          setSearchBoxOpen(box.classList.contains("is-open"));
+        } else {
+          // PCでは常時表示
+          box.classList.remove("is-open");
+          panel.style.setProperty("display", "grid", "important");
+          btn.setAttribute("aria-expanded", "true");
           var textEl = btn.querySelector(".search-toggle-sp-text");
-          if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-        });
+          if (textEl) textEl.textContent = "検索条件を閉じる";
+        }
+      }
+
+      btn.addEventListener("click", function () {
+        var isMobile = mobileQuery ? mobileQuery.matches : false;
+        if (!isMobile) return;
+        setSearchBoxOpen(!box.classList.contains("is-open"));
+      });
+
+      syncSearchBoxByViewport();
+
+      if (mobileQuery) {
+        if (typeof mobileQuery.addEventListener === "function") {
+          mobileQuery.addEventListener("change", syncSearchBoxByViewport);
+        } else if (typeof mobileQuery.addListener === "function") {
+          mobileQuery.addListener(syncSearchBoxByViewport);
+        }
       }
     })();
 
