@@ -532,7 +532,12 @@
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
       #approvalListArea {
         overflow-x: visible;
+        overflow-y: visible;
         max-height: none;
+        margin-bottom: 30px;
+      }
+      #approvalNoticeArea {
+        margin-top: 10px;
       }
       #approvalListArea .result-table {
         min-width: 0;
@@ -834,12 +839,9 @@
       background: var(--color-primary-dark);
       color: #fff;
     }
-
-    .search-cancel-wrapper .btn-search-cancel,
-    .search-add-wrapper .btn-search-cancel {
-      width: 80px;
-      min-height: 34px;
-      line-height: 1.2;
+    #searchCancelAllBtn,
+    #searchAddBtn {
+      width: 72px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -975,6 +977,15 @@
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border);
     }
+
+    /* スマホ最終上書き: 明細は内部スクロールせず、全体1本スクロール */
+    @media (max-width: 768px) {
+      #approvalListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+      }
+    }
   </style>
 </head>
 
@@ -1068,16 +1079,8 @@
                   </select>
                 </div>
                 <div class="search-row">
-                  <label for="searchShohinCode">商品コード</label>
-                  <select id="searchShohinCode">
-                    <option value="">すべて</option>
-                    <option value="4900000001">4900000001</option>
-                    <option value="4900000002">4900000002</option>
-                    <option value="4900000003">4900000003</option>
-                    <option value="4900000004">4900000004</option>
-                    <option value="4900000005">4900000005</option>
-                    <option value="4900000006">4900000006</option>
-                  </select>
+                  <label for="searchsohincd">商品コード</label>
+                  <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力"></textarea>
                 </div>
                 <div class="search-row">
                   <label for="searchHanbaiKubun">販売区分</label>
