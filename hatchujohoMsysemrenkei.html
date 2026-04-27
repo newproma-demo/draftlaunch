@@ -84,25 +84,49 @@
       flex-shrink: 0;
     }
 
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      /* overflow: hidden; */
+    }
+    .content-box .search-box,
     .content .search-box {
       flex-shrink: 0;
     }
-
+    .content-box .pc-only,
     .content .pc-only {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
     }
-
+    .content-box .sp-only,
     .content .sp-only {
       flex: 1;
       min-height: 0;
     }
-
+    .content-box .content-section,
     .content .content-section {
       flex: 1;
       min-height: 0;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
     }
 
     .content > .view-layout-1-group {
@@ -179,52 +203,58 @@
     }
 
     /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
-    .search-box-inner .search-row {
+    .search-row {
       display: flex;
       align-items: center;
       gap: 8px;
       min-width: 0;
     }
-    .search-box-inner .search-row label {
+    .search-row label {
       margin: 0;
-      /* font-size: var(--fs-base); */
-      /* font-weight: 500; */
-      /* color: var(--color-text-muted); */
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
       white-space: nowrap;
     }
     /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
-    .search-box-inner .search-row .autocomplete-dropdown,
-    .search-box-inner .search-row .autocomplete-dropdown div {
-      font-size: var(--fs-base);
-      font-weight: 500;
-    }
-    .search-box-inner .search-row select,
-    .search-box-inner .search-row input {
-      /* font-size: var(--fs-base); */
+    .search-row select,
+    .search-row input:not([type="checkbox"]) {
+      font-size: var(--fs-xs);
       min-width: 160px;
-      padding: 10px 12px;
-      /* font-family: inherit; */
+      padding: 3px 12px;
+      font-family: inherit;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       background: var(--color-card);
-      /* color: var(--color-text); */
+      color: var(--color-text);
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .search-box-inner .search-row select:hover,
-    .search-box-inner .search-row input:hover {
+    .search-row .autocomplete {
+      min-width: 160px;
+      width: 160px;
+    }
+    .search-row .autocomplete .autocomplete-input {
+      min-width: 0;
+      width: 100%;
+    }
+    .search-row option {
+      font-size: var(--fs-xs);
+    }
+    .search-row select:hover,
+    .search-row input:not([type="checkbox"]):hover {
       border-color: #b0bdb5;
     }
-    .search-box-inner .search-row select:focus,
-    .search-box-inner .search-row input:focus {
+    .search-row select:focus,
+    .search-row input:not([type="checkbox"]):focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
     }
-    .search-box-inner .search-row input::placeholder {
+    .search-row input::placeholder {
       color: #9ca89f;
     }
 
-    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
+    /* 検索条件エリア右端：クリアボタン（登録ボタンと同スタイル） */
     .search-cancel-wrapper {
       margin-left: auto;
       display: flex;
@@ -244,6 +274,10 @@
       font-weight: 600;
       font-family: inherit;
       white-space: nowrap;
+    }
+    .btn-search-cancel {
+      min-width: 0;
+      font-weight: 400;
     }
     .btn-search-cancel:hover,
     .btn-bulk-check:hover {
@@ -663,10 +697,6 @@
         padding-right: max(20px, env(safe-area-inset-right, 0px));
         width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
       }
 
       .bulk-check-toolbar {
@@ -747,16 +777,12 @@
       /* 2列grid+display:contentsは狭い画面で列が潰れ重なるため、縦一列に統一 */
       .search-box-inner {
         display: none;
-        flex-direction: column;
-        gap: 14px;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 16px;
       }
 
       .search-box.is-open .search-box-inner {
-        display: flex;
+        display: grid;
       }
 
       .search-box.is-open .search-toggle-sp::after {
@@ -771,21 +797,14 @@
       }
 
       .search-box-inner .filter-row {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        width: 100%;
-        min-width: 0;
-        margin-bottom: 0;
+        display: contents;
       }
 
       .search-box-inner .filter-item {
-        flex: 0 0 auto;
         flex-direction: column;
         align-items: stretch;
         gap: 6px;
         min-width: 0;
-        width: 100%;
       }
 
       .search-box-inner .filter-item .filter-label {
@@ -800,25 +819,24 @@
         box-sizing: border-box;
       }
 
-      .search-box-inner .search-row {
-        flex: 0 0 auto;
+      .search-row {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 6px;
+        gap: 0px;
+      }
+
+      .search-row label {
+        font-size: var(--fs-xs);
+        flex-shrink: 0;
+        width: 100%;
+        text-align: left;
+      }
+
+      .search-row select,
+      .search-row input {
         min-width: 0;
         width: 100%;
-      }
-
-      .search-box-inner .search-row label {
-        flex-shrink: 0;
-      }
-
-      .search-box-inner .search-row select,
-      .search-box-inner .search-row input {
-        min-width: 0 !important;
-        width: 100%;
-        max-width: 100%;
         box-sizing: border-box;
       }
 
@@ -845,9 +863,16 @@
       }
 
       .search-cancel-wrapper {
+        grid-column: 2;
         width: 100%;
+        display: flex;
         justify-content: flex-end;
+        align-items: flex-end;
+        align-self: end;
         margin-left: 0;
+      }
+      .btn-search-cancel {
+        padding: 4px 8px;
       }
 
       /* 連携ステータス：スマホでは縦並び・全幅 */
@@ -875,8 +900,9 @@
       /* 検索結果一覧：スマホ時はカード形式 */
       #approvalListArea {
         overflow-x: visible;
+        overflow-y: visible;
         max-height: none;
-        padding-bottom: 80px;
+        margin-bottom: 30px;
       }
 
       #approvalListArea .result-table {
@@ -1032,6 +1058,18 @@
       .search-toggle-sp {
         display: none;
       }
+      .search-box .search-box-inner .filter-row {
+        margin-bottom: 0;
+      }
+    }
+
+    /* スマホ最終上書き: 明細は内部スクロールせず、全体1本スクロール */
+    @media (max-width: 768px) {
+      #approvalListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+      }
     }
   </style>
 </head>
@@ -1135,7 +1173,7 @@
                     </select>
                   </div>
                   <div class="search-cancel-wrapper">
-                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">取消</button>
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
                   </div>
                 </div>
               </div>
