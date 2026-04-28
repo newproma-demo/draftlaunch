@@ -249,7 +249,7 @@
       min-width: 0;
     }
 
-    .search-row label {
+    .search-box .search-row > label {
       margin: 0;
       font-size: var(--fs-xs);
       font-weight: 500;
@@ -258,7 +258,7 @@
     }
 
     .search-row select,
-    .search-row input {
+    .search-row input:not([type="checkbox"]) {
       font-size: var(--fs-xs);
       min-width: 160px;
       padding: 10px 12px;
@@ -275,15 +275,100 @@
     }    
 
     .search-row select:hover,
-    .search-row input:hover {
+    .search-row input:not([type="checkbox"]):hover {
       border-color: #b0bdb5;
     }
 
     .search-row select:focus,
-    .search-row input:focus {
+    .search-row input:not([type="checkbox"]):focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .multi-select {
+      position: relative;
+      min-width: 160px;
+      width: 250px;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .multi-select-toggle {
+      width: 100%;
+      min-height: 30px;
+      text-align: left;
+      font-size: var(--fs-xs);
+      padding: 10px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .multi-select-toggle:hover {
+      border-color: #b0bdb5;
+    }
+    .multi-select.is-open .multi-select-toggle {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+    .multi-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      max-height: 220px;
+      padding: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+    }
+    .multi-select.is-open .multi-select-menu {
+      display: block;
+    }
+    #searchCategoryMenu,
+    #searchSupplierMenu {
+      direction: ltr;
+      text-align: left !important;
+    }
+    .multi-select-option {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      justify-items: start;
+      column-gap: 8px;
+      padding: 4px 0;
+      margin: 0;
+      cursor: pointer;
+      font-size: var(--fs-xs);
+      white-space: normal;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--color-text-muted);
+      text-align: left !important;
+    }
+    .multi-select-option span {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      text-align: left !important;
+      word-break: break-word;
+    }
+    .multi-select-option input[type="checkbox"] {
+      margin: 0;
+    }
+    .multi-select-option input[type="checkbox"]:focus,
+    .multi-select-option input[type="checkbox"]:focus-visible {
+      outline: none;
+      box-shadow: none;
     }
 
     .search-row input::placeholder {
@@ -695,15 +780,33 @@
         gap: 6px;
       }
 
-      .search-row label {
+      .search-box .search-row > label {
         font-size: var(--fs-xs);
         flex-shrink: 0;
       }
 
       .search-row select,
-      .search-row input {
+      .search-row input:not([type="checkbox"]) {
         min-width: 0;
         width: 100%;
+        box-sizing: border-box;
+      }
+      .search-row .autocomplete {
+        width: 100%;
+        min-width: 0;
+      }
+      .search-row .autocomplete .autocomplete-input {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      .search-row .multi-select {
+        width: 100%;
+        min-width: 0;
+      }
+      .search-row .multi-select .multi-select-toggle {
+        width: 100%;
+        min-width: 0;
         box-sizing: border-box;
       }
 
@@ -736,6 +839,63 @@
         left: 20px;
         right: 20px;
       }
+
+      .search-cancel-wrapper {
+        grid-column: auto;
+        justify-content: flex-start;
+        align-self: end;
+        margin-left: 0;
+      }
+
+      .btn-search-cancel {
+        display: inline-block;
+        padding: 4px 8px;
+        background: var(--color-primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        text-align: center;
+        font-weight: 400;
+        font-family: inherit;
+        white-space: nowrap;
+      }
+
+      #searchCategoryMenu .multi-select-option,
+      #searchSupplierMenu .multi-select-option {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 3px 2px !important;
+        text-align: left !important;
+        white-space: normal !important;
+        overflow: visible !important;
+      }
+    }
+
+    #searchCategoryMenu .multi-select-option,
+    #searchSupplierMenu .multi-select-option {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding: 3px 2px 3px 8px !important;
+      text-align: left !important;
+      white-space: normal !important;
+      overflow: visible !important;
+    }
+
+    #searchCategoryMenu .multi-select-option span,
+    #searchSupplierMenu .multi-select-option span {
+      display: block !important;
+      text-align: left !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    #searchCategoryMenu .multi-select-option input[type="checkbox"],
+    #searchSupplierMenu .multi-select-option input[type="checkbox"] {
+      margin: 0 !important;
+      padding: 0 !important;
     }
     /* スマホ表示した時の進行状況 */
     /* ===============================
@@ -813,6 +973,29 @@
       display:none !important;
     }
 
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .btn-search-cancel {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 400;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-search-cancel:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
     /* #endregion */
   </style>
 </head>
@@ -855,17 +1038,17 @@
 
           <div class="search-row">
             <label>カテゴリー</label>
-            <div class="autocomplete">
-              <input type="text" class="autocomplete-input" data-list="category" placeholder="カテゴリー検索">
-              <div class="autocomplete-dropdown"></div>
+            <div class="multi-select" id="searchCategory" data-list="category2">
+              <button type="button" class="multi-select-toggle" id="searchCategoryToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+              <div class="multi-select-menu" id="searchCategoryMenu" role="listbox" aria-multiselectable="true"></div>
             </div>
           </div>
           
           <div class="search-row">
             <label>仕入先</label>
-            <div class="autocomplete">
-              <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入先検索">
-              <div class="autocomplete-dropdown"></div>
+            <div class="multi-select" id="searchSupplier" data-list="supplier">
+              <button type="button" class="multi-select-toggle" id="searchSupplierToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+              <div class="multi-select-menu" id="searchSupplierMenu" role="listbox" aria-multiselectable="true"></div>
             </div>
           </div>
 
@@ -941,7 +1124,10 @@
                 <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
               </div>
             </div>
-          </div>          
+          </div>  
+          <div class="search-cancel-wrapper">
+            <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
+          </div>        
         </div>
       </div>
       <!-- ▲ 検索条件エリアここまで ▲ -->
@@ -1283,6 +1469,88 @@
           if (textEl) textEl.textContent = isOpen ? '検索条件を閉じる' : '検索条件を開く';
         });
       }
+    })();
+
+    (function initHatchuMultiSelects() {
+      var categoryWrap = document.getElementById("searchCategory");
+      var categoryToggle = document.getElementById("searchCategoryToggle");
+      var categoryMenu = document.getElementById("searchCategoryMenu");
+      var supplierWrap = document.getElementById("searchSupplier");
+      var supplierToggle = document.getElementById("searchSupplierToggle");
+      var supplierMenu = document.getElementById("searchSupplierMenu");
+
+      function buildMultiSelectOptionsFromDataList(wrap, menu) {
+        if (!wrap || !menu) return;
+        var listKey = wrap.getAttribute("data-list");
+        if (!listKey) return;
+        var source = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS[listKey];
+        if (!Array.isArray(source)) return;
+
+        menu.innerHTML = "";
+        source.forEach(function (item) {
+          var label = document.createElement("label");
+          label.className = "multi-select-option";
+          var input = document.createElement("input");
+          input.type = "checkbox";
+          input.value = item;
+          var span = document.createElement("span");
+          span.textContent = item;
+          label.appendChild(input);
+          label.appendChild(span);
+          menu.appendChild(label);
+        });
+      }
+
+      function updateToggleLabel(toggle, checks) {
+        if (!toggle) return;
+        var checked = [];
+        Array.prototype.forEach.call(checks, function (cb) {
+          if (cb.checked) checked.push(cb.value);
+        });
+        if (checked.length === 0) {
+          toggle.textContent = "選択してください";
+        } else if (checked.length === 1) {
+          toggle.textContent = checked[0];
+        } else {
+          toggle.textContent = checked.length + "件選択中";
+        }
+      }
+
+      function bindMultiSelect(wrap, toggle, menu) {
+        if (!wrap || !toggle || !menu) return;
+        var checks = menu.querySelectorAll('input[type="checkbox"]');
+
+        toggle.addEventListener("click", function (event) {
+          event.stopPropagation();
+          var isOpen = wrap.classList.toggle("is-open");
+          toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+
+        Array.prototype.forEach.call(checks, function (cb) {
+          cb.addEventListener("change", function () {
+            updateToggleLabel(toggle, checks);
+          });
+        });
+
+        updateToggleLabel(toggle, checks);
+      }
+
+      buildMultiSelectOptionsFromDataList(categoryWrap, categoryMenu);
+      buildMultiSelectOptionsFromDataList(supplierWrap, supplierMenu);
+      bindMultiSelect(categoryWrap, categoryToggle, categoryMenu);
+      bindMultiSelect(supplierWrap, supplierToggle, supplierMenu);
+
+      document.addEventListener("click", function (event) {
+        var target = event.target;
+        if (categoryWrap && !categoryWrap.contains(target)) {
+          categoryWrap.classList.remove("is-open");
+          if (categoryToggle) categoryToggle.setAttribute("aria-expanded", "false");
+        }
+        if (supplierWrap && !supplierWrap.contains(target)) {
+          supplierWrap.classList.remove("is-open");
+          if (supplierToggle) supplierToggle.setAttribute("aria-expanded", "false");
+        }
+      });
     })();
 
     // メニュー開閉
