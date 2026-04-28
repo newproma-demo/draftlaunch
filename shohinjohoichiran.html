@@ -1,57 +1,1069 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
   <script src="js/autocomplete.js"></script>
   <style>
-    html { -webkit-text-size-adjust: 100%; }
-    body { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
-    .header { position: relative; height: 48px; background: var(--color-card); display: flex; align-items: center; padding: 0 max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--color-border); box-shadow: var(--shadow-sm); }
-    .header a { text-decoration: none; color: inherit; }
-    .hamburger { display: none; }
-    .header-title { margin: 0; padding-left: 0; font-size: var(--fs-xl); font-weight: 700; transition: padding-left 0.2s ease; }
-    .header-user { position: absolute; right: max(70px, calc(env(safe-area-inset-right, 0px) + 52px)); font-size: var(--fs-sm); color: var(--color-text-muted); }
-    .account-wrapper { position: absolute; right: max(24px, env(safe-area-inset-right, 0px)); }
-    .account-menu { position: absolute; right: 0; top: 40px; display: none; min-width: 120px; background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); overflow: hidden; }
-    .account-menu .menu-item { padding: 12px 16px; }
-    .account-menu .menu-item:hover { background: var(--color-primary); color: #fff; }
-    .header-account_circle { width: 28px; height: 28px; cursor: pointer; }
+    .pc-only {
+      display: block;
+    }
 
-    .main-wrapper { display: flex; flex: 1; min-height: calc(100vh - 48px); min-height: calc(100dvh - 48px); }
-    .content { background: var(--color-surface); flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 24px max(24px, env(safe-area-inset-right, 0px)) max(56px, env(safe-area-inset-bottom, 0px)) max(32px, env(safe-area-inset-left, 0px)); overflow-y: auto; transition: margin-left .3s ease, padding-left .3s ease; -webkit-overflow-scrolling: touch; }
-    .content.expanded { margin-left: -220px; padding-left: 32px; }
-    .page-title { font-size: 18px; font-weight: 700; color: var(--color-primary); margin: 0 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--color-primary); }
+    .sp-only {
+      display: none;
+    }
 
-    .search-toggle-sp { display: none; }
-    .search-box { display: flex; flex-wrap: wrap; gap: 16px 24px; margin-bottom: 16px; padding: 16px 18px; background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-    .search-box-inner { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 24px; width: 100%; }
-    .search-row { display: flex; align-items: center; gap: 8px; }
-    .search-row label { font-size: var(--fs-xs); color: var(--color-text-muted); white-space: nowrap; }
-    .search-row select, .search-row input { min-width: 160px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-card); }
-    .search-box-inner .search-row .autocomplete { position: relative; min-width: 160px; flex: 0 1 auto; }
-    .search-box-inner .search-row .autocomplete-dropdown div { font-size: var(--fs-sm); font-weight: 500; }
-    .search-button-area { margin-left: auto; display: flex; gap: 10px; }
-    .search-button, .btn-search-clear { padding: 6px 14px; font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; }
-    .search-button { border: none; background: var(--color-primary); color: #fff; }
-    .btn-search-clear { border: 1px solid var(--color-border); background: var(--color-card); color: var(--color-text); }
-    .list-meta { display: flex; justify-content: flex-end; margin: 8px 0 4px; color: var(--color-text-muted); }
+     body {
+      display: flex;
+      flex-direction: column;
+    } 
 
-    #shohinListArea { width: 100%; max-height: 65vh; max-height: min(65vh, calc(100dvh - 260px)); overflow: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-    .result-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .result-table th, .result-table td { padding: 8px 10px; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); text-align: left; }
-    .result-table th { background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); color: #fff; font-weight: 600; border-top: none; }
-    .result-table tr:nth-child(even) { background: var(--color-surface); }
-    .result-table tr:hover { background: rgba(0, 134, 50, .06); }
-    .result-table a { color: #0066cc; font-weight: 600; text-decoration: underline; }
-    .result-table .shohin-row-thumb-cell { width: 56px; padding: 6px 8px; vertical-align: middle; text-align: center; }
-    .result-table .shohin-row-thumb { width: 48px; height: 48px; min-width: 48px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: #fff; cursor: pointer; display: block; margin: 0 auto; }
-    .result-table .shohin-row-thumb:hover { opacity: 0.88; }
+    /* #region ヘッダー */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+    /* #endregion */
+
+    /* #region メニュー */
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1500;
+      backdrop-filter: blur(2px);
+    }
+
+    .menu-item {
+      margin: 2px 8px;
+      position: relative;
+      border-radius: var(--radius-sm);
+    }
+
+    .menu-title {
+      position: relative;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s ease;
+    }
+
+    .menu-title img {
+      margin-right: 10px;
+      opacity: 0.9;
+    }
+
+    .menu-item:hover>.submenu {
+      display: block;
+    }
+
+    .menu-item:hover .menu-title {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .arrow {
+      transition: transform 0.2s ease;
+      margin-left: auto;
+      opacity: 0.8;
+    }
+
+    /* サブメニュー */
+    .submenu {
+      display: none;
+      position: absolute;
+      /* 右側に出すために絶対配置 */
+      top: -13px;
+      left: 105%;
+      background: #008632;
+      padding: 0px 0px 0px 0px;
+      border-radius: 3px;
+      display: none;
+      min-width: 330px;
+      list-style: none;
+    }
+
+    /* 隙間を埋める透明のホバー領域 */
+    .submenu::before {
+      content: "";
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: -5%;
+      width: 5%;
+      height: 100%;
+      background: transparent;
+      display: block;
+    }
+
+    .submenu li {
+      padding: 8px 10px;
+      height: auto;
+      /* ←折り返し対応 */
+    }
+
+    .submenu li:hover {
+      background: #006C29;
+      /* 好きな色に変更 */
+      border-radius: 4px;
+      /* 角丸にしたい場合 */
+    }
+
+    .submenu li a {
+      display: block;
+      /* 折り返しを効かせる */
+      white-space: normal;
+      /* 折り返しOK */
+      word-break: break-word;
+      /* 日本語も途中で折れる */
+      line-height: 1.1; 
+      /* 行間を少し広めに */
+    }
+
+    .submenu a {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 24px 56px 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      /* overflow: hidden; */
+    }
+
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .content-box .search-box {
+      flex-shrink: 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color-card);
+      padding: 28px;
+      width: 85%;
+      max-width: 900px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      z-index: 2001;
+    }
+
+    /* #region レスポンシブ対応 */
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 768px) {
+      .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+        height: 30px;
+        display: block;
+      }
+
+      .content {
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 20px 20px 56px 20px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .content {
+          padding: 12px 12px 56px 12px;
+      }
+
+      .content:not(.expanded) {
+          padding-left: 12px;
+      }
+
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        flex: none;
+        min-height: 0;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+      .search-toggle-sp::after {
+        content: "＋";
+        color: var(--color-text-muted);
+      }
+      .search-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+       .search-box-inner {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 12px 0 0;
+        gap: 12px 16px;
+      }
+      .search-box.is-open .search-box-inner {
+        display: grid;
+      }
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
+      }
+
+      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
+      .view-layout-1-group > .content-box:first-of-type {
+        padding: 8px;
+      }
+      .view-layout-1-group > .content-box:first-of-type .view-layout-title {
+        margin: 0 0 12px;
+        padding: 0 0 8px;
+      }
+      .search-box-inner .filter-row {
+        display: contents;
+      }
+      .search-box-inner .filter-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+      }
+      .search-box-inner .filter-item .filter-label {
+        margin-right: 0;
+      }
+      .search-box-inner .filter-item select,
+      .search-box-inner .filter-item input[type="text"] {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .search-box-inner .filter-item .autocomplete {
+        width: 100%;
+      }
+      .search-box-inner .filter-item .autocomplete .autocomplete-input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+      }
+      .search-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0px;
+      }
+      .search-row label {
+        font-size: var(--fs-xs);
+        flex-shrink: 0;
+        width: 100%;
+        text-align: left;
+      }
+      .search-row select,
+      .search-row input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .search-row .autocomplete {
+        width: 100%;
+      }
+      .search-row .autocomplete .autocomplete-input {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+      }
+
+      #searchCategory,
+      #searchBrandChara,
+      #searchItem {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      #searchCategory .multi-select-toggle,
+      #searchBrandChara .multi-select-toggle,
+      #searchItem .multi-select-toggle {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      /* スマホ：アイテム・商品コード */
+      #searchItem,
+      #searchItem .multi-select-toggle,
+      #searchsohincd {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        box-sizing: border-box;
+        align-self: stretch;
+      }
+
+      /* スマホ */
+      #searchRowsPanel .search-row > :not(label) {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        box-sizing: border-box;
+        align-self: stretch;
+      }
+
+      #searchRowsPanel .search-row textarea {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      #searchItemMenu {
+        left: 0;
+        right: 0;
+        width: auto;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .multi-select-menu {
+        text-align: left;
+      }
+
+      .multi-select-option {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        justify-content: flex-start;
+        justify-items: start;
+        column-gap: 8px;
+        text-align: left;
+      }
+
+      .multi-select-option span {
+        justify-self: start;
+        text-align: left;
+      }
+
+      .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        margin-left: 0;
+      }
+
+      .btn-search-cancel {
+        display: inline-block;
+        padding: 4px 8px;
+        background: var(--color-primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        text-align: center;
+        font-weight: 400;
+        font-family: inherit;
+        white-space: nowrap;
+      }
+
+      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
+      #approvalListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+        margin-bottom: 30px;
+      }
+
+      #approvalNoticeArea {
+        margin-top: 10px;
+      }
+
+      #approvalListArea .result-table {
+        min-width: 0;
+      }
+      #approvalListArea .result-table thead {
+        display: none;
+      }
+      #approvalListArea .result-table tbody tr {
+        display: block;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        background: var(--color-card);
+      }
+      #approvalListArea .result-table tbody tr::before {
+
+        display: block;
+        color: var(--color-primary);
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      #approvalListArea .result-table tbody td {
+        display: block;
+        border: none;
+        padding: 8px 0;
+        white-space: normal;
+      }
+      /* ラベルを付与 */
+      #approvalListArea .result-table tbody td:nth-child(2)::before {
+        content: "商品コード：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(3)::before {
+        content: "商品名：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(4)::before {
+        content: "カテゴリー：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(5)::before {
+        content: "アイテム：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(6)::before {
+        content: "ブランド・キャラ：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(7)::before {
+        content: "JANコード：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(8)::before {
+        content: "展示会：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(9)::before {
+        content: "販売区分：";
+        font-weight: 600;
+      }
+      #approvalListArea .result-table tbody td:nth-child(10)::before {
+        content: "最終更新日：";
+        font-weight: 600;
+      }
+
+      /* イメージ案②: スマホ用 */
+      .view-layout-2 .status-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    }
+
+    #tenjikaiSelect:hover,
+    .dashboard-box select:hover {
+      border-color: var(--color-primary);
+    }
+
+    #tenjikaiSelect:focus,
+    .dashboard-box select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+    }
+
+    /* ========== イメージ案：3つとも一括表示 ========== */
+    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout-1-group,
+    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
+
+    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
+    h1.view-layout-title {
+      margin: 4px 0 8px 12px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
+    .view-layout-1 { padding: 0; }
+
+    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
+    @media (min-width: 769px) {
+      .search-toggle-sp {
+        display: none;
+      }
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    @media (min-width: 769px) {
+      .search-box .search-box-inner .filter-row {
+        margin-bottom: 0;
+      }
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+    .filter-row input[type="text"], .filter-row select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .search-row label {
+      margin: 0;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .search-row select,
+    .search-row input:not([type="checkbox"]) {
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-row .autocomplete {
+      min-width: 160px;
+      width: 160px;
+    }
+
+    .search-row .autocomplete .autocomplete-input {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .search-row option {
+      font-size: var(--fs-xs);
+    }
+
+    .multi-select {
+      position: relative;
+      width: 100%;
+    }
+
+    #searchItem {
+      width: 220px;
+    }
+
+    .multi-select-toggle {
+      width: 100%;
+      text-align: left;
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .multi-select-toggle:hover {
+      border-color: #b0bdb5;
+    }
+
+    .multi-select.is-open .multi-select-toggle {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .multi-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      max-height: 220px;
+      padding: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    .multi-select.is-open .multi-select-menu {
+      display: block;
+    }
+
+    .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 2px;
+      cursor: pointer;
+      font-size: var(--fs-xs);
+      white-space: normal;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #searchItem .multi-select-toggle,
+    #searchItem .multi-select-option {
+      color: var(--color-text);
+    }
+
+    #searchBrandCharaMenu .multi-select-option,
+    #searchBrandCharaMenu .multi-select-option span,
+    #searchCategoryMenu .multi-select-option,
+    #searchCategoryMenu .multi-select-option span,
+    #searchItemMenu .multi-select-option,
+    #searchItemMenu .multi-select-option span {
+      color: var(--color-text-muted) !important;
+    }
+
+    .multi-select-option input[type="checkbox"] {
+      margin: 0;
+    }
+
+    .multi-select-option input[type="checkbox"]:focus,
+    .multi-select-option input[type="checkbox"]:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .search-row select:hover,
+    .search-row input:not([type="checkbox"]):hover {
+      border-color: #b0bdb5;
+    }
+
+    .search-row select:focus,
+    .search-row input:not([type="checkbox"]):focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .search-row input::placeholder {
+      color: #9ca89f;
+    }
+
+    /* 検索条件エリア右端：クリアボタン */
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .btn-search-cancel {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 400;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-search-cancel:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* 承認通知／検索結果・ボックス共通 */
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group > .content-box:first-of-type {
+      margin-bottom: 5px;
+    }
+    .content-box h3 {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+    /* 検索結果一覧テーブル（スクロール対応） */
+    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
+    #approvalListArea {
+      width: 100%;
+      max-height: 70vh;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      table-layout: fixed;
+    }
+    .result-table th,
+    .result-table td {
+      padding: 16px 10px;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .result-table th {
+      padding: 8px 10px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      font-weight: 600;
+      border-top: none;
+    }
+    .result-table tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+    .result-table tr:hover {
+      background: rgba(0, 134, 50, 0.06);
+    }
+    /* サンプル照会の一覧：商品数・到着数などは右揃え（商品情報一覧には適用しない） */
+    #approvalListArea .result-table th:nth-child(2),
+    #approvalListArea .result-table td:nth-child(2),
+    #approvalListArea .result-table th:nth-child(3),
+    #approvalListArea .result-table td:nth-child(3),
+    #approvalListArea .result-table th:nth-child(4),
+    #approvalListArea .result-table td:nth-child(4) {
+      text-align: right;
+    }
+    /* 図案管理番号リンク */
+    .result-table a {
+      color: #0066cc;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .result-table a:hover {
+      opacity: 0.9;
+    }
+
+    /* 商品情報一覧：img サイズ・テーブルは shohinjohoichiran_退避.html と同様 */
+    #shohinListArea {
+      width: 100%;
+      max-height: 65vh;
+      max-height: min(65vh, calc(100dvh - 260px));
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    #shohinListArea .result-table th,
+    #shohinListArea .result-table td {
+      padding: 8px 10px;
+      text-align: left;
+    }
+    #shohinListArea .result-table th {
+      padding: 8px 10px;
+    }
+    #shohinListArea .result-table .shohin-row-thumb-cell {
+      width: 56px;
+      padding: 6px 8px;
+      vertical-align: middle;
+      text-align: center;
+    }
+    #shohinListArea .result-table .shohin-row-thumb {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: #fff;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+    }
+    #shohinListArea .result-table .shohin-row-thumb:hover {
+      opacity: 0.88;
+    }
 
     .shohin-preview-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: max(10px, env(safe-area-inset-top, 0px)) max(10px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px)); z-index: 3100; }
     .shohin-preview-overlay.is-open { display: flex; }
@@ -61,12 +1073,9 @@
     .shohin-preview-dialog-body { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
     body.shohin-modal-open .sidebar-toggle { visibility: hidden; pointer-events: none; }
     .shohin-preview-close { position: absolute; top: max(10px, env(safe-area-inset-top, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); width: 40px; height: 40px; min-width: 40px; min-height: 40px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-card); font-size: 22px; cursor: pointer; touch-action: manipulation; }
-
     .shohin-detail-header { display: grid; grid-template-columns: minmax(120px, 200px) minmax(0, 1fr); gap: 16px; align-items: start; padding-right: 44px; margin-bottom: 16px; }
     .shohin-detail-visual { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); aspect-ratio: 1; max-width: 200px; overflow: hidden; cursor: zoom-in; }
     .shohin-detail-visual img { width: 100%; height: 100%; object-fit: contain; pointer-events: auto; }
-
-    /* 商品サムネ拡大：shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html の #imageModal と同じ挙動 */
     #shohinThumbImageModal.image-modal { position: fixed; inset: 0; display: none; z-index: 9999; }
     #shohinThumbImageModal.image-modal.active { display: block; }
     #shohinThumbImageModal .modal-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.25s ease; cursor: pointer; }
@@ -80,7 +1089,6 @@
     a.shohin-teiban-external-link:hover { color: #004499; }
     .shohin-detail-basic-title { margin: 12px 0 6px; font-weight: 700; color: var(--color-primary); border-bottom: 1px solid var(--color-border); }
     .shohin-detail-basic-body { margin: 0; white-space: pre-wrap; }
-
     .shohin-detail-tablist { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
     .shohin-detail-tablist li { flex: 1; }
     .shohin-detail-tab { width: 100%; padding: 10px 8px; border: 1px solid var(--color-border); border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0; background: var(--color-surface); color: var(--color-text-muted); cursor: pointer; font-weight: 600; touch-action: manipulation; }
@@ -103,7 +1111,6 @@
     .shohin-tab-custom-block input, .shohin-tab-custom-block textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-card); font-family: inherit; font-size: var(--fs-sm); }
     .shohin-tab-custom-block textarea { resize: vertical; min-height: 4.5em; }
     .shohin-tab-custom-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-
     .shohin-version-history-intro { margin: 0 0 12px; font-size: var(--fs-sm); color: var(--color-text-muted); line-height: 1.5; }
     .shohin-version-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
     .shohin-version-item { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
@@ -113,11 +1120,99 @@
     .shohin-version-item-label { font-size: var(--fs-xs); font-weight: 600; color: var(--color-text-muted); margin-bottom: 4px; }
     .shohin-version-ref-link { font-size: var(--fs-sm); font-weight: 600; color: #0066cc; text-decoration: underline; word-break: break-all; }
     .shohin-version-ref-link:hover { color: #004499; }
-
     .shohin-shiyosho-external-wrap { margin: 0; font-size: var(--fs-sm); line-height: 1.5; }
     .shohin-shiyosho-external-note { display: block; margin-top: 6px; font-size: var(--fs-xs); color: var(--color-text-muted); font-weight: 400; }
 
-    /* iPad / iPad Pro / iPad mini 等（768px〜1366px）：一覧は横スクロールで潰さず（640〜767はスマホ幅のため除外） */
+    /* 画面右下固定アクションボタン群 */
+    .fab-actions {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    /* 画面右下固定 登録ボタン */
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
+    .view-layout-2 { padding: 0; }
+    .view-layout-2 .status-buttons { margin-bottom: 20px; }
+    .view-layout-2 .list-section-title {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .search-button-area { margin-left: auto; display: flex; gap: 10px; }
+    .search-button, .btn-search-clear { padding: 6px 14px; font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; }
+    .search-button { border: none; background: var(--color-primary); color: #fff; }
+    .btn-search-clear { border: 1px solid var(--color-border); background: var(--color-card); color: var(--color-text); }
+    .list-meta { display: flex; justify-content: flex-end; margin: 8px 0 4px; color: var(--color-text-muted); }
+
+    /* 定義順の上書き対策: スマホ時のlistbox内文字を左寄せ固定 */
+    @media (max-width: 768px) {
+      /* スマホ最終上書き: 明細は内部スクロールせず、全体1本スクロール */
+      #approvalListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+      }
+      #shohinListArea {
+        max-height: none;
+        overflow-x: visible;
+        overflow-y: visible;
+      }
+
+      /* アイテムのlistbox開始位置・幅をカテゴリと同一にする */
+      #searchCategoryMenu,
+      #searchItemMenu,
+      #searchBrandCharaMenu {
+        left: 0;
+        right: 0;
+        width: auto;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      #searchCategoryMenu .multi-select-option,
+      #searchBrandCharaMenu .multi-select-option,
+      #searchItemMenu .multi-select-option {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        justify-items: start;
+        text-align: left;
+      }
+
+      #searchCategoryMenu .multi-select-option span,
+      #searchBrandCharaMenu .multi-select-option span,
+      #searchItemMenu .multi-select-option span {
+        display: block;
+        width: 100%;
+        text-align: left;
+      }
+      .search-button,
+      .btn-search-clear {
+        flex: 0 0 auto;
+        width: auto;
+      }
+    }
+
     @media (min-width: 768px) and (max-width: 1366px) {
       .search-box-inner {
         display: grid;
@@ -163,33 +1258,6 @@
         padding: 4px 0;
       }
     }
-
-    /* 768px以下：サイドバーはオーバーレイ（style.css）に合わせ、ハンバーガーで開閉 */
-    @media (max-width: 768px) {
-      .header-user { display: none; }
-      .hamburger {
-        display: block;
-        position: fixed;
-        z-index: 3000;
-        top: max(8px, env(safe-area-inset-top, 0px));
-        left: max(8px, env(safe-area-inset-left, 0px));
-        margin: 0;
-        padding: 4px;
-        cursor: pointer;
-        line-height: 0;
-        touch-action: manipulation;
-      }
-      .hamburger img { width: 30px; height: 30px; display: block; }
-      .header-title { padding-left: 42px; }
-      .content {
-        padding: 16px max(12px, env(safe-area-inset-right, 0px)) max(56px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
-      }
-      .content.expanded {
-        padding-left: max(12px, env(safe-area-inset-left, 0px));
-      }
-      #shohinListArea { max-width: 100%; box-sizing: border-box; }
-    }
-
     /* 狭いスマホのみ（640px未満。一覧はカード表示） */
     @media (max-width: 639px) {
       .content {
@@ -197,90 +1265,223 @@
         padding-left: max(10px, env(safe-area-inset-left, 0px));
         padding-right: max(10px, env(safe-area-inset-right, 0px));
       }
-      .search-toggle-sp { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 14px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-card); }
-      .search-toggle-sp::after { content: "＋"; color: var(--color-text-muted); }
-      .search-box { padding: 0; border: none; box-shadow: none; background: transparent; }
-      .search-box-inner { display: none; padding-top: 12px; flex-direction: column; gap: 12px; }
-      .search-box.is-open .search-box-inner { display: flex; }
-      .search-box.is-open .search-toggle-sp::after { content: "ー"; }
-      .search-row { flex-direction: column; align-items: stretch; }
-      .search-row select, .search-row input { width: 100%; min-width: 0; }
-      .search-box-inner .search-row .autocomplete { width: 100%; min-width: 0; }
-      .search-button-area { margin-left: 0; width: 100%; }
-      .search-button, .btn-search-clear { flex: 1; }
       #shohinListArea .result-table thead { display: none; }
       #shohinListArea .result-table tbody tr { display: block; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 12px; background: var(--color-card); }
       #shohinListArea .result-table tbody td { display: block; border: none; padding: 4px 0; }
-      #shohinListArea .result-table tbody td:nth-child(1)::before { content: none; }
-      #shohinListArea .result-table tbody td:nth-child(2)::before { content: "商品コード："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(3)::before { content: "商品名："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(4)::before { content: "カテゴリー："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(5)::before { content: "アイテム："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(6)::before { content: "ブランド・キャラ："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(7)::before { content: "JANコード："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(8)::before { content: "展示会："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(9)::before { content: "販売区分："; font-weight: 600; }
-      #shohinListArea .result-table tbody td:nth-child(10)::before { content: "最終更新日："; font-weight: 600; }
-      .shohin-preview-dialog { width: calc(100% - 24px); max-height: 94vh; }
-      .shohin-detail-header { grid-template-columns: 1fr; padding-right: 40px; }
-      .shohin-detail-visual { margin: 0 auto; }
-      .shohin-detail-line { grid-template-columns: 1fr; gap: 2px; }
-      .shohin-detail-tablist { overflow-x: auto; }
-      .shohin-detail-tablist li { min-width: 6rem; flex: 0 0 auto; }
+      #shohinListArea .result-table tbody td:nth-child(1)::before { 
+        content: none; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(2)::before { 
+        content: "商品コード："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(3)::before {
+        content: "商品名："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(4)::before { 
+        content: "カテゴリー："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(5)::before { 
+        content: "アイテム："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(6)::before { 
+        content: "ブランド・キャラ："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(7)::before { 
+        content: "JANコード："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(8)::before { 
+        content: "展示会："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(9)::before { 
+        content: "販売区分："; font-weight: 600; 
+      }
+      #shohinListArea .result-table tbody td:nth-child(10)::before { 
+        content: "最終更新日："; font-weight: 600; 
+      }
+      .shohin-preview-dialog { 
+        width: calc(100% - 24px); max-height: 94vh; 
+      }
+      .shohin-detail-header { 
+        grid-template-columns: 1fr; padding-right: 40px; 
+      }
+      .shohin-detail-visual { 
+        margin: 0 auto; 
+      }
+      .shohin-detail-line { 
+        grid-template-columns: 1fr; gap: 2px; 
+      }
+      .shohin-detail-tablist { 
+        overflow-x: auto; 
+      }
+      .shohin-detail-tablist li { 
+        min-width: 6rem; flex: 0 0 auto; 
+      }
     }
   </style>
 </head>
+
 <body>
+
   <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
   <div class="header">
-    <div class="hamburger" onclick="toggleSidebar()"><img src="images/menu_50dp_008632.svg" alt=""></div>
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
     <div class="header-title"><a href="dashboard.html">Proma</a></div>
     <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
     <div class="account-wrapper">
-      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg" alt="アカウント">
-      <div class="account-menu"><div class="menu-item">ログアウト</div></div>
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
     </div>
   </div>
+  <!-- #endregion -->
 
+  <!-- ヘッダー下のレイアウト -->
   <div class="main-wrapper">
-    <div id="sidebarMount"></div>
-    <div class="content">
-      <h2 class="page-title">商品情報一覧</h2>
 
-      <div class="search-box" id="searchBox">
-        <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
-          <span class="search-toggle-sp-label">
-            <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
-            <span class="search-toggle-sp-text">検索条件を開く</span>
-          </span>
-        </button>
-        <div class="search-box-inner" id="searchRowsPanel">
-          <div class="search-row"><label for="filterShohinCode">商品コード</label><input type="text" id="filterShohinCode" placeholder="部分一致" autocomplete="off"></div>
-          <div class="search-row"><label for="filterShohinName">商品名</label><input type="text" id="filterShohinName" placeholder="部分一致" autocomplete="off"></div>
-          <div class="search-row"><label for="filterCategory">カテゴリー</label><select id="filterCategory"><option value="">すべて</option><option value="単品タオル">単品タオル</option><option value="セット">セット</option><option value="雑貨">雑貨</option></select></div>
-          <div class="search-row"><label for="filterShohinItem">アイテム</label><div class="autocomplete"><input type="text" class="autocomplete-input" data-list="item" placeholder="アイテム検索" id="filterShohinItem" autocomplete="off"><div class="autocomplete-dropdown"></div></div></div>
-          <div class="search-row"><label for="filterShohinBrandChara">ブランド・キャラ</label><div class="autocomplete"><input type="text" class="autocomplete-input" data-list="brandChara" placeholder="ブランド・キャラ検索" id="filterShohinBrandChara" autocomplete="off"><div class="autocomplete-dropdown"></div></div></div>
-          <div class="search-button-area"><button type="button" class="search-button" id="btnSearch">検索</button><button type="button" class="btn-search-clear" id="btnClear">クリア</button></div>
+    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
+    <div id="sidebarMount"></div>
+    <!-- #endregion -->
+
+    <!-- 画面右下固定 ボタン -->
+    <div class="fab-actions">
+    <!--  <a class="btn-fab-new">登録</a> -->
+    </div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">商品情報一覧</h2>
+
+        <!-- ========== 検索条件・検索結果一覧 ========== -->
+        <div class="view-layout view-layout-1-group">
+          <!-- 検索条件ボックス -->
+          <div class="content-area">
+            <div class="search-box" id="searchBox">
+              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
+                <span class="search-toggle-sp-label">
+                  <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                  <span class="search-toggle-sp-text">検索条件を開く</span>
+                </span>
+              </button>
+              <div class="search-box-inner" id="searchRowsPanel">
+                <div class="filter-row">
+                  <div class="search-row">
+                    <label for="filterShohinCode">商品コード</label>
+                    <input type="text" id="filterShohinCode" placeholder="部分一致" autocomplete="off">
+                  </div>
+                  <div class="search-row">
+                    <label for="filterShohinName">商品名</label>
+                    <input type="text" id="filterShohinName" placeholder="部分一致" autocomplete="off">
+                  </div>
+                  <div class="search-row">
+                    <label for="searchCategoryToggle">カテゴリー</label>
+                    <div class="multi-select" id="searchCategory" data-list="category2">
+                      <button type="button" class="multi-select-toggle" id="searchCategoryToggle" aria-haspopup="listbox"
+                        aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchCategoryMenu" role="listbox" aria-multiselectable="true">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="search-row">
+                    <label for="searchItem">アイテム</label>
+                    <div class="multi-select" id="searchItem" data-list="item">
+                      <button type="button" class="multi-select-toggle" id="searchItemToggle" aria-haspopup="listbox"
+                        aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchItemMenu" role="listbox" aria-multiselectable="true">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="search-row">
+                    <label for="searchBrandChara">ブランド・キャラ</label>
+                    <div class="multi-select" id="searchBrandChara" data-list="brandChara">
+                      <button type="button" class="multi-select-toggle" id="searchBrandCharaToggle" aria-haspopup="listbox"
+                        aria-expanded="false">選択してください</button>
+                      <div class="multi-select-menu" id="searchBrandCharaMenu" role="listbox" aria-multiselectable="true">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="search-cancel-wrapper">
+                    <button type="button" class="btn-search-clear" id="searchCancelAllBtn">クリア</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="list-meta"><span id="resultCount">0件</span></div>
+
+            <div id="shohinListArea">
+              <table class="result-table">
+                <thead><tr><th class="shohin-row-thumb-cell" style="width:56px;" aria-label="サムネイル"></th><th style="width:9%;">商品コード</th><th style="width:15%;">商品名</th><th style="width:9%;">カテゴリー</th><th style="width:9%;">アイテム</th><th style="width:9%;">ブランド・キャラ</th><th style="width:10%;">JANコード</th><th style="width:8%;">展示会</th><th style="width:8%;">販売区分</th><th style="width:14%;">最終更新日</th></tr></thead>
+                <tbody id="shohinTableBody">
+                  <tr data-category="単品タオル">
+                    <td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="トトロ柄バスタオル" title="クリックで拡大表示"></td>
+                    <td><a href="#" class="shohin-code-link">SHN-2026-0001</a></td>
+                    <td>トトロ柄バスタオル</td>
+                    <td>単品</td>
+                    <td>バスタオル</td>
+                    <td>ジブリ</td>
+                    <td>4901234567890</td>
+                    <td>2026.10月</td>
+                    <td>定番</td>
+                    <td>2026/04/01</td>
+                  </tr>
+                  <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="プーさんミニタオル" title="クリックで拡大表示"></td>
+                    <td><a href="#" class="shohin-code-link">SHN-2026-0002</a></td>
+                    <td>プーさんミニタオル</td>
+                    <td>単品</td>
+                    <td>ミニタオル</td>
+                    <td>ディズニー</td>
+                    <td>4901234567891</td>
+                    <td>2026.10月</td>
+                    <td>定番</td>
+                    <td>2026/04/02</td>
+                  </tr>
+                  <tr data-category="セット"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="ギフトタオル3点セット" title="クリックで拡大表示"></td>
+                    <td><a href="#" class="shohin-code-link">SHN-2026-0003</a></td>
+                    <td>ギフトタオル3点セット</td>
+                    <td>総合</td>
+                    <td>とじものWT3P</td>
+                    <td>ディズニー</td>
+                    <td>4901234567892</td>
+                    <td>ー</td>
+                    <td>別注</td>
+                    <td>2026/03/28</td>
+                  </tr>
+                  <tr data-category="雑貨"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="キャラクターポーチ" title="クリックで拡大表示"></td>
+                    <td><a href="#" class="shohin-code-link">SHN-2026-0004</a></td>
+                    <td>キャラクターポーチ</td>
+                    <td>単品</td>
+                    <td>ポーチ</td>
+                    <td>サンリオ</td>
+                    <td>4901234567893</td>
+                    <td>ー</td>
+                    <td>別注</td>
+                    <td>2026/03/30</td>
+                  </tr>
+                  <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="ドナルドハンドタオル" title="クリックで拡大表示"></td>
+                    <td><a href="#" class="shohin-code-link">SHN-2026-0005</a></td>
+                    <td>ドナルドハンドタオル</td>
+                    <td>単品</td>
+                    <td>ウォッシュタオル</td>
+                    <td>ディズニー</td>
+                    <td>4901234567894</td>
+                    <td>2026.10月</td>
+                    <td>定番</td>
+                    <td>2026/04/05</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="list-meta"><span id="resultCount">0件</span></div>
-
-      <div id="shohinListArea">
-        <table class="result-table">
-          <thead><tr><th class="shohin-row-thumb-cell" style="width:56px;" aria-label="サムネイル"></th><th style="width:9%;">商品コード</th><th style="width:15%;">商品名</th><th style="width:9%;">カテゴリー</th><th style="width:9%;">アイテム</th><th style="width:9%;">ブランド・キャラ</th><th style="width:10%;">JANコード</th><th style="width:8%;">展示会</th><th style="width:8%;">販売区分</th><th style="width:14%;">最終更新日</th></tr></thead>
-          <tbody id="shohinTableBody">
-            <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="トトロ柄バスタオル" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0001</a></td><td>トトロ柄バスタオル</td><td>単品タオル</td><td>バスタオル</td><td>ジブリ</td><td>4901234567890</td><td>2026.10月</td><td>定番</td><td>2026/04/01</td></tr>
-            <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="プーさんミニタオル" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0002</a></td><td>プーさんミニタオル</td><td>単品タオル</td><td>ミニタオル</td><td>ディズニー</td><td>4901234567891</td><td>2026.10月</td><td>定番</td><td>2026/04/02</td></tr>
-            <tr data-category="セット"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="ギフトタオル3点セット" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0003</a></td><td>ギフトタオル3点セット</td><td>セット</td><td>とじものWT3P</td><td>ディズニー</td><td>4901234567892</td><td>ー</td><td>別注</td><td>2026/03/28</td></tr>
-            <tr data-category="雑貨"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="キャラクターポーチ" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0004</a></td><td>キャラクターポーチ</td><td>雑貨</td><td>ポーチ</td><td>サンリオ</td><td>4901234567893</td><td>ー</td><td>別注</td><td>2026/03/30</td></tr>
-            <tr data-category="単品タオル"><td class="shohin-row-thumb-cell"><img class="shohin-row-thumb" src="images/shohinjohoichiran_ppt_image.png" alt="ドナルドハンドタオル" title="クリックで拡大表示"></td><td><a href="#" class="shohin-code-link">SHN-2026-0005</a></td><td>ドナルドハンドタオル</td><td>単品タオル</td><td>ウォッシュタオル</td><td>ディズニー</td><td>4901234567894</td><td>2026.10月</td><td>定番</td><td>2026/04/05</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
-
   <div id="shohinPreviewOverlay" class="shohin-preview-overlay" aria-hidden="true">
     <button type="button" class="shohin-preview-backdrop" id="shohinPreviewBackdrop" aria-label="閉じる"></button>
     <div class="shohin-preview-shell">
@@ -353,75 +1554,68 @@
     <div class="modal-backdrop" id="shohinThumbImageModalBackdrop"></div>
     <div class="modal-wrapper"></div>
   </div>
+  <!-- #endregion -->
 
-  <script src="js/sidebar.js"></script>
-  <script>
-    function loadSharedSidebar() {
-      const mount = document.getElementById('sidebarMount');
-      if (!mount) return;
-      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) return;
-      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
-      initSidebarCollapseToggle();
-    }
+    <script src="js/sidebar.js"></script>
+    <script>
+      function loadSharedSidebar() {
+        const mount = document.getElementById('sidebarMount');
+        if (!mount) return;
 
-    function initSidebarCollapseToggle() {
-      const sidebar = document.querySelector('.sidebar');
-      const toggle = document.querySelector('.sidebar-toggle');
-      const content = document.querySelector('.content');
-      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
-      const toggleImg = toggle.querySelector('img');
-      toggle.addEventListener('click', function () {
-        sidebar.classList.toggle('closed');
-        content.classList.toggle('expanded');
-        if (toggleImg) toggleImg.src = sidebar.classList.contains('closed') ? 'images/chevron_right_20dp_FFFFF.svg' : 'images/chevron_left_20dp_FFFFF.svg';
-      });
-      toggle.dataset.bound = '1';
-    }
+        if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+          console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+          return;
+        }
 
-    function toggleSidebar() {
-      const s = document.querySelector('.sidebar');
-      const o = document.querySelector('.overlay');
-      if (!s || !o) return;
-      s.classList.toggle('active');
-      o.classList.toggle('show', s.classList.contains('active'));
-    }
+        mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+        initSidebarCollapseToggle();
+      }
 
-    function closeSidebar() {
-      const s = document.querySelector('.sidebar');
-      const o = document.querySelector('.overlay');
-      if (!s || !o) return;
-      s.classList.remove('active');
-      o.classList.remove('show');
-    }
+      function initSidebarCollapseToggle() {
+        const sidebar = document.querySelector('.sidebar');
+        const toggle = document.querySelector('.sidebar-toggle');
+        const content = document.querySelector('.content');
+        if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
 
-    function normalizeText(v) {
-      return String(v || '').trim().toLowerCase().replace(/\s+/g, '');
-    }
+        const toggleImg = toggle.querySelector('img');
+        toggle.addEventListener('click', () => {
+          sidebar.classList.toggle('closed');
+          content.classList.toggle('expanded');
 
-    function applyShohinFilter() {
-      const code = normalizeText(document.getElementById('filterShohinCode').value);
-      const name = normalizeText(document.getElementById('filterShohinName').value);
-      const category = document.getElementById('filterCategory').value;
-      const item = normalizeText(document.getElementById('filterShohinItem').value);
-      const brandChar = normalizeText(document.getElementById('filterShohinBrandChara').value);
-      const tbody = document.getElementById('shohinTableBody');
-      const countEl = document.getElementById('resultCount');
-      let visible = 0;
-      Array.prototype.forEach.call(tbody.rows, function (row) {
-        const cells = row.cells;
-        const cellCode = cells[1] ? normalizeText(cells[1].textContent) : '';
-        const cellName = cells[2] ? normalizeText(cells[2].textContent) : '';
-        const cellCat = row.getAttribute('data-category') || '';
-        const cellItem = cells[4] ? normalizeText(cells[4].textContent) : '';
-        const cellBrand = cells[5] ? normalizeText(cells[5].textContent) : '';
-        const ok = (!code || cellCode.indexOf(code) !== -1) && (!name || cellName.indexOf(name) !== -1) && (!category || cellCat === category) && (!item || cellItem.indexOf(item) !== -1) && (!brandChar || cellBrand.indexOf(brandChar) !== -1);
-        row.style.display = ok ? '' : 'none';
-        if (ok) visible++;
-      });
-      countEl.textContent = visible + '件';
-    }
+          if (sidebar.classList.contains('closed')) {
+            if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+          } else {
+            if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+          }
+        });
 
-    loadSharedSidebar();
+        toggle.dataset.bound = '1';
+      }
+
+      function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+        if (!sidebar || !overlay) return;
+
+        sidebar.classList.toggle('active');
+
+        if (sidebar.classList.contains('active')) {
+          overlay.classList.add('show');
+        } else {
+          overlay.classList.remove('show');
+        }
+      }
+
+      function closeSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+        if (!sidebar || !overlay) return;
+
+        sidebar.classList.remove('active');
+        overlay.classList.remove('show');
+      }
+
+      loadSharedSidebar();
 
     const icon = document.querySelector('.header-account_circle');
     const menu = document.querySelector('.account-menu');
@@ -432,15 +1626,176 @@
       });
     }
 
-    document.getElementById('btnSearch').addEventListener('click', applyShohinFilter);
-    document.getElementById('btnClear').addEventListener('click', function () {
-      document.getElementById('filterShohinCode').value = '';
-      document.getElementById('filterShohinName').value = '';
-      document.getElementById('filterCategory').value = '';
-      document.getElementById('filterShohinItem').value = '';
-      document.getElementById('filterShohinBrandChara').value = '';
+    function runShohinSearchFilterInit() {
+      function normalizeText(value) {
+        return String(value || '')
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, '')
+          .replace(/．/g, '.')
+          .replace(/。/g, '.');
+      }
+
+      function buildMultiSelectOptionsFromDataList(wrap, menu) {
+        if (!wrap || !menu) return;
+        var listKey = wrap.getAttribute('data-list');
+        if (!listKey) return;
+        var source = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS[listKey];
+        if (!Array.isArray(source)) return;
+
+        menu.innerHTML = '';
+        source.forEach(function (item) {
+          var label = document.createElement('label');
+          label.className = 'multi-select-option';
+          var input = document.createElement('input');
+          input.type = 'checkbox';
+          input.value = item;
+          var span = document.createElement('span');
+          span.textContent = item;
+          label.appendChild(input);
+          label.appendChild(span);
+          menu.appendChild(label);
+        });
+      }
+
+      var categoryWrap = document.getElementById('searchCategory');
+      var categoryToggle = document.getElementById('searchCategoryToggle');
+      var categoryMenu = document.getElementById('searchCategoryMenu');
+      var itemWrap = document.getElementById('searchItem');
+      var itemToggle = document.getElementById('searchItemToggle');
+      var itemMenu = document.getElementById('searchItemMenu');
+      var brandCharaWrap = document.getElementById('searchBrandChara');
+      var brandCharaToggle = document.getElementById('searchBrandCharaToggle');
+      var brandCharaMenu = document.getElementById('searchBrandCharaMenu');
+
+      buildMultiSelectOptionsFromDataList(categoryWrap, categoryMenu);
+      buildMultiSelectOptionsFromDataList(itemWrap, itemMenu);
+      buildMultiSelectOptionsFromDataList(brandCharaWrap, brandCharaMenu);
+
+      var categoryChecks = categoryMenu ? categoryMenu.querySelectorAll('input[type="checkbox"]') : [];
+      var itemChecks = itemMenu ? itemMenu.querySelectorAll('input[type="checkbox"]') : [];
+      var brandCharaChecks = brandCharaMenu ? brandCharaMenu.querySelectorAll('input[type="checkbox"]') : [];
+
+      function getSelectedValues(checks) {
+        var values = [];
+        Array.prototype.forEach.call(checks, function (cb) {
+          if (cb.checked) values.push(normalizeText(cb.value));
+        });
+        return values;
+      }
+
+      function updateToggleLabel(toggle, checks) {
+        if (!toggle) return;
+        var checked = [];
+        Array.prototype.forEach.call(checks, function (cb) {
+          if (cb.checked) checked.push(cb.value);
+        });
+        if (checked.length === 0) {
+          toggle.textContent = '選択してください';
+        } else if (checked.length === 1) {
+          toggle.textContent = checked[0];
+        } else {
+          toggle.textContent = checked.length + '件選択中';
+        }
+      }
+
+      window.applyShohinFilter = function applyShohinFilter() {
+        var codeEl = document.getElementById('filterShohinCode');
+        var nameEl = document.getElementById('filterShohinName');
+        var condCode = codeEl ? codeEl.value.trim() : '';
+        var condName = nameEl ? nameEl.value.trim() : '';
+        var condCategoryList = getSelectedValues(categoryChecks);
+        var condItemList = getSelectedValues(itemChecks);
+        var condBrandList = getSelectedValues(brandCharaChecks);
+        var tb = document.getElementById('shohinTableBody');
+        if (!tb) return;
+        var visible = 0;
+        Array.prototype.forEach.call(tb.rows, function (tr) {
+          var cells = tr.cells;
+          var cCode = cells[1] ? cells[1].textContent.trim() : '';
+          var cName = cells[2] ? cells[2].textContent.trim() : '';
+          var cCat = cells[3] ? normalizeText(cells[3].textContent) : '';
+          var cItem = cells[4] ? normalizeText(cells[4].textContent) : '';
+          var cBrand = cells[5] ? normalizeText(cells[5].textContent) : '';
+          var ok = true;
+          if (condCode && cCode.indexOf(condCode) === -1) ok = false;
+          if (ok && condName && cName.indexOf(condName) === -1) ok = false;
+          if (ok && condCategoryList.length && condCategoryList.indexOf(cCat) === -1) ok = false;
+          if (ok && condItemList.length && condItemList.indexOf(cItem) === -1) ok = false;
+          if (ok && condBrandList.length && condBrandList.indexOf(cBrand) === -1) ok = false;
+          tr.style.display = ok ? '' : 'none';
+          if (ok) visible++;
+        });
+        var rc = document.getElementById('resultCount');
+        if (rc) rc.textContent = visible + '件';
+      };
+
+      function bindMultiSelect(wrap, toggle, menu, checks) {
+        if (!wrap || !toggle || !menu) return;
+        toggle.addEventListener('click', function (event) {
+          event.stopPropagation();
+          var isOpen = wrap.classList.toggle('is-open');
+          toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        Array.prototype.forEach.call(checks, function (cb) {
+          cb.addEventListener('change', function () {
+            updateToggleLabel(toggle, checks);
+            applyShohinFilter();
+          });
+        });
+      }
+
+      bindMultiSelect(categoryWrap, categoryToggle, categoryMenu, categoryChecks);
+      bindMultiSelect(itemWrap, itemToggle, itemMenu, itemChecks);
+      bindMultiSelect(brandCharaWrap, brandCharaToggle, brandCharaMenu, brandCharaChecks);
+
+      document.addEventListener('click', function (event) {
+        var target = event.target;
+        if (categoryWrap && !categoryWrap.contains(target)) {
+          categoryWrap.classList.remove('is-open');
+          if (categoryToggle) categoryToggle.setAttribute('aria-expanded', 'false');
+        }
+        if (itemWrap && !itemWrap.contains(target)) {
+          itemWrap.classList.remove('is-open');
+          if (itemToggle) itemToggle.setAttribute('aria-expanded', 'false');
+        }
+        if (brandCharaWrap && !brandCharaWrap.contains(target)) {
+          brandCharaWrap.classList.remove('is-open');
+          if (brandCharaToggle) brandCharaToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      updateToggleLabel(categoryToggle, categoryChecks);
+      updateToggleLabel(itemToggle, itemChecks);
+      updateToggleLabel(brandCharaToggle, brandCharaChecks);
+
+      ['filterShohinCode', 'filterShohinName'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', applyShohinFilter);
+          el.addEventListener('change', applyShohinFilter);
+        }
+      });
+
       applyShohinFilter();
-    });
+
+      var btnSearch = document.getElementById('btnSearch');
+      if (btnSearch) {
+        btnSearch.addEventListener('click', applyShohinFilter);
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', runShohinSearchFilterInit);
+    } else {
+      runShohinSearchFilterInit();
+    }
+
+    var btnClear = document.getElementById('btnClear') || document.getElementById('searchCancelAllBtn');
+    if (btnClear) {
+      btnClear.addEventListener('click', function () {
+        window.location.reload();
+      });
+    }
 
     var searchToggleSp = document.getElementById('searchToggleSp');
     var searchBox = document.getElementById('searchBox');
@@ -453,11 +1808,10 @@
       });
     }
 
-    applyShohinFilter();
-
     (function initShohinPreviewModal() {
       var overlay = document.getElementById('shohinPreviewOverlay');
       var modal = document.getElementById('shohinPreviewDialog');
+      if (!overlay || !modal) return;
       var closeBtn = document.getElementById('shohinPreviewClose');
       var backdrop = document.getElementById('shohinPreviewBackdrop');
       var tbody = document.getElementById('shohinTableBody');
@@ -845,20 +2199,22 @@
         document.body.classList.remove('shohin-modal-open');
       }
 
-      tbody.addEventListener('click', function (e) {
-        var rowThumb = e.target.closest('img.shohin-row-thumb');
-        if (rowThumb) {
+      if (tbody) {
+        tbody.addEventListener('click', function (e) {
+          var rowThumb = e.target.closest('img.shohin-row-thumb');
+          if (rowThumb) {
+            e.preventDefault();
+            e.stopPropagation();
+            openThumbImageModalFromSource(rowThumb);
+            return;
+          }
+          var a = e.target.closest('a.shohin-code-link');
+          if (!a) return;
           e.preventDefault();
-          e.stopPropagation();
-          openThumbImageModalFromSource(rowThumb);
-          return;
-        }
-        var a = e.target.closest('a.shohin-code-link');
-        if (!a) return;
-        e.preventDefault();
-        var tr = a.closest('tr');
-        if (tr) openModalFromRow(tr);
-      });
+          var tr = a.closest('tr');
+          if (tr) openModalFromRow(tr);
+        });
+      }
 
       if (panel1) {
         panel1.addEventListener('click', function (e) {
@@ -890,6 +2246,7 @@
         if (overlay.classList.contains('is-open')) closeModal();
       });
     })();
-  </script>
+    </script>
 </body>
+
 </html>
