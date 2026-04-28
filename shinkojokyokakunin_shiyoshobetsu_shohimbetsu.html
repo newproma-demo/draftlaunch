@@ -671,6 +671,33 @@
       align-items: center;
     }
 
+    .btn-search-cancel {
+      background: #fff;
+    }
+
+    #resetBtn {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: var(--fs-xs);
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid grey;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+      box-shadow: none;
+    }
+    #resetBtn:hover {
+      background: 	#D3D3D3;
+      color: var(--color-text);
+      border-color: grey;
+      transform: none;
+      box-shadow: none;
+    }
+
         /* かなり狭いときだけクリアを次行へ（iPad 横 1024px 付近では同じ行を維持） */
         @container searchbar (max-width: 600px) {
       .search-actions {
@@ -885,6 +912,13 @@
       #resetBtn {
         margin-left: auto;
       }
+
+      .search-clear-wrapper {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        margin-left: 0;
+      }
+
     }
     /* スマホ表示した時の進行状況 */
     /* ===============================
@@ -1187,7 +1221,7 @@
             </select>
           </div>
           <div class="search-actions">
-            <button type="button" class="search-button secondary" id="resetBtn">クリア</button>
+            <button type="button" class="btn-search-clear" id="resetBtn">クリア</button>
           </div>
         </div>
       </div>
@@ -1735,6 +1769,13 @@
         });
       }
     })();
+
+    var resetBtn = document.getElementById("resetBtn");
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        window.location.reload();
+      });
+    }
 
     // メニュー開閉
     // document.querySelectorAll('.menu-title').forEach(title => {
