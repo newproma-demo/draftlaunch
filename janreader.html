@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JANバーコード読取 | Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Noto Sans JP", sans-serif;
+      background: #f3f6f4;
+      color: #173425;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 24px auto;
+      padding: 0 16px 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #d7e0d9;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .title {
+      font-size: 22px;
+      margin: 0 0 10px;
+      color: #204331;
+    }
+
+    .description {
+      margin: 0 0 16px;
+      color: #50665a;
+      font-size: 14px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .btn {
+      border: 1px solid #2e8a4f;
+      background: #2e8a4f;
+      color: #fff;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: #2e8a4f;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #365c49;
+    }
+
+    .camera-wrapper {
+      border: 1px solid #cfdad2;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      max-height: 360px;
+      position: relative;
+    }
+
+    #cameraPreview video,
+    #cameraPreview canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .scan-guide {
+      position: absolute;
+      inset: 20% 15%;
+      border: 2px solid rgba(78, 231, 132, 0.9);
+      border-radius: 8px;
+      pointer-events: none;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.15);
+    }
+
+    .result {
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid #d7e0d9;
+      border-radius: 8px;
+      background: #f9fcfa;
+    }
+
+    .result h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #204331;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 8px 12px;
+      font-size: 14px;
+    }
+
+    .label {
+      color: #557366;
+      font-weight: 600;
+    }
+
+    .value {
+      color: #1a3528;
+    }
+
+    @media (max-width: 640px) {
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="card">
+      <h1 class="title">JANバーコード読取</h1>
+      <p class="description">「バーコード読み取り」ボタンでカメラを起動し、読み取ったJANコードの商品情報を表示します。</p>
+
+      <div class="action-row">
+        <button id="startScanBtn" class="btn" type="button">バーコード読み取り</button>
+        <button id="stopScanBtn" class="btn secondary" type="button" disabled>カメラ停止</button>
+      </div>
+
+      <p id="statusMessage" class="status">待機中です。バーコード読み取りを開始してください。</p>
+
+      <div class="camera-wrapper" aria-live="polite">
+        <div id="cameraPreview"></div>
+        <div id="scanGuide" class="scan-guide" hidden></div>
+      </div>
+
+      <section class="result" id="productResult">
+        <h2>商品情報</h2>
+        <div class="result-grid">
+          <div class="label">JANコード</div>
+          <div class="value" id="janValue">-</div>
+          <div class="label">商品名</div>
+          <div class="value" id="nameValue">-</div>
+          <div class="label">カテゴリ</div>
+          <div class="value" id="categoryValue">-</div>
+          <div class="label">メーカー</div>
+          <div class="value" id="makerValue">-</div>
+          <div class="label">価格</div>
+          <div class="value" id="priceValue">-</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+  <script>
+    const productMaster = {
+      "4901777300445": { name: "爽健美茶 600ml", category: "飲料", maker: "日本コカ・コーラ", price: "160円" },
+      "4903110502246": { name: "チキンラーメン 5食パック", category: "食品", maker: "日清食品", price: "680円" },
+      "4902430780008": { name: "アリエール ジェルボール", category: "日用品", maker: "P&G", price: "498円" },
+      "4511413302116": { name: "DHC ビタミンC", category: "健康食品", maker: "DHC", price: "420円" },
+      "8888075019873": { name: "LuckyStrike14", category: "タバコ", maker: "CIGARETTES INTERNATIONAL LTD", price: "470円" }
+    };
+
+    const startScanBtn = document.getElementById("startScanBtn");
+    const stopScanBtn = document.getElementById("stopScanBtn");
+    const cameraPreview = document.getElementById("cameraPreview");
+    const scanGuide = document.getElementById("scanGuide");
+    const statusMessage = document.getElementById("statusMessage");
+    const janValue = document.getElementById("janValue");
+    const nameValue = document.getElementById("nameValue");
+    const categoryValue = document.getElementById("categoryValue");
+    const makerValue = document.getElementById("makerValue");
+    const priceValue = document.getElementById("priceValue");
+
+    let scanning = false;
+    let detectedHandler = null;
+
+    function updateResult(janCode) {
+      const product = productMaster[janCode];
+      janValue.textContent = janCode;
+
+      if (product) {
+        nameValue.textContent = product.name;
+        categoryValue.textContent = product.category;
+        makerValue.textContent = product.maker;
+        priceValue.textContent = product.price;
+        statusMessage.textContent = "読み取り成功。商品情報を表示しました。";
+      } else {
+        nameValue.textContent = "該当商品が見つかりません";
+        categoryValue.textContent = "-";
+        makerValue.textContent = "-";
+        priceValue.textContent = "-";
+        statusMessage.textContent = "JANコードを読み取りましたが、商品マスタに未登録です。";
+      }
+    }
+
+    function resetResult() {
+      janValue.textContent = "-";
+      nameValue.textContent = "-";
+      categoryValue.textContent = "-";
+      makerValue.textContent = "-";
+      priceValue.textContent = "-";
+    }
+
+    function stopCamera() {
+      scanning = false;
+      if (window.Quagga) {
+        if (detectedHandler) {
+          Quagga.offDetected(detectedHandler);
+          detectedHandler = null;
+        }
+        try {
+          Quagga.stop();
+        } catch (error) {
+          console.error("Quagga stop error:", error);
+        }
+      }
+      cameraPreview.innerHTML = "";
+      scanGuide.hidden = true;
+      startScanBtn.disabled = false;
+      stopScanBtn.disabled = true;
+    }
+
+    async function startCameraAndScan() {
+      if (!window.Quagga) {
+        statusMessage.textContent = "QuaggaJSの読み込みに失敗しました。ネットワークをご確認ください。";
+        return;
+      }
+
+      resetResult();
+      statusMessage.textContent = "カメラを起動しています...";
+      startScanBtn.disabled = true;
+      stopScanBtn.disabled = false;
+
+      Quagga.init({
+        inputStream: {
+          type: "LiveStream",
+          target: cameraPreview,
+          constraints: {
+            facingMode: "environment"
+          }
+        },
+        locator: {
+          patchSize: "medium",
+          halfSample: true
+        },
+        numOfWorkers: navigator.hardwareConcurrency ? Math.min(navigator.hardwareConcurrency, 4) : 2,
+        decoder: {
+          readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader", "code_128_reader", "code_39_reader"]
+        },
+        locate: true
+      }, (error) => {
+        if (error) {
+          statusMessage.textContent = "カメラの起動に失敗しました。ブラウザ設定をご確認ください。";
+          console.error("Quagga init error:", error);
+          stopCamera();
+          return;
+        }
+
+        scanning = true;
+        scanGuide.hidden = false;
+        statusMessage.textContent = "バーコードをガイド枠内に合わせてください。";
+        Quagga.start();
+
+        detectedHandler = (result) => {
+          if (!scanning || !result || !result.codeResult || !result.codeResult.code) {
+            return;
+          }
+          const janCode = String(result.codeResult.code).trim();
+          if (!janCode) {
+            return;
+          }
+          updateResult(janCode);
+          stopCamera();
+        };
+        Quagga.onDetected(detectedHandler);
+      });
+    }
+
+    startScanBtn.addEventListener("click", startCameraAndScan);
+    stopScanBtn.addEventListener("click", () => {
+      stopCamera();
+      statusMessage.textContent = "カメラを停止しました。";
+    });
+
+    window.addEventListener("beforeunload", stopCamera);
+  </script>
+</body>
+
+</html>
