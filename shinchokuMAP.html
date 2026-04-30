@@ -582,8 +582,8 @@
       box-sizing: border-box;
     }
 
-    #product-table1,
-    #product-table2 {
+    #product-table-1,
+    #product-table-2 {
       margin-top: 0;
       margin-bottom: 0;
     }
@@ -985,7 +985,7 @@
                 </div>
               </div>
               <div class="product-card-tables">
-              <table class="product-table" id="product-table1">
+              <table class="product-table" id="product-table-1">
                 <tbody>
                   <tr>
                     <th>品名</th>
@@ -997,6 +997,8 @@
                   </tr>
                   <tr>
                     <th>商品コード</th>
+                    <td colspan="3"><input type="text" name="shohinCode" class="half-field"></td>
+<!--
                     <td colspan="3">
                       <select name="shohinCode" class="half-field">
                         <option value="">選択してください</option>
@@ -1008,6 +1010,7 @@
                         <option value="4900000006">4900000006</option>
                       </select>
                     </td>
+-->
                   </tr>
                   <tr>
                     <th>JAN</th>
@@ -1023,7 +1026,7 @@
                   </tr>
                 </tbody>
               </table>
-              <table class="product-table" id="product-table2">
+              <table class="product-table" id="product-table-2">
                 <tbody>
                   <tr>
                     <th colspan="3">試作入稿日</th>
@@ -1407,7 +1410,7 @@
 
       // 各カードに商品コード選択時のイベントを設定
       function attachProductCodeHandler(card) {
-        var select = card.querySelector('select[name="shohinCode"]');
+        var select = card.querySelector('input[name="shohinCode"]');
         if (!select) return;
         select.addEventListener("change", function () {
           applyProductData(card, this.value);
@@ -1472,7 +1475,7 @@
         }
 
         getAllCards().forEach(function (card) {
-          var select = card.querySelector('select[name="shohinCode"]');
+          var select = card.querySelector('input[name="shohinCode"]');
           if (!select) return;
           select.innerHTML = "";
           var placeholder = document.createElement("option");
@@ -1572,7 +1575,7 @@
         var allCards = pagesContainer.querySelectorAll(".product-card");
         Array.prototype.forEach.call(allCards, function (card, idx) {
           var product = filteredProducts[idx] || null;
-          var select = card.querySelector('select[name="shohinCode"]');
+          var select = card.querySelector('input[name="shohinCode"]');
           var code = product ? product.code : "";
           if (select) select.value = code;
           applyProductData(card, code);

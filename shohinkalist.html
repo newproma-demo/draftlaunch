@@ -1341,7 +1341,8 @@
                 <tbody>
                   <tr>
                     <th>商品コード</th>
-                    <!-- <td><input type="text" name="shohinCode" class="half-field"></td> -->
+                    <td><input type="text" name="shohinCode" class="half-field"></td>
+<!--
                     <td>
                       <select name="shohinCode" class="half-field">
                         <option value="">選択してください</option>
@@ -1353,6 +1354,7 @@
                         <option value="4900000006">4900000006</option>
                       </select>
                     </td>
+-->
                   </tr>
                   <tr>
                     <th>JAN</th>
@@ -1776,7 +1778,7 @@
 
       // 各カードに商品コード選択時のイベントを設定
       function attachProductCodeHandler(card) {
-        var select = card.querySelector('select[name="shohinCode"]');
+        var select = card.querySelector('input[name="shohinCode"]');
         if (!select) return;
         select.addEventListener("change", function () {
           applyProductData(card, this.value);
@@ -1841,7 +1843,7 @@
         }
 
         getAllCards().forEach(function (card) {
-          var select = card.querySelector('select[name="shohinCode"]');
+          var select = card.querySelector('input[name="shohinCode"]');
           if (!select) return;
           select.innerHTML = "";
           var placeholder = document.createElement("option");
@@ -1941,7 +1943,7 @@
         var allCards = pagesContainer.querySelectorAll(".product-card");
         Array.prototype.forEach.call(allCards, function (card, idx) {
           var product = filteredProducts[idx] || null;
-          var select = card.querySelector('select[name="shohinCode"]');
+          var select = card.querySelector('input[name="shohinCode"]');
           var code = product ? product.code : "";
           if (select) select.value = code;
           applyProductData(card, code);
