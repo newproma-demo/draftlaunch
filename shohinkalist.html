@@ -519,6 +519,19 @@
       top: 50%;
       transform: translateY(-50%);
       z-index: 2;
+      width: 2.1em;
+      min-width: 2.1em;
+      height: 1.9em;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      line-height: 1;
+      font-size: 1rem;
+      font-family: inherit;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     label[for="releaseMonth"],
@@ -1453,15 +1466,27 @@
         monthInput.addEventListener("change", syncMonthFieldState);
         monthInput.addEventListener("input", syncMonthFieldState);
 
-        monthBtn.addEventListener("click", function () {
+        function openMonthPickerFromButton(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
           wrapper.classList.add("is-focused");
           if (typeof monthInput.showPicker === "function") {
-            monthInput.showPicker();
+            try {
+              monthInput.showPicker();
+            } catch (_) {
+              monthInput.focus();
+              monthInput.click();
+            }
             return;
           }
           monthInput.focus();
           monthInput.click();
-        });
+        }
+
+        monthBtn.addEventListener("touchstart", openMonthPickerFromButton, { passive: false });
+        monthBtn.addEventListener("click", openMonthPickerFromButton);
         syncMonthFieldState();
       }
 
