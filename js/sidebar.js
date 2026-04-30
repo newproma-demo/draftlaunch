@@ -130,6 +130,8 @@ window.SHARED_SIDEBAR_HTML = `
     <ul class="submenu">
       <li><a href="shohimmappuseisei.html">商品マップ生成</a></li>
       <li><a href="shohinMAPkokai.html">商品マップ公開</a></li>
+      <li><a href="shinchokuMAP.html">進捗マップ</a></li>
+      <li><a href="shohinka.html">商品化リスト</a></li>
     </ul>
   </div>
 
