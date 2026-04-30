@@ -215,6 +215,40 @@
       margin-bottom: 12px;
     }
 
+    .deadline-pattern-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .deadline-tab-list {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .deadline-tab {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .deadline-tab.is-active {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+      color: #fff;
+    }
+
     .field {
       display: flex;
       flex-direction: column;
@@ -747,6 +781,11 @@
               </div>
             </div>
 
+            <div class="deadline-pattern-tabs">
+              <div id="deadlinePatternTabs" class="deadline-tab-list"></div>
+              <button id="addDeadlinePatternBtn" type="button" class="small-btn primary">+ パターン追加</button>
+            </div>
+
             <div class="phase-table-wrap">
             <table class="phase-table">
               <thead>
@@ -1166,7 +1205,18 @@
 
     function initPhaseSkipBehavior() {
       const rows = Array.from(document.querySelectorAll('.phase-row'));
-      if (!rows.length) return;
+      const productDeadlineInput = document.getElementById('productDeadline');
+      const tabsRoot = document.getElementById('deadlinePatternTabs');
+      const addPatternButton = document.getElementById('addDeadlinePatternBtn');
+      if (!rows.length || !productDeadlineInput || !tabsRoot || !addPatternButton) return;
+
+      rows.forEach((row) => {
+        const prevText = row.querySelector('.phase-prev-end');
+        if (prevText) prevText.dataset.defaultNote = prevText.textContent;
+      });
+
+      const deadlinePatterns = [];
+      let activePatternId = '';
 
       function updateRows() {
         let previousDate = '';
@@ -1197,14 +1247,118 @@
         });
       }
 
+      function createPatternSnapshot() {
+        return {
+          productDeadline: productDeadlineInput.value || '',
+          phases: rows.map((row) => {
+            const check = row.querySelector('input[type="checkbox"]');
+            const dateInput = row.querySelector('input[type="date"]');
+            return {
+              enabled: check ? check.checked : false,
+              date: dateInput ? dateInput.value : ''
+            };
+          })
+        };
+      }
+
+      function applyPatternSnapshot(snapshot) {
+        if (!snapshot) return;
+        productDeadlineInput.value = snapshot.productDeadline || '';
+        rows.forEach((row, idx) => {
+          const check = row.querySelector('input[type="checkbox"]');
+          const dateInput = row.querySelector('input[type="date"]');
+          const phase = snapshot.phases[idx] || { enabled: true, date: '' };
+          if (check) check.checked = !!phase.enabled;
+          if (dateInput) dateInput.value = phase.date || '';
+        });
+        updateRows();
+      }
+
+      function getActivePattern() {
+        return deadlinePatterns.find((pattern) => pattern.id === activePatternId) || null;
+      }
+
+      function saveActivePatternFromForm() {
+        const activePattern = getActivePattern();
+        if (!activePattern) return;
+        const snapshot = createPatternSnapshot();
+        activePattern.productDeadline = snapshot.productDeadline;
+        activePattern.phases = snapshot.phases;
+      }
+
+      function selectPattern(patternId) {
+        saveActivePatternFromForm();
+        const nextPattern = deadlinePatterns.find((pattern) => pattern.id === patternId);
+        if (!nextPattern) return;
+        activePatternId = nextPattern.id;
+        applyPatternSnapshot(nextPattern);
+        renderPatternTabs();
+      }
+
+      function renderPatternTabs() {
+        tabsRoot.innerHTML = '';
+        deadlinePatterns.forEach((pattern) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'deadline-tab' + (pattern.id === activePatternId ? ' is-active' : '');
+          button.textContent = pattern.name;
+          button.addEventListener('click', () => selectPattern(pattern.id));
+          tabsRoot.appendChild(button);
+        });
+      }
+
+      function addPattern() {
+        const basePattern = getActivePattern();
+        const fallbackName = 'パターン' + String(deadlinePatterns.length + 1);
+        const nameInput = window.prompt('追加する納期パターン名を入力してください。', fallbackName);
+        if (nameInput === null) return;
+        const trimmedName = nameInput.trim() || fallbackName;
+        saveActivePatternFromForm();
+        const baseSnapshot = basePattern ? {
+          productDeadline: basePattern.productDeadline,
+          phases: basePattern.phases.map((phase) => ({ enabled: phase.enabled, date: phase.date }))
+        } : createPatternSnapshot();
+        const newPattern = {
+          id: 'pattern-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          name: trimmedName,
+          productDeadline: baseSnapshot.productDeadline,
+          phases: baseSnapshot.phases
+        };
+        deadlinePatterns.push(newPattern);
+        activePatternId = newPattern.id;
+        applyPatternSnapshot(newPattern);
+        renderPatternTabs();
+      }
+
+      const initialSnapshot = createPatternSnapshot();
+      deadlinePatterns.push({
+        id: 'pattern-initial',
+        name: '標準',
+        productDeadline: initialSnapshot.productDeadline,
+        phases: initialSnapshot.phases
+      });
+      activePatternId = 'pattern-initial';
+      renderPatternTabs();
+      applyPatternSnapshot(getActivePattern());
+
       rows.forEach((row) => {
         const check = row.querySelector('input[type="checkbox"]');
         const dateInput = row.querySelector('input[type="date"]');
-        if (check) check.addEventListener('change', updateRows);
-        if (dateInput) dateInput.addEventListener('change', updateRows);
+        if (check) {
+          check.addEventListener('change', () => {
+            updateRows();
+            saveActivePatternFromForm();
+          });
+        }
+        if (dateInput) {
+          dateInput.addEventListener('change', () => {
+            updateRows();
+            saveActivePatternFromForm();
+          });
+        }
       });
-
-      updateRows();
+      productDeadlineInput.addEventListener('change', saveActivePatternFromForm);
+      addPatternButton.addEventListener('click', addPattern);
     }
 
     loadSharedSidebar();
