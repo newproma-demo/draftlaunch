@@ -1498,24 +1498,19 @@
 
         function openMonthPickerFromButton(e) {
           if (e) {
-            e.preventDefault();
             e.stopPropagation();
           }
           wrapper.classList.add("is-focused");
+          monthInput.focus();
           if (typeof monthInput.showPicker === "function") {
             try {
               monthInput.showPicker();
-            } catch (_) {
-              monthInput.focus();
-              monthInput.click();
-            }
-            return;
+              return;
+            } catch (_) {}
           }
-          monthInput.focus();
           monthInput.click();
         }
 
-        monthBtn.addEventListener("touchstart", openMonthPickerFromButton, { passive: false });
         monthBtn.addEventListener("click", openMonthPickerFromButton);
         syncMonthFieldState();
       }
