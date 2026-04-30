@@ -65,6 +65,8 @@
       display: grid;
       grid-template-columns: 320px minmax(0, 1fr) 320px;
       gap: 16px;
+      padding-right: 20px;
+      box-sizing: border-box;
     }
 
     .panel {
@@ -100,6 +102,31 @@
       border-radius: var(--radius-sm);
       margin-bottom: 10px;
       box-sizing: border-box;
+    }
+
+    .material-select {
+      display: none;
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #204331;
+    }
+
+    .list-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 0;
+    }
+
+    .list-panel .material-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
     }
 
     .material-list {
@@ -537,6 +564,70 @@
       color: #9a1f1f;
     }
 
+    @media (max-width: 1300px) {
+      .screen-body {
+        grid-template-columns: 280px minmax(0, 1fr) 280px;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .content-footer {
+        padding-right: 20px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      #materialSearchInput {
+        display: none;
+      }
+
+      .material-select {
+        display: block;
+      }
+
+      .material-list .material-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .content {
+        padding: 12px 10px 0 10px;
+      }
+
+      .screen-body {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: minmax(300px, auto) minmax(320px, 1fr);
+        grid-template-areas:
+          "list info"
+          "detail detail";
+        gap: 12px;
+        padding-right: 0;
+      }
+
+      .list-panel {
+        grid-area: list;
+        overflow: hidden;
+      }
+
+      .detail-panel {
+        grid-area: detail;
+        min-height: 0;
+      }
+
+      .info-panel {
+        grid-area: info;
+        overflow: hidden;
+      }
+
+      .list-panel .panel-body,
+      .info-panel .panel-body {
+        overflow: auto;
+      }
+
+      .detail-panel .panel-body {
+        overflow: auto;
+      }
+    }
+
     @media (max-width: 767px) {
       .header-title {
         margin: 5px 0 0 35px;
@@ -568,13 +659,29 @@
       }
 
       .screen-body {
+        flex: none;
+        min-height: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
         grid-template-columns: 1fr;
+        grid-template-areas: none;
         gap: 12px;
+        padding-right: 0;
+        padding-bottom: 10px;
+      }
+
+      .list-panel,
+      .detail-panel,
+      .info-panel {
+        grid-area: unset;
+        width: 100%;
       }
 
       .panel {
         overflow: visible;
         min-height: auto;
+        height: auto;
       }
 
       .panel-header {
@@ -583,10 +690,30 @@
       }
 
       .panel-body {
+        flex: none;
+        min-height: 0;
         height: auto;
         max-height: none;
         padding: 10px 12px;
         overflow: visible;
+      }
+
+      .list-panel .material-list {
+        flex: none;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      #materialSearchInput {
+        display: none;
+      }
+
+      .material-select {
+        display: block;
+      }
+
+      .material-list .material-item:not(.is-active) {
+        display: none !important;
       }
 
       .form-grid {
@@ -597,36 +724,14 @@
         grid-template-columns: 1fr;
       }
 
+      .size-input-row {
+        grid-template-columns: 1fr auto 1fr auto;
+        gap: 6px;
+      }
+
       .content-footer {
         position: static;
         padding: 6px 8px 4px;
-      }
-    }
-
-    @media (min-width: 768px) and (max-width: 1024px) {
-      .content {
-        padding: 12px 10px 0 10px;
-      }
-
-      .screen-body {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto;
-        grid-template-areas:
-          "list info"
-          "detail detail";
-        gap: 12px;
-      }
-
-      .list-panel {
-        grid-area: list;
-      }
-
-      .detail-panel {
-        grid-area: detail;
-      }
-
-      .info-panel {
-        grid-area: info;
       }
     }
 
@@ -651,6 +756,14 @@
 
       .material-item {
         padding: 9px;
+      }
+
+      .content-footer {
+        padding: 6px 4px 4px;
+      }
+
+      .content-footer .btn-fab-new {
+        min-width: 60px;
       }
     }
   </style>
@@ -683,6 +796,7 @@
           <div class="panel-header">資材一覧</div>
           <div class="panel-body">
             <input id="materialSearchInput" class="search-input" type="text" placeholder="資材品番/資材名で検索">
+            <select id="materialListSelect" class="material-select" aria-label="資材を選択"></select>
             <ul id="materialList" class="material-list"></ul>
             <div class="action-row">
               <button type="button" class="small-btn primary" id="createMaterialBtn">新規作成</button>
@@ -999,17 +1113,46 @@
       return y + "/" + m + "/" + d;
     }
 
+    function rebuildMaterialSelectOptions() {
+      const sel = document.getElementById("materialListSelect");
+      if (!sel) return;
+      sel.innerHTML = "";
+      const optNew = document.createElement("option");
+      optNew.value = "";
+      optNew.textContent = "（新規作成）";
+      sel.appendChild(optNew);
+      materialStore.forEach((material) => {
+        const opt = document.createElement("option");
+        opt.value = material.code;
+        opt.textContent = material.code + " / " + material.name;
+        sel.appendChild(opt);
+      });
+      if (isCreateMode && !activeMaterialCode) {
+        sel.value = "";
+      } else if (activeMaterialCode && materialStore.some((m) => m.code === activeMaterialCode)) {
+        sel.value = activeMaterialCode;
+      } else if (!activeMaterialCode && materialStore.length > 0) {
+        sel.value = materialStore[0].code;
+      } else {
+        sel.value = "";
+      }
+    }
+
     function renderMaterialList(filterText) {
       const list = document.getElementById("materialList");
       if (!list) return;
       const normalized = String(filterText || "").trim().toLowerCase();
-      const visible = materialStore.filter((material) => {
+      let visible = materialStore.filter((material) => {
         if (!normalized) return true;
         return (
           material.code.toLowerCase().includes(normalized) ||
           material.name.toLowerCase().includes(normalized)
         );
       });
+      const activeMat = activeMaterialCode ? getMaterialByCode(activeMaterialCode) : null;
+      if (activeMat && !visible.some((m) => m.code === activeMat.code)) {
+        visible = [activeMat].concat(visible);
+      }
 
       list.innerHTML = "";
       if (visible.length === 0) {
@@ -1017,6 +1160,7 @@
         empty.className = "material-item";
         empty.innerHTML = "<div class=\"material-name\">該当なし</div><div class=\"material-meta\">検索条件に一致する資材がありません</div>";
         list.appendChild(empty);
+        rebuildMaterialSelectOptions();
         return;
       }
 
@@ -1031,6 +1175,7 @@
           "<div class=\"material-meta\">更新: " + toDateLabel(material.updatedAt) + "</div>";
         list.appendChild(li);
       });
+      rebuildMaterialSelectOptions();
     }
 
     function setStatusValue(status) {
@@ -1480,6 +1625,7 @@
       const materialTypeSelect = document.getElementById("materialType");
       const linkedMainCodeInput = document.getElementById("linkedMainMaterialCode");
       const form = document.getElementById("materialForm");
+      const materialListSelect = document.getElementById("materialListSelect");
       if (!list || !searchInput || !createButton || !saveButton || !deleteButton || !imageFileInput || !imagePreview || !imagePreviewImg || !imageLightbox || !materialTypeSelect || !linkedMainCodeInput || !form) return;
 
       list.addEventListener("click", (event) => {
@@ -1491,6 +1637,17 @@
       searchInput.addEventListener("input", () => {
         renderMaterialList(searchInput.value);
       });
+
+      if (materialListSelect) {
+        materialListSelect.addEventListener("change", () => {
+          const v = materialListSelect.value;
+          if (v === "") {
+            handleCreate();
+            return;
+          }
+          switchMaterial(v);
+        });
+      }
 
       createButton.addEventListener("click", handleCreate);
       saveButton.addEventListener("click", handleSave);

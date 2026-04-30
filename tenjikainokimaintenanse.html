@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    body>.header {
+      flex-shrink: 0;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      margin-top: 0;
+    }
+
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 0 0 32px;
+      overflow: hidden;
+      transition: margin-left 0.3s ease;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 33px;
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .screen-body {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr) 320px;
+      gap: 16px;
+      padding-right: 20px;
+      box-sizing: border-box;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-md);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #dfe7e1;
+      background: #f6faf7;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f3e2e;
+    }
+
+    .panel-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .expo-select {
+      display: none;
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #204331;
+    }
+
+    .expo-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 0;
+    }
+
+    .expo-panel .expo-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .phase-table-wrap {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .expo-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .expo-item {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .expo-item.is-active {
+      border-color: var(--color-primary);
+      background: #edf8f0;
+    }
+
+    .expo-season {
+      font-size: 14px;
+      font-weight: 600;
+      color: #173425;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    .expo-name,
+    .expo-order {
+      font-size: 12px;
+      font-weight: 400;
+      color: #66786f;
+      line-height: 1.5;
+    }
+
+    .expo-name {
+      margin: 4px 0;
+    }
+
+    .expo-meta {
+      font-size: 12px;
+      color: #66786f;
+      line-height: 1.5;
+    }
+
+    .action-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .small-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .small-btn.primary {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: #446354;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      padding: 8px 9px;
+      font-size: 13px;
+      color: #173425;
+      background: #fff;
+      font-family: inherit;
+    }
+
+    .field-note {
+      font-size: 11px;
+      color: #75867e;
+      line-height: 1.5;
+    }
+
+    .season-select-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .phase-table th,
+    .phase-table td {
+      border: 1px solid #d7e0d9;
+      padding: 8px;
+      vertical-align: top;
+    }
+
+    .phase-table th {
+      background: #f7faf8;
+      color: #2a4738;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .phase-enable-cell {
+      width: 72px;
+      text-align: center;
+    }
+
+    .phase-enable-label {
+      font-size: 12px;
+      color: #446354;
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .phase-date-input {
+      max-width: 160px;
+    }
+
+    .phase-prev-end {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #5b7166;
+      line-height: 1.4;
+    }
+
+    .phase-row.is-skipped {
+      background: #fafcfa;
+    }
+
+    .phase-row.is-skipped td {
+      color: #8a9a92;
+    }
+
+    .phase-row.is-skipped input[type="date"] {
+      background: #f2f6f3;
+    }
+
+    .badge-overdue {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: #d62828;
+    }
+
+    .badge-safe {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: #1f8f4f;
+    }
+
+    .card {
+      border: 1px dashed #b9cbbf;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fcfefc;
+    }
+
+    .card:last-child {
+      margin-bottom: 0;
+    }
+
+    .card-title {
+      font-size: 12px;
+      color: #66786f;
+      margin-bottom: 4px;
+    }
+
+    .card-value {
+      font-size: 17px;
+      font-weight: 700;
+      color: #113222;
+      line-height: 1.4;
+    }
+
+    .progress-link {
+      display: block;
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 13px;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .progress-link:last-child {
+      margin-bottom: 0;
+    }
+
+    .progress-link:hover {
+      text-decoration: underline;
+    }
+
+    .progress-links-empty {
+      min-height: 72px;
+    }
+
+    .content-footer {
+      flex-shrink: 0;
+      margin-top: 8px;
+      border-top: 1px solid #cfdad2;
+      min-height: 46px;
+      padding: 6px 10px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      z-index: 5;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    @media (max-width: 1300px) {
+      .screen-body {
+        grid-template-columns: 280px minmax(0, 1fr) 280px;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .content-footer {
+        padding-right: 20px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      #expoSearch {
+        display: none;
+      }
+
+      .expo-select {
+        display: block;
+      }
+
+      .expo-list .expo-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .content {
+        padding: 12px 10px 0 10px;
+      }
+
+      .screen-body {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: minmax(300px, auto) minmax(320px, 1fr);
+        grid-template-areas:
+          "expo deadline"
+          "progress progress";
+        gap: 12px;
+        padding-right: 0;
+      }
+
+      .expo-panel {
+        grid-area: expo;
+        overflow: hidden;
+      }
+
+      .deadline-panel {
+        grid-area: deadline;
+        overflow: hidden;
+      }
+
+      .progress-panel {
+        grid-area: progress;
+        min-height: 0;
+      }
+
+      .deadline-panel .panel-body,
+      .progress-panel .panel-body {
+        overflow: auto;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .season-select-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        padding: 20px 14px 0;
+        margin-left: -220px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen-body {
+        flex: none;
+        min-height: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        grid-template-areas: none;
+        gap: 12px;
+        padding-right: 0;
+        padding-bottom: 10px;
+      }
+
+      .expo-panel,
+      .deadline-panel,
+      .progress-panel {
+        grid-area: unset;
+        width: 100%;
+      }
+
+      .panel {
+        overflow: visible;
+        min-height: auto;
+        height: auto;
+      }
+
+      .panel-header {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .panel-body {
+        flex: none;
+        min-height: 0;
+        height: auto;
+        max-height: none;
+        padding: 10px 12px;
+        overflow: visible;
+      }
+
+      .expo-panel .expo-list {
+        flex: none;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      #expoSearch {
+        display: none;
+      }
+
+      .expo-select {
+        display: block;
+      }
+
+      .expo-list .expo-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phase-table-wrap {
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #d7e0d9;
+        border-radius: var(--radius-sm);
+      }
+
+      .phase-table {
+        min-width: 520px;
+        font-size: 12px;
+      }
+
+      .phase-table th,
+      .phase-table td {
+        padding: 6px;
+      }
+
+      .phase-date-input {
+        max-width: none;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .content-footer {
+        position: static;
+        padding: 6px 8px 4px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .content {
+        padding: 14px 10px 0;
+      }
+
+      .page-title {
+        margin-bottom: 12px;
+        font-size: 17px;
+      }
+
+      .panel-header {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .panel-body {
+        padding: 8px 10px;
+      }
+
+      .content-footer {
+        padding: 6px 4px 4px;
+      }
+
+      .content-footer .btn-fab-new {
+        min-width: 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" alt="menu">
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg" alt="account">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div id="sidebarMount"></div>
+
+    <div class="content">
+      <h2 class="page-title">展示会納期設定</h2>
+
+      <div class="screen-body">
+        <section class="panel expo-panel">
+          <div class="panel-header">展示会一覧</div>
+          <div class="panel-body">
+            <input id="expoSearch" class="search-input" type="text" placeholder="展示会名で検索">
+            <select id="expoListSelect" class="expo-select" aria-label="展示会を選択"></select>
+            <ul class="expo-list" id="expoList">
+              <li class="expo-item is-active" data-name="東京インターナショナルギフトショー" data-start-date="2026-09-02"
+                data-end-date="2026-09-05" data-season-year="2026" data-season-month="7月展"
+                data-order-deadline="2026-07-31" data-has-progress="1">
+                <div class="expo-season"></div>
+                <div class="expo-name"></div>
+                <div class="expo-order"></div>
+              </li>
+              <li class="expo-item" data-name="関西雑貨エキスポ" data-start-date="2026-10-11" data-end-date="2026-10-13"
+                data-season-year="2026" data-season-month="10月展" data-order-deadline="2026-10-28"
+                data-has-progress="1">
+                <div class="expo-season"></div>
+                <div class="expo-name"></div>
+                <div class="expo-order"></div>
+              </li>
+              <li class="expo-item" data-name="冬季ライフスタイル商談会" data-start-date="2026-11-21"
+                data-end-date="2026-11-23" data-season-year="2026" data-season-month="1月展"
+                data-order-deadline="2026-11-15" data-has-progress="1">
+                <div class="expo-season"></div>
+                <div class="expo-name"></div>
+                <div class="expo-order"></div>
+              </li>
+            </ul>
+            <div class="action-row">
+              <button id="expoCreateBtn" type="button" class="small-btn primary">新規作成</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel deadline-panel">
+          <div class="panel-header">納期設定</div>
+          <div class="panel-body">
+            <div class="field-grid">
+              <div class="field full">
+                <span class="field-label">展示会時期</span>
+                <div class="season-select-row">
+                  <select id="expoSeasonYearSelect"></select>
+                  <select id="expoSeasonMonthSelect">
+                    <option value="4月展">4月展</option>
+                    <option value="7月展" selected>7月展</option>
+                    <option value="10月展">10月展</option>
+                    <option value="1月展">1月展</option>
+                  </select>
+                </div>
+              </div>
+              <label class="field">
+                <span class="field-label">展示会名</span>
+                <input id="expoNameInput" type="text" value="東京インターナショナルギフトショー">
+              </label>
+              <label class="field">
+                <span class="field-label">会期開始日</span>
+                <input id="expoStartDateInput" type="date" value="2026-09-02">
+              </label>
+              <label class="field">
+                <span class="field-label">会期終了日</span>
+                <input id="expoEndDateInput" type="date" value="2026-09-05">
+              </label>
+              <label class="field">
+                <span class="field-label">製品納期（企画完了日）</span>
+                <input type="date" id="productDeadline" value="2026-08-20">
+              </label>
+              <div class="field full">
+                <div class="field-note">
+                  フェーズ納期は「現在のフェーズ納期 = 1つ前フェーズの終了日」の考え方で連動管理します。
+                </div>
+              </div>
+            </div>
+
+            <div class="phase-table-wrap">
+            <table class="phase-table">
+              <thead>
+                <tr>
+                  <th class="phase-enable-cell">対象</th>
+                  <th>フェーズ</th>
+                  <th>納期</th>
+                </tr>
+              </thead>
+              <tbody id="phaseTableBody">
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>図案依頼</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-06-08">
+                    <div class="phase-prev-end">作業開始（図案作成）から図案選定までの期間</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>図案校正</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-06-15">
+                    <div class="phase-prev-end">図案修正中の期間</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>図案アブローバル</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-06-20">
+                    <div class="phase-prev-end">申請～申請完了までの期間</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>試作依頼</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-06-28">
+                    <div class="phase-prev-end">試作依頼書作成～入稿完了までの期間</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>サンプル着</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-07-09">
+                    <div class="phase-prev-end">到着サンプルをライセンサへ申請した日（納期: 申請予定日）</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>サンプルアブローバル</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-07-16">
+                    <div class="phase-prev-end">サンプルの修正、承認までの期間（納期: 承認完了予定日）</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>最終仕様（品管）</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-07-22">
+                    <div class="phase-prev-end">決定商品の品質面の最終チェックの期間</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>最終仕様（仕入）</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-07-27">
+                    <div class="phase-prev-end">決定商品の最終仕様の最終チェックの期間</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>発注</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-07-31">
+                    <div class="phase-prev-end">発注日（納期: 発注日）</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel progress-panel">
+          <div class="panel-header">進捗・コメント</div>
+          <div class="panel-body">
+            <div class="card">
+              <div class="card-title">進捗確認</div>
+              <div id="progressLinksArea">
+                <a class="progress-link" data-base-href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html"
+                  href="shinkojokyokakunin_shiyoshobetsu_shohimbetsu.html">1．進行状況確認（仕様書別・商品別）</a>
+                <a class="progress-link" data-base-href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html"
+                  href="shinkojokyokakunin_tantoshabetsu_nyukojokyo.html">2．進行状況確認（担当者別入稿状況）</a>
+                <a class="progress-link" data-base-href="hatchujokyokanri.html"
+                  href="hatchujokyokanri.html">3．発注状況管理</a>
+              </div>
+              <div id="progressLinksEmpty" class="progress-links-empty" hidden></div>
+            </div>
+            <label class="field">
+              <span class="field-label">進捗コメント</span>
+              <textarea rows="8"
+                placeholder="例）図案校正から図案アプローバルを飛ばし、試作依頼へ移行。資材手配遅延により試作依頼納期を3日超過。"></textarea>
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <div class="content-footer">
+        <button type="button" class="btn-secondary">取消</button>
+        <button type="button" class="btn-fab-new">登録</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/sidebar.js"></script>
+  <script>
+    function loadSharedSidebar() {
+      const mount = document.getElementById('sidebarMount');
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+        } else {
+          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+        }
+      });
+
+      toggle.dataset.bound = '1';
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('show', sidebar.classList.contains('active'));
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    function initAccountMenu() {
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+      if (!icon || !menu) return;
+
+      icon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', () => {
+        menu.style.display = 'none';
+      });
+    }
+
+    function initExpoSearch() {
+      const input = document.getElementById('expoSearch');
+      const expoList = document.getElementById('expoList');
+      const expoListSelect = document.getElementById('expoListSelect');
+      const createButton = document.getElementById('expoCreateBtn');
+      const expoNameInput = document.getElementById('expoNameInput');
+      const expoStartDateInput = document.getElementById('expoStartDateInput');
+      const expoEndDateInput = document.getElementById('expoEndDateInput');
+      const expoSeasonYearSelect = document.getElementById('expoSeasonYearSelect');
+      const expoSeasonMonthSelect = document.getElementById('expoSeasonMonthSelect');
+      const progressLinksArea = document.getElementById('progressLinksArea');
+      const progressLinksEmpty = document.getElementById('progressLinksEmpty');
+      if (!input || !expoList || !createButton || !expoNameInput || !expoStartDateInput || !expoEndDateInput ||
+        !expoSeasonYearSelect || !expoSeasonMonthSelect || !progressLinksArea || !progressLinksEmpty) return;
+      let items = Array.from(expoList.querySelectorAll('.expo-item'));
+
+      function expoOptionLabel(item) {
+        const sy = item.dataset.seasonYear || '';
+        const sm = item.dataset.seasonMonth || '';
+        const season = sy && sm ? sy + '年' + sm : '';
+        const name = item.dataset.name || '（名称未設定）';
+        return season ? season + ' / ' + name : name;
+      }
+
+      function rebuildExpoSelectOptions() {
+        if (!expoListSelect) return;
+        const active = getActiveItem();
+        expoListSelect.innerHTML = '';
+        items.forEach((item, index) => {
+          const opt = document.createElement('option');
+          opt.value = String(index);
+          opt.textContent = expoOptionLabel(item);
+          expoListSelect.appendChild(opt);
+        });
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) expoListSelect.value = String(idx);
+      }
+
+      function syncExpoSelectValue() {
+        if (!expoListSelect) return;
+        if (expoListSelect.options.length !== items.length) rebuildExpoSelectOptions();
+        const active = getActiveItem();
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) expoListSelect.value = String(idx);
+      }
+
+      function buildSeasonOptions() {
+        const startYear = 2030;
+        const endYear = 2020;
+        expoSeasonYearSelect.innerHTML = '';
+        for (let year = startYear; year >= endYear; year -= 1) {
+          const option = document.createElement('option');
+          option.value = String(year);
+          option.textContent = String(year) + '年';
+          expoSeasonYearSelect.appendChild(option);
+        }
+      }
+
+      function formatDate(dateValue) {
+        if (!dateValue) return '未設定';
+        return dateValue.replaceAll('-', '/');
+      }
+
+      function getActiveItem() {
+        return items.find((item) => item.classList.contains('is-active')) || null;
+      }
+
+      function selectItem(item) {
+        items.forEach((candidate) => candidate.classList.remove('is-active'));
+        item.classList.add('is-active');
+        syncFormFromItem(item);
+        syncProgressLinks(item);
+        syncExpoSelectValue();
+      }
+
+      function bindItem(item) {
+        item.addEventListener('click', () => {
+          selectItem(item);
+        });
+      }
+
+      function renderExpoMeta(item) {
+        const seasonYear = item.dataset.seasonYear || '';
+        const seasonMonth = item.dataset.seasonMonth || '';
+        const season = seasonYear && seasonMonth ? seasonYear + '年' + seasonMonth : '未設定';
+        const seasonEl = item.querySelector('.expo-season');
+        const nameEl = item.querySelector('.expo-name');
+        const orderEl = item.querySelector('.expo-order');
+        const od = item.dataset.orderDeadline || '';
+
+        if (seasonEl) seasonEl.textContent = '展示会時期: ' + season;
+        if (nameEl) nameEl.textContent = item.dataset.name || '（名称未設定）';
+        if (orderEl) orderEl.textContent = '発注納期: ' + (od ? formatDate(od) : '未設定');
+      }
+
+      function syncFormFromItem(item) {
+        expoNameInput.value = item.dataset.name || '';
+        expoStartDateInput.value = item.dataset.startDate || '';
+        expoEndDateInput.value = item.dataset.endDate || '';
+        expoSeasonYearSelect.value = item.dataset.seasonYear || expoSeasonYearSelect.value;
+        expoSeasonMonthSelect.value = item.dataset.seasonMonth || expoSeasonMonthSelect.value;
+      }
+
+      function syncItemFromForm(item) {
+        const name = expoNameInput.value.trim();
+        item.dataset.name = name;
+        item.dataset.startDate = expoStartDateInput.value;
+        item.dataset.endDate = expoEndDateInput.value;
+        item.dataset.seasonYear = expoSeasonYearSelect.value;
+        item.dataset.seasonMonth = expoSeasonMonthSelect.value;
+
+        renderExpoMeta(item);
+        rebuildExpoSelectOptions();
+      }
+
+      function syncProgressLinks(item) {
+        const hasProgress = item.dataset.hasProgress !== '0';
+        progressLinksArea.hidden = !hasProgress;
+        progressLinksEmpty.hidden = hasProgress;
+        if (!hasProgress) return;
+
+        const year = item.dataset.seasonYear || '';
+        const month = item.dataset.seasonMonth || '';
+        const links = Array.from(progressLinksArea.querySelectorAll('.progress-link'));
+        links.forEach((link) => {
+          const baseHref = link.dataset.baseHref || link.getAttribute('href') || '#';
+          const params = new URLSearchParams();
+          if (year) params.set('seasonYear', year);
+          if (month) params.set('seasonMonth', month);
+          link.href = params.toString() ? baseHref + '?' + params.toString() : baseHref;
+        });
+      }
+
+      input.addEventListener('input', () => {
+        const keyword = input.value.trim().toLowerCase();
+        items.forEach((item) => {
+          const text = (item.dataset.name || '').toLowerCase();
+          item.style.display = !keyword || text.includes(keyword) ? '' : 'none';
+        });
+      });
+
+      if (expoListSelect) {
+        expoListSelect.addEventListener('change', () => {
+          const idx = parseInt(expoListSelect.value, 10);
+          if (!Number.isFinite(idx) || !items[idx]) return;
+          selectItem(items[idx]);
+        });
+      }
+
+      items.forEach((item) => {
+        renderExpoMeta(item);
+        bindItem(item);
+      });
+
+      expoNameInput.addEventListener('input', () => {
+        const activeItem = getActiveItem();
+        if (!activeItem) return;
+        syncItemFromForm(activeItem);
+      });
+
+      expoStartDateInput.addEventListener('change', () => {
+        const activeItem = getActiveItem();
+        if (!activeItem) return;
+        syncItemFromForm(activeItem);
+      });
+
+      expoEndDateInput.addEventListener('change', () => {
+        const activeItem = getActiveItem();
+        if (!activeItem) return;
+        syncItemFromForm(activeItem);
+      });
+
+      function onSeasonChanged() {
+        const activeItem = getActiveItem();
+        if (!activeItem) return;
+        syncItemFromForm(activeItem);
+      }
+
+      expoSeasonYearSelect.addEventListener('change', onSeasonChanged);
+      expoSeasonMonthSelect.addEventListener('change', onSeasonChanged);
+      createButton.addEventListener('click', () => {
+        const initialName = expoSeasonYearSelect.value + '年' + expoSeasonMonthSelect.value;
+        const newItem = document.createElement('li');
+        newItem.className = 'expo-item';
+        newItem.dataset.name = initialName;
+        newItem.dataset.startDate = '';
+        newItem.dataset.endDate = '';
+        newItem.dataset.seasonYear = expoSeasonYearSelect.value;
+        newItem.dataset.seasonMonth = expoSeasonMonthSelect.value;
+        newItem.dataset.hasProgress = '0';
+        newItem.dataset.orderDeadline = '';
+        newItem.innerHTML =
+          '<div class="expo-season"></div><div class="expo-name"></div><div class="expo-order"></div>';
+
+        expoList.appendChild(newItem);
+        items = Array.from(expoList.querySelectorAll('.expo-item'));
+        renderExpoMeta(newItem);
+        bindItem(newItem);
+        selectItem(newItem);
+        expoNameInput.focus();
+        expoNameInput.select();
+      });
+
+      buildSeasonOptions();
+      rebuildExpoSelectOptions();
+      const initialActiveItem = getActiveItem() || items[0];
+      if (initialActiveItem) {
+        selectItem(initialActiveItem);
+      }
+    }
+
+    function initPhaseSkipBehavior() {
+      const rows = Array.from(document.querySelectorAll('.phase-row'));
+      if (!rows.length) return;
+
+      function updateRows() {
+        let previousDate = '';
+        rows.forEach((row, index) => {
+          const check = row.querySelector('input[type="checkbox"]');
+          const dateInput = row.querySelector('input[type="date"]');
+          const prevText = row.querySelector('.phase-prev-end');
+          if (!check || !dateInput || !prevText) return;
+
+          const isEnabled = check.checked;
+          row.classList.toggle('is-skipped', !isEnabled);
+          dateInput.disabled = !isEnabled;
+
+          if (!isEnabled) {
+            prevText.textContent = 'フェーズ飛ばし（設定不要）';
+            return;
+          }
+
+          if (index === 0) {
+            prevText.textContent = '開始フェーズ';
+          } else if (previousDate) {
+            prevText.textContent = '前フェーズ終了日: ' + previousDate;
+          } else {
+            prevText.textContent = '前有効フェーズの納期未設定';
+          }
+
+          previousDate = dateInput.value || previousDate;
+        });
+      }
+
+      rows.forEach((row) => {
+        const check = row.querySelector('input[type="checkbox"]');
+        const dateInput = row.querySelector('input[type="date"]');
+        if (check) check.addEventListener('change', updateRows);
+        if (dateInput) dateInput.addEventListener('change', updateRows);
+      });
+
+      updateRows();
+    }
+
+    loadSharedSidebar();
+    initAccountMenu();
+    initExpoSearch();
+    initPhaseSkipBehavior();
+  </script>
+</body>
+
+</html>
