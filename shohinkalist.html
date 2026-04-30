@@ -426,16 +426,9 @@
       }
 
       .month-calendar-field .period-range-calendar-btn {
-        right: 1px;
+        right: 0;
         left: auto;
-        top: 1px;
-        bottom: 1px;
-        transform: none;
-        height: auto;
         margin-left: 0;
-        border: none;
-        background: transparent;
-        box-shadow: none;
       }
 
       /* スマホ: 商品画像 */
@@ -1155,21 +1148,6 @@
       <h1>商品化リスト</h1>
       <!-- ========== : 検索条件・検索結果一覧 ========== -->
 
-      <!-- 利用区分ラジオボタン -->
-      <div class="content-area">
-        <div class="filter-row">
-          <div class="filter-item">
-            <label><input type="radio" name="useType" value="internal" checked> 社内用</label>
-            <label><input type="radio" name="useType" value="sales"> 営業用</label>
-            <label><input type="radio" name="useType" value="maker"> メーカー用</label>
-            <label><input type="radio" name="useType" value="tanto"> 担当者別</label>
-          </div>
-          <div class="use-type-toggle-wrapper">
-            <button type="button" class="btn-use-type-toggle" id="switchActualImageBtn">現物画像へ切り替え</button>
-          </div>
-        </div>
-      </div>
-
       <!-- 検索条件ボックス -->
       <div class="content-area">
         <div class="view-layout view-layout-1">
@@ -1329,15 +1307,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- 印刷用ヘッダー（一括） -->
-      <div class="content-area">
-        <div class="print-header-bulk-row">
-          <label class="print-header-bulk-label" for="printHeaderBulkInput">印刷用ヘッダー（一括）</label>
-          <input type="text" id="printHeaderBulkInput" class="print-header-bulk-input" autocomplete="off" placeholder="全ページの印刷用ヘッダーに反映する文字列を入力">
-          <button type="button" class="btn-print-header-bulk" id="printHeaderBulkApplyBtn">一括設定</button>
         </div>
       </div>
 
@@ -1940,34 +1909,6 @@
           var pageGroup = document.createElement("div");
           pageGroup.className = "product-page-group";
 
-          var row = document.createElement("div");
-          row.className = "pagination-row page-group-pagination";
-
-          var printHeaderWrap = document.createElement("div");
-          printHeaderWrap.className = "print-header-field";
-          var printHeaderLabel = document.createElement("label");
-          printHeaderLabel.className = "print-header-label";
-          printHeaderLabel.setAttribute("for", "printHeaderInput_" + p);
-          printHeaderLabel.textContent = "印刷用ヘッダー";
-          var printHeaderInput = document.createElement("input");
-          printHeaderInput.type = "text";
-          printHeaderInput.className = "print-header-input";
-          printHeaderInput.id = "printHeaderInput_" + p;
-          printHeaderInput.setAttribute("autocomplete", "off");
-          printHeaderInput.placeholder = "印刷用ヘッダーを入力";
-          printHeaderWrap.appendChild(printHeaderLabel);
-          printHeaderWrap.appendChild(printHeaderInput);
-          row.appendChild(printHeaderWrap);
-
-          var label = document.createElement("div");
-          label.className = "pagination-current";
-          label.textContent = (p + 1) + "Page";
-          if (p === 0) {
-            label.id = "currentPageLabel";
-          }
-          row.appendChild(label);
-          pageGroup.appendChild(row);
-
           var swiper = document.createElement("div");
           swiper.className = "product-swiper";
 
@@ -2086,19 +2027,6 @@
           window.location.reload();
         });
       }
-    })();
-
-    (function () {
-      var bulkBtn = document.getElementById("printHeaderBulkApplyBtn");
-      var bulkInput = document.getElementById("printHeaderBulkInput");
-      var pagesContainer = document.getElementById("productPagesContainer");
-      if (!bulkBtn || !bulkInput || !pagesContainer) return;
-      bulkBtn.addEventListener("click", function () {
-        var v = bulkInput.value;
-        pagesContainer.querySelectorAll(".print-header-input").forEach(function (el) {
-          el.value = v;
-        });
-      });
     })();
 
     (function () {
