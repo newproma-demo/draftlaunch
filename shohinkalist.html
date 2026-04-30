@@ -387,8 +387,7 @@
         min-width: 0;
       }
 
-      .month-calendar-field input[type="month"],
-      .month-calendar-field input[type="text"] {
+      .month-calendar-field input[type="month"] {
         display: block;
         width: 100%;
         min-width: 0;
@@ -473,15 +472,38 @@
       flex: 0 0 12em;
     }
 
-    .month-calendar-field input[type="month"],
-    .month-calendar-field input[type="text"] {
+    .month-calendar-field input[type="month"] {
       width: 100%;
       padding-right: 2.6em;
       box-sizing: border-box;
     }
 
-    .month-calendar-field input.month-placeholder {
+    .month-calendar-field .month-placeholder-text {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
       color: var(--color-text-muted);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 1;
+    }
+
+    .month-calendar-field.has-value .month-placeholder-text,
+    .month-calendar-field.is-focused .month-placeholder-text {
+      display: none;
+    }
+
+    .month-calendar-field:not(.has-value) input[type="month"] {
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      caret-color: transparent;
+    }
+
+    .month-calendar-field.has-value input[type="month"] {
+      color: var(--color-text);
+      -webkit-text-fill-color: var(--color-text);
+      caret-color: auto;
     }
 
     #releaseMonth::-webkit-calendar-picker-indicator {
@@ -1110,6 +1132,7 @@
                   <label for="releaseMonth">発売月</label>
                   <div class="autocomplete month-calendar-field">
                     <input type="month" id="releaseMonth">
+                    <span class="month-placeholder-text">yyyy年mm月</span>
                     <button type="button" class="period-range-calendar-btn" id="releaseMonthCalendarBtn"
                       aria-label="発売月をカレンダーで選択">📅</button>
                   </div>
@@ -1118,6 +1141,7 @@
                   <label for="periodTo">発注月</label>
                   <div class="autocomplete month-calendar-field">
                     <input type="month" id="periodTo">
+                    <span class="month-placeholder-text">yyyy年mm月</span>
                     <button type="button" class="period-range-calendar-btn" id="periodToCalendarBtn"
                       aria-label="発注月">📅</button>
                   </div>
@@ -1400,40 +1424,35 @@
     });
 
     (function () {
-      var MONTH_PLACEHOLDER_TEXT = "yyyy年mm月";
-
       function setupMonthPicker(inputId, buttonId) {
         var monthInput = document.getElementById(inputId);
         var monthBtn = document.getElementById(buttonId);
-        if (!monthInput || !monthBtn) return;
+        var wrapper = monthInput ? monthInput.closest(".month-calendar-field") : null;
+        if (!monthInput || !monthBtn || !wrapper) return;
 
-        function activateMonthInput() {
-          if (monthInput.type !== "month") {
-            monthInput.type = "month";
+        function syncMonthFieldState() {
+          if (monthInput.value) {
+            wrapper.classList.add("has-value");
+          } else {
+            wrapper.classList.remove("has-value");
           }
-          if (monthInput.value === MONTH_PLACEHOLDER_TEXT) {
-            monthInput.value = "";
-          }
-          monthInput.classList.remove("month-placeholder");
-        }
-
-        function showPlaceholderIfEmpty() {
-          if (monthInput.value) return;
-          monthInput.type = "text";
-          monthInput.value = MONTH_PLACEHOLDER_TEXT;
-          monthInput.classList.add("month-placeholder");
         }
 
         monthInput.addEventListener("focus", function () {
-          activateMonthInput();
+          wrapper.classList.add("is-focused");
+          syncMonthFieldState();
         });
 
         monthInput.addEventListener("blur", function () {
-          showPlaceholderIfEmpty();
+          wrapper.classList.remove("is-focused");
+          syncMonthFieldState();
         });
 
+        monthInput.addEventListener("change", syncMonthFieldState);
+        monthInput.addEventListener("input", syncMonthFieldState);
+
         monthBtn.addEventListener("click", function () {
-          activateMonthInput();
+          wrapper.classList.add("is-focused");
           if (typeof monthInput.showPicker === "function") {
             monthInput.showPicker();
             return;
@@ -1441,8 +1460,7 @@
           monthInput.focus();
           monthInput.click();
         });
-
-        showPlaceholderIfEmpty();
+        syncMonthFieldState();
       }
 
       setupMonthPicker("releaseMonth", "releaseMonthCalendarBtn");
