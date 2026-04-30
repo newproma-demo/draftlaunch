@@ -79,7 +79,7 @@
     }
 
     /* クリアボタン */
-    #resetBtn {
+    #searchCancelAllBtn {
       display: inline-block;
       padding: 6px 14px;
       font-size: var(--fs-xs);
@@ -94,7 +94,7 @@
       white-space: nowrap;
       box-shadow: none;
     }
-    #resetBtn:hover {
+    #searchCancelAllBtn:hover {
       background:var(--color-clearbutton-background-hover);
       color: var(--color-text);
       border: 1px solid var(--color-clearbutton-border);
@@ -315,17 +315,17 @@
         overflow: visible;
       }
 
-      /* スマホ: 商品画像（#product-image）の上下が見切れないよう表示域を拡大 */
+      /* スマホ: 商品画像は前回の見切れ防止サイズより縦横とも約70%（260→182px相当）に */
       .product-card .product-image-wrapper {
-        max-height: 260px;
-        min-height: 200px;
+        max-height: 182px;
+        min-height: 140px;
       }
 
       .product-card .product-image-wrapper img#product-image,
       .product-card .product-image-wrapper img.product-image {
         height: auto;
-        min-height: 200px;
-        max-height: 260px;
+        min-height: 140px;
+        max-height: 182px;
         width: 100%;
         object-fit: contain;
       }
@@ -962,7 +962,7 @@
                   </select>
                 </div>
                 <div class="search-cancel-wrapper">
-                  <button type="button" class="btn-search-cancel" id="resetBtn">クリア</button>
+                  <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
                 </div>
               </div>
             </div>
@@ -1667,15 +1667,6 @@
       if (cancelAllBtn) {
         cancelAllBtn.addEventListener("click", function () {
           // 初期表示へ戻す（リフレッシュ）
-          window.location.reload();
-        });
-      }
-    })();
-
-    (function () {
-      var resetBtn = document.getElementById("resetBtn");
-      if (resetBtn) {
-        resetBtn.addEventListener("click", function () {
           window.location.reload();
         });
       }
