@@ -118,6 +118,13 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=1">Ship依頼書/国内手配書登録</a></li>
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=2">Ship依頼書/国内手配書決裁</a></li>
       <li><a href="shipiraishososhin.html">Ship依頼書送信</a></li>
+      <li class="submenu-group submenu-item-has-panel">
+        <button type="button" class="submenu-group-toggle" aria-expanded="false">貿易経費</button>
+        <ul class="submenu-child-panel">
+          <li><a href="trade-cost-list.html">貿易経費照会</a></li>
+          <li><a href="trade-cost-summary.html">貿易経費分析</a></li>
+        </ul>
+      </li>
     </ul>
   </div>
 
@@ -357,3 +364,46 @@ window.initZuankensakuFilters = function () {
   updateToggleLabel(categoryToggle, categoryChecks);
   applyFilter();
 };
+
+window.initSidebarNestedMenuToggle = function () {
+  if (window.__sidebarNestedMenuToggleInitialized) return;
+  window.__sidebarNestedMenuToggleInitialized = true;
+
+  document.addEventListener("click", function (event) {
+    var target = event.target;
+    if (!(target instanceof Element)) return;
+
+    var childToggle = target.closest(".submenu-group-toggle");
+    if (childToggle) {
+      var group = childToggle.closest(".submenu-group");
+      if (!group) return;
+
+      var allGroups = document.querySelectorAll(".submenu-group.is-open");
+      Array.prototype.forEach.call(allGroups, function (openGroup) {
+        if (openGroup !== group) {
+          openGroup.classList.remove("is-open");
+          var openToggle = openGroup.querySelector(".submenu-group-toggle");
+          if (openToggle) openToggle.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      var isChildOpen = group.classList.toggle("is-open");
+      childToggle.setAttribute("aria-expanded", isChildOpen ? "true" : "false");
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    var clickedInsideSubmenu = target.closest(".submenu");
+    if (!clickedInsideSubmenu) {
+      var opened = document.querySelectorAll(".submenu-group.is-open");
+      Array.prototype.forEach.call(opened, function (openGroup) {
+        openGroup.classList.remove("is-open");
+        var openToggle = openGroup.querySelector(".submenu-group-toggle");
+        if (openToggle) openToggle.setAttribute("aria-expanded", "false");
+      });
+    }
+  });
+};
+
+window.initSidebarNestedMenuToggle();
