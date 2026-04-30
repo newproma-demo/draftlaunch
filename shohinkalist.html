@@ -487,23 +487,16 @@
       pointer-events: none;
       white-space: nowrap;
       z-index: 1;
+      right: 2.8em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
     }
 
-    .month-calendar-field.has-value .month-placeholder-text,
-    .month-calendar-field.is-focused .month-placeholder-text {
-      display: none;
-    }
-
-    .month-calendar-field:not(.has-value) input[type="month"] {
+    .month-calendar-field input[type="month"] {
       color: transparent;
       -webkit-text-fill-color: transparent;
       caret-color: transparent;
-    }
-
-    .month-calendar-field.has-value input[type="month"] {
-      color: var(--color-text);
-      -webkit-text-fill-color: var(--color-text);
-      caret-color: auto;
     }
 
     #releaseMonth::-webkit-calendar-picker-indicator {
@@ -1428,9 +1421,18 @@
         var monthInput = document.getElementById(inputId);
         var monthBtn = document.getElementById(buttonId);
         var wrapper = monthInput ? monthInput.closest(".month-calendar-field") : null;
-        if (!monthInput || !monthBtn || !wrapper) return;
+        var displayText = wrapper ? wrapper.querySelector(".month-placeholder-text") : null;
+        if (!monthInput || !monthBtn || !wrapper || !displayText) return;
+
+        function formatMonthText(value) {
+          if (!value) return "yyyy年mm月";
+          var parts = value.split("-");
+          if (parts.length !== 2) return "yyyy年mm月";
+          return parts[0] + "年" + parts[1] + "月";
+        }
 
         function syncMonthFieldState() {
+          displayText.textContent = formatMonthText(monthInput.value);
           if (monthInput.value) {
             wrapper.classList.add("has-value");
           } else {
