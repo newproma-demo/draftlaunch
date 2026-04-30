@@ -131,7 +131,7 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="shohimmappuseisei.html">商品マップ生成</a></li>
       <li><a href="shohinMAPkokai.html">商品マップ公開</a></li>
       <li><a href="shinchokuMAP.html">進捗マップ</a></li>
-      <li><a href="shohinkalist.html">商品化リスト</a></li>
+      <li><a href="shohinka.html">商品化リスト</a></li>
     </ul>
   </div>
 
@@ -160,7 +160,7 @@ window.SHARED_SIDEBAR_HTML = `
     </ul>
   </div>
 
-  <div class="menu-item">
+  <div class="menu-item master-menu">
     <div class="menu-title">
       <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
       <span>マスタ管理</span>
