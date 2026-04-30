@@ -118,13 +118,8 @@ window.SHARED_SIDEBAR_HTML = `
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=1">Ship依頼書/国内手配書登録</a></li>
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=2">Ship依頼書/国内手配書決裁</a></li>
       <li><a href="shipiraishososhin.html">Ship依頼書送信</a></li>
-      <li class="submenu-group submenu-item-has-panel">
-        <button type="button" class="submenu-group-toggle" aria-expanded="false">貿易経費</button>
-        <ul class="submenu-child-panel">
-          <li><a href="trade-cost-list.html">貿易経費照会</a></li>
-          <li><a href="trade-cost-summary.html">貿易経費分析</a></li>
-        </ul>
-      </li>
+      <li><a href="trade-cost-list.html">貿易経費照会</a></li>
+      <li><a href="trade-cost-summary.html">貿易経費分析</a></li>
     </ul>
   </div>
 
