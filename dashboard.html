@@ -692,6 +692,7 @@
       .case-list li {
         flex-wrap: wrap;
         gap: 8px;
+        font-size: 11px;
       }
 
       /* イメージ案③: スマホ用 */
@@ -1015,6 +1016,9 @@
         gap: 6px 10px;
         font-size: 12px;
       }
+      .view-layout-2 .case-list li {
+        font-size: 12px;
+      }
     }
 
     /* 展示会ステータス: スマホ最適化（下に定義してPC指定を確実に上書き） */
@@ -1215,6 +1219,7 @@
       justify-content: space-between;
       padding: 10px 12px;
       border-bottom: 1px solid var(--color-border);
+      font-size: var(--fs-sm);
     }
     .case-list li:hover { background: var(--color-surface); }
     .btn-detail {
@@ -1229,6 +1234,88 @@
       font-family: var(--font-sans);
     }
     .btn-detail:hover { background: var(--color-primary-dark); }
+    .approval-flow-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-size: 14px;
+    }
+    .approval-flow-progress {
+      font-weight: 700;
+      color: var(--color-primary-dark);
+    }
+    .approval-flow-steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .approval-flow-step {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 90px;
+    }
+    .approval-flow-step-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .approval-flow-step-state {
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+    .approval-flow-step-date {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    .approval-flow-step.is-done {
+      border-color: #6cbf87;
+      background: #f2fbf5;
+    }
+    .approval-flow-step.is-current {
+      border-color: #f1cb5a;
+      background: #fff9e8;
+    }
+    .approval-flow-step.is-todo {
+      opacity: 0.82;
+    }
+    .approval-flow-step.is-done .approval-flow-step-state {
+      background: #d4f1de;
+      color: #166534;
+    }
+    .approval-flow-step.is-current .approval-flow-step-state {
+      background: #fff1bf;
+      color: #92400e;
+    }
+    .approval-flow-step.is-todo .approval-flow-step-state {
+      background: #eef2f7;
+      color: #4b5563;
+    }
+    .approval-flow-empty {
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      background: var(--color-surface);
+    }
 
     /* ========== 案③: 担当者別入稿状況 ========== */
     .view-layout-3 { padding: 0 0 24px; }
@@ -1506,225 +1593,8 @@
     <div id="modal-window" class="modal-window">
       <h3 id="modal-title"></h3>
       <div class="modal-list" id="modal-list">
-        <table class="modal-table">
-          <thead>
-            <tr>
-              <th>販売区分</th>
-              <th>展示会</th>
-              <th>担当</th>
-              <th>品名</th>
-              <th>カテゴリー</th>
-              <th>キャラクター</th>
-              <th>進行状況</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>定番</td>
-              <td>2026.01</td>
-              <td>丸眞花子(商品部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="notcompletednode-btn">図申</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="notcompletednode-btn">試入</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="notcompletednode-btn">サ申</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="notcompletednode-btn">最入</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="notcompletednode-btn">発注</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="notcompletednode-btn">手配</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>別注</td>
-              <td></td>
-              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="completednode-btn">図申</button>
-                      <div class="actual">1月16日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="completednode-btn">試入</button>
-                      <div class="actual">1月22日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="notcompletednode-btn">サ申</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="notcompletednode-btn">最入</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="notcompletednode-btn">発注</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="notcompletednode-btn">手配</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>OEM</td>
-              <td></td>
-              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="completednode-btn">図申</button>
-                      <div class="actual">1月16日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="completednode-btn">試入</button>
-                      <div class="actual">1月22日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="completednode-btn">サ申</button>
-                      <div class="actual">1月25日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="completednode-btn">最入</button>
-                      <div class="actual">2月1日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="notcompletednode-btn">発注</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="notcompletednode-btn">手配</button>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>定番加工</td>
-              <td></td>
-              <td>丸眞花子(商品部)<br>丸眞太郎(営業部)</td>
-              <td>ディズニー「ミッキータオル」</td>
-              <td>タオル</td>
-              <td>ミッキー</td>
-              <td>
-                <div class="timeline-wrapper small-timeline">
-                  <div class="timeline-line"></div>
-                  <div class="timeline">
-                    <div class="step">
-                      <div class="plan">1月10日</div>
-                      <button class="completednode-btn">図提</button>
-                      <div class="actual">1月12日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月15日</div>
-                      <button class="completednode-btn">図申</button>
-                      <div class="actual">1月16日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月20日</div>
-                      <button class="completednode-btn">試入</button>
-                      <div class="actual">1月22日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月25日</div>
-                      <button class="completednode-btn">サ申</button>
-                      <div class="actual">1月25日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">1月30日</div>
-                      <button class="completednode-btn">最入</button>
-                      <div class="actual">2月1日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月5日</div>
-                      <button class="completednode-btn">発注</button>
-                      <div class="actual">2月6日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月10日</div>
-                      <button class="completednode-btn">手配</button>
-                      <div class="actual">2月6日</div>
-                    </div>
-                    <div class="step">
-                      <div class="plan">2月15日</div>
-                      <button class="notcompletednode-btn">入荷</button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div id="approvalFlowSummary" class="approval-flow-summary"></div>
+        <ol id="approvalFlowSteps" class="approval-flow-steps"></ol>
       </div>
       <div class="modal-footer">
         <button id="modal-close" class="modal-close">閉じる</button>
@@ -2061,19 +1931,214 @@
       });
 
       const approvalData = [
-        { name: "A案件", category: "①別注", status: "waiting" },
-        { name: "B案件", category: "①別注", status: "waiting" },
-        { name: "C案件", category: "②試作仕様書", status: "waiting" },
+        { name: "A案件", category: "別注図案作成依頼", status: "done" },
+        { name: "B案件", category: "仕様書（定番）※校正指示書含む", status: "waiting" },
+        { name: "C案件", category: "仕様書（別注）※校正指示書含む", status: "waiting" },
+        { name: "D案件", category: "最終サンプル承認結果", status: "waiting" },
+        { name: "E案件", category: "発注書・契約書（定番）", status: "waiting" },
+        { name: "F案件", category: "発注書・契約書（定番加工）", status: "waiting" },
+        { name: "G案件", category: "証紙依頼書（定番・別注・定番加工）", status: "waiting" },
+        { name: "H案件", category: "Ship依頼書(定番)", status: "waiting" },
+        { name: "I案件", category: "Ship依頼書(別注)", status: "waiting" },
+        { name: "J案件", category: "国内手配書(定番)", status: "waiting" },
+        { name: "K案件", category: "国内手配書(別注)", status: "waiting" },
+        { name: "L案件", category: "品質検査合格書", status: "waiting" },
+        { name: "M案件", category: "別注商品登録依頼", status: "waiting" },
 
-        { name: "D案件", category: "②試作仕様書", status: "applying" },
-        { name: "E案件", category: "③最終仕様書", status: "applying" },
+        { name: "N案件", category: "別注図案作成依頼", status: "returned" },
 
-        { name: "F案件", category: "①別注", status: "returned" },
-
-        { name: "G案件", category: "③最終仕様書", status: "done" },
-      ];      
+        { name: "O案件", category: "仕様書（定番）※校正指示書含む", status: "done" },
+      ];
+      const kessaiRouteMaster = {
+        "ROUTE_BETCHU_SAKUSEI_IRAI": {
+          routeName: "別注図案作成依頼",
+          steps: [
+            { name: "所属長：決裁", approver: "○○部 丸眞亜蓮" },
+            { name: "専務：決裁", approver: "丸眞成騎" },
+            { name: "商品部部長：回覧", approver: "商品部部長 丸眞翔" },
+          ]
+        },
+        "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI": {
+          routeName: "仕様書（定番）",
+          steps: [
+            { name: "コントローラー決裁", approver: "営業部 ○○" },
+            { name: "品質管理決裁", approver: "商品部 担当" },
+            { name: "バイヤー決裁", approver: "品質管理責任者" },
+          ]
+        },
+        "ROUTE_BETCHU_SHIYOSHO_SAKUSEI": {
+          routeName: "仕様書（別注）",
+          steps: [
+            { name: "営業担当決裁", approver: "営業部 ○○" },
+            { name: "品質管理決裁", approver: "設計課 課長" },
+            { name: "バイヤー決裁", approver: "品質管理責任者" },
+          ]
+        },        
+        "ROUTE_SAISHU_SAMPLESHONIN": {
+          routeName: "最終サンプル承認結果",
+          steps: [
+          { name: "コントローラー決裁", approver: "担当コントローラー" },
+          { name: "バイヤー決裁", approver: "担当バイヤー" }
+          ]
+        }, 
+        "ROUTE_TEIBAN_KEIYAKU_SAKUSEI": {
+          routeName: "発注書・契約書（定番）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "商品部部長決裁", approver: "商品部 部長" }
+          ]
+        },
+        "ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI": {
+          routeName: "発注書・契約書（定番加工）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "商品部部長決裁", approver: "商品部 部長" }
+          ]
+        },
+        "ROUTE_BETCHU_KEIYAKU_SAKUSEI": {
+          routeName: "発注書・契約書（別注）",
+          steps: [
+            { name: "所属長決裁", approver: "商品部 ○○" },
+            { name: "専務決裁", approver: "専務 ○○" },
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "商品部部長決裁", approver: "商品部 部長" }
+          ]
+        },
+        "ROUTE_SHOSHIIRAISHO_SAKUSEI": {
+          routeName: "証紙依頼書（定番・別注・定番加工）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "専務決裁", approver: "専務 ○○" },
+            { name: "経営管理担当", approver: "経営管理課 担当" }
+          ]
+        },                
+        "ROUTE_SHIP_IRAI_TEIBAN": {
+          routeName: "Ship依頼書（定番）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "貿易課回覧", approver: "貿易課" }
+          ]
+        },
+        "ROUTE_SHIP_IRAI_BETCHU": {
+          routeName: "Ship依頼書（別注）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "貿易課回覧", approver: "貿易課" }
+          ]
+        },
+        "ROUTE_KOKUNAITEHAISHO_TEIBAN": {
+          routeName: "国内手配書（定番）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" }
+          ]
+        },
+        "ROUTE_KOKUNAITEHAISHO_BETCHU": {
+          routeName: "国内手配書（別注）",
+          steps: [
+             { name: "バイヤー決裁", approver: "担当バイヤー" }
+          ]
+        },
+        "ROUTE_HINSHITSUKENSAGOUKAKUSHO": {
+          routeName: "品質検査合格書",
+          steps: [
+            { name: "コントローラー決裁", approver: "商品部 担当" },
+            { name: "バイヤー決裁", approver: "バイヤー " }
+          ]
+        },
+        "ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI": {
+          routeName: "別注商品登録依頼",
+          steps: [
+            { name: "所属長決裁", approver: "○○部 " },
+            { name: "商品部担当決裁", approver: "商品部 ○○" }
+          ]
+        }
+      };
+      const kessaiRouteByCategory = {
+        "別注図案作成依頼": "ROUTE_BETCHU_SAKUSEI_IRAI",
+        "仕様書（定番）※校正指示書含む": "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI",
+        "仕様書（別注）※校正指示書含む": "ROUTE_BETCHU_SHIYOSHO_SAKUSEI",
+        "最終サンプル承認結果": "ROUTE_SAISHU_SAMPLESHONIN",
+        "発注書・契約書（定番）": "ROUTE_TEIBAN_KEIYAKU_SAKUSEI",
+        "発注書・契約書（定番加工）": "ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI",
+        "証紙依頼書（定番・別注・定番加工）": "ROUTE_SHOSHIIRAISHO_SAKUSEI",
+        "Ship依頼書(定番)": "ROUTE_SHIP_IRAI_TEIBAN",
+        "Ship依頼書(別注)": "ROUTE_SHIP_IRAI_BETCHU",
+        "国内手配書(定番)": "ROUTE_KOKUNAITEHAISHO_TEIBAN",
+        "国内手配書(別注)": "ROUTE_KOKUNAITEHAISHO_BETCHU",
+        "品質検査合格書": "ROUTE_HINSHITSUKENSAGOUKAKUSHO",
+        "別注商品登録依頼": "ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI"
+      };
+      const kessaiCaseProgress = {
+        "A案件": { routeId: "ROUTE_BETCHU_SAKUSEI_IRAI", currentIndex: 2, completedAt: { 0: "2026-05-01", 1: "2026-05-02", 2: "2026-05-03" } },
+        "B案件": { routeId: "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI", currentIndex: 1, completedAt: { 0: "2026-05-01", 1: "2026-05-04" } },
+        "C案件": { routeId: "ROUTE_BETCHU_SHIYOSHO_SAKUSEI", currentIndex: 0, completedAt: { 0: "2026-04-30" } },
+        "D案件": { routeId: "ROUTE_SAISHU_SAMPLESHONIN", currentIndex: 0, completedAt: {} },
+        "E案件": { routeId: "ROUTE_TEIBAN_KEIYAKU_SAKUSEI", currentIndex: 0, completedAt: {} },
+        "F案件": { routeId: "ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI", currentIndex: 1, completedAt: { 0: "2026-04-20", 1: "2026-04-21" } },
+        "G案件": { routeId: "ROUTE_SHOSHIIRAISHO_SAKUSEI", currentIndex: 2, completedAt: { 0: "2026-04-10", 1: "2026-04-12", 2: "2026-04-15" } },
+        "H案件": { routeId: "ROUTE_SHIP_IRAI_TEIBAN", currentIndex: 0, completedAt: { 0: "2026-05-01" } },
+        "I案件": { routeId: "ROUTE_SHIP_IRAI_BETCHU", currentIndex: 1, completedAt: { 0: "2026-04-15", 1: "2026-04-16" } },
+        "J案件": { routeId: "ROUTE_KOKUNAITEHAISHO_TEIBAN", currentIndex: 0, completedAt: { 0: "2026-05-01" } },
+        "K案件": { routeId: "ROUTE_KOKUNAITEHAISHO_BETCHU", currentIndex: 0, completedAt: { 0: "2026-04-25" } },
+        "L案件": { routeId: "ROUTE_HINSHITSUKENSAGOUKAKUSHO", currentIndex: 0, completedAt: {} },
+        "M案件": { routeId: "ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI", currentIndex: 1, completedAt: { 0: "2026-04-18", 1: "2026-04-20" } },
+        "N案件": { routeId: "ROUTE_BETCHU_SAKUSEI_IRAI", currentIndex: 0, completedAt: {} },
+        "O案件": { routeId: "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI", currentIndex: 2, completedAt: { 0: "2026-04-01", 1: "2026-04-05", 2: "2026-04-10" } }
+      };
       const buttons = document.querySelectorAll(".status-btn");
       const listArea = document.getElementById("approvalListArea");
+      const modalOverlay = document.getElementById("modal-overlay");
+      const modalWindow = document.getElementById("modal-window");
+      const modalTitle = document.getElementById("modal-title");
+      const approvalFlowSummary = document.getElementById("approvalFlowSummary");
+      const approvalFlowSteps = document.getElementById("approvalFlowSteps");
+
+      function resolveRouteId(item) {
+        const caseProgress = kessaiCaseProgress[item.name];
+        if (caseProgress && caseProgress.routeId) return caseProgress.routeId;
+        return kessaiRouteByCategory[item.category] || "ROUTE_BETCHU_SAKUSEI_IRAI";
+      }
+
+      function renderApprovalFlow(item) {
+        const caseProgress = kessaiCaseProgress[item.name] || {};
+        const routeId = resolveRouteId(item);
+        const route = kessaiRouteMaster[routeId];
+        const steps = route ? route.steps : [];
+        modalTitle.textContent = item.category + " - " + item.name + " の承認フロー";
+        if (steps.length === 0) {
+          approvalFlowSummary.innerHTML = '<div class="approval-flow-empty">承認ルート定義が見つかりませんでした。</div>';
+          approvalFlowSteps.innerHTML = "";
+          return;
+        }
+        const currentIndex = Math.min(
+          Math.max(typeof caseProgress.currentIndex === "number" ? caseProgress.currentIndex : 0, 0),
+          steps.length - 1
+        );
+        approvalFlowSummary.innerHTML =
+          '<span>ルート: <strong>' + route.routeName + '</strong> / 現在ステップ: <strong>' + steps[currentIndex].name + '</strong> / 現在対応者: <strong>' + (steps[currentIndex].approver || "未設定") + "</strong></span>" +
+          '<span class="approval-flow-progress">' + (currentIndex + 1) + " / " + steps.length + " ステップ</span>";
+        approvalFlowSteps.innerHTML = steps.map(function (step, index) {
+          let stateClass = "is-todo";
+          let stateLabel = "未着手";
+          if (index < currentIndex || (index === currentIndex && currentIndex === steps.length - 1)) {
+            stateClass = "is-done";
+            stateLabel = "承認済み";
+          } else if (index === currentIndex) {
+            stateClass = "is-current";
+            stateLabel = "承認中";
+          }
+          const dateText = (caseProgress.completedAt && caseProgress.completedAt[index]) ? caseProgress.completedAt[index] : "-";
+          return (
+            '<li class="approval-flow-step ' + stateClass + '">' +
+              '<span class="approval-flow-step-name">' + step.name + "</span>" +
+              '<span class="approval-flow-step-state">' + stateLabel + '</span>' +
+              '<span class="approval-flow-step-date">決裁・承認者: ' + (step.approver || "未設定") + "</span>" +
+              '<span class="approval-flow-step-date">' + (step.note ? ("条件: " + step.note) : "条件: -") + "</span>" +
+              '<span class="approval-flow-step-date">日時: ' + dateText + '</span>' +
+            "</li>"
+          );
+        }).join("");
+      }
 
       function renderList(status) {
         listArea.innerHTML = "";
@@ -2092,7 +2157,7 @@
           const li = document.createElement("li");
           li.innerHTML = `
             ${item.category} - ${item.name}
-            <button type="button" class="btn-detail">詳細</button>
+            <button type="button" class="btn-detail" data-name="${item.name}" data-category="${item.category}">詳細</button>
           `;
           ul.appendChild(li);
         });
@@ -2108,6 +2173,25 @@
           const status = btn.dataset.status;
           renderList(status);
         });
+      });
+      const initialStatusBtn = document.querySelector(".status-btn.active") || buttons[0];
+      if (initialStatusBtn) {
+        renderList(initialStatusBtn.dataset.status);
+      }
+      listArea.addEventListener("click", function (event) {
+        const detailBtn = event.target.closest(".btn-detail");
+        if (!detailBtn) return;
+        const item = {
+          name: detailBtn.dataset.name || "",
+          category: detailBtn.dataset.category || ""
+        };
+        renderApprovalFlow(item);
+        modalOverlay.style.display = "block";
+        modalWindow.style.display = "block";
+      });
+      modalOverlay.addEventListener("click", function () {
+        modalOverlay.style.display = "none";
+        modalWindow.style.display = "none";
       });
 
       //タブ切り替えと個別入稿状況のデータリンク関係
