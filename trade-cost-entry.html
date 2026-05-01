@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+<!--  <link rel="stylesheet" href="trade-cost-entry.css"> -->
+
+<style>
+* {
+	  box-sizing: border-box;
+	}
+
+	body {
+	  margin: 0;
+	  /* font-family: "Yu Gothic", "Meiryo", sans-serif; */
+	  background: #f3f6fb;
+	  color: #1f2937;
+	}
+
+  /* #region ヘッダー */
+  .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: 14pt;
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+    /* #endregion */
+
+    /* #region ヘッダー下のメニューとメインコンテンツ */
+    /* ヘッダーの下に全体レイアウトを配置 */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+    /* #endregion */
+
+    /* #region メインコンテンツ */
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 24px 56px 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    .content h1 {
+      margin-top: 0;
+    }
+
+    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      /* overflow: hidden; */
+    }
+
+    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+      
+    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+    .content-box .pc-only {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-box .sp-only {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-box .content-section {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .btn-search-cancel {
+      background: #fff;
+    }
+  /* #endregion */
+  /* #region trade-cost-entry.css */
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .page-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e3a5f;
+  }
+
+  .header-actions,
+  .bottom-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .trade-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid #dbe4f0;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #23466b;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8eef7;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 18px 16px;
+  }
+
+  .form-group {
+    display: flex;
+   flex-direction: column;
+  }
+
+  .form-group label {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--color-text-muted);
+  }
+
+  .form-group input,
+  .form-group select {
+    display: block;
+    width: 100%;
+    height: 42px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    padding: 0 12px;
+    font-size: var(--fs-sm);
+    color: var(--color-text);
+    transition: 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
+  }
+
+  .total-highlight input {
+    background: linear-gradient(135deg, #eaf3ff, #f6fbff);
+    border-color: #93c5fd;
+    font-weight: 700;
+  }
+
+  .form-group.total-highlight input:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+  }
+
+  .btn {
+    min-width: 120px;
+    height: 42px;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0 18px;
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-primary-dark);
+  }
+
+  .btn-secondary {
+    background: var(--color-secondary);
+    color: var(--color-text-on-secondary);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-secondary-dark);
+  }
+
+  .bottom-actions {
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 1200px) {
+    .form-grid {
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page {
+      padding: 16px;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 769px) {
+    /* 画面右下固定 アクションボタン */
+    .btn-fab-bar {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      min-width: 140px;
+      width: 140px;
+      box-sizing: border-box;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    button.btn-fab-new {
+      font: inherit;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #sidebarMount {
+      display: none;
+    }
+
+    .main-wrapper {
+      display: block;
+      width: 100%;
+    }
+
+    .header-title {
+      margin: 5px 0px 0px 35px;
+      font-size: var(--fs-xl);
+    }
+
+    .header-user {
+      display: none;
+    }
+
+    .content {
+      background: var(--color-surface);
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+      padding: 12px 12px 56px 12px;
+      margin-left: 0;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 12px;
+    }
+
+    .content.expanded {
+      width: 100%;
+      margin-left: 0;
+      padding-left: 12px;
+    }
+
+    .content-box {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      flex: none;
+      min-height: 0;
+    }
+
+    .content-box .page-title {
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+    }
+
+    .btn-fab-bar {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: nowrap;
+    }
+
+    .btn-fab-new {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      min-width: 140px;
+      height: 34px;
+      padding: 6px 14px;
+      box-sizing: border-box;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+  }
+
+  /* #endregion */
+  </style>
+</head>
+<body>
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
+    <div id="sidebarMount"></div>
+    <!-- #endregion -->
+
+    <!-- 画面右下固定 新規登録ボタン -->
+    <div class="btn-fab-bar">
+      <button type="button" class="btn-fab-new" id="btnLicenseDuplicateNew">一覧へ戻る</button>
+      <button type="button" class="btn-fab-new" id="btnClear">クリア</button>
+      <button type="button" class="btn-fab-new" id="btnEntry">登録</button>
+<!--
+        <button type="button" class="btn btn-secondary">一覧へ戻る</button>
+        <button type="button" class="btn btn-primary">登録</button>
+-->
+    </div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">貿易経費登録</h2>
+<!--
+  <div class="page">
+    <header class="page-header">
+      <h1>貿易経費登録</h1>
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary">一覧へ戻る</button>
+        <button type="button" class="btn btn-primary">登録</button>
+      </div>
+    </header>
+-->
+    <form class="trade-form">
+      <section class="card">
+        <div class="card-title">基本情報</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="blNo">BL№</label>
+            <input type="text" id="blNo" placeholder="BL№を入力">
+          </div>
+          
+          <div class="form-group">
+            <label for="maker">乙仲</label>
+            <select id="maker">
+              <option value="">選択してください</option>
+              <option>乙仲A</option>
+              <option>乙仲B</option>
+              <option>乙仲C</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="maker">メーカー</label>
+            <select id="maker">
+              <option value="">選択してください</option>
+              <option>メーカーA</option>
+              <option>メーカーB</option>
+              <option>メーカーC</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="maker">納品形態</label>
+            <select id="maker">
+              <option value="">選択してください</option>
+              <option>通常</option>
+              <option>パレット納品</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="departure">出発</label>
+            <input type="text" id="departure" placeholder="出発地を入力">
+          </div>
+
+          <div class="form-group">
+            <label for="arrival">到着</label>
+            <input type="text" id="arrival" placeholder="到着地を入力">
+          </div>
+
+          <div class="form-group">
+            <label for="deliveryDate">納品日</label>
+            <input type="date" id="deliveryDate">
+          </div>
+
+          <div class="form-group">
+            <label for="deliveryTo">納品先</label>
+            <input type="text" id="deliveryTo" placeholder="納品先を入力">
+          </div>
+
+          <div class="form-group">
+            <label for="size">サイズ</label>
+            <select id="size">
+              <option value="">選択してください</option>
+              <option>20FT</option>
+              <option>40FT</option>
+              <option>40HQ</option>
+              <option>LCL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sekisairyo">積載量㎥</label>
+            <input type="text" id="sekisairyo" placeholder="積載量を入力">
+          </div>
+
+          <div class="form-group">
+            <label for="quantity">本数</label>
+            <input type="text" id="quantity" placeholder="本数を入力">
+          </div>
+
+          <div class="form-group">
+            <label for="rate">レート</label>
+            <input type="number" id="rate" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="invoice">請求書</label>
+            <input type="text" id="invoice" placeholder="請求書番号などを入力">
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">海上費用</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="oceanFreight">海上運賃</label>
+            <input type="number" id="oceanFreight" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="chc">CHC</label>
+            <input type="number" id="chc" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="cic">CIC</label>
+            <input type="number" id="cic" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="lss">LSS</label>
+            <input type="number" id="lss" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="doc">DOC</label>
+            <input type="number" id="doc" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="doFee">D/O</label>
+            <input type="number" id="doFee" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="exw">EXW費用</label>
+            <input type="number" id="exw" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="emc">EMC</label>
+            <input type="number" id="emc" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="lclOther">LCL(その他)</label>
+            <input type="number" id="lclOther" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="oceanNoTax">海上税抜</label>
+            <input type="number" id="oceanNoTax" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="oceanTax">海上消費税</label>
+            <input type="number" id="oceanTax" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="oceanTotal">海上計</label>
+            <input type="number" id="oceanTotal" placeholder="0">
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">国内費用</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="customsFee">通関料</label>
+            <input type="number" id="customsFee" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="handlingFee">取扱料</label>
+            <input type="number" id="handlingFee" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="transportFee">運搬料</label>
+            <input type="number" id="transportFee" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="waitingFee">待機料</label>
+            <input type="number" id="waitingFee" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="highwayFee">高速代</label>
+            <input type="number" id="highwayFee" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="otherFee">その他費用</label>
+            <input type="number" id="otherFee" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="domesticNoTax">国内税抜</label>
+            <input type="number" id="domesticNoTax" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="domesticTax">国内消費税</label>
+            <input type="number" id="domesticTax" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="domesticTotal">国内計</label>
+            <input type="number" id="domesticTotal" placeholder="0">
+          </div>
+
+          <div class="form-group total-highlight">
+            <label for="grandTotal">合計</label>
+            <input type="number" id="grandTotal" placeholder="0">
+          </div>
+        </div>
+      </section>
+<!--
+      <div class="bottom-actions">
+        <button type="button" class="btn btn-secondary">クリア</button>
+        <button type="submit" class="btn btn-primary">登録する</button>
+      </div>
+-->
+    </form>
+  </div>
+  <script src="js/sidebar.js"></script>
+  <script>
+    // サイドバーの読み込み
+    function loadSharedSidebar() {
+      const mount = document.getElementById('sidebarMount');
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+        } else {
+          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+        }
+      });
+
+      toggle.dataset.bound = '1';
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');
+      } else {
+        overlay.classList.remove('show');
+      }
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    loadSharedSidebar();
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+  </script>
+</body>
+</html>
