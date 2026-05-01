@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+<!--  <link rel="stylesheet" href="trade-cost-summary.css"> -->
+
+<style>
+* {
+  box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    /* font-family: "Yu Gothic", "Meiryo", sans-serif; */
+    background: #f3f6fb;
+    color: #1f2937;
+  }
+
+  /* #region ヘッダー */
+  .header {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+
+    background: var(--color-card);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header a {
+    text-decoration: none;
+    color: inherit;
+    letter-spacing: 0.02em;
+  }
+
+  .header a:hover {
+    color: var(--color-primary);
+  }
+
+  .hamburger {
+    display: none;
+  }
+
+  .header-title {
+    margin: 0;
+    font-size: var(--fs-xl);
+    font-weight: 700;
+  }
+
+  .header-user {
+    position: absolute;
+    right: 70px;
+    padding: 0;
+    font-size: 14pt;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .account-wrapper {
+    position: absolute;
+    right: 24px;
+  }
+
+  .account-menu {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    min-height: 41px;
+    background: var(--color-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: none;
+    min-width: 120px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .account-menu .menu-item {
+    padding: 12px 16px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+  }
+
+  .account-menu .menu-item:hover {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  .header-account_circle {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .header-account_circle:hover {
+    opacity: 0.85;
+  }
+  /* #endregion */
+
+  /* #region ヘッダー下のメニューとメインコンテンツ */
+  /* ヘッダーの下に全体レイアウトを配置 */
+  .main-wrapper {
+    display: flex;
+    flex: 1;
+    margin-top: 0;
+    min-height: calc(100vh - 48px);
+  }
+  /* #endregion */
+
+  /* #region メインコンテンツ */
+  .content {
+    background: var(--color-surface);
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 24px 56px 24px;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease, padding-left 0.3s ease;
+  }
+
+  .content:not(.expanded) {
+    padding-left: 32px;
+  }
+
+  .content.expanded {
+    margin-left: -220px;
+    padding-left: 32px;
+  }
+
+  .content h1 {
+    margin-top: 0;
+  }
+
+  /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+  .content-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* overflow: hidden; */
+  }
+
+  /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+  .content-box .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+    /* color: #23466b; */
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8eef7;
+  }
+      
+  /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+  .content-box .pc-only {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-box .sp-only {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .content-box .content-section {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .btn-search-cancel {
+    background: #fff;
+  }
+  /* #endregion */
+
+  /* #region trade-cost-summary.css */
+  .page {
+  max-width: 1650px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #183b63;
+}
+
+.header-actions,
+.search-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #dce6f2;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #23466b;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #edf3fa;
+}
+
+.search-card {
+  margin-bottom: 18px;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 18px 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  color: #111827;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.10);
+}
+
+.search-actions {
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+/* 切替ボタン */
+.summary-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.switch-btn {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #bfd4ee;
+  background: #f8fbff;
+  color: #2a5c92;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.switch-btn:hover {
+  background: #eef5ff;
+  border-color: #9fc0ea;
+}
+
+.switch-btn.active {
+  background:var(--color-primary);
+  /* background: linear-gradient(180deg, #3f73f1 0%, #2f61df 100%); */
+  color: #fff;
+  border-color: var(--color-primary);
+  /* border-color: #2f61df; */
+  box-shadow: 0 6px 14px rgba(47, 97, 223, 0.25);
+}
+
+/* KPI */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.kpi-card {
+  background: #fff;
+  border: 1px solid #dce6f2;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #163f6d;
+}
+
+.kpi-sub {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.total-kpi {
+  background: linear-gradient(135deg, #eaf3ff, #f7fbff);
+  border-color: #93c5fd;
+}
+
+/* パネル切替 */
+.panel-area {
+  position: relative;
+}
+
+.summary-panel {
+  display: none;
+}
+
+.summary-panel.active {
+  display: block;
+}
+
+.content-block {
+  margin-bottom: 18px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  color: #1d3f66;
+}
+
+.section-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 18px;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.narrow-table {
+  min-width: 900px;
+}
+
+.data-table thead th {
+  background: #f7faf8;
+  color:var(--color-text);
+  /* background: #eef4fb;
+  color: #334155; */
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px 10px;
+  border-bottom: 1px solid #dbe4f0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.data-table tbody td {
+  padding: 12px 10px;
+  font-size: 13px;
+  border-bottom: 1px solid #edf2f7;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.total-cell {
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.total-row td {
+  background: #f3f8ff;
+  font-weight: 700;
+  border-top: 2px solid #bfd7f6;
+}
+
+.ratio-up {
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.ratio-down {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.chart-card {
+  min-height: 100%;
+}
+
+.fake-chart,
+.ranking-list,
+.stack-chart,
+.line-chart-mock {
+  background: #fbfdff;
+  border: 1px solid #e6eef7;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.chart-legend,
+.line-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.legend {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.legend.seto,
+.seto-bar {
+  background: #60a5fa;
+}
+
+.legend.chokuryu,
+.chokuryu-bar {
+  background: #34d399;
+}
+
+.legend.total,
+.total-bar {
+  background: #1d4ed8;
+}
+
+.legend.prev {
+  background: #94a3b8;
+}
+
+.legend.curr {
+  background: #2563eb;
+}
+
+.bar-group {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.month-label,
+.stack-label,
+.point-label {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 700;
+}
+
+.bars.horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar {
+  height: 14px;
+  border-radius: 999px;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ranking-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rank-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rank-no {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.rank-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.rank-bar-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rank-bar {
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.rank-value {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 700;
+}
+
+.stack-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stack-row {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.stack-bar {
+  display: flex;
+  width: 100%;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5edf7;
+}
+
+.stack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stack.fixed {
+  background: #64748b;
+}
+
+.stack.variable {
+  background: #2563eb;
+}
+
+.line-chart-mock {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.chart-axis {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  font-size: 12px;
+  color: #64748b;
+  padding-top: 28px;
+}
+
+.line-area {
+  width: 100%;
+}
+
+.line-points {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.point-row {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.point-track {
+  position: relative;
+  height: 22px;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
+.point {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.prev-pos {
+  background: #94a3b8;
+}
+
+.curr-pos {
+  background: #2563eb;
+}
+
+.btn,
+.btn-light {
+  min-width: 100px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.btn-secondary:hover {
+  background: #d1d5db;
+}
+
+.btn-light {
+  background: #eef4fb;
+  color: #23466b;
+  border: 1px solid #d7e5f4;
+}
+
+.w24 { width: 24%; }
+.w42 { width: 42%; }
+.w45 { width: 45%; }
+.w47 { width: 47%; }
+.w49 { width: 49%; }
+.w55 { width: 55%; }
+.w58 { width: 58%; }
+.w62 { width: 62%; }
+.w71 { width: 71%; }
+.w74 { width: 74%; }
+.w76 { width: 76%; }
+.w90 { width: 90%; }
+
+.p68 { left: 68%; }
+.p70 { left: 70%; }
+.p72 { left: 72%; }
+.p76 { left: 76%; }
+
+@media (max-width: 1300px) {
+  .search-grid {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+  }
+
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: flex-end;
+  }
+
+  .search-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 16px;
+  }
+
+  .search-grid,
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-switch {
+    flex-direction: column;
+  }
+
+  .header-actions {
+    flex-direction: column;
+  }
+
+  .btn,
+  .btn-light,
+  .switch-btn {
+    width: 100%;
+  }
+
+  .line-chart-mock {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-axis {
+    display: none;
+  }
+}
+
+.subtotal-row td {
+  background: #f8fbff;
+  font-weight: 700;
+  color: #1e3a5f;
+  border-top: 1px solid #d6e4f5;
+  border-bottom: 1px solid #d6e4f5;
+}
+.month-comparison-table {
+  min-width: 1100px;
+}
+
+.month-cell {
+  font-weight: 700;
+  text-align: center;
+  background: #f8fbff;
+}
+
+.label-cell {
+  font-weight: 700;
+  text-align: center;
+  background: #fbfdff;
+}
+
+.compare-row td {
+  background: #fcfeff;
+}
+
+.month-comparison-table tbody tr:nth-child(3n) td {
+  border-bottom: 2px solid #d6e4f5;
+}
+
+@media (min-width: 769px) {
+    /* 画面右下固定 アクションボタン */
+    .btn-fab-bar {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      min-width: 140px;
+      width: 140px;
+      box-sizing: border-box;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    button.btn-fab-new {
+      font: inherit;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #sidebarMount {
+      display: none;
+    }
+
+    .main-wrapper {
+      display: block;
+      width: 100%;
+    }
+
+    .header-title {
+      margin: 5px 0px 0px 35px;
+      font-size: var(--fs-xl);
+    }
+
+    .header-user {
+      display: none;
+    }
+
+    .content {
+      background: var(--color-surface);
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+      padding: 12px 12px 56px 12px;
+      margin-left: 0;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 12px;
+    }
+
+    .content.expanded {
+      width: 100%;
+      margin-left: 0;
+      padding-left: 12px;
+    }
+
+    .content-box {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      flex: none;
+      min-height: 0;
+    }
+
+    .content-box .page-title {
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+    }
+
+    .btn-fab-bar {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 2001;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .btn-fab-bar #btnClear {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .btn-fab-bar #btnEntry {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .btn-fab-new {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      width: 100%;
+      min-width: 0;
+      height: 34px;
+      padding: 6px 14px;
+      box-sizing: border-box;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* 条件クリア・集計する：狭めの同幅・右寄せ・横並び */
+    .search-card .search-actions {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .search-card .search-actions #searchBtn,
+    .search-card .search-actions #searchCancelAllBtn {
+      flex: 0 0 auto;
+      width: 120px;
+      min-width: 0;
+      padding: 5px 6px;
+      box-sizing: border-box;
+    }
+  }
+
+  /* 集計するボタン */
+  #searchBtn {
+    display: inline-block;
+    width: 110px; 
+    padding: 6px 14px;
+    font-size: var(--fs-xs);
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    font-family: inherit;
+    white-space: nowrap;
+    box-shadow: none;
+  }
+
+  #searchBtn:hover {
+    background: var(--color-primary-dark);
+    color: #fff;
+  }
+
+  /* 条件クリアボタン */
+  #searchCancelAllBtn {
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: var(--fs-xs);
+    background: var(--color-clearbutton-background);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    font-family: inherit;
+    white-space: nowrap;
+    box-shadow: none;
+  }
+
+  #searchCancelAllBtn:hover {
+    background:var(--color-clearbutton-background-hover);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* 明細表示ボタン */
+  #showDetailBtn {
+    display: inline-block;
+    width: 110px; 
+    padding: 6px 14px;
+    font-size: var(--fs-xs);
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    font-family: inherit;
+    white-space: nowrap;
+    box-shadow: none;
+  }
+
+  #showDetailBtn:hover {
+    background: var(--color-primary-dark);
+    color: #fff;
+  }
+
+/* #endregion */  
+</style>
+</head>
+<body>
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
+    <div id="sidebarMount"></div>
+    <!-- #endregion -->
+
+    <!-- 画面右下固定 新規登録ボタン -->
+    <div class="btn-fab-bar">
+      <button type="button" class="btn-fab-new" id="btnClear">CSV出力</button>
+      <button type="button" class="btn-fab-new" id="btnEntry">再集計</button>
+    </div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">貿易経費 集計分析</h2>
+<!--
+  <div class="page">
+    <header class="page-header">
+      <h1>貿易経費 集計分析</h1>
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary">CSV出力</button>
+        <button type="button" class="btn btn-primary">再集計</button>
+      </div>
+    </header>
+-->
+
+    <!-- 集計条件 -->
+    <section class="card search-card">
+      <div class="card-title">集計条件</div>
+      <div class="search-grid">
+        <div class="form-group">
+          <label for="year">対象年</label>
+          <select id="year">
+            <option>2026年</option>
+            <option>2025年</option>
+            <option>2024年</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="periodFrom">期間（開始）</label>
+          <input type="month" id="periodFrom" value="2026-01">
+        </div>
+
+        <div class="form-group">
+          <label for="periodTo">期間（終了）</label>
+          <input type="month" id="periodTo" value="2026-12">
+        </div>
+
+        <div class="form-group">
+          <label for="maker">メーカー</label>
+          <select id="maker">
+            <option>すべて</option>
+            <option>メーカーA</option>
+            <option>メーカーB</option>
+            <option>メーカーC</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="deliveryPlace">納品場所</label>
+          <select id="deliveryPlace">
+            <option>すべて</option>
+            <option>瀬戸</option>
+            <option>直流</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="size">コンテナサイズ</label>
+          <select id="size">
+            <option>すべて</option>
+            <option>20FT</option>
+            <option>40FT</option>
+            <option>40HQ</option>
+            <option>LCL</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="freightType">費用区分</label>
+          <select id="freightType">
+            <option>すべて</option>
+            <option>海上費用</option>
+            <option>国内費用</option>
+            <option>固定費</option>
+            <option>変動費</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">条件クリア</button>
+        <button type="button" class="btn-primary" id="searchBtn">集計する</button>
+      </div>
+    </section>
+
+    <!-- 切替ボタン -->
+    <section class="summary-switch">
+      <button class="switch-btn active" data-target="panel1">① 乙仲別・コンテナ別</button>
+      <button class="switch-btn" data-target="panel2">② 月別比較</button>
+      <button class="switch-btn" data-target="panel3">③ 費用別集計</button>
+      <button class="switch-btn" data-target="panel4">④ 固定費・変動費</button>
+      <button class="switch-btn" data-target="panel5">⑤ 積載率推移</button>
+    </section>
+
+    <!-- KPI -->
+    <section class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">対象本数</div>
+        <div class="kpi-value">248本</div>
+        <div class="kpi-sub">前年同期 231本</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">海上計</div>
+        <div class="kpi-value">¥12,860,000</div>
+        <div class="kpi-sub">前年対比 106.8%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">国内計</div>
+        <div class="kpi-value">¥5,430,000</div>
+        <div class="kpi-sub">前年対比 102.1%</div>
+      </div>
+      <div class="kpi-card total-kpi">
+        <div class="kpi-label">合計</div>
+        <div class="kpi-value">¥18,290,000</div>
+        <div class="kpi-sub">前年差 +¥1,120,000</div>
+      </div>
+    </section>
+
+    <!-- 明細切替エリア -->
+    <div class="panel-area">
+
+      <!-- ① -->
+      <section id="panel1" class="summary-panel active">
+        <section class="card content-block">
+          <div class="section-header">
+            <div>
+              <h2>① 乙仲別コンテナ別 集計</h2>
+              <p>本数、海上費用、国内費用、合計を乙仲別・コンテナ別に確認</p>
+            </div>
+            <button type="button" class="btn btn-light" id="showDetailBtn">明細表示</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>乙仲</th>
+                  <th>コンテナ</th>
+                  <th>本数</th>
+                  <th>海上費用税抜</th>
+                  <th>海上消費税</th>
+                  <th>海上計</th>
+                  <th>国内費用税抜</th>
+                  <th>国内消費税</th>
+                  <th>国内計</th>
+                  <th>合計</th>
+                </tr>
+              </thead>
+              <tbody>
+  <tr>
+    <td>乙仲A</td>
+    <td>20FT</td>
+    <td class="text-right">28</td>
+    <td class="text-right">1,120,000</td>
+    <td class="text-right">112,000</td>
+    <td class="text-right">1,232,000</td>
+    <td class="text-right">420,000</td>
+    <td class="text-right">42,000</td>
+    <td class="text-right">462,000</td>
+    <td class="text-right total-cell">1,694,000</td>
+  </tr>
+  <tr>
+    <td>乙仲A</td>
+    <td>40FT</td>
+    <td class="text-right">54</td>
+    <td class="text-right">2,480,000</td>
+    <td class="text-right">248,000</td>
+    <td class="text-right">2,728,000</td>
+    <td class="text-right">930,000</td>
+    <td class="text-right">93,000</td>
+    <td class="text-right">1,023,000</td>
+    <td class="text-right total-cell">3,751,000</td>
+  </tr>
+  <tr class="subtotal-row">
+    <td colspan="2">乙仲A 小計</td>
+    <td class="text-right">82</td>
+    <td class="text-right">3,600,000</td>
+    <td class="text-right">360,000</td>
+    <td class="text-right">3,960,000</td>
+    <td class="text-right">1,350,000</td>
+    <td class="text-right">135,000</td>
+    <td class="text-right">1,485,000</td>
+    <td class="text-right total-cell">5,445,000</td>
+  </tr>
+
+  <tr>
+    <td>乙仲B</td>
+    <td>40HQ</td>
+    <td class="text-right">61</td>
+    <td class="text-right">3,160,000</td>
+    <td class="text-right">316,000</td>
+    <td class="text-right">3,476,000</td>
+    <td class="text-right">1,250,000</td>
+    <td class="text-right">125,000</td>
+    <td class="text-right">1,375,000</td>
+    <td class="text-right total-cell">4,851,000</td>
+  </tr>
+  <tr>
+    <td>乙仲B</td>
+    <td>20FT</td>
+    <td class="text-right">35</td>
+    <td class="text-right">1,680,000</td>
+    <td class="text-right">168,000</td>
+    <td class="text-right">1,848,000</td>
+    <td class="text-right">720,000</td>
+    <td class="text-right">72,000</td>
+    <td class="text-right">792,000</td>
+    <td class="text-right total-cell">2,640,000</td>
+  </tr>
+  <tr class="subtotal-row">
+    <td colspan="2">乙仲B 小計</td>
+    <td class="text-right">96</td>
+    <td class="text-right">4,840,000</td>
+    <td class="text-right">484,000</td>
+    <td class="text-right">5,324,000</td>
+    <td class="text-right">1,970,000</td>
+    <td class="text-right">197,000</td>
+    <td class="text-right">2,167,000</td>
+    <td class="text-right total-cell">7,491,000</td>
+  </tr>
+
+  <tr>
+    <td>乙仲C</td>
+    <td>LCL</td>
+    <td class="text-right">70</td>
+    <td class="text-right">3,250,000</td>
+    <td class="text-right">325,000</td>
+    <td class="text-right">3,575,000</td>
+    <td class="text-right">1,590,000</td>
+    <td class="text-right">159,000</td>
+    <td class="text-right">1,749,000</td>
+    <td class="text-right total-cell">5,324,000</td>
+  </tr>
+  <tr class="subtotal-row">
+    <td colspan="2">乙仲C 小計</td>
+    <td class="text-right">70</td>
+    <td class="text-right">3,250,000</td>
+    <td class="text-right">325,000</td>
+    <td class="text-right">3,575,000</td>
+    <td class="text-right">1,590,000</td>
+    <td class="text-right">159,000</td>
+    <td class="text-right">1,749,000</td>
+    <td class="text-right total-cell">5,324,000</td>
+  </tr>
+
+  <tr class="total-row">
+    <td colspan="2">総合計</td>
+    <td class="text-right">248</td>
+    <td class="text-right">11,690,000</td>
+    <td class="text-right">1,169,000</td>
+    <td class="text-right">12,859,000</td>
+    <td class="text-right">4,910,000</td>
+    <td class="text-right">491,000</td>
+    <td class="text-right">5,401,000</td>
+    <td class="text-right total-cell">18,260,000</td>
+  </tr>
+</tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- ② -->
+      <section id="panel2" class="summary-panel">
+  <section class="card content-block">
+    <div class="section-header">
+      <div>
+        <h2>② 月別比較（前期 / 今期 / 対比）</h2>
+        <p>月別に、瀬戸・直流・合計の本数、入荷ケース数、費用を比較</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table month-comparison-table">
+        <thead>
+          <tr>
+            <th rowspan="2">月</th>
+            <th rowspan="2">区分</th>
+            <th colspan="3">本数</th>
+            <th colspan="3">入荷ケース数</th>
+            <th rowspan="2">費用</th>
+          </tr>
+          <tr>
+            <th>瀬戸</th>
+            <th>直流</th>
+            <th>合計</th>
+            <th>瀬戸</th>
+            <th>直流</th>
+            <th>合計</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 9月 -->
+          <tr>
+            <td class="month-cell" rowspan="3">9月</td>
+            <td class="label-cell">今期</td>
+            <td class="text-right">12</td>
+            <td class="text-right">8</td>
+            <td class="text-right">20</td>
+            <td class="text-right">7,800</td>
+            <td class="text-right">4,900</td>
+            <td class="text-right">12,700</td>
+            <td class="text-right">1,280,000</td>
+          </tr>
+          <tr>
+            <td class="label-cell">前期</td>
+            <td class="text-right">10</td>
+            <td class="text-right">9</td>
+            <td class="text-right">19</td>
+            <td class="text-right">7,100</td>
+            <td class="text-right">5,200</td>
+            <td class="text-right">12,300</td>
+            <td class="text-right">1,210,000</td>
+          </tr>
+          <tr class="compare-row">
+            <td class="label-cell">対比</td>
+            <td class="text-right ratio-up">120.0%</td>
+            <td class="text-right ratio-down">88.9%</td>
+            <td class="text-right ratio-up">105.3%</td>
+            <td class="text-right ratio-up">109.9%</td>
+            <td class="text-right ratio-down">94.2%</td>
+            <td class="text-right ratio-up">103.3%</td>
+            <td class="text-right ratio-up">105.8%</td>
+          </tr>
+
+          <!-- 10月 -->
+          <tr>
+            <td class="month-cell" rowspan="3">10月</td>
+            <td class="label-cell">今期</td>
+            <td class="text-right">14</td>
+            <td class="text-right">11</td>
+            <td class="text-right">25</td>
+            <td class="text-right">8,900</td>
+            <td class="text-right">6,300</td>
+            <td class="text-right">15,200</td>
+            <td class="text-right">1,520,000</td>
+          </tr>
+          <tr>
+            <td class="label-cell">前期</td>
+            <td class="text-right">13</td>
+            <td class="text-right">10</td>
+            <td class="text-right">23</td>
+            <td class="text-right">8,300</td>
+            <td class="text-right">5,800</td>
+            <td class="text-right">14,100</td>
+            <td class="text-right">1,430,000</td>
+          </tr>
+          <tr class="compare-row">
+            <td class="label-cell">対比</td>
+            <td class="text-right ratio-up">107.7%</td>
+            <td class="text-right ratio-up">110.0%</td>
+            <td class="text-right ratio-up">108.7%</td>
+            <td class="text-right ratio-up">107.2%</td>
+            <td class="text-right ratio-up">108.6%</td>
+            <td class="text-right ratio-up">107.8%</td>
+            <td class="text-right ratio-up">106.3%</td>
+          </tr>
+
+          <!-- 合計 -->
+          <tr class="total-row">
+            <td class="month-cell" rowspan="3">合計</td>
+            <td class="label-cell">今期</td>
+            <td class="text-right">148</td>
+            <td class="text-right">100</td>
+            <td class="text-right">248</td>
+            <td class="text-right">95,200</td>
+            <td class="text-right">68,600</td>
+            <td class="text-right">163,800</td>
+            <td class="text-right">18,290,000</td>
+          </tr>
+          <tr class="total-row">
+            <td class="label-cell">前期</td>
+            <td class="text-right">140</td>
+            <td class="text-right">91</td>
+            <td class="text-right">231</td>
+            <td class="text-right">89,400</td>
+            <td class="text-right">64,800</td>
+            <td class="text-right">154,200</td>
+            <td class="text-right">17,170,000</td>
+          </tr>
+          <tr class="total-row compare-row">
+            <td class="label-cell">対比</td>
+            <td class="text-right ratio-up">105.7%</td>
+            <td class="text-right ratio-up">109.9%</td>
+            <td class="text-right ratio-up">107.4%</td>
+            <td class="text-right ratio-up">106.5%</td>
+            <td class="text-right ratio-up">105.9%</td>
+            <td class="text-right ratio-up">106.2%</td>
+            <td class="text-right ratio-up">106.5%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+
+      <!-- ③ -->
+      <section id="panel3" class="summary-panel">
+        <div class="grid-2">
+          <section class="card content-block">
+            <div class="section-header">
+              <div>
+                <h2>③ 費用別集計</h2>
+                <p>どの費用が多いかを月別に把握</p>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>費用項目</th>
+                    <th>1月</th>
+                    <th>2月</th>
+                    <th>3月</th>
+                    <th>4月</th>
+                    <th>累計</th>
+                    <th>構成比</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>海上運賃</td>
+                    <td class="text-right">480,000</td>
+                    <td class="text-right">520,000</td>
+                    <td class="text-right">510,000</td>
+                    <td class="text-right">530,000</td>
+                    <td class="text-right">2,040,000</td>
+                    <td class="text-right">22.4%</td>
+                  </tr>
+                  <tr>
+                    <td>CHC</td>
+                    <td class="text-right">95,000</td>
+                    <td class="text-right">88,000</td>
+                    <td class="text-right">91,000</td>
+                    <td class="text-right">96,000</td>
+                    <td class="text-right">370,000</td>
+                    <td class="text-right">4.1%</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td>合計</td>
+                    <td class="text-right">1,240,000</td>
+                    <td class="text-right">1,285,000</td>
+                    <td class="text-right">1,560,000</td>
+                    <td class="text-right">1,620,000</td>
+                    <td class="text-right">5,705,000</td>
+                    <td class="text-right">100.0%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card chart-card">
+            <div class="section-header">
+              <div>
+                <h2>費用構成 上位</h2>
+                <p>多い費用が視覚的にわかる表示</p>
+              </div>
+            </div>
+
+            <div class="ranking-list">
+              <div class="ranking-item">
+                <div class="rank-info">
+                  <span class="rank-no">1</span>
+                  <span class="rank-name">海上運賃</span>
+                </div>
+                <div class="rank-bar-area">
+                  <div class="rank-bar w90"></div>
+                  <span class="rank-value">2,040,000</span>
+                </div>
+              </div>
+
+              <div class="ranking-item">
+                <div class="rank-info">
+                  <span class="rank-no">2</span>
+                  <span class="rank-name">運搬料</span>
+                </div>
+                <div class="rank-bar-area">
+                  <div class="rank-bar w62"></div>
+                  <span class="rank-value">883,000</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ④ -->
+      <section id="panel4" class="summary-panel">
+        <div class="grid-2">
+          <section class="card content-block">
+            <div class="section-header">
+              <div>
+                <h2>④ 固定費・変動費 月別集計</h2>
+                <p>費用を固定費・変動費でまとめた月別確認</p>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>月</th>
+                    <th>固定費</th>
+                    <th>変動費</th>
+                    <th>合計</th>
+                    <th>固定費率</th>
+                    <th>変動費率</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1月</td>
+                    <td class="text-right">320,000</td>
+                    <td class="text-right">1,040,000</td>
+                    <td class="text-right">1,360,000</td>
+                    <td class="text-right">23.5%</td>
+                    <td class="text-right">76.5%</td>
+                  </tr>
+                  <tr>
+                    <td>2月</td>
+                    <td class="text-right">310,000</td>
+                    <td class="text-right">975,000</td>
+                    <td class="text-right">1,285,000</td>
+                    <td class="text-right">24.1%</td>
+                    <td class="text-right">75.9%</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td>合計</td>
+                    <td class="text-right">3,910,000</td>
+                    <td class="text-right">14,380,000</td>
+                    <td class="text-right">18,290,000</td>
+                    <td class="text-right">21.4%</td>
+                    <td class="text-right">78.6%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card chart-card">
+            <div class="section-header">
+              <div>
+                <h2>固定費 / 変動費 推移</h2>
+                <p>月別の比率変化イメージ</p>
+              </div>
+            </div>
+
+            <div class="stack-chart">
+              <div class="stack-row">
+                <div class="stack-label">1月</div>
+                <div class="stack-bar">
+                  <div class="stack fixed w24">23.5%</div>
+                  <div class="stack variable w76">76.5%</div>
+                </div>
+              </div>
+              <div class="stack-row">
+                <div class="stack-label">2月</div>
+                <div class="stack-bar">
+                  <div class="stack fixed w24">24.1%</div>
+                  <div class="stack variable w76">75.9%</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ⑤ -->
+      <section id="panel5" class="summary-panel">
+  <section class="card content-block">
+    <div class="section-header">
+      <div>
+        <h2>⑤ 積載率 月別推移</h2>
+        <p>前年と今年の積載率、および前年差を月別に確認</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>月</th>
+            <th>前年積載率</th>
+            <th>今年積載率</th>
+            <th>前年差</th>
+            <th>本数</th>
+            <th>入荷ケース数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1月</td>
+            <td class="text-right">78.4%</td>
+            <td class="text-right">81.2%</td>
+            <td class="text-right ratio-up">+2.8pt</td>
+            <td class="text-right">22</td>
+            <td class="text-right">13,850</td>
+          </tr>
+          <tr>
+            <td>2月</td>
+            <td class="text-right">80.1%</td>
+            <td class="text-right">79.4%</td>
+            <td class="text-right ratio-down">-0.7pt</td>
+            <td class="text-right">19</td>
+            <td class="text-right">12,940</td>
+          </tr>
+          <tr>
+            <td>3月</td>
+            <td class="text-right">76.8%</td>
+            <td class="text-right">82.5%</td>
+            <td class="text-right ratio-up">+5.7pt</td>
+            <td class="text-right">24</td>
+            <td class="text-right">15,600</td>
+          </tr>
+
+          <tr class="total-row">
+            <td>平均</td>
+            <td class="text-right">79.2%</td>
+            <td class="text-right">81.0%</td>
+            <td class="text-right ratio-up">+1.8pt</td>
+            <td class="text-right">248</td>
+            <td class="text-right">163,800</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+
+    </div>
+  </div>
+
+  <script src="js/sidebar.js"></script>
+  <script>
+    // サイドバーの読み込み
+    function loadSharedSidebar() {
+      const mount = document.getElementById('sidebarMount');
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+        } else {
+          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+        }
+      });
+
+      toggle.dataset.bound = '1';
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');
+      } else {
+        overlay.classList.remove('show');
+      }
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    loadSharedSidebar();
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    const switchButtons = document.querySelectorAll('.switch-btn');
+    const panels = document.querySelectorAll('.summary-panel');
+
+    switchButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.dataset.target;
+
+        switchButtons.forEach(btn => btn.classList.remove('active'));
+        panels.forEach(panel => panel.classList.remove('active'));
+
+        button.classList.add('active');
+        document.getElementById(targetId).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
