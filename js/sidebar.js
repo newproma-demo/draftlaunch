@@ -117,9 +117,9 @@ window.SHARED_SIDEBAR_HTML = `
     <ul class="submenu">
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=1">Ship依頼書/国内手配書登録</a></li>
       <li><a href="shipiraishokokunaitehaishoshinseikensaku.html?key=2">Ship依頼書/国内手配書決裁</a></li>
+      <li><a href="shipiraishososhin.html">Ship依頼書送信</a></li>
       <li><a href="ship_scheduletoroku.html">Shipスケジュール登録</a></li>
       <li><a href="ship_scheduleshokai.html">Shipスケジュール照会</a></li>
-      <li><a href="shipiraishososhin.html">Ship依頼書送信</a></li>
       <li><a href="trade-cost-list.html">貿易経費照会</a></li>
       <li><a href="trade-cost-summary.html">貿易経費分析</a></li>
     </ul>
