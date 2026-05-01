@@ -561,15 +561,25 @@
     }
   }
 
+  /* スマホ */
   @media (max-width: 768px) {
-    #sidebarMount {
-      display: none;
+    html,
+    body {
+      height: auto;
+      min-height: 100%;
+      overflow-y: auto;
     }
 
     .main-wrapper {
-      display: block;
+      display: flex;
       width: 100%;
+      flex: 1;
+      height: auto;
+      min-height: calc(100vh - 48px);
+      overflow: visible;
     }
+
+    /* #sidebarMount / .sidebar は上書きしない（css/style.css のスマホ用 transform・サブメニュー前提と一致させる） */
 
     .header-title {
       margin: 5px 0px 0px 35px;
@@ -586,7 +596,8 @@
       flex: 1;
       width: 100%;
       padding: 12px 12px 56px 12px;
-      margin-left: 0;
+      margin-left: -220px;
+      overflow: visible;
     }
 
     .content:not(.expanded) {
@@ -595,7 +606,7 @@
 
     .content.expanded {
       width: 100%;
-      margin-left: 0;
+      margin-left: -220px;
       padding-left: 12px;
     }
 
@@ -646,6 +657,19 @@
       background: var(--color-primary-dark);
       color: #fff;
     }
+
+    /* ハンバーガーボタン */
+    .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
   }
 
 	@media (max-width: 640px) {
@@ -978,78 +1002,83 @@
 		    </section>
 	    </div>
     </div>
+  
+    <!--#region モーダル(CSV出力)  -->
+    <div id="modal-window" class="modal-window"> 
+    </div>
+    <!-- #endregion -->
+
+ 	<script src="js/sidebar.js"></script>
+ 	<script>
+	// サイドバーの読み込み
+	function loadSharedSidebar() {
+		const mount = document.getElementById('sidebarMount');
+		if (!mount) return;
+
+		if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+			console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+			return;
+		}
+
+		mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+		initSidebarCollapseToggle();
+		}
+
+		function initSidebarCollapseToggle() {
+			const sidebar = document.querySelector('.sidebar');
+			const toggle = document.querySelector('.sidebar-toggle');
+			const content = document.querySelector('.content');
+			if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+			const toggleImg = toggle.querySelector('img');
+			toggle.addEventListener('click', () => {
+				sidebar.classList.toggle('closed');
+				content.classList.toggle('expanded');
+
+				if (sidebar.classList.contains('closed')) {
+					if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+				} else {
+					if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+				}
+		});
+
+		toggle.dataset.bound = '1';
+		}
+
+		function toggleSidebar() {
+			const sidebar = document.querySelector('.sidebar');
+			const overlay = document.querySelector('.overlay');
+			if (!sidebar || !overlay) return;
+
+			sidebar.classList.toggle('active');
+
+			if (sidebar.classList.contains('active')) {
+				overlay.classList.add('show');
+			} else {
+				overlay.classList.remove('show');
+			}
+		}
+
+		function closeSidebar() {
+			const sidebar = document.querySelector('.sidebar');
+			const overlay = document.querySelector('.overlay');
+			if (!sidebar || !overlay) return;
+
+			sidebar.classList.remove('active');
+			overlay.classList.remove('show');
+		}
+
+		loadSharedSidebar();
+
+		const icon = document.querySelector('.header-account_circle');
+		const menu = document.querySelector('.account-menu');
+
+		icon.addEventListener('click', (e) => {
+			e.stopPropagation(); // クリックが外側に伝播しないように
+			menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+		});
+
+ 	</script>
   </div>
-  <!-- #endregion -->
-  <script src="js/sidebar.js"></script>
-  <script>
-    // サイドバーの読み込み
-    function loadSharedSidebar() {
-      const mount = document.getElementById('sidebarMount');
-      if (!mount) return;
-
-      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
-        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
-        return;
-      }
-
-      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
-      initSidebarCollapseToggle();
-    }
-
-    function initSidebarCollapseToggle() {
-      const sidebar = document.querySelector('.sidebar');
-      const toggle = document.querySelector('.sidebar-toggle');
-      const content = document.querySelector('.content');
-      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
-
-      const toggleImg = toggle.querySelector('img');
-      toggle.addEventListener('click', () => {
-        sidebar.classList.toggle('closed');
-        content.classList.toggle('expanded');
-
-        if (sidebar.classList.contains('closed')) {
-          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
-        } else {
-          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
-        }
-      });
-
-      toggle.dataset.bound = '1';
-    }
-
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
-      if (!sidebar || !overlay) return;
-
-      sidebar.classList.toggle('active');
-
-      if (sidebar.classList.contains('active')) {
-        overlay.classList.add('show');
-      } else {
-        overlay.classList.remove('show');
-      }
-    }
-
-    function closeSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
-      if (!sidebar || !overlay) return;
-
-      sidebar.classList.remove('active');
-      overlay.classList.remove('show');
-    }
-
-    loadSharedSidebar();
-
-    const icon = document.querySelector('.header-account_circle');
-    const menu = document.querySelector('.account-menu');
-
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation(); // クリックが外側に伝播しないように
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-  </script>
 </body>
 </html>

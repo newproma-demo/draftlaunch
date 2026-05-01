@@ -390,15 +390,25 @@
     }
   }
 
+  /* スマホ: trade-cost-list.html と同様（flex 維持 + 本文 margin 負値。sidebar/submenu は css/style.css 前提） */
   @media (max-width: 768px) {
-    #sidebarMount {
-      display: none;
+    html,
+    body {
+      height: auto;
+      min-height: 100%;
+      overflow-y: auto;
     }
 
     .main-wrapper {
-      display: block;
+      display: flex;
       width: 100%;
+      flex: 1;
+      height: auto;
+      min-height: calc(100vh - 48px);
+      overflow: visible;
     }
+
+    /* #sidebarMount / .sidebar は上書きしない */
 
     .header-title {
       margin: 5px 0px 0px 35px;
@@ -415,7 +425,8 @@
       flex: 1;
       width: 100%;
       padding: 12px 12px 56px 12px;
-      margin-left: 0;
+      margin-left: -220px;
+      overflow: visible;
     }
 
     .content:not(.expanded) {
@@ -424,7 +435,7 @@
 
     .content.expanded {
       width: 100%;
-      margin-left: 0;
+      margin-left: -220px;
       padding-left: 12px;
     }
 
@@ -443,22 +454,19 @@
 
     .btn-fab-bar {
       position: fixed;
-      left: 12px;
       right: 12px;
       bottom: 12px;
       z-index: 2001;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 140px 140px;
+      justify-content: end;
       gap: 12px;
       align-items: stretch;
     }
 
-    /* 一覧＝登録と同じ列幅・同じ左端（2列目） */
     .btn-fab-bar > a:first-child {
       grid-column: 2;
       grid-row: 1;
-      width: 100%;
-      min-width: 0;
     }
 
     .btn-fab-bar #btnClear {
@@ -476,8 +484,8 @@
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      width: 100%;
-      min-width: 0;
+      width: 140px;
+      min-width: 140px;
       height: 34px;
       padding: 6px 14px;
       box-sizing: border-box;
@@ -493,6 +501,19 @@
       background: var(--color-primary-dark);
       color: #fff;
     }
+
+    /* ハンバーガーボタン */
+    .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
   }
   /* #endregion */
   </style>
@@ -545,294 +566,296 @@
       </div>
     </header>
 -->
-    <form class="trade-form">
-      <section class="card">
-        <div class="card-title">基本情報</div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="blNo">BL№</label>
-            <input type="text" id="blNo" placeholder="BL№を入力">
-          </div>
-          
-          <div class="form-group">
-            <label for="maker">乙仲</label>
-            <select id="maker">
-              <option value="">選択してください</option>
-              <option>乙仲A</option>
-              <option>乙仲B</option>
-              <option>乙仲C</option>
-            </select>
-          </div>
+      <form class="trade-form">
+        <section class="card">
+          <div class="card-title">基本情報</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="blNo">BL№</label>
+              <input type="text" id="blNo" placeholder="BL№を入力">
+            </div>
+            
+            <div class="form-group">
+              <label for="maker">乙仲</label>
+              <select id="maker">
+                <option value="">選択してください</option>
+                <option>乙仲A</option>
+                <option>乙仲B</option>
+                <option>乙仲C</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label for="maker">メーカー</label>
-            <select id="maker">
-              <option value="">選択してください</option>
-              <option>メーカーA</option>
-              <option>メーカーB</option>
-              <option>メーカーC</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="maker">納品形態</label>
-            <select id="maker">
-              <option value="">選択してください</option>
-              <option>通常</option>
-              <option>パレット納品</option>
-            </select>
-          </div>
+            <div class="form-group">
+              <label for="maker">メーカー</label>
+              <select id="maker">
+                <option value="">選択してください</option>
+                <option>メーカーA</option>
+                <option>メーカーB</option>
+                <option>メーカーC</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="maker">納品形態</label>
+              <select id="maker">
+                <option value="">選択してください</option>
+                <option>通常</option>
+                <option>パレット納品</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label for="departure">出発</label>
-            <input type="text" id="departure" placeholder="出発地を入力">
-          </div>
+            <div class="form-group">
+              <label for="departure">出発</label>
+              <input type="text" id="departure" placeholder="出発地を入力">
+            </div>
 
-          <div class="form-group">
-            <label for="arrival">到着</label>
-            <input type="text" id="arrival" placeholder="到着地を入力">
-          </div>
+            <div class="form-group">
+              <label for="arrival">到着</label>
+              <input type="text" id="arrival" placeholder="到着地を入力">
+            </div>
 
-          <div class="form-group">
-            <label for="deliveryDate">納品日</label>
-            <input type="date" id="deliveryDate">
-          </div>
+            <div class="form-group">
+              <label for="deliveryDate">納品日</label>
+              <input type="date" id="deliveryDate">
+            </div>
 
-          <div class="form-group">
-            <label for="deliveryTo">納品先</label>
-            <input type="text" id="deliveryTo" placeholder="納品先を入力">
-          </div>
+            <div class="form-group">
+              <label for="deliveryTo">納品先</label>
+              <input type="text" id="deliveryTo" placeholder="納品先を入力">
+            </div>
 
-          <div class="form-group">
-            <label for="size">サイズ</label>
-            <select id="size">
-              <option value="">選択してください</option>
-              <option>20FT</option>
-              <option>40FT</option>
-              <option>40HQ</option>
-              <option>LCL</option>
-            </select>
-          </div>
+            <div class="form-group">
+              <label for="size">サイズ</label>
+              <select id="size">
+                <option value="">選択してください</option>
+                <option>20FT</option>
+                <option>40FT</option>
+                <option>40HQ</option>
+                <option>LCL</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label for="sekisairyo">積載量㎥</label>
-            <input type="text" id="sekisairyo" placeholder="積載量を入力">
-          </div>
+            <div class="form-group">
+              <label for="sekisairyo">積載量㎥</label>
+              <input type="text" id="sekisairyo" placeholder="積載量を入力">
+            </div>
 
-          <div class="form-group">
-            <label for="quantity">本数</label>
-            <input type="text" id="quantity" placeholder="本数を入力">
-          </div>
+            <div class="form-group">
+              <label for="quantity">本数</label>
+              <input type="text" id="quantity" placeholder="本数を入力">
+            </div>
 
-          <div class="form-group">
-            <label for="rate">レート</label>
-            <input type="number" id="rate" placeholder="0">
-          </div>
+            <div class="form-group">
+              <label for="rate">レート</label>
+              <input type="number" id="rate" placeholder="0">
+            </div>
 
-          <div class="form-group">
-            <label for="invoice">請求書</label>
-            <input type="text" id="invoice" placeholder="請求書番号などを入力">
+            <div class="form-group">
+              <label for="invoice">請求書</label>
+              <input type="text" id="invoice" placeholder="請求書番号などを入力">
+            </div>
           </div>
+        </section>
+
+        <section class="card">
+          <div class="card-title">海上費用</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="oceanFreight">海上運賃</label>
+              <input type="number" id="oceanFreight" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="chc">CHC</label>
+              <input type="number" id="chc" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="cic">CIC</label>
+              <input type="number" id="cic" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="lss">LSS</label>
+              <input type="number" id="lss" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="doc">DOC</label>
+              <input type="number" id="doc" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="doFee">D/O</label>
+              <input type="number" id="doFee" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="exw">EXW費用</label>
+              <input type="number" id="exw" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="emc">EMC</label>
+              <input type="number" id="emc" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="lclOther">LCL(その他)</label>
+              <input type="number" id="lclOther" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="oceanNoTax">海上税抜</label>
+              <input type="number" id="oceanNoTax" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="oceanTax">海上消費税</label>
+              <input type="number" id="oceanTax" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="oceanTotal">海上計</label>
+              <input type="number" id="oceanTotal" placeholder="0">
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-title">国内費用</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="customsFee">通関料</label>
+              <input type="number" id="customsFee" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="handlingFee">取扱料</label>
+              <input type="number" id="handlingFee" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="transportFee">運搬料</label>
+              <input type="number" id="transportFee" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="waitingFee">待機料</label>
+              <input type="number" id="waitingFee" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="highwayFee">高速代</label>
+              <input type="number" id="highwayFee" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="otherFee">その他費用</label>
+              <input type="number" id="otherFee" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="domesticNoTax">国内税抜</label>
+              <input type="number" id="domesticNoTax" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="domesticTax">国内消費税</label>
+              <input type="number" id="domesticTax" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="domesticTotal">国内計</label>
+              <input type="number" id="domesticTotal" placeholder="0">
+            </div>
+
+            <div class="form-group total-highlight">
+              <label for="grandTotal">合計</label>
+              <input type="number" id="grandTotal" placeholder="0">
+            </div>
+          </div>
+        </section>
+  <!--
+        <div class="bottom-actions">
+          <button type="button" class="btn btn-secondary">クリア</button>
+          <button type="submit" class="btn btn-primary">登録する</button>
         </div>
-      </section>
+  -->
+      </form>
+    </div>
 
-      <section class="card">
-        <div class="card-title">海上費用</div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="oceanFreight">海上運賃</label>
-            <input type="number" id="oceanFreight" placeholder="0">
-          </div>
+    <script src="js/sidebar.js"></script>
+    <script>
+      // サイドバーの読み込み
+      function loadSharedSidebar() {
+        const mount = document.getElementById('sidebarMount');
+        if (!mount) return;
 
-          <div class="form-group">
-            <label for="chc">CHC</label>
-            <input type="number" id="chc" placeholder="0">
-          </div>
+        if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+          console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+          return;
+        }
 
-          <div class="form-group">
-            <label for="cic">CIC</label>
-            <input type="number" id="cic" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="lss">LSS</label>
-            <input type="number" id="lss" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="doc">DOC</label>
-            <input type="number" id="doc" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="doFee">D/O</label>
-            <input type="number" id="doFee" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="exw">EXW費用</label>
-            <input type="number" id="exw" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="emc">EMC</label>
-            <input type="number" id="emc" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="lclOther">LCL(その他)</label>
-            <input type="number" id="lclOther" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="oceanNoTax">海上税抜</label>
-            <input type="number" id="oceanNoTax" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="oceanTax">海上消費税</label>
-            <input type="number" id="oceanTax" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="oceanTotal">海上計</label>
-            <input type="number" id="oceanTotal" placeholder="0">
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-title">国内費用</div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="customsFee">通関料</label>
-            <input type="number" id="customsFee" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="handlingFee">取扱料</label>
-            <input type="number" id="handlingFee" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="transportFee">運搬料</label>
-            <input type="number" id="transportFee" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="waitingFee">待機料</label>
-            <input type="number" id="waitingFee" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="highwayFee">高速代</label>
-            <input type="number" id="highwayFee" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="otherFee">その他費用</label>
-            <input type="number" id="otherFee" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="domesticNoTax">国内税抜</label>
-            <input type="number" id="domesticNoTax" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="domesticTax">国内消費税</label>
-            <input type="number" id="domesticTax" placeholder="0">
-          </div>
-
-          <div class="form-group">
-            <label for="domesticTotal">国内計</label>
-            <input type="number" id="domesticTotal" placeholder="0">
-          </div>
-
-          <div class="form-group total-highlight">
-            <label for="grandTotal">合計</label>
-            <input type="number" id="grandTotal" placeholder="0">
-          </div>
-        </div>
-      </section>
-<!--
-      <div class="bottom-actions">
-        <button type="button" class="btn btn-secondary">クリア</button>
-        <button type="submit" class="btn btn-primary">登録する</button>
-      </div>
--->
-    </form>
-  </div>
-  <script src="js/sidebar.js"></script>
-  <script>
-    // サイドバーの読み込み
-    function loadSharedSidebar() {
-      const mount = document.getElementById('sidebarMount');
-      if (!mount) return;
-
-      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
-        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
-        return;
+        mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+        initSidebarCollapseToggle();
       }
 
-      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
-      initSidebarCollapseToggle();
-    }
+      function initSidebarCollapseToggle() {
+        const sidebar = document.querySelector('.sidebar');
+        const toggle = document.querySelector('.sidebar-toggle');
+        const content = document.querySelector('.content');
+        if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
 
-    function initSidebarCollapseToggle() {
-      const sidebar = document.querySelector('.sidebar');
-      const toggle = document.querySelector('.sidebar-toggle');
-      const content = document.querySelector('.content');
-      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+        const toggleImg = toggle.querySelector('img');
+        toggle.addEventListener('click', () => {
+          sidebar.classList.toggle('closed');
+          content.classList.toggle('expanded');
 
-      const toggleImg = toggle.querySelector('img');
-      toggle.addEventListener('click', () => {
-        sidebar.classList.toggle('closed');
-        content.classList.toggle('expanded');
+          if (sidebar.classList.contains('closed')) {
+            if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+          } else {
+            if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+          }
+        });
 
-        if (sidebar.classList.contains('closed')) {
-          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+        toggle.dataset.bound = '1';
+      }
+
+      function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+        if (!sidebar || !overlay) return;
+
+        sidebar.classList.toggle('active');
+
+        if (sidebar.classList.contains('active')) {
+          overlay.classList.add('show');
         } else {
-          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+          overlay.classList.remove('show');
         }
-      });
+      }
 
-      toggle.dataset.bound = '1';
-    }
+      function closeSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+        if (!sidebar || !overlay) return;
 
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
-      if (!sidebar || !overlay) return;
-
-      sidebar.classList.toggle('active');
-
-      if (sidebar.classList.contains('active')) {
-        overlay.classList.add('show');
-      } else {
+        sidebar.classList.remove('active');
         overlay.classList.remove('show');
       }
-    }
 
-    function closeSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.overlay');
-      if (!sidebar || !overlay) return;
+      loadSharedSidebar();
 
-      sidebar.classList.remove('active');
-      overlay.classList.remove('show');
-    }
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
 
-    loadSharedSidebar();
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation(); // クリックが外側に伝播しないように
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
 
-    const icon = document.querySelector('.header-account_circle');
-    const menu = document.querySelector('.account-menu');
-
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation(); // クリックが外側に伝播しないように
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-  </script>
+    </script>
+  </div>
 </body>
 </html>

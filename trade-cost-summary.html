@@ -388,12 +388,19 @@
   margin: 0 0 6px;
   font-size: 20px;
   color: #1d3f66;
+  text-align: left;
 }
 
 .section-header p {
   margin: 0;
   font-size: 13px;
   color: #64748b;
+  text-align: left;
+}
+
+/* 明細切替エリア：タイトル・説明文を左寄せ */
+.panel-area .section-header > div {
+  text-align: left;
 }
 
 .grid-2 {
@@ -458,6 +465,35 @@
   background: #f3f8ff;
   font-weight: 700;
   border-top: 2px solid #bfd7f6;
+}
+
+/* ①明細テーブル: 乙仲・コンテナは左、その他は右 */
+#panel1 .data-table thead th:nth-child(1),
+#panel1 .data-table thead th:nth-child(2) {
+  text-align: left;
+}
+
+#panel1 .data-table thead th:nth-child(n + 3) {
+  text-align: right;
+}
+
+#panel1 .data-table tbody tr:not(.subtotal-row):not(.total-row) td:nth-child(1),
+#panel1 .data-table tbody tr:not(.subtotal-row):not(.total-row) td:nth-child(2) {
+  text-align: left;
+}
+
+#panel1 .data-table tbody tr:not(.subtotal-row):not(.total-row) td:nth-child(n + 3) {
+  text-align: right;
+}
+
+#panel1 .data-table tbody tr.subtotal-row td:nth-child(1),
+#panel1 .data-table tbody tr.total-row td:nth-child(1) {
+  text-align: left;
+}
+
+#panel1 .data-table tbody tr.subtotal-row td:nth-child(n + 2),
+#panel1 .data-table tbody tr.total-row td:nth-child(n + 2) {
+  text-align: right;
 }
 
 .ratio-up {
@@ -895,15 +931,25 @@
     }
   }
 
+  /* スマホ: trade-cost-list.html と同様（flex 維持 + 本文 margin 負値。sidebar/submenu は css/style.css 前提） */
   @media (max-width: 768px) {
-    #sidebarMount {
-      display: none;
+    html,
+    body {
+      height: auto;
+      min-height: 100%;
+      overflow-y: auto;
     }
 
     .main-wrapper {
-      display: block;
+      display: flex;
       width: 100%;
+      flex: 1;
+      height: auto;
+      min-height: calc(100vh - 48px);
+      overflow: visible;
     }
+
+    /* #sidebarMount / .sidebar は上書きしない */
 
     .header-title {
       margin: 5px 0px 0px 35px;
@@ -920,7 +966,8 @@
       flex: 1;
       width: 100%;
       padding: 12px 12px 56px 12px;
-      margin-left: 0;
+      margin-left: -220px;
+      overflow: visible;
     }
 
     .content:not(.expanded) {
@@ -929,7 +976,7 @@
 
     .content.expanded {
       width: 100%;
-      margin-left: 0;
+      margin-left: -220px;
       padding-left: 12px;
     }
 
@@ -948,24 +995,15 @@
 
     .btn-fab-bar {
       position: fixed;
-      left: 12px;
       right: 12px;
       bottom: 12px;
       z-index: 2001;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
       gap: 12px;
-      align-items: stretch;
-    }
-
-    .btn-fab-bar #btnClear {
-      grid-column: 1;
-      grid-row: 2;
-    }
-
-    .btn-fab-bar #btnEntry {
-      grid-column: 2;
-      grid-row: 2;
+      flex-wrap: nowrap;
     }
 
     .btn-fab-new {
@@ -973,8 +1011,7 @@
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      width: 100%;
-      min-width: 0;
+      min-width: 140px;
       height: 34px;
       padding: 6px 14px;
       box-sizing: border-box;
@@ -1009,6 +1046,19 @@
       padding: 5px 6px;
       box-sizing: border-box;
     }
+
+    /* ハンバーガーボタン */
+    .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
   }
 
   /* 集計するボタン */
@@ -1132,489 +1182,568 @@
       </div>
     </header>
 -->
-
-    <!-- 集計条件 -->
-    <section class="card search-card">
-      <div class="card-title">集計条件</div>
-      <div class="search-grid">
-        <div class="form-group">
-          <label for="year">対象年</label>
-          <select id="year">
-            <option>2026年</option>
-            <option>2025年</option>
-            <option>2024年</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="periodFrom">期間（開始）</label>
-          <input type="month" id="periodFrom" value="2026-01">
-        </div>
-
-        <div class="form-group">
-          <label for="periodTo">期間（終了）</label>
-          <input type="month" id="periodTo" value="2026-12">
-        </div>
-
-        <div class="form-group">
-          <label for="maker">メーカー</label>
-          <select id="maker">
-            <option>すべて</option>
-            <option>メーカーA</option>
-            <option>メーカーB</option>
-            <option>メーカーC</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="deliveryPlace">納品場所</label>
-          <select id="deliveryPlace">
-            <option>すべて</option>
-            <option>瀬戸</option>
-            <option>直流</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="size">コンテナサイズ</label>
-          <select id="size">
-            <option>すべて</option>
-            <option>20FT</option>
-            <option>40FT</option>
-            <option>40HQ</option>
-            <option>LCL</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="freightType">費用区分</label>
-          <select id="freightType">
-            <option>すべて</option>
-            <option>海上費用</option>
-            <option>国内費用</option>
-            <option>固定費</option>
-            <option>変動費</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="search-actions">
-        <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">条件クリア</button>
-        <button type="button" class="btn-primary" id="searchBtn">集計する</button>
-      </div>
-    </section>
-
-    <!-- 切替ボタン -->
-    <section class="summary-switch">
-      <button class="switch-btn active" data-target="panel1">① 乙仲別・コンテナ別</button>
-      <button class="switch-btn" data-target="panel2">② 月別比較</button>
-      <button class="switch-btn" data-target="panel3">③ 費用別集計</button>
-      <button class="switch-btn" data-target="panel4">④ 固定費・変動費</button>
-      <button class="switch-btn" data-target="panel5">⑤ 積載率推移</button>
-    </section>
-
-    <!-- KPI -->
-    <section class="kpi-row">
-      <div class="kpi-card">
-        <div class="kpi-label">対象本数</div>
-        <div class="kpi-value">248本</div>
-        <div class="kpi-sub">前年同期 231本</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">海上計</div>
-        <div class="kpi-value">¥12,860,000</div>
-        <div class="kpi-sub">前年対比 106.8%</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">国内計</div>
-        <div class="kpi-value">¥5,430,000</div>
-        <div class="kpi-sub">前年対比 102.1%</div>
-      </div>
-      <div class="kpi-card total-kpi">
-        <div class="kpi-label">合計</div>
-        <div class="kpi-value">¥18,290,000</div>
-        <div class="kpi-sub">前年差 +¥1,120,000</div>
-      </div>
-    </section>
-
-    <!-- 明細切替エリア -->
-    <div class="panel-area">
-
-      <!-- ① -->
-      <section id="panel1" class="summary-panel active">
-        <section class="card content-block">
-          <div class="section-header">
-            <div>
-              <h2>① 乙仲別コンテナ別 集計</h2>
-              <p>本数、海上費用、国内費用、合計を乙仲別・コンテナ別に確認</p>
-            </div>
-            <button type="button" class="btn btn-light" id="showDetailBtn">明細表示</button>
+      <!-- 集計条件 -->
+      <section class="card search-card">
+        <div class="card-title">集計条件</div>
+        <div class="search-grid">
+          <div class="form-group">
+            <label for="year">対象年</label>
+            <select id="year">
+              <option>2026年</option>
+              <option>2025年</option>
+              <option>2024年</option>
+            </select>
           </div>
 
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>乙仲</th>
-                  <th>コンテナ</th>
-                  <th>本数</th>
-                  <th>海上費用税抜</th>
-                  <th>海上消費税</th>
-                  <th>海上計</th>
-                  <th>国内費用税抜</th>
-                  <th>国内消費税</th>
-                  <th>国内計</th>
-                  <th>合計</th>
-                </tr>
-              </thead>
-              <tbody>
-  <tr>
-    <td>乙仲A</td>
-    <td>20FT</td>
-    <td class="text-right">28</td>
-    <td class="text-right">1,120,000</td>
-    <td class="text-right">112,000</td>
-    <td class="text-right">1,232,000</td>
-    <td class="text-right">420,000</td>
-    <td class="text-right">42,000</td>
-    <td class="text-right">462,000</td>
-    <td class="text-right total-cell">1,694,000</td>
-  </tr>
-  <tr>
-    <td>乙仲A</td>
-    <td>40FT</td>
-    <td class="text-right">54</td>
-    <td class="text-right">2,480,000</td>
-    <td class="text-right">248,000</td>
-    <td class="text-right">2,728,000</td>
-    <td class="text-right">930,000</td>
-    <td class="text-right">93,000</td>
-    <td class="text-right">1,023,000</td>
-    <td class="text-right total-cell">3,751,000</td>
-  </tr>
-  <tr class="subtotal-row">
-    <td colspan="2">乙仲A 小計</td>
-    <td class="text-right">82</td>
-    <td class="text-right">3,600,000</td>
-    <td class="text-right">360,000</td>
-    <td class="text-right">3,960,000</td>
-    <td class="text-right">1,350,000</td>
-    <td class="text-right">135,000</td>
-    <td class="text-right">1,485,000</td>
-    <td class="text-right total-cell">5,445,000</td>
-  </tr>
-
-  <tr>
-    <td>乙仲B</td>
-    <td>40HQ</td>
-    <td class="text-right">61</td>
-    <td class="text-right">3,160,000</td>
-    <td class="text-right">316,000</td>
-    <td class="text-right">3,476,000</td>
-    <td class="text-right">1,250,000</td>
-    <td class="text-right">125,000</td>
-    <td class="text-right">1,375,000</td>
-    <td class="text-right total-cell">4,851,000</td>
-  </tr>
-  <tr>
-    <td>乙仲B</td>
-    <td>20FT</td>
-    <td class="text-right">35</td>
-    <td class="text-right">1,680,000</td>
-    <td class="text-right">168,000</td>
-    <td class="text-right">1,848,000</td>
-    <td class="text-right">720,000</td>
-    <td class="text-right">72,000</td>
-    <td class="text-right">792,000</td>
-    <td class="text-right total-cell">2,640,000</td>
-  </tr>
-  <tr class="subtotal-row">
-    <td colspan="2">乙仲B 小計</td>
-    <td class="text-right">96</td>
-    <td class="text-right">4,840,000</td>
-    <td class="text-right">484,000</td>
-    <td class="text-right">5,324,000</td>
-    <td class="text-right">1,970,000</td>
-    <td class="text-right">197,000</td>
-    <td class="text-right">2,167,000</td>
-    <td class="text-right total-cell">7,491,000</td>
-  </tr>
-
-  <tr>
-    <td>乙仲C</td>
-    <td>LCL</td>
-    <td class="text-right">70</td>
-    <td class="text-right">3,250,000</td>
-    <td class="text-right">325,000</td>
-    <td class="text-right">3,575,000</td>
-    <td class="text-right">1,590,000</td>
-    <td class="text-right">159,000</td>
-    <td class="text-right">1,749,000</td>
-    <td class="text-right total-cell">5,324,000</td>
-  </tr>
-  <tr class="subtotal-row">
-    <td colspan="2">乙仲C 小計</td>
-    <td class="text-right">70</td>
-    <td class="text-right">3,250,000</td>
-    <td class="text-right">325,000</td>
-    <td class="text-right">3,575,000</td>
-    <td class="text-right">1,590,000</td>
-    <td class="text-right">159,000</td>
-    <td class="text-right">1,749,000</td>
-    <td class="text-right total-cell">5,324,000</td>
-  </tr>
-
-  <tr class="total-row">
-    <td colspan="2">総合計</td>
-    <td class="text-right">248</td>
-    <td class="text-right">11,690,000</td>
-    <td class="text-right">1,169,000</td>
-    <td class="text-right">12,859,000</td>
-    <td class="text-right">4,910,000</td>
-    <td class="text-right">491,000</td>
-    <td class="text-right">5,401,000</td>
-    <td class="text-right total-cell">18,260,000</td>
-  </tr>
-</tbody>
-            </table>
+          <div class="form-group">
+            <label for="periodFrom">期間（開始）</label>
+            <input type="month" id="periodFrom" value="2026-01">
           </div>
-        </section>
+
+          <div class="form-group">
+            <label for="periodTo">期間（終了）</label>
+            <input type="month" id="periodTo" value="2026-12">
+          </div>
+
+          <div class="form-group">
+            <label for="maker">メーカー</label>
+            <select id="maker">
+              <option>すべて</option>
+              <option>メーカーA</option>
+              <option>メーカーB</option>
+              <option>メーカーC</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="deliveryPlace">納品場所</label>
+            <select id="deliveryPlace">
+              <option>すべて</option>
+              <option>瀬戸</option>
+              <option>直流</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="size">コンテナサイズ</label>
+            <select id="size">
+              <option>すべて</option>
+              <option>20FT</option>
+              <option>40FT</option>
+              <option>40HQ</option>
+              <option>LCL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="freightType">費用区分</label>
+            <select id="freightType">
+              <option>すべて</option>
+              <option>海上費用</option>
+              <option>国内費用</option>
+              <option>固定費</option>
+              <option>変動費</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="search-actions">
+          <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">条件クリア</button>
+          <button type="button" class="btn-primary" id="searchBtn">集計する</button>
+        </div>
       </section>
 
-      <!-- ② -->
-      <section id="panel2" class="summary-panel">
-  <section class="card content-block">
-    <div class="section-header">
-      <div>
-        <h2>② 月別比較（前期 / 今期 / 対比）</h2>
-        <p>月別に、瀬戸・直流・合計の本数、入荷ケース数、費用を比較</p>
-      </div>
-    </div>
+      <!-- 切替ボタン -->
+      <section class="summary-switch">
+        <button class="switch-btn active" data-target="panel1">① 乙仲別・コンテナ別</button>
+        <button class="switch-btn" data-target="panel2">② 月別比較</button>
+        <button class="switch-btn" data-target="panel3">③ 費用別集計</button>
+        <button class="switch-btn" data-target="panel4">④ 固定費・変動費</button>
+        <button class="switch-btn" data-target="panel5">⑤ 積載率推移</button>
+      </section>
 
-    <div class="table-wrap">
-      <table class="data-table month-comparison-table">
-        <thead>
-          <tr>
-            <th rowspan="2">月</th>
-            <th rowspan="2">区分</th>
-            <th colspan="3">本数</th>
-            <th colspan="3">入荷ケース数</th>
-            <th rowspan="2">費用</th>
-          </tr>
-          <tr>
-            <th>瀬戸</th>
-            <th>直流</th>
-            <th>合計</th>
-            <th>瀬戸</th>
-            <th>直流</th>
-            <th>合計</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- 9月 -->
-          <tr>
-            <td class="month-cell" rowspan="3">9月</td>
-            <td class="label-cell">今期</td>
-            <td class="text-right">12</td>
-            <td class="text-right">8</td>
-            <td class="text-right">20</td>
-            <td class="text-right">7,800</td>
-            <td class="text-right">4,900</td>
-            <td class="text-right">12,700</td>
-            <td class="text-right">1,280,000</td>
-          </tr>
-          <tr>
-            <td class="label-cell">前期</td>
-            <td class="text-right">10</td>
-            <td class="text-right">9</td>
-            <td class="text-right">19</td>
-            <td class="text-right">7,100</td>
-            <td class="text-right">5,200</td>
-            <td class="text-right">12,300</td>
-            <td class="text-right">1,210,000</td>
-          </tr>
-          <tr class="compare-row">
-            <td class="label-cell">対比</td>
-            <td class="text-right ratio-up">120.0%</td>
-            <td class="text-right ratio-down">88.9%</td>
-            <td class="text-right ratio-up">105.3%</td>
-            <td class="text-right ratio-up">109.9%</td>
-            <td class="text-right ratio-down">94.2%</td>
-            <td class="text-right ratio-up">103.3%</td>
-            <td class="text-right ratio-up">105.8%</td>
-          </tr>
+      <!-- KPI -->
+      <section class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">対象本数</div>
+          <div class="kpi-value">248本</div>
+          <div class="kpi-sub">前年同期 231本</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">海上計</div>
+          <div class="kpi-value">¥12,860,000</div>
+          <div class="kpi-sub">前年対比 106.8%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">国内計</div>
+          <div class="kpi-value">¥5,430,000</div>
+          <div class="kpi-sub">前年対比 102.1%</div>
+        </div>
+        <div class="kpi-card total-kpi">
+          <div class="kpi-label">合計</div>
+          <div class="kpi-value">¥18,290,000</div>
+          <div class="kpi-sub">前年差 +¥1,120,000</div>
+        </div>
+      </section>
 
-          <!-- 10月 -->
-          <tr>
-            <td class="month-cell" rowspan="3">10月</td>
-            <td class="label-cell">今期</td>
-            <td class="text-right">14</td>
-            <td class="text-right">11</td>
-            <td class="text-right">25</td>
-            <td class="text-right">8,900</td>
-            <td class="text-right">6,300</td>
-            <td class="text-right">15,200</td>
-            <td class="text-right">1,520,000</td>
-          </tr>
-          <tr>
-            <td class="label-cell">前期</td>
-            <td class="text-right">13</td>
-            <td class="text-right">10</td>
-            <td class="text-right">23</td>
-            <td class="text-right">8,300</td>
-            <td class="text-right">5,800</td>
-            <td class="text-right">14,100</td>
-            <td class="text-right">1,430,000</td>
-          </tr>
-          <tr class="compare-row">
-            <td class="label-cell">対比</td>
-            <td class="text-right ratio-up">107.7%</td>
-            <td class="text-right ratio-up">110.0%</td>
-            <td class="text-right ratio-up">108.7%</td>
-            <td class="text-right ratio-up">107.2%</td>
-            <td class="text-right ratio-up">108.6%</td>
-            <td class="text-right ratio-up">107.8%</td>
-            <td class="text-right ratio-up">106.3%</td>
-          </tr>
+      <!-- 明細切替エリア -->
+      <div class="panel-area">
 
-          <!-- 合計 -->
-          <tr class="total-row">
-            <td class="month-cell" rowspan="3">合計</td>
-            <td class="label-cell">今期</td>
-            <td class="text-right">148</td>
-            <td class="text-right">100</td>
-            <td class="text-right">248</td>
-            <td class="text-right">95,200</td>
-            <td class="text-right">68,600</td>
-            <td class="text-right">163,800</td>
-            <td class="text-right">18,290,000</td>
-          </tr>
-          <tr class="total-row">
-            <td class="label-cell">前期</td>
-            <td class="text-right">140</td>
-            <td class="text-right">91</td>
-            <td class="text-right">231</td>
-            <td class="text-right">89,400</td>
-            <td class="text-right">64,800</td>
-            <td class="text-right">154,200</td>
-            <td class="text-right">17,170,000</td>
-          </tr>
-          <tr class="total-row compare-row">
-            <td class="label-cell">対比</td>
-            <td class="text-right ratio-up">105.7%</td>
-            <td class="text-right ratio-up">109.9%</td>
-            <td class="text-right ratio-up">107.4%</td>
-            <td class="text-right ratio-up">106.5%</td>
-            <td class="text-right ratio-up">105.9%</td>
-            <td class="text-right ratio-up">106.2%</td>
-            <td class="text-right ratio-up">106.5%</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-</section>
-
-      <!-- ③ -->
-      <section id="panel3" class="summary-panel">
-        <div class="grid-2">
+        <!-- ① -->
+        <section id="panel1" class="summary-panel active">
           <section class="card content-block">
             <div class="section-header">
               <div>
-                <h2>③ 費用別集計</h2>
-                <p>どの費用が多いかを月別に把握</p>
+                <h2>① 乙仲別コンテナ別 集計</h2>
+                <p>本数、海上費用、国内費用、合計を乙仲別・コンテナ別に確認</p>
               </div>
+              <button type="button" class="btn btn-light" id="showDetailBtn">明細表示</button>
             </div>
 
             <div class="table-wrap">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>費用項目</th>
-                    <th>1月</th>
-                    <th>2月</th>
-                    <th>3月</th>
-                    <th>4月</th>
-                    <th>累計</th>
-                    <th>構成比</th>
+                    <th>乙仲</th>
+                    <th>コンテナ</th>
+                    <th>本数</th>
+                    <th>海上費用税抜</th>
+                    <th>海上消費税</th>
+                    <th>海上計</th>
+                    <th>国内費用税抜</th>
+                    <th>国内消費税</th>
+                    <th>国内計</th>
+                    <th>合計</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>海上運賃</td>
-                    <td class="text-right">480,000</td>
-                    <td class="text-right">520,000</td>
-                    <td class="text-right">510,000</td>
-                    <td class="text-right">530,000</td>
-                    <td class="text-right">2,040,000</td>
-                    <td class="text-right">22.4%</td>
+                    <td>乙仲A</td>
+                    <td>20FT</td>
+                    <td class="text-right">28</td>
+                    <td class="text-right">1,120,000</td>
+                    <td class="text-right">112,000</td>
+                    <td class="text-right">1,232,000</td>
+                    <td class="text-right">420,000</td>
+                    <td class="text-right">42,000</td>
+                    <td class="text-right">462,000</td>
+                    <td class="text-right total-cell">1,694,000</td>
                   </tr>
                   <tr>
-                    <td>CHC</td>
-                    <td class="text-right">95,000</td>
-                    <td class="text-right">88,000</td>
-                    <td class="text-right">91,000</td>
-                    <td class="text-right">96,000</td>
-                    <td class="text-right">370,000</td>
-                    <td class="text-right">4.1%</td>
+                    <td>乙仲A</td>
+                    <td>40FT</td>
+                    <td class="text-right">54</td>
+                    <td class="text-right">2,480,000</td>
+                    <td class="text-right">248,000</td>
+                    <td class="text-right">2,728,000</td>
+                    <td class="text-right">930,000</td>
+                    <td class="text-right">93,000</td>
+                    <td class="text-right">1,023,000</td>
+                    <td class="text-right total-cell">3,751,000</td>
                   </tr>
+                  <tr class="subtotal-row">
+                    <td colspan="2">乙仲A 小計</td>
+                    <td class="text-right">82</td>
+                    <td class="text-right">3,600,000</td>
+                    <td class="text-right">360,000</td>
+                    <td class="text-right">3,960,000</td>
+                    <td class="text-right">1,350,000</td>
+                    <td class="text-right">135,000</td>
+                    <td class="text-right">1,485,000</td>
+                    <td class="text-right total-cell">5,445,000</td>
+                  </tr>
+
+                  <tr>
+                    <td>乙仲B</td>
+                    <td>40HQ</td>
+                    <td class="text-right">61</td>
+                    <td class="text-right">3,160,000</td>
+                    <td class="text-right">316,000</td>
+                    <td class="text-right">3,476,000</td>
+                    <td class="text-right">1,250,000</td>
+                    <td class="text-right">125,000</td>
+                    <td class="text-right">1,375,000</td>
+                    <td class="text-right total-cell">4,851,000</td>
+                  </tr>
+                  <tr>
+                    <td>乙仲B</td>
+                    <td>20FT</td>
+                    <td class="text-right">35</td>
+                    <td class="text-right">1,680,000</td>
+                    <td class="text-right">168,000</td>
+                    <td class="text-right">1,848,000</td>
+                    <td class="text-right">720,000</td>
+                    <td class="text-right">72,000</td>
+                    <td class="text-right">792,000</td>
+                    <td class="text-right total-cell">2,640,000</td>
+                  </tr>
+                  <tr class="subtotal-row">
+                    <td colspan="2">乙仲B 小計</td>
+                    <td class="text-right">96</td>
+                    <td class="text-right">4,840,000</td>
+                    <td class="text-right">484,000</td>
+                    <td class="text-right">5,324,000</td>
+                    <td class="text-right">1,970,000</td>
+                    <td class="text-right">197,000</td>
+                    <td class="text-right">2,167,000</td>
+                    <td class="text-right total-cell">7,491,000</td>
+                  </tr>
+
+                  <tr>
+                    <td>乙仲C</td>
+                    <td>LCL</td>
+                    <td class="text-right">70</td>
+                    <td class="text-right">3,250,000</td>
+                    <td class="text-right">325,000</td>
+                    <td class="text-right">3,575,000</td>
+                    <td class="text-right">1,590,000</td>
+                    <td class="text-right">159,000</td>
+                    <td class="text-right">1,749,000</td>
+                    <td class="text-right total-cell">5,324,000</td>
+                  </tr>
+                  <tr class="subtotal-row">
+                    <td colspan="2">乙仲C 小計</td>
+                    <td class="text-right">70</td>
+                    <td class="text-right">3,250,000</td>
+                    <td class="text-right">325,000</td>
+                    <td class="text-right">3,575,000</td>
+                    <td class="text-right">1,590,000</td>
+                    <td class="text-right">159,000</td>
+                    <td class="text-right">1,749,000</td>
+                    <td class="text-right total-cell">5,324,000</td>
+                  </tr>
+
                   <tr class="total-row">
-                    <td>合計</td>
-                    <td class="text-right">1,240,000</td>
-                    <td class="text-right">1,285,000</td>
-                    <td class="text-right">1,560,000</td>
-                    <td class="text-right">1,620,000</td>
-                    <td class="text-right">5,705,000</td>
-                    <td class="text-right">100.0%</td>
+                    <td colspan="2">総合計</td>
+                    <td class="text-right">248</td>
+                    <td class="text-right">11,690,000</td>
+                    <td class="text-right">1,169,000</td>
+                    <td class="text-right">12,859,000</td>
+                    <td class="text-right">4,910,000</td>
+                    <td class="text-right">491,000</td>
+                    <td class="text-right">5,401,000</td>
+                    <td class="text-right total-cell">18,260,000</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </section>
-
-          <section class="card chart-card">
-            <div class="section-header">
-              <div>
-                <h2>費用構成 上位</h2>
-                <p>多い費用が視覚的にわかる表示</p>
-              </div>
-            </div>
-
-            <div class="ranking-list">
-              <div class="ranking-item">
-                <div class="rank-info">
-                  <span class="rank-no">1</span>
-                  <span class="rank-name">海上運賃</span>
-                </div>
-                <div class="rank-bar-area">
-                  <div class="rank-bar w90"></div>
-                  <span class="rank-value">2,040,000</span>
-                </div>
-              </div>
-
-              <div class="ranking-item">
-                <div class="rank-info">
-                  <span class="rank-no">2</span>
-                  <span class="rank-name">運搬料</span>
-                </div>
-                <div class="rank-bar-area">
-                  <div class="rank-bar w62"></div>
-                  <span class="rank-value">883,000</span>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <!-- ④ -->
-      <section id="panel4" class="summary-panel">
-        <div class="grid-2">
+        </section>
+      </div>
+        <!-- ② -->
+        <section id="panel2" class="summary-panel">
           <section class="card content-block">
             <div class="section-header">
               <div>
-                <h2>④ 固定費・変動費 月別集計</h2>
-                <p>費用を固定費・変動費でまとめた月別確認</p>
+                <h2>② 月別比較（前期 / 今期 / 対比）</h2>
+                <p>月別に、瀬戸・直流・合計の本数、入荷ケース数、費用を比較</p>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table month-comparison-table">
+                <thead>
+                  <tr>
+                    <th rowspan="2">月</th>
+                    <th rowspan="2">区分</th>
+                    <th colspan="3">本数</th>
+                    <th colspan="3">入荷ケース数</th>
+                    <th rowspan="2">費用</th>
+                  </tr>
+                  <tr>
+                    <th>瀬戸</th>
+                    <th>直流</th>
+                    <th>合計</th>
+                    <th>瀬戸</th>
+                    <th>直流</th>
+                    <th>合計</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 9月 -->
+                  <tr>
+                    <td class="month-cell" rowspan="3">9月</td>
+                    <td class="label-cell">今期</td>
+                    <td class="text-right">12</td>
+                    <td class="text-right">8</td>
+                    <td class="text-right">20</td>
+                    <td class="text-right">7,800</td>
+                    <td class="text-right">4,900</td>
+                    <td class="text-right">12,700</td>
+                    <td class="text-right">1,280,000</td>
+                  </tr>
+                  <tr>
+                    <td class="label-cell">前期</td>
+                    <td class="text-right">10</td>
+                    <td class="text-right">9</td>
+                    <td class="text-right">19</td>
+                    <td class="text-right">7,100</td>
+                    <td class="text-right">5,200</td>
+                    <td class="text-right">12,300</td>
+                    <td class="text-right">1,210,000</td>
+                  </tr>
+                  <tr class="compare-row">
+                    <td class="label-cell">対比</td>
+                    <td class="text-right ratio-up">120.0%</td>
+                    <td class="text-right ratio-down">88.9%</td>
+                    <td class="text-right ratio-up">105.3%</td>
+                    <td class="text-right ratio-up">109.9%</td>
+                    <td class="text-right ratio-down">94.2%</td>
+                    <td class="text-right ratio-up">103.3%</td>
+                    <td class="text-right ratio-up">105.8%</td>
+                  </tr>
+
+                  <!-- 10月 -->
+                  <tr>
+                    <td class="month-cell" rowspan="3">10月</td>
+                    <td class="label-cell">今期</td>
+                    <td class="text-right">14</td>
+                    <td class="text-right">11</td>
+                    <td class="text-right">25</td>
+                    <td class="text-right">8,900</td>
+                    <td class="text-right">6,300</td>
+                    <td class="text-right">15,200</td>
+                    <td class="text-right">1,520,000</td>
+                  </tr>
+                  <tr>
+                    <td class="label-cell">前期</td>
+                    <td class="text-right">13</td>
+                    <td class="text-right">10</td>
+                    <td class="text-right">23</td>
+                    <td class="text-right">8,300</td>
+                    <td class="text-right">5,800</td>
+                    <td class="text-right">14,100</td>
+                    <td class="text-right">1,430,000</td>
+                  </tr>
+                  <tr class="compare-row">
+                    <td class="label-cell">対比</td>
+                    <td class="text-right ratio-up">107.7%</td>
+                    <td class="text-right ratio-up">110.0%</td>
+                    <td class="text-right ratio-up">108.7%</td>
+                    <td class="text-right ratio-up">107.2%</td>
+                    <td class="text-right ratio-up">108.6%</td>
+                    <td class="text-right ratio-up">107.8%</td>
+                    <td class="text-right ratio-up">106.3%</td>
+                  </tr>
+
+                  <!-- 合計 -->
+                  <tr class="total-row">
+                    <td class="month-cell" rowspan="3">合計</td>
+                    <td class="label-cell">今期</td>
+                    <td class="text-right">148</td>
+                    <td class="text-right">100</td>
+                    <td class="text-right">248</td>
+                    <td class="text-right">95,200</td>
+                    <td class="text-right">68,600</td>
+                    <td class="text-right">163,800</td>
+                    <td class="text-right">18,290,000</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td class="label-cell">前期</td>
+                    <td class="text-right">140</td>
+                    <td class="text-right">91</td>
+                    <td class="text-right">231</td>
+                    <td class="text-right">89,400</td>
+                    <td class="text-right">64,800</td>
+                    <td class="text-right">154,200</td>
+                    <td class="text-right">17,170,000</td>
+                  </tr>
+                  <tr class="total-row compare-row">
+                    <td class="label-cell">対比</td>
+                    <td class="text-right ratio-up">105.7%</td>
+                    <td class="text-right ratio-up">109.9%</td>
+                    <td class="text-right ratio-up">107.4%</td>
+                    <td class="text-right ratio-up">106.5%</td>
+                    <td class="text-right ratio-up">105.9%</td>
+                    <td class="text-right ratio-up">106.2%</td>
+                    <td class="text-right ratio-up">106.5%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- ③ -->
+        <section id="panel3" class="summary-panel">
+          <div class="grid-2">
+            <section class="card content-block">
+              <div class="section-header">
+                <div>
+                  <h2>③ 費用別集計</h2>
+                  <p>どの費用が多いかを月別に把握</p>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>費用項目</th>
+                      <th>1月</th>
+                      <th>2月</th>
+                      <th>3月</th>
+                      <th>4月</th>
+                      <th>累計</th>
+                      <th>構成比</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>海上運賃</td>
+                      <td class="text-right">480,000</td>
+                      <td class="text-right">520,000</td>
+                      <td class="text-right">510,000</td>
+                      <td class="text-right">530,000</td>
+                      <td class="text-right">2,040,000</td>
+                      <td class="text-right">22.4%</td>
+                    </tr>
+                    <tr>
+                      <td>CHC</td>
+                      <td class="text-right">95,000</td>
+                      <td class="text-right">88,000</td>
+                      <td class="text-right">91,000</td>
+                      <td class="text-right">96,000</td>
+                      <td class="text-right">370,000</td>
+                      <td class="text-right">4.1%</td>
+                    </tr>
+                    <tr class="total-row">
+                      <td>合計</td>
+                      <td class="text-right">1,240,000</td>
+                      <td class="text-right">1,285,000</td>
+                      <td class="text-right">1,560,000</td>
+                      <td class="text-right">1,620,000</td>
+                      <td class="text-right">5,705,000</td>
+                      <td class="text-right">100.0%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="card chart-card">
+              <div class="section-header">
+                <div>
+                  <h2>費用構成 上位</h2>
+                  <p>多い費用が視覚的にわかる表示</p>
+                </div>
+              </div>
+
+              <div class="ranking-list">
+                <div class="ranking-item">
+                  <div class="rank-info">
+                    <span class="rank-no">1</span>
+                    <span class="rank-name">海上運賃</span>
+                  </div>
+                  <div class="rank-bar-area">
+                    <div class="rank-bar w90"></div>
+                    <span class="rank-value">2,040,000</span>
+                  </div>
+                </div>
+
+                <div class="ranking-item">
+                  <div class="rank-info">
+                    <span class="rank-no">2</span>
+                    <span class="rank-name">運搬料</span>
+                  </div>
+                  <div class="rank-bar-area">
+                    <div class="rank-bar w62"></div>
+                    <span class="rank-value">883,000</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ④ -->
+        <section id="panel4" class="summary-panel">
+          <div class="grid-2">
+            <section class="card content-block">
+              <div class="section-header">
+                <div>
+                  <h2>④ 固定費・変動費 月別集計</h2>
+                  <p>費用を固定費・変動費でまとめた月別確認</p>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>月</th>
+                      <th>固定費</th>
+                      <th>変動費</th>
+                      <th>合計</th>
+                      <th>固定費率</th>
+                      <th>変動費率</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1月</td>
+                      <td class="text-right">320,000</td>
+                      <td class="text-right">1,040,000</td>
+                      <td class="text-right">1,360,000</td>
+                      <td class="text-right">23.5%</td>
+                      <td class="text-right">76.5%</td>
+                    </tr>
+                    <tr>
+                      <td>2月</td>
+                      <td class="text-right">310,000</td>
+                      <td class="text-right">975,000</td>
+                      <td class="text-right">1,285,000</td>
+                      <td class="text-right">24.1%</td>
+                      <td class="text-right">75.9%</td>
+                    </tr>
+                    <tr class="total-row">
+                      <td>合計</td>
+                      <td class="text-right">3,910,000</td>
+                      <td class="text-right">14,380,000</td>
+                      <td class="text-right">18,290,000</td>
+                      <td class="text-right">21.4%</td>
+                      <td class="text-right">78.6%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="card chart-card">
+              <div class="section-header">
+                <div>
+                  <h2>固定費 / 変動費 推移</h2>
+                  <p>月別の比率変化イメージ</p>
+                </div>
+              </div>
+
+              <div class="stack-chart">
+                <div class="stack-row">
+                  <div class="stack-label">1月</div>
+                  <div class="stack-bar">
+                    <div class="stack fixed w24">23.5%</div>
+                    <div class="stack variable w76">76.5%</div>
+                  </div>
+                </div>
+                <div class="stack-row">
+                  <div class="stack-label">2月</div>
+                  <div class="stack-bar">
+                    <div class="stack fixed w24">24.1%</div>
+                    <div class="stack variable w76">75.9%</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ⑤ -->
+        <section id="panel5" class="summary-panel">
+          <section class="card content-block">
+            <div class="section-header">
+              <div>
+                <h2>⑤ 積載率 月別推移</h2>
+                <p>前年と今年の積載率、および前年差を月別に確認</p>
               </div>
             </div>
 
@@ -1623,135 +1752,54 @@
                 <thead>
                   <tr>
                     <th>月</th>
-                    <th>固定費</th>
-                    <th>変動費</th>
-                    <th>合計</th>
-                    <th>固定費率</th>
-                    <th>変動費率</th>
+                    <th>前年積載率</th>
+                    <th>今年積載率</th>
+                    <th>前年差</th>
+                    <th>本数</th>
+                    <th>入荷ケース数</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>1月</td>
-                    <td class="text-right">320,000</td>
-                    <td class="text-right">1,040,000</td>
-                    <td class="text-right">1,360,000</td>
-                    <td class="text-right">23.5%</td>
-                    <td class="text-right">76.5%</td>
+                    <td class="text-right">78.4%</td>
+                    <td class="text-right">81.2%</td>
+                    <td class="text-right ratio-up">+2.8pt</td>
+                    <td class="text-right">22</td>
+                    <td class="text-right">13,850</td>
                   </tr>
                   <tr>
                     <td>2月</td>
-                    <td class="text-right">310,000</td>
-                    <td class="text-right">975,000</td>
-                    <td class="text-right">1,285,000</td>
-                    <td class="text-right">24.1%</td>
-                    <td class="text-right">75.9%</td>
+                    <td class="text-right">80.1%</td>
+                    <td class="text-right">79.4%</td>
+                    <td class="text-right ratio-down">-0.7pt</td>
+                    <td class="text-right">19</td>
+                    <td class="text-right">12,940</td>
                   </tr>
+                  <tr>
+                    <td>3月</td>
+                    <td class="text-right">76.8%</td>
+                    <td class="text-right">82.5%</td>
+                    <td class="text-right ratio-up">+5.7pt</td>
+                    <td class="text-right">24</td>
+                    <td class="text-right">15,600</td>
+                  </tr>
+
                   <tr class="total-row">
-                    <td>合計</td>
-                    <td class="text-right">3,910,000</td>
-                    <td class="text-right">14,380,000</td>
-                    <td class="text-right">18,290,000</td>
-                    <td class="text-right">21.4%</td>
-                    <td class="text-right">78.6%</td>
+                    <td>平均</td>
+                    <td class="text-right">79.2%</td>
+                    <td class="text-right">81.0%</td>
+                    <td class="text-right ratio-up">+1.8pt</td>
+                    <td class="text-right">248</td>
+                    <td class="text-right">163,800</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </section>
-
-          <section class="card chart-card">
-            <div class="section-header">
-              <div>
-                <h2>固定費 / 変動費 推移</h2>
-                <p>月別の比率変化イメージ</p>
-              </div>
-            </div>
-
-            <div class="stack-chart">
-              <div class="stack-row">
-                <div class="stack-label">1月</div>
-                <div class="stack-bar">
-                  <div class="stack fixed w24">23.5%</div>
-                  <div class="stack variable w76">76.5%</div>
-                </div>
-              </div>
-              <div class="stack-row">
-                <div class="stack-label">2月</div>
-                <div class="stack-bar">
-                  <div class="stack fixed w24">24.1%</div>
-                  <div class="stack variable w76">75.9%</div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <!-- ⑤ -->
-      <section id="panel5" class="summary-panel">
-  <section class="card content-block">
-    <div class="section-header">
-      <div>
-        <h2>⑤ 積載率 月別推移</h2>
-        <p>前年と今年の積載率、および前年差を月別に確認</p>
+        </section>
       </div>
     </div>
-
-    <div class="table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>月</th>
-            <th>前年積載率</th>
-            <th>今年積載率</th>
-            <th>前年差</th>
-            <th>本数</th>
-            <th>入荷ケース数</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1月</td>
-            <td class="text-right">78.4%</td>
-            <td class="text-right">81.2%</td>
-            <td class="text-right ratio-up">+2.8pt</td>
-            <td class="text-right">22</td>
-            <td class="text-right">13,850</td>
-          </tr>
-          <tr>
-            <td>2月</td>
-            <td class="text-right">80.1%</td>
-            <td class="text-right">79.4%</td>
-            <td class="text-right ratio-down">-0.7pt</td>
-            <td class="text-right">19</td>
-            <td class="text-right">12,940</td>
-          </tr>
-          <tr>
-            <td>3月</td>
-            <td class="text-right">76.8%</td>
-            <td class="text-right">82.5%</td>
-            <td class="text-right ratio-up">+5.7pt</td>
-            <td class="text-right">24</td>
-            <td class="text-right">15,600</td>
-          </tr>
-
-          <tr class="total-row">
-            <td>平均</td>
-            <td class="text-right">79.2%</td>
-            <td class="text-right">81.0%</td>
-            <td class="text-right ratio-up">+1.8pt</td>
-            <td class="text-right">248</td>
-            <td class="text-right">163,800</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-</section>
-
-    </div>
-  </div>
 
   <script src="js/sidebar.js"></script>
   <script>
