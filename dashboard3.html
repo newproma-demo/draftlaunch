@@ -692,6 +692,7 @@
       .case-list li {
         flex-wrap: wrap;
         gap: 8px;
+        font-size: 11px;
       }
 
       /* イメージ案③: スマホ用 */
@@ -1015,6 +1016,9 @@
         gap: 6px 10px;
         font-size: 12px;
       }
+      .view-layout-2 .case-list li {
+        font-size: 12px;
+      }
     }
 
     /* 展示会ステータス: スマホ最適化（下に定義してPC指定を確実に上書き） */
@@ -1215,6 +1219,7 @@
       justify-content: space-between;
       padding: 10px 12px;
       border-bottom: 1px solid var(--color-border);
+      font-size: var(--fs-sm);
     }
     .case-list li:hover { background: var(--color-surface); }
     .btn-detail {
@@ -1926,63 +1931,159 @@
       });
 
       const approvalData = [
-        { name: "A案件", category: "①別注", status: "waiting" },
-        { name: "B案件", category: "①別注", status: "waiting" },
-        { name: "C案件", category: "②試作仕様書", status: "waiting" },
+        { name: "A案件", category: "別注図案作成依頼", status: "done" },
+        { name: "B案件", category: "仕様書（定番）※校正指示書含む", status: "waiting" },
+        { name: "C案件", category: "仕様書（別注）※校正指示書含む", status: "waiting" },
+        { name: "D案件", category: "最終サンプル承認結果", status: "waiting" },
+        { name: "E案件", category: "発注書・契約書（定番）", status: "waiting" },
+        { name: "F案件", category: "発注書・契約書（定番加工）", status: "waiting" },
+        { name: "G案件", category: "証紙依頼書（定番・別注・定番加工）", status: "waiting" },
+        { name: "H案件", category: "Ship依頼書(定番)", status: "waiting" },
+        { name: "I案件", category: "Ship依頼書(別注)", status: "waiting" },
+        { name: "J案件", category: "国内手配書(定番)", status: "waiting" },
+        { name: "K案件", category: "国内手配書(別注)", status: "waiting" },
+        { name: "L案件", category: "品質検査合格書", status: "waiting" },
+        { name: "M案件", category: "別注商品登録依頼", status: "waiting" },
 
-        { name: "D案件", category: "②試作仕様書", status: "applying" },
-        { name: "E案件", category: "③最終仕様書", status: "applying" },
+        { name: "N案件", category: "別注図案作成依頼", status: "returned" },
 
-        { name: "F案件", category: "①別注", status: "returned" },
-
-        { name: "G案件", category: "③最終仕様書", status: "done" },
+        { name: "O案件", category: "仕様書（定番）※校正指示書含む", status: "done" },
       ];
       const kessaiRouteMaster = {
-        "ROUTE_BETCHU": {
-          routeName: "別注ルート",
+        "ROUTE_BETCHU_SAKUSEI_IRAI": {
+          routeName: "別注図案作成依頼",
           steps: [
-            { name: "起案", approver: "申請者" },
-            { name: "課長承認", approver: "商品部 課長" },
-            { name: "部長承認", approver: "商品部 部長" },
-            { name: "本部長承認", approver: "商品本部 本部長" },
-            { name: "決裁", approver: "決裁者" }
+            { name: "所属長：決裁", approver: "○○部 丸眞亜蓮" },
+            { name: "専務：決裁", approver: "丸眞成騎" },
+            { name: "商品部部長：回覧", approver: "商品部部長 丸眞翔" },
           ]
         },
-        "ROUTE_SHISAKU": {
-          routeName: "試作仕様書ルート",
+        "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI": {
+          routeName: "仕様書（定番）",
           steps: [
-            { name: "起案", approver: "申請者" },
-            { name: "課長承認", approver: "設計課 課長" },
-            { name: "品質承認", approver: "品質管理責任者" },
-            { name: "部長承認", approver: "開発部 部長" },
-            { name: "決裁", approver: "決裁者" }
+            { name: "コントローラー決裁", approver: "営業部 ○○" },
+            { name: "品質管理決裁", approver: "商品部 担当" },
+            { name: "バイヤー決裁", approver: "品質管理責任者" },
           ]
         },
-        "ROUTE_SAISHU": {
-          routeName: "最終仕様書ルート",
+        "ROUTE_BETCHU_SHIYOSHO_SAKUSEI": {
+          routeName: "仕様書（別注）",
           steps: [
-            { name: "起案", approver: "申請者" },
-            { name: "課長承認", approver: "設計課 課長" },
-            { name: "法務確認", approver: "法務担当" },
-            { name: "部長承認", approver: "開発部 部長" },
-            { name: "本部長承認", approver: "商品本部 本部長" },
-            { name: "決裁", approver: "決裁者" }
+            { name: "営業担当決裁", approver: "営業部 ○○" },
+            { name: "品質管理決裁", approver: "設計課 課長" },
+            { name: "バイヤー決裁", approver: "品質管理責任者" },
+          ]
+        },        
+        "ROUTE_SAISHU_SAMPLESHONIN": {
+          routeName: "最終サンプル承認結果",
+          steps: [
+          { name: "コントローラー決裁", approver: "担当コントローラー" },
+          { name: "バイヤー決裁", approver: "担当バイヤー" }
+          ]
+        }, 
+        "ROUTE_TEIBAN_KEIYAKU_SAKUSEI": {
+          routeName: "発注書・契約書（定番）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "商品部部長決裁", approver: "商品部 部長" }
+          ]
+        },
+        "ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI": {
+          routeName: "発注書・契約書（定番加工）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "商品部部長決裁", approver: "商品部 部長" }
+          ]
+        },
+        "ROUTE_BETCHU_KEIYAKU_SAKUSEI": {
+          routeName: "発注書・契約書（別注）",
+          steps: [
+            { name: "所属長決裁", approver: "商品部 ○○" },
+            { name: "専務決裁", approver: "専務 ○○" },
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "商品部部長決裁", approver: "商品部 部長" }
+          ]
+        },
+        "ROUTE_SHOSHIIRAISHO_SAKUSEI": {
+          routeName: "証紙依頼書（定番・別注・定番加工）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "専務決裁", approver: "専務 ○○" },
+            { name: "経営管理担当", approver: "経営管理課 担当" }
+          ]
+        },                
+        "ROUTE_SHIP_IRAI_TEIBAN": {
+          routeName: "Ship依頼書（定番）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "貿易課回覧", approver: "貿易課" }
+          ]
+        },
+        "ROUTE_SHIP_IRAI_BETCHU": {
+          routeName: "Ship依頼書（別注）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" },
+            { name: "貿易課回覧", approver: "貿易課" }
+          ]
+        },
+        "ROUTE_KOKUNAITEHAISHO_TEIBAN": {
+          routeName: "国内手配書（定番）",
+          steps: [
+            { name: "バイヤー決裁", approver: "担当バイヤー" }
+          ]
+        },
+        "ROUTE_KOKUNAITEHAISHO_BETCHU": {
+          routeName: "国内手配書（別注）",
+          steps: [
+             { name: "バイヤー決裁", approver: "担当バイヤー" }
+          ]
+        },
+        "ROUTE_HINSHITSUKENSAGOUKAKUSHO": {
+          routeName: "品質検査合格書",
+          steps: [
+            { name: "コントローラー決裁", approver: "商品部 担当" },
+            { name: "バイヤー決裁", approver: "バイヤー " }
+          ]
+        },
+        "ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI": {
+          routeName: "別注商品登録依頼",
+          steps: [
+            { name: "所属長決裁", approver: "○○部 " },
+            { name: "商品部担当決裁", approver: "商品部 ○○" }
           ]
         }
       };
       const kessaiRouteByCategory = {
-        "①別注": "ROUTE_BETCHU",
-        "②試作仕様書": "ROUTE_SHISAKU",
-        "③最終仕様書": "ROUTE_SAISHU"
+        "別注図案作成依頼": "ROUTE_BETCHU_SAKUSEI_IRAI",
+        "仕様書（定番）※校正指示書含む": "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI",
+        "仕様書（別注）※校正指示書含む": "ROUTE_BETCHU_SHIYOSHO_SAKUSEI",
+        "最終サンプル承認結果": "ROUTE_SAISHU_SAMPLESHONIN",
+        "発注書・契約書（定番）": "ROUTE_TEIBAN_KEIYAKU_SAKUSEI",
+        "発注書・契約書（定番加工）": "ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI",
+        "証紙依頼書（定番・別注・定番加工）": "ROUTE_SHOSHIIRAISHO_SAKUSEI",
+        "Ship依頼書(定番)": "ROUTE_SHIP_IRAI_TEIBAN",
+        "Ship依頼書(別注)": "ROUTE_SHIP_IRAI_BETCHU",
+        "国内手配書(定番)": "ROUTE_KOKUNAITEHAISHO_TEIBAN",
+        "国内手配書(別注)": "ROUTE_KOKUNAITEHAISHO_BETCHU",
+        "品質検査合格書": "ROUTE_HINSHITSUKENSAGOUKAKUSHO",
+        "別注商品登録依頼": "ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI"
       };
       const kessaiCaseProgress = {
-        "A案件": { routeId: "ROUTE_BETCHU", currentIndex: 2, completedAt: { 0: "2026-04-21", 1: "2026-04-24", 2: "2026-04-28" } },
-        "B案件": { routeId: "ROUTE_BETCHU", currentIndex: 1, completedAt: { 0: "2026-04-27", 1: "2026-04-29" } },
-        "C案件": { routeId: "ROUTE_SHISAKU", currentIndex: 0, completedAt: { 0: "2026-04-30" } },
-        "D案件": { routeId: "ROUTE_SHISAKU", currentIndex: 3, completedAt: { 0: "2026-04-18", 1: "2026-04-19", 2: "2026-04-22", 3: "2026-04-26" } },
-        "E案件": { routeId: "ROUTE_SAISHU", currentIndex: 3, completedAt: { 0: "2026-04-17", 1: "2026-04-20", 2: "2026-04-22", 3: "2026-04-25" } },
-        "F案件": { routeId: "ROUTE_BETCHU", currentIndex: 1, completedAt: { 0: "2026-04-15", 1: "2026-04-23" } },
-        "G案件": { routeId: "ROUTE_SAISHU", currentIndex: 5, completedAt: { 0: "2026-04-10", 1: "2026-04-11", 2: "2026-04-12", 3: "2026-04-13", 4: "2026-04-15", 5: "2026-04-20" } }
+        "A案件": { routeId: "ROUTE_BETCHU_SAKUSEI_IRAI", currentIndex: 2, completedAt: { 0: "2026-05-01", 1: "2026-05-02", 2: "2026-05-03" } },
+        "B案件": { routeId: "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI", currentIndex: 1, completedAt: { 0: "2026-05-01", 1: "2026-05-04" } },
+        "C案件": { routeId: "ROUTE_BETCHU_SHIYOSHO_SAKUSEI", currentIndex: 0, completedAt: { 0: "2026-04-30" } },
+        "D案件": { routeId: "ROUTE_SAISHU_SAMPLESHONIN", currentIndex: 0, completedAt: {} },
+        "E案件": { routeId: "ROUTE_TEIBAN_KEIYAKU_SAKUSEI", currentIndex: 0, completedAt: {} },
+        "F案件": { routeId: "ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI", currentIndex: 1, completedAt: { 0: "2026-04-20", 1: "2026-04-21" } },
+        "G案件": { routeId: "ROUTE_SHOSHIIRAISHO_SAKUSEI", currentIndex: 2, completedAt: { 0: "2026-04-10", 1: "2026-04-12", 2: "2026-04-15" } },
+        "H案件": { routeId: "ROUTE_SHIP_IRAI_TEIBAN", currentIndex: 0, completedAt: { 0: "2026-05-01" } },
+        "I案件": { routeId: "ROUTE_SHIP_IRAI_BETCHU", currentIndex: 1, completedAt: { 0: "2026-04-15", 1: "2026-04-16" } },
+        "J案件": { routeId: "ROUTE_KOKUNAITEHAISHO_TEIBAN", currentIndex: 0, completedAt: { 0: "2026-05-01" } },
+        "K案件": { routeId: "ROUTE_KOKUNAITEHAISHO_BETCHU", currentIndex: 0, completedAt: { 0: "2026-04-25" } },
+        "L案件": { routeId: "ROUTE_HINSHITSUKENSAGOUKAKUSHO", currentIndex: 0, completedAt: {} },
+        "M案件": { routeId: "ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI", currentIndex: 1, completedAt: { 0: "2026-04-18", 1: "2026-04-20" } },
+        "N案件": { routeId: "ROUTE_BETCHU_SAKUSEI_IRAI", currentIndex: 0, completedAt: {} },
+        "O案件": { routeId: "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI", currentIndex: 2, completedAt: { 0: "2026-04-01", 1: "2026-04-05", 2: "2026-04-10" } }
       };
       const buttons = document.querySelectorAll(".status-btn");
       const listArea = document.getElementById("approvalListArea");
@@ -1995,7 +2096,7 @@
       function resolveRouteId(item) {
         const caseProgress = kessaiCaseProgress[item.name];
         if (caseProgress && caseProgress.routeId) return caseProgress.routeId;
-        return kessaiRouteByCategory[item.category] || "ROUTE_ZUAN_BETCHU";
+        return kessaiRouteByCategory[item.category] || "ROUTE_BETCHU_SAKUSEI_IRAI";
       }
 
       function renderApprovalFlow(item) {
