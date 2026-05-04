@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    body>.header {
+      flex-shrink: 0;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      margin-top: 0;
+    }
+
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 0 0 32px;
+      overflow: hidden;
+      transition: margin-left 0.3s ease;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 33px;
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .screen-body {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr) 320px;
+      gap: 16px;
+      padding-right: 20px;
+      box-sizing: border-box;
+    }
+
+    .search-condition-panel {
+      margin: 0 20px 12px 0;
+      flex-shrink: 0;
+    }
+
+    .search-condition-body {
+      padding: 12px 14px;
+    }
+
+    .search-condition-panel .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .search-toggle-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      min-width: 28px;
+      height: 24px;
+      line-height: 1;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .search-toggle-btn:hover {
+      background: #edf8f0;
+    }
+
+    .search-condition-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 12px;
+      align-items: start;
+    }
+
+    .search-type-toggle {
+      display: inline-flex;
+      gap: 0;
+      background: transparent;
+      isolation: isolate;
+    }
+
+    .search-type-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: 0;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      line-height: 1.2;
+      width: auto;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .search-type-btn:first-child {
+      border-radius: 999px 0 0 999px;
+    }
+
+    .search-type-btn:last-child {
+      border-radius: 0 999px 999px 0;
+    }
+
+    .search-type-btn.is-active {
+      position: relative;
+      z-index: 1;
+      background: #edf8f0;
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-md);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #dfe7e1;
+      background: #f6faf7;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f3e2e;
+      flex-shrink: 0;
+    }
+
+    .panel-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .deadline-panel,
+    .progress-panel {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .deadline-panel .panel-body,
+    .progress-panel .panel-body {
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .progress-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .spec-select {
+      display: none;
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #204331;
+    }
+
+    .spec-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 0;
+    }
+
+    .spec-panel .spec-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .spec-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .spec-item {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .spec-item.is-active {
+      border-color: var(--color-primary);
+      background: #edf8f0;
+    }
+
+    .spec-list-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spec-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .spec-line-val {
+      font-size: 13px;
+      color: #173425;
+      word-break: break-word;
+      line-height: 1.45;
+    }
+
+    .spec-line-val.spec-doc-no {
+      font-size: 14px;
+      font-weight: 600;
+      color: #173425;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .phase-table-wrap {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .small-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .small-btn.primary {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: #446354;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      padding: 8px 9px;
+      font-size: 13px;
+      color: #173425;
+      background: #fff;
+      font-family: inherit;
+    }
+
+    .field-display {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      padding: 8px 9px;
+      font-size: 13px;
+      color: #173425;
+      line-height: 1.4;
+    }
+
+    .field-note {
+      font-size: 11px;
+      color: #75867e;
+      line-height: 1.5;
+    }
+
+    .phase-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .phase-table th:nth-child(1),
+    .phase-table td:nth-child(1),
+    .phase-table th:nth-child(2),
+    .phase-table td:nth-child(2) {
+      width: 50%;
+    }
+
+    .phase-table td:nth-child(1) {
+      overflow-wrap: break-word;
+    }
+
+    .phase-table th,
+    .phase-table td {
+      border: 1px solid #d7e0d9;
+      padding: 8px;
+      vertical-align: top;
+    }
+
+    .phase-table th {
+      background: #f7faf8;
+      color: #2a4738;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .phase-enable-cell {
+      width: 72px;
+      text-align: center;
+    }
+
+    .phase-enable-label {
+      font-size: 12px;
+      color: #446354;
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .phase-date-input {
+      max-width: 160px;
+    }
+
+    .phase-date-input::-webkit-calendar-picker-indicator {
+      display: none;
+      -webkit-appearance: none;
+    }
+
+    .phase-date-input[disabled] {
+      pointer-events: none;
+    }
+
+    .phase-row.is-skipped {
+      background: #fafcfa;
+    }
+
+    .phase-row.is-skipped td {
+      color: #8a9a92;
+    }
+
+    .phase-row.is-skipped input[type="date"] {
+      background: #f2f6f3;
+    }
+
+    .badge-overdue {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: #d62828;
+    }
+
+    .badge-safe {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: #1f8f4f;
+    }
+
+    .card {
+      border: 1px dashed #b9cbbf;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fcfefc;
+    }
+
+    .card:last-child {
+      margin-bottom: 0;
+    }
+
+    .card-title {
+      font-size: 12px;
+      color: #66786f;
+      margin-bottom: 4px;
+    }
+
+    .card-value {
+      font-size: 17px;
+      font-weight: 700;
+      color: #113222;
+      line-height: 1.4;
+    }
+
+    .content-footer {
+      flex-shrink: 0;
+      margin-top: 8px;
+      border-top: 1px solid #cfdad2;
+      min-height: 46px;
+      padding: 6px 10px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      z-index: 5;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    @media (max-width: 1300px) {
+      .screen-body {
+        grid-template-columns: 280px minmax(0, 1fr) 280px;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .content-footer {
+        padding-right: 20px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .spec-select {
+        display: block;
+      }
+
+      .spec-list .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .content {
+        padding: 12px 10px 0 10px;
+      }
+
+      .screen-body {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: minmax(300px, auto) minmax(320px, 1fr);
+        grid-template-areas:
+          "spec deadline"
+          "progress progress";
+        gap: 12px;
+        padding-right: 0;
+      }
+
+      .search-condition-panel {
+        margin-right: 0;
+      }
+
+      .search-condition-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .spec-panel {
+        grid-area: spec;
+        overflow: hidden;
+      }
+
+      .deadline-panel {
+        grid-area: deadline;
+        overflow: hidden;
+      }
+
+      .progress-panel {
+        grid-area: progress;
+        min-height: 0;
+      }
+
+      .deadline-panel .panel-body,
+      .progress-panel .panel-body {
+        overflow: auto;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 767px) {
+      .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        padding: 20px 14px 0;
+        margin-left: -220px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen-body {
+        flex: none;
+        min-height: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        grid-template-areas: none;
+        gap: 12px;
+        padding-right: 0;
+        padding-bottom: 10px;
+      }
+
+      .search-condition-panel {
+        margin: 0 0 12px;
+      }
+
+      .search-condition-body {
+        padding: 10px 12px;
+      }
+
+      .search-condition-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .spec-panel,
+      .deadline-panel,
+      .progress-panel {
+        grid-area: unset;
+        width: 100%;
+      }
+
+      .panel {
+        overflow: visible;
+        min-height: auto;
+        height: auto;
+      }
+
+      .panel-header {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .panel-body {
+        flex: none;
+        min-height: 0;
+        height: auto;
+        max-height: none;
+        padding: 10px 12px;
+        overflow: visible;
+      }
+
+      .spec-panel .spec-list {
+        flex: none;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      .spec-select {
+        display: block;
+      }
+
+      .spec-list .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phase-table-wrap {
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #d7e0d9;
+        border-radius: var(--radius-sm);
+      }
+
+      .phase-table {
+        min-width: 520px;
+        font-size: 12px;
+      }
+
+      .phase-table th,
+      .phase-table td {
+        padding: 6px;
+      }
+
+      .phase-date-input {
+        max-width: none;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .content-footer {
+        position: static;
+        padding: 6px 8px 4px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .content {
+        padding: 14px 10px 0;
+      }
+
+      .page-title {
+        margin-bottom: 12px;
+        font-size: 17px;
+      }
+
+      .panel-header {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .panel-body {
+        padding: 8px 10px;
+      }
+
+      .content-footer {
+        padding: 6px 4px 4px;
+      }
+
+      .content-footer .btn-fab-new {
+        min-width: 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" alt="menu">
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg" alt="account">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div id="sidebarMount"></div>
+
+    <div class="content">
+      <h2 class="page-title">展示会移動</h2>
+
+      <div class="panel search-condition-panel" aria-label="検索条件">
+        <div class="panel-header">
+          <span>検索条件</span>
+          <button id="searchConditionToggleBtn" class="search-toggle-btn" type="button" aria-expanded="true"
+            aria-controls="searchConditionBody">-</button>
+        </div>
+        <div id="searchConditionBody" class="panel-body search-condition-body">
+          <div class="search-condition-grid">
+            <div class="field full">
+              <span class="field-label">検索対象</span>
+              <div class="search-type-toggle" role="group" aria-label="検索対象を選択">
+                <button type="button" class="search-type-btn is-active" data-search-target="spec"
+                  aria-pressed="true">仕様書を検索</button>
+                <button type="button" class="search-type-btn" data-search-target="product"
+                  aria-pressed="false">商品を検索</button>
+              </div>
+            </div>
+            <label class="field">
+              <span class="field-label">仕様書No.</span>
+              <input type="text" placeholder="仕様書No.を入力">
+            </label>
+            <label class="field">
+              <span class="field-label">展示会</span>
+              <select>
+                <option value="">すべて</option>
+                <option value="2026-07-tokyo">2026年7月展 / 東京インターナショナルギフトショー</option>
+                <option value="2026-10-kansai">2026年10月展 / 関西雑貨エキスポ</option>
+                <option value="2026-01-winter">2026年1月展 / 冬季ライフスタイル商談会</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field-label">カテゴリー</span>
+              <select id="searchConditionCategory" aria-label="カテゴリー">
+                <option value="">すべて</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field-label">ブランド/キャラ</span>
+              <select id="searchConditionBrandChara" aria-label="ブランド/キャラ">
+                <option value="">すべて</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field-label">アイテム</span>
+              <select id="searchConditionItem" aria-label="アイテム">
+                <option value="">すべて</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field-label">商品コード</span>
+              <textarea rows="2" placeholder="商品コードを入力"></textarea>
+            </label>
+            <label class="field">
+              <span class="field-label">商品名</span>
+              <input type="text" placeholder="商品名を入力">
+            </label>
+            <label class="field">
+              <span class="field-label">デザイナー</span>
+              <select id="searchConditionDesigner" aria-label="デザイナー">
+                <option value="">すべて</option>
+              </select>
+            </label>
+
+          </div>
+        </div>
+      </div>
+      <div class="screen-body">
+        <section class="panel spec-panel">
+          <div id="listPanelHeader" class="panel-header">仕様書一覧</div>
+          <div class="panel-body">
+            <select id="specListSelect" class="spec-select" aria-label="仕様書を選択"></select>
+            <ul class="spec-list" id="specList">
+              <li class="spec-item is-active" data-spec-no="SP-2026-001" data-hinmei="今治タオル企画（ギフト）"
+                data-product-code="PD-0001" data-product-name="今治タオルセットA"
+                data-category="単品" data-brand="ジブリ" data-item="フェイスタオル" data-designer="デザイナー①">
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-doc-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-designer"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-meta"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item" data-spec-no="SP-2026-042" data-hinmei="雑貨ライン試作セット"
+                data-product-code="PD-0042" data-product-name="雑貨ミックスB"
+                data-category="総合" data-brand="ムーミン" data-item="ミニタオル" data-designer="デザイナー②">
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-doc-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-designer"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-meta"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item" data-spec-no="SP-2026-103" data-hinmei="寝装コレクション（先行）"
+                data-product-code="PD-0103" data-product-name="寝装コレクションC"
+                data-category="AW" data-brand="ディズニー" data-item="タオルケット" data-designer="デザイナー③">
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-doc-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-designer"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-meta"></span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="panel deadline-panel">
+          <div class="panel-header">展示会移動</div>
+          <div class="panel-body">
+            <div class="field-grid">
+              <div class="field full">
+                <span class="field-label">当初展示会</span>
+                <div id="initialSpecDisplay" class="field-display">2026年7月 / 東京インターナショナルギフトショー</div>
+              </div>
+              <div class="field full">
+                <span class="field-label">現在展示会</span>
+                <div id="currentSpecDisplay" class="field-display">2026年7月 / 東京インターナショナルギフトショー</div>
+              </div>
+              <div class="field full">
+                <span class="field-label">移動先展示会</span>
+                <select id="specDestinationSelect">
+                  <option value="">選択してください</option>
+                  <option value="4月展">2026年4月 / 東京インターナショナルギフトショー</option>
+                  <option value="7月展">2026年7月 / 東京インターナショナルギフトショー</option>
+                  <option value="10月展">2026年10月 / 東京インターナショナルギフトショー</option>
+                  <option value="1月展">2027年1月 / 東京インターナショナルギフトショー</option>
+                </select>
+              </div>
+              <div class="field full">
+                <span class="field-label">納期</span>
+                <select id="specDeadlineSelect">
+                  <option value="">選択してください</option>
+                  <option value="standard">標準</option>
+                  <option value="pattern2">パターン2</option>
+                  <option value="pattern3">パターン3</option>
+                </select>
+              </div>
+            </div>
+            <div class="phase-table-wrap" id="phaseDeliveryWrap" hidden aria-label="フェーズごとの納期">
+            <table class="phase-table">
+              <thead>
+                <tr>
+                  <th>フェーズ</th>
+                  <th>納期</th>
+                </tr>
+              </thead>
+              <tbody id="phaseTableBody">
+                <tr class="phase-row">
+                  <td>図案依頼</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>図案校正</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>図案アブローバル</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>試作依頼</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>サンプル着</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>サンプルアブローバル</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>最終仕様（品管）</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>最終仕様（仕入）</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+                <tr class="phase-row">
+                  <td>発注</td>
+                  <td class="phase-date-cell">—</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </section>
+        <section class="panel progress-panel">
+          <div class="panel-header">コメント</div>
+          <div class="panel-body">
+            <label class="field">
+              <span class="field-label">コメント</span>
+              <textarea rows="4"
+                placeholder="例）作業遅延により、展示会時期を移動。"></textarea>
+            </label>
+            <div id="specHistoryCommentMount" class="spec-history-comments" hidden></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="content-footer">
+        <button type="button" class="btn-secondary">取消</button>
+        <button type="button" class="btn-fab-new">登録</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/autocomplete.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script>
+    function loadSharedSidebar() {
+      const mount = document.getElementById('sidebarMount');
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+        } else {
+          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+        }
+      });
+
+      toggle.dataset.bound = '1';
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('show', sidebar.classList.contains('active'));
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    function initAccountMenu() {
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+      if (!icon || !menu) return;
+
+      icon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', () => {
+        menu.style.display = 'none';
+      });
+    }
+
+    function initSpecSearch() {
+      const specList = document.getElementById('specList');
+      const specListSelect = document.getElementById('specListSelect');
+      const initialSpecDisplay = document.getElementById('initialSpecDisplay');
+      const currentSpecDisplay = document.getElementById('currentSpecDisplay');
+      const specDestinationSelect = document.getElementById('specDestinationSelect');
+      const specDeadlineSelect = document.getElementById('specDeadlineSelect');
+      if (!specList || !initialSpecDisplay || !currentSpecDisplay ||
+        !specDestinationSelect || !specDeadlineSelect) return;
+      let items = Array.from(specList.querySelectorAll('.spec-item'));
+
+      /**
+       * 2026年4月展示会＋標準の各フェーズ日（ご指定どおり。ISO YYYY-MM-DD）
+       * 以降の移動先は月差、パターン2/3は標準からの日加算。
+       */
+      const APRIL_2026_STANDARD_ISO = [
+        '2025-06-08',
+        '2025-06-08',
+        '2025-06-20',
+        '2025-06-28',
+        '2025-07-09',
+        '2025-07-16',
+        '2026-05-22',
+        '2026-05-27',
+        '2026-05-31'
+      ];
+
+      const EXHIBIT_MONTH_BY_VALUE = {
+        '4月展': { y: 2026, m: 4 },
+        '7月展': { y: 2026, m: 7 },
+        '10月展': { y: 2026, m: 10 },
+        '1月展': { y: 2027, m: 1 }
+      };
+
+      function monthIndex(y, m) {
+        return y * 12 + (m - 1);
+      }
+
+      const APRIL_2026_INDEX = monthIndex(2026, 4);
+
+      function parseYmdLocal(ymd) {
+        const parts = String(ymd).split('-').map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+
+      function addCalendarMonths(date, delta) {
+        const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const day = d.getDate();
+        d.setMonth(d.getMonth() + delta);
+        if (d.getDate() < day) d.setDate(0);
+        return d;
+      }
+
+      function addDaysLocal(date, n) {
+        const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        d.setDate(d.getDate() + n);
+        return d;
+      }
+
+      function formatSlashDate(d) {
+        const y = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return y + '/' + mo + '/' + day;
+      }
+
+      function refreshPhaseDeliveryTable() {
+        const wrap = document.getElementById('phaseDeliveryWrap');
+        const tbody = document.getElementById('phaseTableBody');
+        if (!wrap || !tbody) return;
+
+        const destVal = specDestinationSelect.value;
+        const dlVal = specDeadlineSelect.value;
+        if (!destVal || !dlVal) {
+          wrap.hidden = true;
+          tbody.querySelectorAll('.phase-date-cell').forEach((cell) => {
+            cell.textContent = '—';
+          });
+          return;
+        }
+
+        const meta = EXHIBIT_MONTH_BY_VALUE[destVal];
+        if (!meta) {
+          wrap.hidden = true;
+          return;
+        }
+
+        const monthDelta = monthIndex(meta.y, meta.m) - APRIL_2026_INDEX;
+        let extraDays = 0;
+        if (dlVal === 'pattern2') extraDays = 7;
+        else if (dlVal === 'pattern3') extraDays = 14;
+
+        const rows = Array.from(tbody.querySelectorAll('tr.phase-row'));
+        for (let i = 0; i < rows.length && i < APRIL_2026_STANDARD_ISO.length; i++) {
+          const dateCell = rows[i].querySelector('.phase-date-cell');
+          if (!dateCell) continue;
+          const base = parseYmdLocal(APRIL_2026_STANDARD_ISO[i]);
+          const shifted = addDaysLocal(addCalendarMonths(base, monthDelta), extraDays);
+          dateCell.textContent = formatSlashDate(shifted);
+        }
+
+        wrap.hidden = false;
+      }
+
+      const DEADLINE_OPTIONS_DEST_EMPTY = [
+        { value: '', text: '選択してください' }
+      ];
+
+      const DEADLINE_OPTIONS_DEST_SET = [
+        { value: '', text: '選択してください' },
+        { value: 'standard', text: '標準' },
+        { value: 'pattern2', text: 'パターン2' },
+        { value: 'pattern3', text: 'パターン3' }
+      ];
+
+      function rebuildDeadlineSelectOptions() {
+        const hasDestination = Boolean(String(specDestinationSelect.value || '').trim());
+        const defs = hasDestination ? DEADLINE_OPTIONS_DEST_SET : DEADLINE_OPTIONS_DEST_EMPTY;
+        specDeadlineSelect.innerHTML = '';
+        defs.forEach((def) => {
+          const opt = document.createElement('option');
+          opt.value = def.value;
+          opt.textContent = def.text;
+          specDeadlineSelect.appendChild(opt);
+        });
+      }
+
+      function getSearchTargetMode() {
+        const activeBtn = document.querySelector('.search-type-btn.is-active');
+        return activeBtn && activeBtn.dataset.searchTarget === 'product' ? 'product' : 'spec';
+      }
+
+      function specOptionLabel(item) {
+        const mode = getSearchTargetMode();
+        if (mode === 'product') {
+          const code = item.dataset.productCode || '';
+          const name = item.dataset.productName || '';
+          const lineProduct = [code, name].filter((part) => String(part || '').trim()).join(' / ');
+          return lineProduct || '（未設定）';
+        }
+        const no = item.dataset.specNo || '';
+        const hinmei = item.dataset.hinmei || '';
+        const line = [no, hinmei].filter((part) => String(part || '').trim()).join(' / ');
+        return line || '（未設定）';
+      }
+
+      function rebuildSpecSelectOptions() {
+        if (!specListSelect) return;
+        const active = getActiveItem();
+        specListSelect.innerHTML = '';
+        items.forEach((item, index) => {
+          const opt = document.createElement('option');
+          opt.value = String(index);
+          opt.textContent = specOptionLabel(item);
+          specListSelect.appendChild(opt);
+        });
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) specListSelect.value = String(idx);
+      }
+
+      function syncSpecSelectValue() {
+        if (!specListSelect) return;
+        if (specListSelect.options.length !== items.length) rebuildSpecSelectOptions();
+        const active = getActiveItem();
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) specListSelect.value = String(idx);
+      }
+
+      function refreshSpecListForMode() {
+        items.forEach((specItem) => renderSpecMeta(specItem));
+        rebuildSpecSelectOptions();
+        syncSpecSelectValue();
+      }
+
+      function getActiveItem() {
+        return items.find((item) => item.classList.contains('is-active')) || null;
+      }
+
+      function selectItem(item) {
+        items.forEach((candidate) => candidate.classList.remove('is-active'));
+        item.classList.add('is-active');
+        syncFormFromItem(item);
+        syncSpecSelectValue();
+        refreshPhaseDeliveryTable();
+      }
+
+      function bindItem(item) {
+        item.addEventListener('click', () => {
+          selectItem(item);
+        });
+      }
+
+      function renderSpecMeta(item) {
+        const mode = getSearchTargetMode();
+        const docNoEl = item.querySelector('.spec-doc-no');
+        const hinmeiEl = item.querySelector('.spec-hinmei');
+        const designerEl = item.querySelector('.spec-designer');
+        const metaEl = item.querySelector('.spec-meta');
+
+        if (docNoEl) {
+          if (mode === 'product') {
+            const code = (item.dataset.productCode || '').trim();
+            docNoEl.textContent = code ? '商品コード: ' + code : '—';
+          } else {
+            const sn = (item.dataset.specNo || '').trim();
+            docNoEl.textContent = sn ? '仕様書No. ' + sn : '—';
+          }
+        }
+        if (hinmeiEl) {
+          if (mode === 'product') {
+            const productName = (item.dataset.productName || '').trim();
+            hinmeiEl.textContent = productName ? productName : '—';
+          } else {
+            const hinmei = (item.dataset.hinmei || '').trim();
+            hinmeiEl.textContent = hinmei ? hinmei : '—';
+          }
+        }
+        if (designerEl) {
+          const designer = (item.dataset.designer || '').trim();
+          designerEl.textContent = designer || '—';
+        }
+        if (metaEl) {
+          const meta = [item.dataset.category, item.dataset.brand, item.dataset.item]
+            .map((v) => (v || '').trim())
+            .filter((v) => v.length > 0)
+            .join(' / ');
+          metaEl.textContent = meta || '—';
+        }
+      }
+
+      function syncFormFromItem(item) {
+        const specNo = (item.dataset.specNo || '').trim();
+        const initialBySpecNo = {
+          'SP-2026-001': '展示会移動実績なし',
+          'SP-2026-042': '2026年4月 / 東京インターナショナルギフトショー',
+          'SP-2026-103': '2026年7月 / 東京インターナショナルギフトショー'
+        };
+        const currentBySpecNo = {
+          'SP-2026-001': '2026年4月 / 東京インターナショナルギフトショー',
+          'SP-2026-042': '2026年7月 / 東京インターナショナルギフトショー',
+          'SP-2026-103': '2026年10月 / 東京インターナショナルギフトショー'
+        };
+        initialSpecDisplay.textContent = initialBySpecNo[specNo] || '展示会移動実績なし';
+        currentSpecDisplay.textContent = currentBySpecNo[specNo] || '—';
+
+        specDestinationSelect.value = '';
+        specDeadlineSelect.value = '';
+        rebuildDeadlineSelectOptions();
+
+        const historyMount = document.getElementById('specHistoryCommentMount');
+        if (historyMount) {
+          historyMount.replaceChildren();
+          const historyBySpecNo = {
+            'SP-2026-042': {
+              label: '2025/06/01 09:00 丸眞 花子',
+              text: '2026年4月 / 東京インターナショナルギフトショーから2026年7月 / 東京インターナショナルギフトショーへ移動。'
+            },
+            'SP-2026-103': {
+              label: '2025/09/01 09:00 丸眞 花子',
+              text: '2026年7月 / 東京インターナショナルギフトショーから2026年10月 / 東京インターナショナルギフトショーへ移動。'
+            }
+          };
+          const history = historyBySpecNo[specNo];
+          if (history) {
+            const wrap = document.createElement('label');
+            wrap.className = 'field';
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'field-label';
+            labelSpan.textContent = history.label;
+            const ta = document.createElement('textarea');
+            ta.rows = 4;
+            ta.readOnly = true;
+            ta.textContent = history.text;
+            wrap.appendChild(labelSpan);
+            wrap.appendChild(ta);
+            historyMount.appendChild(wrap);
+            historyMount.hidden = false;
+          } else {
+            historyMount.hidden = true;
+          }
+        }
+      }
+
+      function syncItemFromForm(item) {
+        renderSpecMeta(item);
+        rebuildSpecSelectOptions();
+      }
+
+      if (specListSelect) {
+        specListSelect.addEventListener('change', () => {
+          const idx = parseInt(specListSelect.value, 10);
+          if (!Number.isFinite(idx) || !items[idx]) return;
+          selectItem(items[idx]);
+        });
+      }
+
+      items.forEach((item) => {
+        renderSpecMeta(item);
+        bindItem(item);
+      });
+
+      window.refreshSpecListForMode = refreshSpecListForMode;
+
+      function onDestinationOrDeadlineChanged() {
+        const activeItem = getActiveItem();
+        if (activeItem) syncItemFromForm(activeItem);
+        refreshPhaseDeliveryTable();
+      }
+
+      specDestinationSelect.addEventListener('change', () => {
+        rebuildDeadlineSelectOptions();
+        specDeadlineSelect.value = '';
+        onDestinationOrDeadlineChanged();
+      });
+      specDeadlineSelect.addEventListener('change', onDestinationOrDeadlineChanged);
+
+      rebuildSpecSelectOptions();
+      const initialActiveItem = getActiveItem() || items[0];
+      if (initialActiveItem) {
+        selectItem(initialActiveItem);
+      }
+    }
+
+    function syncSearchToggleProductWidth() {
+      const specBtn = document.querySelector('.search-type-btn[data-search-target="spec"]');
+      const productBtn = document.querySelector('.search-type-btn[data-search-target="product"]');
+      if (!specBtn || !productBtn) return;
+      const w = specBtn.getBoundingClientRect().width;
+      if (w > 0) {
+        productBtn.style.minWidth = w + 'px';
+      }
+    }
+
+    function initSearchConditionToggle() {
+      const toggleButton = document.getElementById('searchConditionToggleBtn');
+      const panelBody = document.getElementById('searchConditionBody');
+      if (!toggleButton || !panelBody) return;
+
+      toggleButton.addEventListener('click', () => {
+        const willExpand = panelBody.hasAttribute('hidden');
+        if (willExpand) {
+          panelBody.removeAttribute('hidden');
+          toggleButton.textContent = '-';
+          toggleButton.setAttribute('aria-expanded', 'true');
+          requestAnimationFrame(() => {
+            syncSearchToggleProductWidth();
+          });
+        } else {
+          panelBody.setAttribute('hidden', '');
+          toggleButton.textContent = '+';
+          toggleButton.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    function initSearchTargetToggle() {
+      const buttons = Array.from(document.querySelectorAll('.search-type-btn'));
+      const listPanelHeader = document.getElementById('listPanelHeader');
+      if (!buttons.length) return;
+
+      const specBtn = buttons.find((button) => button.dataset.searchTarget === 'spec');
+
+      function setActive(nextButton) {
+        buttons.forEach((button) => {
+          const isActive = button === nextButton;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+        if (listPanelHeader) {
+          const target = nextButton.dataset.searchTarget;
+          listPanelHeader.textContent = target === 'product' ? '商品一覧' : '仕様書リスト';
+        }
+        if (typeof window.refreshSpecListForMode === 'function') {
+          window.refreshSpecListForMode();
+        }
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => setActive(button));
+      });
+
+      syncSearchToggleProductWidth();
+      requestAnimationFrame(syncSearchToggleProductWidth);
+      window.addEventListener('load', syncSearchToggleProductWidth);
+      if (specBtn && typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(syncSearchToggleProductWidth).observe(specBtn);
+      }
+      window.addEventListener('resize', syncSearchToggleProductWidth);
+    }
+
+    function initSearchConditionSelects() {
+      const data = typeof window.AUTOCOMPLETE_LISTS === 'object' && window.AUTOCOMPLETE_LISTS
+        ? window.AUTOCOMPLETE_LISTS
+        : null;
+      if (!data) return;
+
+      function fillSelect(selectId, listKey) {
+        const sel = document.getElementById(selectId);
+        const arr = data[listKey];
+        if (!sel || !Array.isArray(arr)) return;
+        sel.innerHTML = '';
+        const emptyOpt = document.createElement('option');
+        emptyOpt.value = '';
+        emptyOpt.textContent = 'すべて';
+        sel.appendChild(emptyOpt);
+        arr.forEach((text) => {
+          const opt = document.createElement('option');
+          opt.value = text;
+          opt.textContent = text;
+          sel.appendChild(opt);
+        });
+      }
+
+      fillSelect('searchConditionCategory', 'category2');
+      fillSelect('searchConditionBrandChara', 'brandChara');
+      fillSelect('searchConditionItem', 'item');
+      fillSelect('searchConditionDesigner', 'tanto');
+    }
+
+    function initPhaseSkipBehavior() {}
+
+    loadSharedSidebar();
+    initAccountMenu();
+    initSearchConditionSelects();
+    initSearchConditionToggle();
+    initSearchTargetToggle();
+    initSpecSearch();
+    initPhaseSkipBehavior();
+  </script>
+</body>
+
+</html>
