@@ -58,6 +58,8 @@
     }
 
     .screen-body {
+      position: relative;
+      z-index: 1;
       flex: 1;
       min-height: 0;
       min-width: 0;
@@ -85,17 +87,21 @@
       gap: 10px;
     }
 
-    /* マルチセレクトのドロップダウンが panel / panel-body の overflow で切れないようにする */
-    .search-condition-panel.panel {
+    /* 検索条件：ドロップダウンが .panel の overflow や下段グリッドに隠れないようにする */
+    .panel.search-condition-panel {
+      position: relative;
+      z-index: 30;
       overflow: visible;
     }
 
-    .search-condition-panel > .panel-body {
+    .search-condition-panel .search-condition-body {
       overflow: visible;
     }
 
-    .search-condition-panel .exhibit-bs-multiselect.is-open {
-      z-index: 200;
+    /* 最終行のデザイナーは下方向に長いため、リストを上に開いて見切れを防ぐ */
+    #searchConditionDesignerMs .exhibit-bs-multiselect-popover {
+      top: auto;
+      bottom: calc(100% + 2px);
     }
 
     .search-toggle-btn {
@@ -212,6 +218,19 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+    }
+
+    /* 展示会移動：移動先展示会・納期を検索条件の展示会リスト（13px / line-height 1.35）に揃える（style.css の select option の clamp を上書き） */
+    #specDestinationSelect,
+    #specDeadlineSelect {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    #specDestinationSelect option,
+    #specDeadlineSelect option {
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     .spec-select {
@@ -1003,8 +1022,35 @@
             </div>
             <label class="field">
               <span class="field-label">仕様書No.</span>
-              <input type="text" placeholder="仕様書No.を入力">
+              <input id="searchConditionSpecNo" type="text" placeholder="仕様書No.を入力" aria-label="仕様書No.">
             </label>
+            <label class="field">
+              <span class="field-label">柄共通No.</span>
+              <input id="searchConditionKaraKyotsu" type="text" placeholder="柄共通No.を入力" aria-label="柄共通No.">
+            </label>
+            <div class="field">
+              <span class="field-label" id="searchConditionSalesFieldLabel">販売区分</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionSalesMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionSalesToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionSalesPopover"
+                  aria-labelledby="searchConditionSalesFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionSalesToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionSalesPopover" hidden>
+                  <input type="text" id="searchConditionSalesFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="販売区分リストの絞り込み"
+                    aria-controls="searchConditionSalesMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionSalesMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchConditionSalesInner"></div>
+                  </div>
+                </div>
+                <select id="searchConditionSales" name="searchConditionSales" multiple tabindex="-1"
+                  aria-label="販売区分" aria-hidden="true"
+                  style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+              </div>
+            </div>
             <div class="field">
               <span class="field-label" id="searchConditionExhibitFieldLabel">展示会</span>
               <div class="exhibit-bs-multiselect" id="searchConditionExhibitMs">
@@ -1078,7 +1124,7 @@
               </div>
             </div>
             <div class="field">
-              <span class="field-label" id="searchConditionBrandCharaFieldLabel">ブランド/キャラ</span>
+              <span class="field-label" id="searchConditionBrandCharaFieldLabel">ブランド・キャラ</span>
               <div class="exhibit-bs-multiselect" id="searchConditionBrandCharaMs">
                 <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionBrandCharaToggle"
                   aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionBrandCharaPopover"
@@ -1088,7 +1134,7 @@
                 </button>
                 <div class="exhibit-bs-multiselect-popover" id="searchConditionBrandCharaPopover" hidden>
                   <input type="text" id="searchConditionBrandCharaFilter" class="exhibit-bs-multiselect-filter"
-                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="ブランド/キャラリストの絞り込み"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="ブランド・キャラリストの絞り込み"
                     aria-controls="searchConditionBrandCharaMenu">
                   <div class="exhibit-bs-multiselect-menu" id="searchConditionBrandCharaMenu" role="listbox"
                     aria-multiselectable="true">
@@ -1096,7 +1142,7 @@
                   </div>
                 </div>
                 <select id="searchConditionBrandChara" name="searchConditionBrandChara" multiple tabindex="-1"
-                  aria-label="ブランド/キャラ" aria-hidden="true"
+                  aria-label="ブランド・キャラ" aria-hidden="true"
                   style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
               </div>
             </div>
@@ -1124,12 +1170,8 @@
               </div>
             </div>
             <label class="field">
-              <span class="field-label">商品コード</span>
-              <textarea rows="2" placeholder="商品コードを入力"></textarea>
-            </label>
-            <label class="field">
-              <span class="field-label">商品名</span>
-              <input type="text" placeholder="商品名を入力">
+              <span class="field-label">品名</span>
+              <input id="searchConditionHinmei" type="text" placeholder="品名を入力" aria-label="品名">
             </label>
             <div class="field">
               <span class="field-label" id="searchConditionDesignerFieldLabel">デザイナー</span>
@@ -1736,25 +1778,22 @@
       if (!btn || !body) return;
 
       btn.addEventListener('click', () => {
-        body.querySelectorAll('.exhibit-bs-multiselect').forEach((root) => {
-          closeSearchMultiselectRoot(root);
-        });
-
-        body.querySelectorAll('.exhibit-bs-multiselect').forEach((root) => {
-          const cbs = root.querySelectorAll('input[type="checkbox"]');
-          cbs.forEach((cb) => {
+        body.querySelectorAll('.exhibit-bs-multiselect').forEach((msRoot) => {
+          closeSearchMultiselectRoot(msRoot);
+          msRoot.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
             cb.checked = false;
           });
-          const first = cbs[0];
-          if (first) {
-            first.dispatchEvent(new Event('change', { bubbles: true }));
+          const hidden = msRoot.querySelector('select[multiple]');
+          if (hidden) {
+            Array.from(hidden.options).forEach((o) => {
+              o.selected = false;
+            });
           }
+          const labelEl = msRoot.querySelector('.exhibit-bs-multiselect-label');
+          if (labelEl) labelEl.textContent = 'すべて';
         });
 
         body.querySelectorAll('.search-condition-grid .field input[type="text"]').forEach((el) => {
-          el.value = '';
-        });
-        body.querySelectorAll('.search-condition-grid .field textarea').forEach((el) => {
           el.value = '';
         });
 
@@ -1897,7 +1936,7 @@
         const tokens = raw.split(/\s+/).filter(Boolean);
         const filterRows = Array.from(menu.querySelectorAll('.exhibit-bs-multiselect-item'));
         filterRows.forEach((row) => {
-          const hay = String(row.dataset.msSearch || row.textContent || '').toLowerCase();
+          const hay = String(row.dataset.msSearch || row.dataset.exhibitSearch || row.textContent || '').toLowerCase();
           const match = tokens.length === 0 || tokens.every((t) => hay.includes(t));
           row.classList.toggle('is-filtered-out', !match);
         });
@@ -2000,6 +2039,7 @@
         });
       }
 
+      fillMultiselect('searchConditionSales', 'hanbaiKubun', 'searchConditionSales');
       fillMultiselect('searchConditionCategory', 'category2', 'searchConditionCategory');
       fillMultiselect('searchConditionBrandChara', 'brandChara', 'searchConditionBrandChara');
       fillMultiselect('searchConditionItem', 'item', 'searchConditionItem');
