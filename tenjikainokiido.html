@@ -123,6 +123,12 @@
       align-items: start;
     }
 
+    .search-condition-clear-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
     .search-type-toggle {
       display: inline-flex;
       gap: 0;
@@ -1150,6 +1156,9 @@
             </div>
 
           </div>
+          <div class="search-condition-clear-row">
+            <button type="button" class="btn-secondary" id="searchConditionClearBtn">クリア</button>
+          </div>
         </div>
       </div>
       <div class="screen-body">
@@ -1721,6 +1730,52 @@
       }
     }
 
+    function initSearchConditionClear() {
+      const btn = document.getElementById('searchConditionClearBtn');
+      const body = document.getElementById('searchConditionBody');
+      if (!btn || !body) return;
+
+      btn.addEventListener('click', () => {
+        body.querySelectorAll('.exhibit-bs-multiselect').forEach((root) => {
+          closeSearchMultiselectRoot(root);
+        });
+
+        body.querySelectorAll('.exhibit-bs-multiselect').forEach((root) => {
+          const cbs = root.querySelectorAll('input[type="checkbox"]');
+          cbs.forEach((cb) => {
+            cb.checked = false;
+          });
+          const first = cbs[0];
+          if (first) {
+            first.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+
+        body.querySelectorAll('.search-condition-grid .field input[type="text"]').forEach((el) => {
+          el.value = '';
+        });
+        body.querySelectorAll('.search-condition-grid .field textarea').forEach((el) => {
+          el.value = '';
+        });
+
+        const specBtn = document.querySelector('.search-type-btn[data-search-target="spec"]');
+        const productBtn = document.querySelector('.search-type-btn[data-search-target="product"]');
+        if (specBtn && productBtn) {
+          [specBtn, productBtn].forEach((b) => {
+            const isSpec = b === specBtn;
+            b.classList.toggle('is-active', isSpec);
+            b.setAttribute('aria-pressed', isSpec ? 'true' : 'false');
+          });
+          const listPanelHeader = document.getElementById('listPanelHeader');
+          if (listPanelHeader) listPanelHeader.textContent = '仕様書リスト';
+          if (typeof window.refreshSpecListForMode === 'function') {
+            window.refreshSpecListForMode();
+          }
+          syncSearchToggleProductWidth();
+        }
+      });
+    }
+
     function initSearchConditionToggle() {
       const toggleButton = document.getElementById('searchConditionToggleBtn');
       const panelBody = document.getElementById('searchConditionBody');
@@ -1960,6 +2015,7 @@
     loadSharedSidebar();
     initAccountMenu();
     initSearchConditionSelects();
+    initSearchConditionClear();
     initSearchConditionToggle();
     initSearchTargetToggle();
     initSpecSearch();
