@@ -172,6 +172,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="tenjikainokimaintenanse.html">展示会納期設定</a></li>
+      <li><a href="tenjikainokiido.html">展示会移動</a></li>
       <li><a href="costkanrihyo.html">コスト管理表</a></li>
       <li><a href="shohinjohoichiran.html">商品情報照会</a></li>
       <li><a href="systemsettingsmastermaintenance.html">システム設定マスタメンテナンス</a></li>
