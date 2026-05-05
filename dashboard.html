@@ -1222,6 +1222,17 @@
       font-size: var(--fs-sm);
     }
     .case-list li:hover { background: var(--color-surface); }
+    .case-list li .approval-case-link {
+      flex: 1;
+      min-width: 0;
+      margin-right: 12px;
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .case-list li .approval-case-link:hover {
+      opacity: 0.88;
+    }
     .btn-detail {
       padding: 6px 14px;
       font-size: 16px;
@@ -1563,7 +1574,7 @@
 
         <div class="content-area" id="approvalNoticeArea">
             <div class="view-layout view-layout-2">
-              <h2 class="view-layout-title">承認通知<p style="font-size:var(--fs-xs);color:var(--color-text-muted);">詳細ボタンから詳細画面へ遷移し、その画面上で決裁まで行えます。</p></h2>
+              <h2 class="view-layout-title">承認通知<p style="font-size:var(--fs-xs);color:var(--color-text-muted);">案件名から各業務の登録画面へ遷移できます。詳細ボタンで承認フローを表示し、その画面イメージで決裁まで行えます。</p></h2>
               <div class="status-buttons">
                 <button type="button" class="status-btn active" data-status="waiting">
                   承認待ち <span class="count">12件</span>
@@ -2068,6 +2079,25 @@
         "品質検査合格書": "ROUTE_HINSHITSUKENSAGOUKAKUSHO",
         "別注商品登録依頼": "ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI"
       };
+      /** 業務種別ごとの登録（申請）画面 — sidebar メニューの登録系と対応 */
+      const kessaiTorokuHrefByCategory = {
+        "別注図案作成依頼": "betchuzuansakuseiiraitorokushinsei.html",
+        "仕様書（定番）※校正指示書含む": "shiyoshosakusei_teiban.html",
+        "仕様書（別注）※校正指示書含む": "shiyoshosakusei_betchu.html",
+        "最終サンプル承認結果": "sampleshoninkekkatoroku.html",
+        "発注書・契約書（定番）": "chumonshosakusei_teiban.html",
+        "発注書・契約書（定番加工）": "keiyakushosofuiraikakunin.html",
+        "証紙依頼書（定番・別注・定番加工）": "keiyakushosofuiraikakunin.html",
+        "Ship依頼書(定番)": "shipiraishotoroku.html?key=1",
+        "Ship依頼書(別注)": "shipiraishotoroku.html?key=1",
+        "国内手配書(定番)": "shipiraishotoroku.html?key=1",
+        "国内手配書(別注)": "shipiraishotoroku.html?key=1",
+        "品質検査合格書": "hinshitsukensagokakushotoroku.html",
+        "別注商品登録依頼": "betchuzuansakuseiiraitorokushinsei.html"
+      };
+      function resolveTorokuHref(category) {
+        return kessaiTorokuHrefByCategory[category] || "shohinjohoichiran.html";
+      }
       const kessaiCaseProgress = {
         "A案件": { routeId: "ROUTE_BETCHU_SAKUSEI_IRAI", currentIndex: 2, completedAt: { 0: "2026-05-01", 1: "2026-05-02", 2: "2026-05-03" } },
         "B案件": { routeId: "ROUTE_TEIBAN_SHIYOSHO_SAKUSEI", currentIndex: 1, completedAt: { 0: "2026-05-01", 1: "2026-05-04" } },
@@ -2155,10 +2185,18 @@
 
         filtered.forEach(item => {
           const li = document.createElement("li");
-          li.innerHTML = `
-            ${item.category} - ${item.name}
-            <button type="button" class="btn-detail" data-name="${item.name}" data-category="${item.category}">詳細</button>
-          `;
+          const link = document.createElement("a");
+          link.className = "approval-case-link";
+          link.href = resolveTorokuHref(item.category);
+          link.textContent = item.category + " - " + item.name;
+          const detailBtn = document.createElement("button");
+          detailBtn.type = "button";
+          detailBtn.className = "btn-detail";
+          detailBtn.setAttribute("data-name", item.name);
+          detailBtn.setAttribute("data-category", item.category);
+          detailBtn.textContent = "詳細";
+          li.appendChild(link);
+          li.appendChild(detailBtn);
           ul.appendChild(li);
         });
 
