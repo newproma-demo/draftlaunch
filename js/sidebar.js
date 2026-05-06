@@ -66,7 +66,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="shiyoshokensaku.html">仕様書作成</a></li>
+      <li><a href="shiyoshosakusei.html">仕様書作成</a></li>
     </ul>
   </div>
 
