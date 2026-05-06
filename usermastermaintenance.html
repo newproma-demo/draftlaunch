@@ -265,8 +265,8 @@
     }
 
     /* #region レスポンシブ対応 */
-    /* 画面の幅が767px以下ならスマホ*/
-    @media (max-width: 767px) {
+    /* 画面の幅が768px以下ならスマホ（style.css のサイドバーと揃える） */
+    @media (max-width: 768px) {
       .pc-only {
         display: none;
       }
@@ -298,16 +298,50 @@
         width: 30px;
       }
 
-      .content {
+      /* スマホではサイドバー列をフレックス幅に含めない（PCでサイドバー開閉後に幅を縮めても本文が右にずれない） */
+      .main-wrapper {
+        position: relative;
+      }
+
+      #sidebarMount {
+        flex: 0 0 0;
+        width: 0;
+        min-width: 0;
+        overflow: visible;
+      }
+
+      /* 共通 style.css 非変更: マウント幅0でもドロワー幅220pxとメニューラベルを維持 */
+      #sidebarMount > .sidebar {
+        min-width: 220px;
+        width: 220px;
+        flex-shrink: 0;
+      }
+
+      #sidebarMount .menu-title {
+        min-width: 0;
+      }
+
+      #sidebarMount .menu-title > span {
+        white-space: nowrap;
+      }
+
+      .content,
+      .content.expanded {
         background: var(--color-surface);
+        display: flex;
         flex-direction: column;
         flex: 1;
         min-height: 0;
         min-width: 0;
-        padding: 20px 20px 56px 20px;
-        margin-left: -220px;
+        margin-left: 0;
         width: 100%;
+        max-width: 100%;
+        padding: 12px 12px 56px 12px;
         overflow: hidden;
+      }
+
+      .content:not(.expanded) {
+        padding-left: 12px;
       }
 
       .user-table .form-row {
@@ -579,6 +613,19 @@
       overlay.classList.remove('show');
     }
 
+    /** 狭い幅では PC 用の collapsed / expanded を外し、本文の margin・padding の食い違いを防ぐ */
+    function syncSidebarLayoutForBreakpoint() {
+      const sidebar = document.querySelector('.sidebar');
+      const content = document.querySelector('.content');
+      const toggle = document.querySelector('.sidebar-toggle');
+      if (!sidebar || !content) return;
+      if (!window.matchMedia('(max-width: 768px)').matches) return;
+      sidebar.classList.remove('closed');
+      content.classList.remove('expanded');
+      const toggleImg = toggle && toggle.querySelector('img');
+      if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+    }
+
     function initAutocompleteChevronState() {
       const boxes = document.querySelectorAll('.user-table .autocomplete');
       boxes.forEach((box) => {
@@ -602,6 +649,8 @@
     }
 
     loadSharedSidebar();
+    syncSidebarLayoutForBreakpoint();
+    window.matchMedia('(max-width: 768px)').addEventListener('change', syncSidebarLayoutForBreakpoint);
     initAutocompleteChevronState();
 
     const icon = document.querySelector('.header-account_circle');

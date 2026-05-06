@@ -122,7 +122,7 @@
       display: flex;
       flex: 1;
       margin-top: 0;
-      min-height: calc(100vh - 48px);
+      min-height: 0;
     }
 
     /* #endregion */
@@ -247,7 +247,7 @@
       display: flex;
       flex-direction: column;
       padding: 24px 24px 56px 24px;
-      overflow-y: auto;
+      overflow-y: hidden;
       transition: margin-left 0.3s ease, padding-left 0.3s ease;
     }
 
@@ -269,20 +269,21 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      background: var(--color-card);
+      min-height: 0;
+      /* background: var(--color-card);
       border-radius: var(--radius-lg);
       border: 1px solid var(--color-border);
       box-shadow: var(--shadow-sm);
-      padding: 24px;
+      padding: 24px; */
       overflow: hidden;
     }
-
+    
     /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
     .content-box .page-title {
       font-size: 18px;
       font-weight: 700;
       color: var(--color-primary);
-      margin: 0 0 16px;
+      margin: 0 0 8px;
       padding-bottom: 8px;
       border-bottom: 2px solid var(--color-primary);
       flex-shrink: 0;
@@ -290,6 +291,23 @@
 
     .content-box .search-box {
       flex-shrink: 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
     }
 
     /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
@@ -324,262 +342,6 @@
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--color-border);
       z-index: 2001;
-    }
-
-    /* #region レスポンシブ対応 */
-    /* 画面の幅が650px以下ならスマホ*/
-    @media (max-width: 768px) {
-      .pc-only {
-        display: none;
-      }
-
-      .content-box .pc-only {
-        display: none;
-      }
-
-      .sp-only {
-        display: block;
-      }
-
-      .content-box .sp-only {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .header-title {
-        margin: 5px 0px 0px 35px;
-        font-size: var(--fs-xl);
-      }
-
-      .header-user {
-        display: none;
-      }
-
-      /* ハンバーガーボタン */
-      .hamburger {
-        display: block;
-        position: fixed;
-        margin: 6px 10px 0px 0px;
-        cursor: pointer;
-        z-index: 3000;
-      }
-
-      .hamburger img {
-        width: 30px;
-      }
-
-      .content {
-        background: var(--color-surface);
-        flex-direction: column;
-        flex: 1;
-        padding: 20px 20px 56px 20px;
-        margin-left: -220px;
-        width: 100%;
-      }
-
-      .content-box {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 8px;
-        min-height: 0;
-      }
-
-      /* イメージ案①: スマホ用 */
-      .filter-row {
-        flex-wrap: wrap;
-      }
-
-      .filter-item {
-        flex: 1 1 100%;
-      }
-
-      /* スマホ: 検索条件は折りたたみ式 */
-      .search-toggle-sp {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: 14px 16px;
-        font-family: inherit;
-        font-weight: 500;
-        color: var(--color-text);
-        background: var(--color-card);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        text-align: left;
-        box-sizing: border-box;
-      }
-
-      .search-toggle-sp-label {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .search-toggle-sp-icon {
-        margin-right: 8px;
-        flex-shrink: 0;
-        vertical-align: middle;
-      }
-
-      .search-toggle-sp::after {
-        content: "＋";
-        color: var(--color-text-muted);
-      }
-
-      .search-box {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        padding: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-      }
-
-      .search-box-inner {
-        display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px 16px;
-      }
-
-      .search-box.is-open .search-box-inner {
-        display: grid;
-      }
-
-      .search-box.is-open .search-toggle-sp::after {
-        content: "ー";
-      }
-
-      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
-      .view-layout-1-group>.content-box:first-of-type {
-        padding: 8px;
-      }
-
-      .view-layout-1-group>.content-box:first-of-type .view-layout-title {
-        margin: 0 0 12px;
-        padding: 0 0 8px;
-      }
-
-      .search-box-inner .filter-row {
-        display: contents;
-      }
-
-      .search-box-inner .filter-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-        min-width: 0;
-      }
-
-      .search-box-inner .filter-item .filter-label {
-        margin-right: 0;
-      }
-
-      .search-box-inner .filter-item select,
-      .search-box-inner .filter-item input[type="text"] {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
-      #approvalListArea {
-        overflow-x: visible;
-        max-height: none;
-      }
-
-      #approvalListArea .result-table {
-        min-width: 0;
-      }
-
-      #approvalListArea .result-table thead {
-        display: none;
-      }
-
-      #approvalListArea .result-table tbody tr {
-        display: block;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        padding: 12px 14px;
-        margin-bottom: 12px;
-        background: var(--color-card);
-      }
-
-      #approvalListArea .result-table tbody tr::before {
-
-        display: block;
-        color: var(--color-primary);
-        padding-bottom: 8px;
-        margin-bottom: 8px;
-        border-bottom: 1px solid var(--color-border);
-      }
-
-      #approvalListArea .result-table tbody td {
-        display: block;
-        border: none;
-        padding: 4px 0;
-        white-space: normal;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(1)::before {
-        content: "図案管理番号：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "販売区分：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "展示会：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "カテゴリー：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(5)::before {
-        content: "名称：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "アイテム数：";
-        font-weight: 600;
-      }
-
-      /* 2段目は販売区分・展示会・商品分類を横並びで表示 */
-      #approvalListArea .result-table tbody td:nth-child(2),
-      #approvalListArea .result-table tbody td:nth-child(3),
-      #approvalListArea .result-table tbody td:nth-child(4) {
-        display: inline-block;
-        width: auto;
-        margin-right: 12px;
-      }
-
-      /* イメージ案②: スマホ用 */
-      .view-layout-2 .status-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      /* ガントチャート */
-      .timeline-wrapper {
-        width: 100%;
-        max-width: 400px;
-      }
-
-      .timeline-line {
-        left: 20px;
-        right: 20px;
-      }
     }
 
     #tenjikaiSelect:hover,
@@ -621,18 +383,11 @@
       padding: 0;
     }
 
-    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
-    @media (min-width: 769px) {
-      .search-toggle-sp {
-        display: none;
-      }
-    }
-
     .filter-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 16px 12px;
+      margin-bottom: 2px;
       flex-wrap: wrap;
     }
 
@@ -655,15 +410,45 @@
       min-width: 160px;
     }
 
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-search-cancel {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: var(--fs-xs);
+      background: var(--color-clearbutton-background);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+      box-shadow: none;
+    }
+
+    .btn-search-cancel:hover {
+      background: var(--color-clearbutton-background-hover);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      transform: none;
+      box-shadow: none;
+    }
+
     /* 承認通知／検索結果・ボックス共通 */
-    .content-box {
+    /* .content-box {
       background: var(--color-card);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       padding: 20px 24px;
       margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
-    }
+    } */
 
     /* 検索条件と検索結果一覧の間の余白（5px） */
     .view-layout-1-group>.content-box:first-of-type {
@@ -681,8 +466,9 @@
     #approvalListArea {
       width: 100%;
       max-height: 70vh;
-      overflow-x: auto;
-      overflow-y: auto;
+      /* overflow-x: auto;
+      overflow-y: auto; */
+      overflow-y:hidden
     }
 
     .result-table {
@@ -800,6 +586,348 @@
       border-radius: calc(var(--radius-sm) - 2px);
       display: block;
     }
+
+    /* #region レスポンシブ対応 */
+    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
+    @media (min-width: 769px) {
+      .search-toggle-sp {
+        display: none;
+      }
+
+      /* 検索条件は固定、図案サムネ一覧だけが残り高さでスクロール */
+      .view-layout.view-layout-1-group {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .view-layout.view-layout-1-group > .content-area:first-of-type {
+        flex-shrink: 0;
+      }
+
+      #approvalNoticeArea {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      #approvalNoticeArea .view-layout-2 {
+        flex: 1;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    /* 画面の幅が650px以下ならスマホ*/
+    @media (max-width: 768px) {
+      .pc-only {
+        display: none;
+      }
+
+      .content-box .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
+      .content-box .sp-only {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      /* ハンバーガーボタン */
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      /* スマホではサイドバー列をフレックス幅に含めない（PCでサイドバー開閉後に幅を縮めても本文が右にずれない） */
+      .main-wrapper {
+        position: relative;
+      }
+
+      #sidebarMount {
+        flex: 0 0 0;
+        width: 0;
+        min-width: 0;
+        overflow: visible;
+      }
+
+      /* 共通 style.css 非変更: マウント幅0でもドロワー幅220pxとメニューラベルを維持 */
+      #sidebarMount > .sidebar {
+        min-width: 220px;
+        width: 220px;
+        flex-shrink: 0;
+      }
+
+      #sidebarMount .menu-title {
+        min-width: 0;
+      }
+
+      #sidebarMount .menu-title > span {
+        white-space: nowrap;
+      }
+
+      .content,
+      .content.expanded {
+        background: var(--color-surface);
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding: 12px 12px 56px 12px;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .content:not(.expanded) {
+        padding-left: 12px;
+      }
+
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        flex: none;
+        min-height: 0;
+        overflow-y: auto;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      /* スマホ: 検索条件は折りたたみ式 */
+      .search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--color-text);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .search-toggle-sp-icon {
+        margin-right: 8px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .search-toggle-sp::after {
+        content: "＋";
+        color: var(--color-text-muted);
+      }
+
+      .search-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 6px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      .search-box-inner {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 16px;
+        padding: 12px 0px 0px 0px;
+      }
+
+      .search-box.is-open .search-box-inner {
+        display: grid;
+      }
+
+      .search-box.is-open .search-toggle-sp::after {
+        content: "ー";
+      }
+
+      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
+      .view-layout-1-group>.content-box:first-of-type {
+        padding: 8px;
+      }
+
+      .view-layout-1-group>.content-box:first-of-type .view-layout-title {
+        margin: 0 0 12px;
+        padding: 0 0 8px;
+      }
+
+      .search-box-inner .filter-row {
+        display: contents;
+      }
+
+      .search-box-inner .filter-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .search-box-inner .filter-item .filter-label {
+        margin-right: 0;
+      }
+
+      .search-box-inner .filter-item select,
+      .search-box-inner .filter-item input[type="text"] {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .search-cancel-wrapper {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        margin-left: 0;
+      }
+
+      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
+      #approvalListArea {
+        overflow-x: visible;
+        max-height: none;
+      }
+
+      #approvalListArea .result-table {
+        min-width: 0;
+      }
+
+      #approvalListArea .result-table thead {
+        display: none;
+      }
+
+      #approvalListArea .result-table tbody tr {
+        display: block;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        background: var(--color-card);
+      }
+
+      #approvalListArea .result-table tbody tr::before {
+
+        display: block;
+        color: var(--color-primary);
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      #approvalListArea .result-table tbody td {
+        display: block;
+        border: none;
+        padding: 4px 0;
+        white-space: normal;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(1)::before {
+        content: "図案管理番号：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(2)::before {
+        content: "販売区分：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(3)::before {
+        content: "展示会：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(4)::before {
+        content: "カテゴリー：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(5)::before {
+        content: "名称：";
+        font-weight: 600;
+      }
+
+      #approvalListArea .result-table tbody td:nth-child(6)::before {
+        content: "アイテム数：";
+        font-weight: 600;
+      }
+
+      /* 2段目は販売区分・展示会・商品分類を横並びで表示 */
+      #approvalListArea .result-table tbody td:nth-child(2),
+      #approvalListArea .result-table tbody td:nth-child(3),
+      #approvalListArea .result-table tbody td:nth-child(4) {
+        display: inline-block;
+        width: auto;
+        margin-right: 12px;
+      }
+
+      /* イメージ案②: スマホ用 */
+      .view-layout-2 .status-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      /* ガントチャート */
+      .timeline-wrapper {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+    
+    }
+
+
+
   </style>
 </head>
 
@@ -1240,6 +1368,9 @@
                       <option value="">丸眞桜子</option>
                     </select>
                   </div>
+                  <div class="search-cancel-wrapper">
+                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1381,7 +1512,22 @@
       overlay.classList.remove('show');
     }
 
+    /** 狭い幅では PC 用の collapsed / expanded を外し、本文の margin・padding の食い違いを防ぐ */
+    function syncSidebarLayoutForBreakpoint() {
+      const sidebar = document.querySelector('.sidebar');
+      const content = document.querySelector('.content');
+      const toggle = document.querySelector('.sidebar-toggle');
+      if (!sidebar || !content) return;
+      if (!window.matchMedia('(max-width: 768px)').matches) return;
+      sidebar.classList.remove('closed');
+      content.classList.remove('expanded');
+      const toggleImg = toggle && toggle.querySelector('img');
+      if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+    }
+
     loadSharedSidebar();
+    syncSidebarLayoutForBreakpoint();
+    window.matchMedia('(max-width: 768px)').addEventListener('change', syncSidebarLayoutForBreakpoint);
     
     const icon = document.querySelector('.header-account_circle');
     const menu = document.querySelector('.account-menu');
@@ -1409,6 +1555,12 @@
       var selHanbai = document.getElementById("searchHanbaiKubun");
       var selTenjikai = document.getElementById("tenjikaiSelect");
       var selCategory = document.getElementById("searchCategory");
+      var cancelAllBtn = document.getElementById("searchCancelAllBtn");
+      if (cancelAllBtn) {
+        cancelAllBtn.addEventListener("click", function () {
+          window.location.reload();
+        });
+      }
       var tbody = document.querySelector("#approvalListArea .result-table tbody");
       if (!tbody) return;
 

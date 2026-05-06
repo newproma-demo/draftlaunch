@@ -242,17 +242,18 @@
       background: var(--color-surface);
       flex: 1;
       min-height: 0;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       padding: 24px 24px 56px 24px;
       overflow-y: auto;
+      overflow-x: hidden;
       transition: margin-left 0.3s ease, padding-left 0.3s ease;
     }
 
     .content:not(.expanded) {
       padding-left: 32px;
     }
-
     .content.expanded {
       margin-left: -220px;
       padding-left: 32px;
@@ -267,12 +268,9 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      background: var(--color-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-      overflow: hidden;
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
@@ -289,6 +287,32 @@
     .content-box .search-box {
       flex-shrink: 0;
     }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
+     }
+
+     .search-row label {
+      margin: 0;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
 
     /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
     .content-box .pc-only {
@@ -324,20 +348,461 @@
       z-index: 2001;
     }
 
+    #tenjikaiSelect:hover,
+    .dashboard-box select:hover {
+      border-color: var(--color-primary);
+    }
+
+    #tenjikaiSelect:focus,
+    .dashboard-box select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+    }
+
+    /* ========== イメージ案：3つとも一括表示 ========== */
+    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout-1-group,
+    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
+    /* 検索条件と結果一覧を常に上から順に配置（検索前に下へ押し出されるのを防ぐ） */
+    .view-layout-1-group {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 5px;
+    }
+    .view-layout-1-group > .content-area {
+      flex: 0 0 auto;
+      min-height: 0;
+      min-width: 0;
+      max-width: 100%;
+      margin: 0;
+    }
+
+    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
+    h1.view-layout-title {
+      margin: 4px 0 8px 12px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
+    .view-layout-1 { padding: 0; }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      /* margin-bottom: 20px; */
+      flex-wrap: wrap;
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+    .filter-row input[type="text"], .filter-row select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+    }
+
+    /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
+    .search-box-inner .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .search-box-inner .search-row label {
+      margin: 0;
+      /* font-size: var(--fs-base); */
+      /* font-weight: 500; */
+      /* color: var(--color-text-muted); */
+      white-space: nowrap;
+    }
+    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
+    .search-box-inner .search-row .autocomplete-dropdown,
+    .search-box-inner .search-row .autocomplete-dropdown div {
+      font-size: var(--fs-base);
+      font-weight: 500;
+    }
+    .search-box-inner .search-row select,
+    .search-box-inner .search-row input {
+      /* font-size: var(--fs-base); */
+      min-width: 160px;
+      padding: 10px 12px;
+      /* font-family: inherit; */
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      /* color: var(--color-text); */
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-box-inner .search-row select:hover,
+    .search-box-inner .search-row input:hover {
+      border-color: #b0bdb5;
+    }
+    .search-box-inner .search-row select:focus,
+    .search-box-inner .search-row input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+    .search-box-inner .search-row input::placeholder {
+      color: #9ca89f;
+    }
+    #searchUkonisuu {
+      min-width: 130px;
+      width: 90px;
+    }
+
+    /* ブランド・キャラ（複数選択）: licensekeiyakujohokensaku.html と同等動作 */
+    .multi-select {
+      position: relative;
+      width: 100%;
+      min-width: 160px;
+    }
+    .multi-select-toggle {
+      width: 100%;
+      text-align: left;
+      min-width: 160px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: var(--fs-xs);
+      line-height: 1.6;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .multi-select-toggle:hover {
+      border-color: #b0bdb5;
+    }
+    .multi-select.is-open .multi-select-toggle {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+    .multi-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: auto;
+      z-index: 2200;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      max-height: 220px;
+      min-width: 0;
+      width: fit-content;
+      max-width: calc(100vw - 48px);
+      padding: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    .multi-select.is-open .multi-select-menu {
+      display: block;
+    }
+    .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      width: auto;
+      box-sizing: border-box;
+      font-size: var(--fs-xs);
+      line-height: 1.6;
+    }
+    .multi-select-option span {
+      white-space: nowrap;
+    }
+    .multi-select-option input[type="checkbox"] {
+      margin: 0;
+      appearance: auto;
+      -webkit-appearance: checkbox;
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      min-height: 16px;
+      padding: 0;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      background: #fff;
+      box-shadow: none;
+      flex: 0 0 16px;
+    }
+    .search-box,
+    .search-box-inner,
+    .filter-row,
+    .search-row,
+    #searchBrandChara {
+      overflow: visible;
+    }
+
+    /* 検索条件エリア右端：クリアボタン */
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .btn-search-cancel {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: var(--fs-xs);
+      background: var(--color-clearbutton-background);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+      box-shadow: none;
+    }
+
+    .btn-search-cancel:hover {
+      background:var(--color-clearbutton-background-hover);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group > .content-box:first-of-type {
+      margin-bottom: 5px;
+    }
+    .content-box h3 {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+    /* 検索結果一覧テーブル（横スクロールは使わず幅内に収める） */
+    #approvalListArea {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+    #approvalListArea::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    #approvalListArea::-webkit-scrollbar-track {
+      background: #e8eeea;
+    }
+    #approvalListArea::-webkit-scrollbar-thumb {
+      background: #9aa8a0;
+      border-radius: 6px;
+      border: 2px solid #e8eeea;
+    }
+    .result-table {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      border-collapse: collapse;
+      margin-top: 8px;
+      table-layout: fixed;
+      box-sizing: border-box;
+    }
+    .result-table th,
+    .result-table td {
+      padding: 12px 10px;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      box-sizing: border-box;
+    }
+    .result-table th {
+      padding: 8px 10px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      font-weight: 600;
+      border-top: none;
+    }
+    .result-table th.th-sort-yukonisuu {
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .result-table th.th-sort-yukonisuu:hover {
+      filter: brightness(1.06);
+    }
+    .result-table th.th-sort-yukonisuu .th-sort-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    /* 昇順／降順のヒント（常時表示、状態で強調を切替） */
+    .result-table th.th-sort-yukonisuu .th-sort-arrows {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      margin-left: 2px;
+      flex-shrink: 0;
+    }
+    .result-table th.th-sort-yukonisuu .th-sort-icon {
+      font-size: 0.55em;
+      line-height: 0.9;
+      font-weight: 700;
+      opacity: 0.62;
+    }
+    .result-table th.th-sort-yukonisuu.th-sort-none .th-sort-icon-up,
+    .result-table th.th-sort-yukonisuu.th-sort-none .th-sort-icon-down {
+      opacity: 0.68;
+    }
+    .result-table th.th-sort-yukonisuu.th-sort-asc .th-sort-icon-up {
+      opacity: 1;
+    }
+    .result-table th.th-sort-yukonisuu.th-sort-asc .th-sort-icon-down {
+      opacity: 0.32;
+    }
+    .result-table th.th-sort-yukonisuu.th-sort-desc .th-sort-icon-down {
+      opacity: 1;
+    }
+    .result-table th.th-sort-yukonisuu.th-sort-desc .th-sort-icon-up {
+      opacity: 0.32;
+    }
+    .result-table tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+    .result-table tr:hover {
+      background: rgba(0, 134, 50, 0.06);
+    }
+    /* ヘッダ列（合計100%・親幅いっぱいに収め横スクロールを不要に） */
+    .result-table thead th:nth-child(1) { width: 9% !important; }
+    .result-table thead th:nth-child(2) { width: 11% !important; }
+    .result-table thead th:nth-child(3) { width: 11% !important; }
+    .result-table thead th:nth-child(4) { width: 7% !important; }
+    .result-table thead th:nth-child(5) { width: 4% !important; }
+    .result-table thead th:nth-child(6) { width: 6% !important; }
+    .result-table thead th:nth-child(7) { width: 6% !important; }
+    .result-table thead th:nth-child(8) { width: 12% !important; }
+    .result-table thead th:nth-child(9) { width: 8% !important; }
+    .result-table thead th:nth-child(10) { width: 8% !important; }
+    .result-table thead th:nth-child(11) { width: 4% !important; }
+    .result-table thead th:nth-child(12) { width: 7% !important; }
+    .result-table thead th:nth-child(13) { width: 7% !important; }
+    .result-table tbody td:nth-child(13) {
+      text-align: right;
+      padding-right: 14px !important;
+    }
+    /* 図案管理番号リンク */
+    .result-table a {
+      color: #0066cc;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .result-table a:hover {
+      opacity: 0.9;
+    }
+
+    /* 検索前・該当なし時のプレースホルダー行 */
+    .result-table .empty-row td {
+      text-align: left;
+      color: var(--color-text-muted);
+      padding: 16px 10px;
+      background: var(--color-card);
+    }
+
+    /* 一覧：デザイナー列のプルダウンをヘッダ列幅（セル幅）いっぱいに */
+    #approvalListArea .result-table td:last-child {
+      vertical-align: middle;
+    }
+    #approvalListArea .result-table td:last-child .row-designer-select {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    /* 画面右下固定 アクションボタン（登録など） */
+    .btn-fab-bar {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      min-width: 140px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
+    .view-layout-2 {
+      padding: 0;
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .view-layout-2 .status-buttons { margin-bottom: 20px; }
+    .view-layout-2 .list-section-title {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
     /* #region レスポンシブ対応 */
     /* 画面の幅が650px以下ならスマホ*/
-    @media (max-width: 768px) {
+     @media (max-width: 768px) {
       html, body {
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
-      }
-      .main-wrapper {
+      } 
+      /* .main-wrapper {
         display: block;
         min-height: calc(100vh - 48px);
         width: 100%;
         max-width: 100%;
-      }
+      } */
       #sidebarMount {
         display: block;
         flex: 0 0 0;
@@ -347,14 +812,14 @@
         min-height: 0;
         overflow: visible;
       }
-      #sidebarMount > .sidebar {
+      /* #sidebarMount > .sidebar {
         position: fixed;
         top: 48px;
         left: 0;
         width: 220px;
         height: calc(100dvh - 48px);
         min-height: 0;
-      }
+      } */
 
       .pc-only {
         display: none;
@@ -399,13 +864,14 @@
       background: var(--color-surface);
       flex: 1;
       width: 100%;
-      max-width: 100%;
+      /* max-width: 100%; */
       min-height: 0;
       display: flex;
       flex-direction: column;
       padding: 24px 24px 56px 24px;
       overflow-y: auto;
-      box-sizing: border-box;
+      overflow-x: hidden;
+      /* box-sizing: border-box; */
       transition: margin-left 0.3s ease, padding-left 0.3s ease;
     }
 
@@ -427,16 +893,16 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      background: var(--color-card);
+      /* background: var(--color-card);
       border-radius: var(--radius-lg);
       border: 1px solid var(--color-border);
       box-shadow: var(--shadow-sm);
       padding: 24px;
-      overflow: hidden;
+      overflow: hidden; */
     }
 
     /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
-    .content-box .page-title {
+     .content-box .page-title {
       font-size: 18px;
       font-weight: 700;
       color: var(--color-primary);
@@ -444,7 +910,7 @@
       padding-bottom: 8px;
       border-bottom: 2px solid var(--color-primary);
       flex-shrink: 0;
-    }
+    } 
 
     .content-box .search-box {
       flex-shrink: 0;
@@ -492,6 +958,7 @@
         cursor: pointer;
         text-align: left;
         box-sizing: border-box;
+        margin-bottom: 5%; 
       }
       .search-toggle-sp-label {
         display: flex;
@@ -585,12 +1052,6 @@
         width: 100%;
         box-sizing: border-box;
       }
-      .yukonisuu-sort-group {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-      }
-
       .search-cancel-wrapper {
         grid-column: 1 / -1;
         justify-content: flex-end;
@@ -598,10 +1059,10 @@
       }
 
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
-      #approvalListArea {
+      /* #approvalListArea {
         overflow-x: visible;
         max-height: none;
-      }
+      } */
       #approvalListArea .result-table {
         min-width: 0;
       }
@@ -708,22 +1169,28 @@
 
       /* スマホ明細はカード表示 */
       .content {
-        padding: 12px 12px 70px 12px;
+        background: var(--color-surface);
+        flex-direction: column;
+        flex: 1;
+        padding: 12px 12px 56px 12px;
+        margin-left: -220px;
+        overflow-y: auto;
         width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
       }
-      .content:not(.expanded),
+      .content:not(.expanded){
+        margin-left: 0; 
+        padding-left: 12px;
+      }
       .content.expanded {
         margin-left: 0;
         padding-left: 12px;
       }
-      .content-box {
+      /* .content-box {
         padding: 12px;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
-      }
+      } */
       .view-layout,
       .view-layout-1-group,
       .content-area,
@@ -734,15 +1201,15 @@
         max-width: 100%;
         box-sizing: border-box;
       }
-      #approvalListArea {
+      /* #approvalListArea {
         height: auto;
         max-height: 62vh;
         overflow-x: hidden;
         overflow-y: auto;
-      }
-      #approvalListArea .result-table {
+      } */
+      /* #approvalListArea .result-table {
         min-width: 0;
-      }
+      } */
       #approvalListArea .result-table thead {
         display: none;
       }
@@ -766,7 +1233,7 @@
       #approvalListArea .result-table tbody td {
         display: block;
         border: none;
-        padding: 6px 0;
+        padding: 1px 0;
         white-space: normal;
       }
       #approvalListArea .result-table tbody tr.empty-row::before {
@@ -792,6 +1259,10 @@
       #approvalListArea .result-table tbody td:nth-child(11)::before { content: "商品分類："; }
       #approvalListArea .result-table tbody td:nth-child(12)::before { content: "デザイナー："; }
       #approvalListArea .result-table tbody td:nth-child(13)::before { content: "有効日数："; }
+      #approvalListArea .result-table tbody td:nth-child(13) {
+        text-align: left;
+        padding-right: 0 !important;
+      }
       #approvalListArea .result-table tbody td:nth-child(7) a[href^="tel:"] {
         pointer-events: none;
         color: inherit;
@@ -799,428 +1270,30 @@
       }
     }
 
-    #tenjikaiSelect:hover,
-    .dashboard-box select:hover {
-      border-color: var(--color-primary);
-    }
-
-    #tenjikaiSelect:focus,
-    .dashboard-box select:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
-    }
-
-    /* ========== イメージ案：3つとも一括表示 ========== */
-    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
-    .view-layout-1-group,
-    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
-    /* 検索条件と結果一覧を常に上から順に配置（検索前に下へ押し出されるのを防ぐ） */
-    .view-layout-1-group {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: flex-start;
-      gap: 5px;
-    }
-    .view-layout-1-group > .content-area {
-      flex: 0 0 auto;
-      min-height: 0;
-      margin: 0;
-    }
-
-    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
-    h1.view-layout-title {
-      margin: 4px 0 8px 12px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
-    .view-layout-1 { padding: 0; }
-
     /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
     @media (min-width: 769px) {
+      .content {
+        overflow-y: hidden;
+      }
       .search-toggle-sp {
         display: none;
       }
-    }
-
-    .filter-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .filter-line-break {
-      flex-basis: 100%;
-      height: 0;
-      padding: 0;
-      margin: 0;
-    }
-    .filter-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: nowrap;
-    }
-    .yukonisuu-sort-group {
-      display: flex;
-      align-items: flex-end;
-      gap: 16px;
-      flex-wrap: nowrap;
-    }
-    .yukonisuu-sort-group .search-row {
-      width: auto;
-      flex: 0 0 auto;
-    }
-    .yukonisuu-sort-group .autocomplete {
-      width: auto;
-      min-width: 0;
-    }
-    .filter-row .filter-label {
-      margin-right: 4px;
-    }
-    .filter-row input[type="text"], .filter-row select {
-      padding: 8px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      min-width: 160px;
-    }
-
-    /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
-    .search-box-inner .search-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-    .search-box-inner .search-row label {
-      margin: 0;
-      /* font-size: var(--fs-base); */
-      /* font-weight: 500; */
-      /* color: var(--color-text-muted); */
-      white-space: nowrap;
-    }
-    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
-    .search-box-inner .search-row .autocomplete-dropdown,
-    .search-box-inner .search-row .autocomplete-dropdown div {
-      font-size: var(--fs-base);
-      font-weight: 500;
-    }
-    .search-box-inner .search-row select,
-    .search-box-inner .search-row input {
-      /* font-size: var(--fs-base); */
-      min-width: 160px;
-      padding: 10px 12px;
-      /* font-family: inherit; */
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      background: var(--color-card);
-      /* color: var(--color-text); */
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .search-box-inner .search-row select:hover,
-    .search-box-inner .search-row input:hover {
-      border-color: #b0bdb5;
-    }
-    .search-box-inner .search-row select:focus,
-    .search-box-inner .search-row input:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
-    }
-    .search-box-inner .search-row input::placeholder {
-      color: #9ca89f;
-    }
-    #searchUkonisuu {
-      min-width: 80px;
-      width: 90px;
-    }
-    #searchYukonisuuSort {
-      min-width: 160px;
-      width: 180px;
-    }
-
-    /* ブランド・キャラ（複数選択）: licensekeiyakujohokensaku.html と同等動作 */
-    .multi-select {
-      position: relative;
-      width: 100%;
-      min-width: 160px;
-    }
-    .multi-select-toggle {
-      width: 100%;
-      text-align: left;
-      min-width: 160px;
-      padding: 10px 12px;
-      font-family: inherit;
-      font-size: var(--fs-xs);
-      line-height: 1.6;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      background: var(--color-card);
-      color: var(--color-text);
-      cursor: pointer;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .multi-select-toggle:hover {
-      border-color: #b0bdb5;
-    }
-    .multi-select.is-open .multi-select-toggle {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
-    }
-    .multi-select-menu {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: auto;
-      z-index: 2200;
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      box-shadow: var(--shadow-lg);
-      max-height: 220px;
-      min-width: 0;
-      width: fit-content;
-      max-width: calc(100vw - 48px);
-      padding: 8px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      box-sizing: border-box;
-    }
-    .multi-select.is-open .multi-select-menu {
-      display: block;
-    }
-    .multi-select-option {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 2px;
-      cursor: pointer;
-      white-space: nowrap;
-      width: auto;
-      box-sizing: border-box;
-      font-size: var(--fs-xs);
-      line-height: 1.6;
-    }
-    .multi-select-option span {
-      white-space: nowrap;
-    }
-    .multi-select-option input[type="checkbox"] {
-      margin: 0;
-      appearance: auto;
-      -webkit-appearance: checkbox;
-      width: 16px;
-      height: 16px;
-      min-width: 16px;
-      min-height: 16px;
-      padding: 0;
-      border: 1px solid var(--color-border);
-      border-radius: 2px;
-      background: #fff;
-      box-shadow: none;
-      flex: 0 0 16px;
-    }
-    .search-box,
-    .search-box-inner,
-    .filter-row,
-    .search-row,
-    #searchBrandChara {
-      overflow: visible;
-    }
-
-    /* 検索条件エリア右端：取消ボタン（登録ボタンと同スタイル） */
-    .search-cancel-wrapper {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-    }
-    .btn-search-cancel {
-      display: inline-block;
-      padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-      font-weight: 600;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-    .btn-search-cancel:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-    }
-
-    /* 承認通知／検索結果・ボックス共通 */
-    .content-box {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-    /* 検索条件と検索結果一覧の間の余白（5px） */
-    .view-layout-1-group > .content-box:first-of-type {
-      margin-bottom: 5px;
-    }
-    .content-box h3 {
-      margin: 0 0 12px;
-      border-bottom: 2px solid var(--color-primary);
-      padding-bottom: 8px;
-    }
-    /* 検索結果一覧テーブル（スクロール対応） */
-    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
-    #approvalListArea {
-      width: 100%;
-      height: 70vh;
-      max-height: 70vh;
-      overflow-x: scroll;
-      overflow-y: scroll;
-      /* 抽出前後で縦スクロールバー領域を固定し、見え幅の揺れを防ぐ */
-      scrollbar-gutter: stable both-edges;
-      scrollbar-color: #9aa8a0 #e8eeea;
-      scrollbar-width: auto;
-    }
-    #approvalListArea::-webkit-scrollbar {
-      width: 12px;
-      height: 12px;
-    }
-    #approvalListArea::-webkit-scrollbar-track {
-      background: #e8eeea;
-    }
-    #approvalListArea::-webkit-scrollbar-thumb {
-      background: #9aa8a0;
-      border-radius: 6px;
-      border: 2px solid #e8eeea;
-    }
-    .result-table {
-      width: 100%;
-      min-width: 1200px;
-      border-collapse: collapse;
-      margin-top: 8px;
-      table-layout: fixed;
-    }
-    .result-table th,
-    .result-table td {
-      padding: 16px 10px;
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-      border-left: none;
-      border-right: none;
-      text-align: left;
-      white-space: normal;
-      word-wrap: break-word;
-    }
-    .result-table th {
-      padding: 8px 10px;
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      font-weight: 600;
-      border-top: none;
-    }
-    .result-table tr:nth-child(even) {
-      background: var(--color-surface);
-    }
-    .result-table tr:hover {
-      background: rgba(0, 134, 50, 0.06);
-    }
-    /* ヘッダ列の合計幅を100%に補正（HTMLのinline widthを最小限上書き） */
-    .result-table thead th:nth-child(1) { width: 15% !important; }
-    .result-table thead th:nth-child(2) { width: 12% !important; }
-    .result-table thead th:nth-child(3) { width: 12% !important; }
-    .result-table thead th:nth-child(4) { width: 8% !important; }
-    .result-table thead th:nth-child(5) { width: 7% !important; }
-    .result-table thead th:nth-child(6) { width: 7% !important; }
-    .result-table thead th:nth-child(7) { width: 8% !important; }
-    .result-table thead th:nth-child(8) { width: 8% !important; }
-    .result-table thead th:nth-child(9) { width: 8% !important; }
-    .result-table thead th:nth-child(10) { width: 8% !important; }
-    .result-table thead th:nth-child(11) { width: 6% !important; }
-    .result-table thead th:nth-child(12) { width: 9% !important; }
-    .result-table thead th:nth-child(13) { width: 6% !important; }
-    /* 図案管理番号リンク */
-    .result-table a {
-      color: #0066cc;
-      font-weight: 600;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .result-table a:hover {
-      opacity: 0.9;
-    }
-
-    /* 検索前・該当なし時のプレースホルダー行 */
-    .result-table .empty-row td {
-      text-align: left;
-      color: var(--color-text-muted);
-      padding: 16px 10px;
-      background: var(--color-card);
-    }
-
-    /* 一覧：デザイナー列のプルダウンをヘッダ列幅（セル幅）いっぱいに */
-    #approvalListArea .result-table td:last-child {
-      vertical-align: middle;
-    }
-    #approvalListArea .result-table td:last-child .row-designer-select {
-      display: block;
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-      padding: 8px 10px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      background: var(--color-card);
-      font-family: inherit;
-      font-size: inherit;
-    }
-
-    /* 画面右下固定 アクションボタン（登録など） */
-    .btn-fab-bar {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 2001;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-    }
-    .btn-fab-new {
-      display: inline-block;
-      text-decoration: none;
-      min-width: 140px;
-      padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-    }
-    .btn-fab-new:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-    }
-
-    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
-    .view-layout-2 { padding: 0; }
-    .view-layout-2 .status-buttons { margin-bottom: 20px; }
-    .view-layout-2 .list-section-title {
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--color-border);
+      #approvalListArea {
+        height: 70vh;
+        max-height: 70vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        scrollbar-color: #9aa8a0 #e8eeea;
+        scrollbar-width: auto;
+      }
     }
 
     /* スマホ: 検索条件展開時の崩れ防止（後勝ちで確実に適用） */
     @media (max-width: 768px) {
+      .content-box .page-title {
+        margin: 0 0 12px;
+      }
       .search-box-inner {
         grid-template-columns: 1fr !important;
         gap: 10px !important;
@@ -1253,41 +1326,29 @@
         max-width: 100% !important;
         box-sizing: border-box;
       }
-      .search-box-inner .filter-line-break {
-        display: none !important;
-      }
-      .search-box-inner .yukonisuu-sort-group {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 10px !important;
-        width: 100% !important;
-      }
-      .search-box-inner .yukonisuu-sort-group .search-row {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 auto !important;
-      }
-      .search-box-inner #searchUkonisuu,
-      .search-box-inner #searchYukonisuuSort {
+      .search-box-inner #searchUkonisuu {
         width: 100% !important;
         min-width: 0 !important;
       }
       .search-cancel-wrapper {
-        margin-top: 4px;
+        grid-column: 1 / -1;
+        width: 100%;
+        margin-left: 0;
+        padding: -1px 0px 6px 0px;
         justify-content: flex-end;
+      }
+      #approvalListArea {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        margin-bottom: 50px;
       }
     }
 
     /* Surface Duo 等の中間幅・折りたたみ端末向けの崩れ防止 */
-    @media (min-width: 540px) and (max-width: 912px) {
+     @media (min-width: 540px) and (max-width: 912px) {
       .content {
         padding: 12px 12px 70px 12px;
-      }
-      .content:not(.expanded),
-      .content.expanded {
-        margin-left: 0;
-        padding-left: 12px;
       }
       .content-box {
         padding: 12px;
@@ -1315,6 +1376,24 @@
       }
     }
 
+    @media (min-width: 540px) and (max-width: 768px) {
+      .content:not(.expanded),
+      .content.expanded {
+        margin-left: 0;
+        padding-left: 23px;
+      }
+    }
+    @media (min-width: 769px) and (max-width: 912px) {
+      .content:not(.expanded) {
+        margin-left: 0;
+        padding-left: 23px;
+      }
+      .content.expanded {
+        margin-left: -220px;
+        padding-left: 23px;
+      }
+    }
+
     @media (horizontal-viewport-segments: 2) {
       .search-box-inner {
         grid-template-columns: 1fr !important;
@@ -1332,7 +1411,7 @@
         min-width: 0 !important;
         max-width: 100% !important;
       }
-    }
+    } 
   </style>
 </head>
 
@@ -1405,22 +1484,11 @@
                       </div>
                     </div>
                   </div>
-                  <div class="filter-line-break" aria-hidden="true"></div>
-                  <div class="yukonisuu-sort-group">
-                    <div class="search-row">
-                      <label for="searchUkonisuu">有効日数</label>
-                      <div class="autocomplete">
-                        <input type="text" class="autocomplete-input" data-list="yukonissu" placeholder="有効日数検索" id="searchUkonisuu" autocomplete="off" aria-label="有効日数">
-                        <div class="autocomplete-dropdown"></div>
-                      </div>
-                    </div>
-                    <div class="search-row">
-                      <label for="searchYukonisuuSort">並び替え</label>
-                      <select id="searchYukonisuuSort" aria-label="有効日数の並び替え">
-                        <option value="" selected>既定（一覧順）</option>
-                        <option value="asc">有効日数（昇順）</option>
-                        <option value="desc">有効日数（降順）</option>
-                      </select>
+                  <div class="search-row">
+                    <label for="searchUkonisuu">有効日数</label>
+                    <div class="autocomplete">
+                      <input type="number" class="autocomplete-input" data-list="yukonissu" placeholder="有効日数検索" id="searchUkonisuu" inputmode="numeric" step="1" min="0" autocomplete="off" aria-label="有効日数">
+                      <div class="autocomplete-dropdown"></div>
                     </div>
                   </div>
                   <!-- ここに追加の検索内容を追加していく End -->
@@ -1440,74 +1508,82 @@
                 <table class="result-table">
                   <thead>
                     <tr>
-                      <th style="width: 15%;">管理番号</th>
-                      <th style="width: 15%;">会社名（日本語）</th>
-                      <th style="width: 15%;">会社名（英語）</th>
-                      <th style="width: 10%;">Ship/手配予定日</th>
-                      <th style="width: 11%;">販売区分</th>
-                      <th style="width: 11%;">展示会</th>
-                      <th style="width: 11%;">商品コード</th>
-                      <th style="width: 23%;">品名</th>
-                      <th style="width: 14%;">カテゴリー</th>
-                      <th style="width: 12%;">ブランド・キャラ</th>
-                      <th style="width: 12%;">商品分類</th>
-                      <th style="width: 15%;">デザイナー</th>
-                      <th style="width: 10%;">有効日数</th>
+                      <th style="width: 10%;">管理番号</th>
+                      <th style="width: 8%;">会社名（日本語）</th>
+                      <th style="width: 8%;">会社名（英語）</th>
+                      <th style="width: 8%;">Ship/手配予定日</th>
+                      <th style="width: 2%;">販売区分</th>
+                      <th style="width: 6%;">展示会</th>
+                      <th style="width: 6%;">商品コード</th>
+                      <th style="width: 15%;">品名</th>
+                      <th style="width: 10%;">カテゴリー</th>
+                      <th style="width: 6%;">ブランド・キャラ</th>
+                      <th style="width: 6%;">商品分類</th>
+                      <th style="width: 6%;">デザイナー</th>
+                      <th id="thYukonisuuSort" class="th-sort-yukonisuu th-sort-none" scope="col" title="クリックで有効日数の昇順・降順を切り替え">
+                        <span class="th-sort-label">
+                          有効日数
+                          <span class="th-sort-arrows" aria-hidden="true">
+                            <span class="th-sort-icon th-sort-icon-up">▲</span>
+                            <span class="th-sort-icon th-sort-icon-down">▼</span>
+                          </span>
+                        </span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody id="kojinResultTbody"></tbody>
                 </table>
                 <table id="knrRowSource" hidden aria-hidden="true" style="display:none"><tbody>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-001</a></td><td>今治ソフトパイル株式会社</td><td>Imabari Soft Pile Co., Ltd.</td><td>2025/01/05</td><td>定番</td><td>2026.01 展示会</td><td>49000000001</td><td>ミッキーA柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>1</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-002</a></td><td>南通華東紡績（Nantong Huadong）</td><td>Nantong Huadong Textile Co., Ltd.</td><td>2025/01/06</td><td>定番加工</td><td></td><td>49000000002</td><td>ミッキーB柄タオル</td><td>単品タオル</td><td>ムーミン</td><td>ミニタオル</td><td>デザイナー02</td><td>2</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-003</a></td><td>泉州ガーゼ織物</td><td>Senshu Gauze Textiles</td><td>2025/01/07</td><td>定番</td><td>2026.01 展示会</td><td>49000000003</td><td>ミッキーC柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>3</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-004</a></td><td>株式会社コットンロード</td><td>Cotton Road Co., Ltd.</td><td>2025/01/08</td><td>定番加工</td><td></td><td>49000000004</td><td>無地カラフルタオル</td><td>単品タオル</td><td>サンリオ</td><td>ミニタオル</td><td>デザイナー04</td><td>4</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-005</a></td><td>青島恒泰繊維有限公司</td><td>Qingdao Hengtai Textiles Co., Ltd.</td><td>2025/01/09</td><td>定番</td><td>2026.01 展示会</td><td>49000000005</td><td>春限定フラワータオル</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>5</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-006</a></td><td>オーガニック・ループ製織</td><td>Organic Loop Weaving</td><td>2025/01/10</td><td>別注</td><td></td><td>49000000006</td><td>別注ミッキーAセット</td><td>企画物タオル</td><td>ムーミン</td><td>ミニタオル</td><td>デザイナー02</td><td>6</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-007</a></td><td>彩り染タオル製作所</td><td>Irodori Dyed Towel Works</td><td>2025/01/11</td><td>別注</td><td></td><td>49000000007</td><td>別注ミッキーBセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>7</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-008</a></td><td>広州美雅実業</td><td>Guangzhou Miya Industrial</td><td>2025/01/12</td><td>別注</td><td></td><td>49000000008</td><td>別注無地タオル</td><td>単品タオル</td><td>ドラえもん</td><td>ミニタオル</td><td>デザイナー04</td><td>8</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-009</a></td><td>愛媛テキスタイル工房</td><td>Ehime Textile Studio</td><td>2025/01/13</td><td>別注</td><td></td><td>49000000009</td><td>夏限定マリンセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>9</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-010</a></td><td>上海ジャガード・インダストリー</td><td>Shanghai Jacquard Industries</td><td>2025/01/14</td><td>別注</td><td></td><td>49000000010</td><td>秋限定チェックセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>10</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-011</a></td><td>株式会社ふわふわ繊維</td><td>Fuwafuwa Fibers Co., Ltd.</td><td>2025/01/16</td><td>OEM</td><td></td><td>49000000011</td><td>OEMミッキーAタオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>11</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-012</a></td><td>山東省天紅紡織集団</td><td>Shandong Tianhong Textile Group</td><td>2025/01/17</td><td>OEM</td><td></td><td>49000000012</td><td>OEMミッキーBタオル</td><td>単品タオル</td><td>リラックマ</td><td>ミニタオル</td><td>デザイナー04</td><td>12</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-013</a></td><td>瀬戸内ジャガード織</td><td>Setouchi Jacquard Weaving</td><td>2025/01/18</td><td>OEM</td><td></td><td>49000000013</td><td>OEM無地タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>13</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-014</a></td><td>ホワイトクラウド・リネン</td><td>White Cloud Linen</td><td>2025/01/19</td><td>OEM</td><td></td><td>49000000014</td><td>OEMギフトセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>14</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-015</a></td><td>極上無撚糸タオル</td><td>Premium Zero-Twist Towel</td><td>2025/01/20</td><td>OEM</td><td></td><td>49000000015</td><td>OEMギフトセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>15</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-016</a></td><td>寧波ゴールデン・テリー</td><td>Ningbo Golden Terry</td><td>2025/03/01</td><td>定番</td><td>2026.03 展示会</td><td>49000000016</td><td>ミッキーD柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>16</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-017</a></td><td>シャーリング加工・サトウ</td><td>Shirring Processing Sato</td><td>2025/03/02</td><td>定番</td><td>2026.03 展示会</td><td>49000000017</td><td>無地ベーシックタオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>17</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-018</a></td><td>伊予染工</td><td>Iyo Dye Works</td><td>2025/03/03</td><td>定番</td><td>2026.03 展示会</td><td>49000000018</td><td>シーズンタオルA</td><td>企画物タオル</td><td>すみっコぐらし</td><td>ミニタオル</td><td>デザイナー02</td><td>18</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-019</a></td><td>深セン誠信輸出入有限公司</td><td>Shenzhen Chengxin Import &amp; Export Co., Ltd.</td><td>2025/03/04</td><td>定番</td><td>2026.03 展示会</td><td>49000000019</td><td>シーズンタオルB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>19</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-020</a></td><td>株式会社バスタイム・アメニティ</td><td>Bath Time Amenities Co., Ltd.</td><td>2025/03/05</td><td>定番</td><td>2026.03 展示会</td><td>49000000020</td><td>シーズンタオルC</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>20</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-021</a></td><td>伝統織物・泉州屋</td><td>Traditional Textiles Senshuya</td><td>2025/03/06</td><td>別注</td><td></td><td>49000000021</td><td>別注ミッキーCセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>21</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-022</a></td><td>モダン・ヘム縫製</td><td>Modern Hem Sewing</td><td>2025/03/07</td><td>別注</td><td></td><td>49000000022</td><td>別注無地カラー</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>22</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-023</a></td><td>サンライズ・パイル</td><td>Sunrise Pile</td><td>2025/03/08</td><td>別注</td><td></td><td>49000000023</td><td>別注ギフトセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>23</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-024</a></td><td>エコアース・コットン</td><td>Eco Earth Cotton</td><td>2025/03/09</td><td>別注</td><td></td><td>49000000024</td><td>別注ギフトセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>24</td></tr>
-                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-025</a></td><td>浙江万豊紡織</td><td>Zhejiang Wanfeng Textile</td><td>2025/03/10</td><td>別注</td><td></td><td>49000000025</td><td>別注ギフトセットC</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>25</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-026</a></td><td>株式会社マシュマロ・タッチ</td><td>Marshmallow Touch Co., Ltd.</td><td>2025/03/11</td><td>OEM</td><td></td><td>49000000026</td><td>OEMタオルセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>25</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-027</a></td><td>ハイクオリティ・ウォッシュ</td><td>High Quality Wash</td><td>2025/03/12</td><td>OEM</td><td></td><td>49000000027</td><td>OEMタオルセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>26</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-028</a></td><td>四国タオル資材</td><td>Shikoku Towel Materials</td><td>2025/03/14</td><td>OEM</td><td></td><td>49000000028</td><td>OEMタオルセットC</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>27</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-029</a></td><td>スピード刺しゅう工業</td><td>Speed Embroidery Industries</td><td>2025/03/15</td><td>OEM</td><td></td><td>49000000029</td><td>OEMミッキーCタオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>28</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-030</a></td><td>株式会社エブリデイ・タオル</td><td>Everyday Towel Co., Ltd.</td><td>2025/03/16</td><td>OEM</td><td></td><td>49000000030</td><td>OEM無地ベーシック</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>29</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-031</a></td><td>今治ソフトパイル株式会社</td><td>Imabari Soft Pile Co., Ltd.</td><td>2025/06/01</td><td>定番</td><td>2026.06 展示会</td><td>49000000031</td><td>春企画フラワーセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>30</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-032</a></td><td>南通華東紡績（Nantong Huadong）</td><td>Nantong Huadong Textile Co., Ltd.</td><td>2025/06/02</td><td>定番</td><td>2026.06 展示会</td><td>49000000032</td><td>夏企画マリンセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>31</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-033</a></td><td>泉州ガーゼ織物</td><td>Senshu Gauze Textiles</td><td>定番</td><td>2025/06/03</td><td>2026.06 展示会</td><td>49000000033</td><td>秋企画チェックセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>32</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-034</a></td><td>株式会社コットンロード</td><td>Cotton Road Co., Ltd.</td><td>2025/06/04</td><td>定番</td><td>2026.06 展示会</td><td>49000000034</td><td>冬企画スノーセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>33</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-035</a></td><td>青島恒泰繊維有限公司</td><td>Qingdao Hengtai Textiles Co., Ltd.</td><td>2025/06/05</td><td>定番</td><td>2026.06 展示会</td><td>49000000035</td><td>ミッキー総柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>34</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-036</a></td><td>オーガニック・ループ製織</td><td>Organic Loop Weaving</td><td>2025/06/06</td><td>別注</td><td></td><td>49000000036</td><td>別注キャラクターセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>35</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-037</a></td><td>彩り染タオル製作所</td><td>Irodori Dyed Towel Works</td><td>2025/06/07</td><td>別注</td><td></td><td>49000000037</td><td>別注キャラクターセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>36</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-038</a></td><td>広州美雅実業</td><td>Guangzhou Miya Industrial</td><td>2025/06/08</td><td>別注</td><td></td><td>49000000038</td><td>別注無地タオルセット</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>37</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-039</a></td><td>愛媛テキスタイル工房</td><td>Ehime Textile Studio</td><td>2025/06/09</td><td>別注</td><td></td><td>49000000039</td><td>別注ギフトボックスA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>38</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-040</a></td><td>上海ジャガード・インダストリー</td><td>Shanghai Jacquard Industries</td><td>2025/06/10</td><td>別注</td><td></td><td>49000000040</td><td>別注ギフトボックスB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>39</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-041</a></td><td>株式会社ふわふわ繊維</td><td>Fuwafuwa Fibers Co., Ltd.</td><td>2025/06/11</td><td>OEM</td><td></td><td>49000000041</td><td>OEMキャラクターセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>40</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-042</a></td><td>山東省天紅紡織集団</td><td>Shandong Tianhong Textile Group</td><td>2025/06/12</td><td>OEM</td><td></td><td>49000000042</td><td>OEMキャラクターセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>41</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-043</a></td><td>瀬戸内ジャガード織</td><td>Setouchi Jacquard Weaving</td><td>2025/06/13</td><td>OEM</td><td></td><td>49000000043</td><td>OEM無地タオルセット</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>42</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-044</a></td><td>ホワイトクラウド・リネン</td><td>White Cloud Linen</td><td>2025/06/14</td><td>OEM</td><td></td><td>49000000044</td><td>OEMギフトボックスA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>43</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-045</a></td><td>極上無撚糸タオル</td><td>Premium Zero-Twist Towel</td><td>2025/06/15</td><td>OEM</td><td></td><td>49000000045</td><td>OEMギフトボックスB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>44</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-001</a></td><td>今治ソフトパイル株式会社</td><td>Imabari Soft Pile Co., Ltd.</td><td>2025/01/05</td><td>定番</td><td>2026.01 展示会</td><td>49000000001</td><td>ミッキーA柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">1</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-002</a></td><td>南通華東紡績（Nantong Huadong）</td><td>Nantong Huadong Textile Co., Ltd.</td><td>2025/01/06</td><td>定番加工</td><td></td><td>49000000002</td><td>ミッキーB柄タオル</td><td>単品タオル</td><td>ムーミン</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">2</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-003</a></td><td>泉州ガーゼ織物</td><td>Senshu Gauze Textiles</td><td>2025/01/07</td><td>定番</td><td>2026.01 展示会</td><td>49000000003</td><td>ミッキーC柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">3</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-004</a></td><td>株式会社コットンロード</td><td>Cotton Road Co., Ltd.</td><td>2025/01/08</td><td>定番加工</td><td></td><td>49000000004</td><td>無地カラフルタオル</td><td>単品タオル</td><td>サンリオ</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">4</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-005</a></td><td>青島恒泰繊維有限公司</td><td>Qingdao Hengtai Textiles Co., Ltd.</td><td>2025/01/09</td><td>定番</td><td>2026.01 展示会</td><td>49000000005</td><td>春限定フラワータオル</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">5</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-006</a></td><td>オーガニック・ループ製織</td><td>Organic Loop Weaving</td><td>2025/01/10</td><td>別注</td><td></td><td>49000000006</td><td>別注ミッキーAセット</td><td>企画物タオル</td><td>ムーミン</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">6</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-007</a></td><td>彩り染タオル製作所</td><td>Irodori Dyed Towel Works</td><td>2025/01/11</td><td>別注</td><td></td><td>49000000007</td><td>別注ミッキーBセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">7</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-008</a></td><td>広州美雅実業</td><td>Guangzhou Miya Industrial</td><td>2025/01/12</td><td>別注</td><td></td><td>49000000008</td><td>別注無地タオル</td><td>単品タオル</td><td>ドラえもん</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">8</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-009</a></td><td>愛媛テキスタイル工房</td><td>Ehime Textile Studio</td><td>2025/01/13</td><td>別注</td><td></td><td>49000000009</td><td>夏限定マリンセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">9</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-010</a></td><td>上海ジャガード・インダストリー</td><td>Shanghai Jacquard Industries</td><td>2025/01/14</td><td>別注</td><td></td><td>49000000010</td><td>秋限定チェックセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">10</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-011</a></td><td>株式会社ふわふわ繊維</td><td>Fuwafuwa Fibers Co., Ltd.</td><td>2025/01/16</td><td>OEM</td><td></td><td>49000000011</td><td>OEMミッキーAタオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">11</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-012</a></td><td>山東省天紅紡織集団</td><td>Shandong Tianhong Textile Group</td><td>2025/01/17</td><td>OEM</td><td></td><td>49000000012</td><td>OEMミッキーBタオル</td><td>単品タオル</td><td>リラックマ</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">12</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-013</a></td><td>瀬戸内ジャガード織</td><td>Setouchi Jacquard Weaving</td><td>2025/01/18</td><td>OEM</td><td></td><td>49000000013</td><td>OEM無地タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">13</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-014</a></td><td>ホワイトクラウド・リネン</td><td>White Cloud Linen</td><td>2025/01/19</td><td>OEM</td><td></td><td>49000000014</td><td>OEMギフトセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">14</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-015</a></td><td>極上無撚糸タオル</td><td>Premium Zero-Twist Towel</td><td>2025/01/20</td><td>OEM</td><td></td><td>49000000015</td><td>OEMギフトセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">15</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-016</a></td><td>寧波ゴールデン・テリー</td><td>Ningbo Golden Terry</td><td>2025/03/01</td><td>定番</td><td>2026.03 展示会</td><td>49000000016</td><td>ミッキーD柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">16</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-017</a></td><td>シャーリング加工・サトウ</td><td>Shirring Processing Sato</td><td>2025/03/02</td><td>定番</td><td>2026.03 展示会</td><td>49000000017</td><td>無地ベーシックタオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">17</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-018</a></td><td>伊予染工</td><td>Iyo Dye Works</td><td>2025/03/03</td><td>定番</td><td>2026.03 展示会</td><td>49000000018</td><td>シーズンタオルA</td><td>企画物タオル</td><td>すみっコぐらし</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">18</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-019</a></td><td>深セン誠信輸出入有限公司</td><td>Shenzhen Chengxin Import &amp; Export Co., Ltd.</td><td>2025/03/04</td><td>定番</td><td>2026.03 展示会</td><td>49000000019</td><td>シーズンタオルB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">19</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-020</a></td><td>株式会社バスタイム・アメニティ</td><td>Bath Time Amenities Co., Ltd.</td><td>2025/03/05</td><td>定番</td><td>2026.03 展示会</td><td>49000000020</td><td>シーズンタオルC</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">20</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-021</a></td><td>伝統織物・泉州屋</td><td>Traditional Textiles Senshuya</td><td>2025/03/06</td><td>別注</td><td></td><td>49000000021</td><td>別注ミッキーCセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">21</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-022</a></td><td>モダン・ヘム縫製</td><td>Modern Hem Sewing</td><td>2025/03/07</td><td>別注</td><td></td><td>49000000022</td><td>別注無地カラー</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">22</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-023</a></td><td>サンライズ・パイル</td><td>Sunrise Pile</td><td>2025/03/08</td><td>別注</td><td></td><td>49000000023</td><td>別注ギフトセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">23</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-024</a></td><td>エコアース・コットン</td><td>Eco Earth Cotton</td><td>2025/03/09</td><td>別注</td><td></td><td>49000000024</td><td>別注ギフトセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">24</td></tr>
+                    <tr data-knr-filter="6m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-025</a></td><td>浙江万豊紡織</td><td>Zhejiang Wanfeng Textile</td><td>2025/03/10</td><td>別注</td><td></td><td>49000000025</td><td>別注ギフトセットC</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">25</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-026</a></td><td>株式会社マシュマロ・タッチ</td><td>Marshmallow Touch Co., Ltd.</td><td>2025/03/11</td><td>OEM</td><td></td><td>49000000026</td><td>OEMタオルセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">25</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-027</a></td><td>ハイクオリティ・ウォッシュ</td><td>High Quality Wash</td><td>2025/03/12</td><td>OEM</td><td></td><td>49000000027</td><td>OEMタオルセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">26</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-028</a></td><td>四国タオル資材</td><td>Shikoku Towel Materials</td><td>2025/03/14</td><td>OEM</td><td></td><td>49000000028</td><td>OEMタオルセットC</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">27</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-029</a></td><td>スピード刺しゅう工業</td><td>Speed Embroidery Industries</td><td>2025/03/15</td><td>OEM</td><td></td><td>49000000029</td><td>OEMミッキーCタオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">28</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-030</a></td><td>株式会社エブリデイ・タオル</td><td>Everyday Towel Co., Ltd.</td><td>2025/03/16</td><td>OEM</td><td></td><td>49000000030</td><td>OEM無地ベーシック</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">29</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-031</a></td><td>今治ソフトパイル株式会社</td><td>Imabari Soft Pile Co., Ltd.</td><td>2025/06/01</td><td>定番</td><td>2026.06 展示会</td><td>49000000031</td><td>春企画フラワーセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">30</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-032</a></td><td>南通華東紡績（Nantong Huadong）</td><td>Nantong Huadong Textile Co., Ltd.</td><td>2025/06/02</td><td>定番</td><td>2026.06 展示会</td><td>49000000032</td><td>夏企画マリンセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">31</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-033</a></td><td>泉州ガーゼ織物</td><td>Senshu Gauze Textiles</td><td>定番</td><td>2025/06/03</td><td>2026.06 展示会</td><td>49000000033</td><td>秋企画チェックセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">32</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-034</a></td><td>株式会社コットンロード</td><td>Cotton Road Co., Ltd.</td><td>2025/06/04</td><td>定番</td><td>2026.06 展示会</td><td>49000000034</td><td>冬企画スノーセット</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">33</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-035</a></td><td>青島恒泰繊維有限公司</td><td>Qingdao Hengtai Textiles Co., Ltd.</td><td>2025/06/05</td><td>定番</td><td>2026.06 展示会</td><td>49000000035</td><td>ミッキー総柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">34</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-036</a></td><td>オーガニック・ループ製織</td><td>Organic Loop Weaving</td><td>2025/06/06</td><td>別注</td><td></td><td>49000000036</td><td>別注キャラクターセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">35</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-037</a></td><td>彩り染タオル製作所</td><td>Irodori Dyed Towel Works</td><td>2025/06/07</td><td>別注</td><td></td><td>49000000037</td><td>別注キャラクターセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">36</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-038</a></td><td>広州美雅実業</td><td>Guangzhou Miya Industrial</td><td>2025/06/08</td><td>別注</td><td></td><td>49000000038</td><td>別注無地タオルセット</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">37</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-039</a></td><td>愛媛テキスタイル工房</td><td>Ehime Textile Studio</td><td>2025/06/09</td><td>別注</td><td></td><td>49000000039</td><td>別注ギフトボックスA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">38</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-040</a></td><td>上海ジャガード・インダストリー</td><td>Shanghai Jacquard Industries</td><td>2025/06/10</td><td>別注</td><td></td><td>49000000040</td><td>別注ギフトボックスB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">39</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-041</a></td><td>株式会社ふわふわ繊維</td><td>Fuwafuwa Fibers Co., Ltd.</td><td>2025/06/11</td><td>OEM</td><td></td><td>49000000041</td><td>OEMキャラクターセットA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">40</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-042</a></td><td>山東省天紅紡織集団</td><td>Shandong Tianhong Textile Group</td><td>2025/06/12</td><td>OEM</td><td></td><td>49000000042</td><td>OEMキャラクターセットB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">41</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-043</a></td><td>瀬戸内ジャガード織</td><td>Setouchi Jacquard Weaving</td><td>2025/06/13</td><td>OEM</td><td></td><td>49000000043</td><td>OEM無地タオルセット</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">42</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-044</a></td><td>ホワイトクラウド・リネン</td><td>White Cloud Linen</td><td>2025/06/14</td><td>OEM</td><td></td><td>49000000044</td><td>OEMギフトボックスA</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">43</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-045</a></td><td>極上無撚糸タオル</td><td>Premium Zero-Twist Towel</td><td>2025/06/15</td><td>OEM</td><td></td><td>49000000045</td><td>OEMギフトボックスB</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">44</td></tr>
                     <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-046</a></td><td>寧波ゴールデン・テリー</td><td>Ningbo Golden Terry</td><td>2025/06/16</td><td>定番</td><td>2026.01 展示会</td><td>49000000046</td><td>ミッキーE柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>45</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-047</a></td><td>シャーリング加工・サトウ</td><td>Shirring Processing Sato</td><td>2025/06/17</td><td>定番</td><td>2026.01 展示会</td><td>49000000047</td><td>ミッキーF柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td>46</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-048</a></td><td>伊予染工</td><td>Iyo Dye Works</td><td>2025/06/18</td><td>別注</td><td></td><td>49000000048</td><td>別注キャラクターコラボ</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td>47</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-049</a></td><td>深セン誠信輸出入有限公司</td><td>Shenzhen Chengxin Import &amp; Export Co., Ltd.</td><td>2025/06/19</td><td>OEM</td><td></td><td>49000000049</td><td>OEMキャラクターコラボ</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td>48</td></tr>
-                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-050</a></td><td>株式会社バスタイム・アメニティ</td><td>Bath Time Amenities Co., Ltd.</td><td>2025/06/20</td><td>OEM</td><td></td><td>49000000050</td><td>OEM無地カラーセット</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td>49</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-047</a></td><td>シャーリング加工・サトウ</td><td>Shirring Processing Sato</td><td>2025/06/17</td><td>定番</td><td>2026.01 展示会</td><td>49000000047</td><td>ミッキーF柄タオル</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー03</td><td style="padding-right: 30px;">46</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-048</a></td><td>伊予染工</td><td>Iyo Dye Works</td><td>2025/06/18</td><td>別注</td><td></td><td>49000000048</td><td>別注キャラクターコラボ</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー04</td><td style="padding-right: 30px;">47</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-049</a></td><td>深セン誠信輸出入有限公司</td><td>Shenzhen Chengxin Import &amp; Export Co., Ltd.</td><td>2025/06/19</td><td>OEM</td><td></td><td>49000000049</td><td>OEMキャラクターコラボ</td><td>企画物タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー01</td><td style="padding-right: 30px;">48</td></tr>
+                    <tr data-knr-filter="ship1m"><td><a href='kojoninteijohonyuryoku.html'>KNR-2026-050</a></td><td>株式会社バスタイム・アメニティ</td><td>Bath Time Amenities Co., Ltd.</td><td>2025/06/20</td><td>OEM</td><td></td><td>49000000050</td><td>OEM無地カラーセット</td><td>単品タオル</td><td>ディズニー</td><td>ミニタオル</td><td>デザイナー02</td><td style="padding-right: 30px;">49</td></tr>
                 </tbody>
               </table>
               </div>
@@ -1602,7 +1678,26 @@
           ? companyInput.parentElement && companyInput.parentElement.querySelector(".autocomplete-dropdown")
           : null;
         var yukonisuuInput = document.getElementById("searchUkonisuu");
-        var yukonisuuSortSelect = document.getElementById("searchYukonisuuSort");
+        /** 一覧の有効日数ソート: ""=一覧順（ソートなし） / "asc" / "desc"（ヘッダークリックで切替） */
+        var yukonisuuSortOrder = "";
+        var thYukonisuuSort = document.getElementById("thYukonisuuSort");
+
+        function updateYukonisuuSortHeaderUi() {
+          if (!thYukonisuuSort) return;
+          var v = yukonisuuSortOrder;
+          thYukonisuuSort.classList.remove("th-sort-none", "th-sort-asc", "th-sort-desc");
+          if (v === "asc") {
+            thYukonisuuSort.setAttribute("aria-sort", "ascending");
+            thYukonisuuSort.classList.add("th-sort-asc");
+          } else if (v === "desc") {
+            thYukonisuuSort.setAttribute("aria-sort", "descending");
+            thYukonisuuSort.classList.add("th-sort-desc");
+          } else {
+            thYukonisuuSort.removeAttribute("aria-sort");
+            thYukonisuuSort.classList.add("th-sort-none");
+          }
+        }
+
         if (!wrap || !toggle || !menuEl) return;
 
         function buildOptions() {
@@ -1673,15 +1768,17 @@
           if (!tbody) return;
           var selectedBrandChara = getSelectedValues();
           var companyKeyword = normalizeText(companyInput ? companyInput.value : "");
-          var yukonisuuKeyword = normalizeText(yukonisuuInput ? yukonisuuInput.value : "");
+          var yukonisuuLimitRaw = yukonisuuInput ? yukonisuuInput.value : "";
+          var yukonisuuLimit = parseFloat(String(yukonisuuLimitRaw).trim());
+          var hasYukonisuuLimit = !isNaN(yukonisuuLimit);
           Array.prototype.forEach.call(tbody.rows, function (row) {
             if (row.classList.contains("empty-row")) return;
             var cellBrandChara = row.cells[9] ? normalizeText(row.cells[9].textContent) : "";
             var cellCompanyJa = row.cells[1] ? normalizeText(row.cells[1].textContent) : "";
-            var cellYukonisuu = row.cells[12] ? normalizeText(row.cells[12].textContent) : "";
+            var cellYukonisuu = row.cells[12] ? parseYukonisuuForSort(row.cells[12].textContent) : Number.POSITIVE_INFINITY;
             var matchBrandChara = selectedBrandChara.length === 0 || selectedBrandChara.indexOf(cellBrandChara) !== -1;
             var matchCompanyJa = !companyKeyword || cellCompanyJa.indexOf(companyKeyword) !== -1;
-            var matchYukonisuu = !yukonisuuKeyword || cellYukonisuu.indexOf(yukonisuuKeyword) !== -1;
+            var matchYukonisuu = !hasYukonisuuLimit || cellYukonisuu <= yukonisuuLimit;
             row.style.display = (matchBrandChara && matchCompanyJa && matchYukonisuu) ? "" : "none";
           });
           applyYukonisuuSortToRows();
@@ -1695,14 +1792,14 @@
 
         function applyYukonisuuSortToRows() {
           var tbody = document.getElementById("kojinResultTbody");
-          if (!tbody || !yukonisuuSortSelect || !yukonisuuSortSelect.value) return;
+          if (!tbody || !yukonisuuSortOrder) return;
           var rows = Array.prototype.filter.call(tbody.rows, function (row) {
             return !row.classList.contains("empty-row");
           });
           rows.sort(function (a, b) {
             var aVal = parseYukonisuuForSort(a.cells[12] ? a.cells[12].textContent : "");
             var bVal = parseYukonisuuForSort(b.cells[12] ? b.cells[12].textContent : "");
-            if (yukonisuuSortSelect.value === "desc") {
+            if (yukonisuuSortOrder === "desc") {
               return bVal - aVal;
             }
             return aVal - bVal;
@@ -1723,9 +1820,8 @@
           if (yukonisuuInput) {
             yukonisuuInput.value = "";
           }
-          if (yukonisuuSortSelect) {
-            yukonisuuSortSelect.value = "";
-          }
+          yukonisuuSortOrder = "";
+          updateYukonisuuSortHeaderUi();
           updateToggleLabel();
           applySearchFiltersToRows();
         };
@@ -1763,8 +1859,19 @@
           yukonisuuInput.addEventListener("input", applySearchFiltersToRows);
           yukonisuuInput.addEventListener("change", applySearchFiltersToRows);
         }
-        if (yukonisuuSortSelect) {
-          yukonisuuSortSelect.addEventListener("change", applySearchFiltersToRows);
+
+        if (thYukonisuuSort) {
+          thYukonisuuSort.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (yukonisuuSortOrder === "asc") {
+              yukonisuuSortOrder = "desc";
+            } else {
+              yukonisuuSortOrder = "asc";
+            }
+            updateYukonisuuSortHeaderUi();
+            applySearchFiltersToRows();
+          });
+          updateYukonisuuSortHeaderUi();
         }
 
         document.addEventListener("click", function (event) {

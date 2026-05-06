@@ -242,8 +242,10 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      padding: 24px 24px 56px 24px;
-      overflow-y: auto;
+      /* 右下固定の「柄共通設定」と一覧が重ならないよう余白（bottom + ボタン高 + 余裕） */
+      padding: 24px 24px 88px 24px;
+      /* overflow-y: auto; */
+      overflow-y: hidden;
       transition: margin-left 0.3s ease, padding-left 0.3s ease;
     }
 
@@ -265,6 +267,7 @@
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-height: 0;
       /* overflow: hidden; */
     }
 
@@ -342,7 +345,266 @@
       z-index: 2001;
     }
 
-    /* #region レスポンシブ対応 */
+    #tenjikaiSelect:hover,
+    .dashboard-box select:hover {
+      border-color: var(--color-primary);
+    }
+
+    #tenjikaiSelect:focus,
+    .dashboard-box select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+    }
+
+    /* ========== イメージ案：3つとも一括表示 ========== */
+    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+    .view-layout-1-group,
+    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
+
+    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
+    h1.view-layout-title {
+      margin: 4px 0 8px 12px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
+    .view-layout-1 { padding: 0; }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+    .filter-row input[type="text"], .filter-row select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+    }
+
+    #searchRowsPanel .search-row .autocomplete-dropdown,
+    #searchRowsPanel .search-row .autocomplete-dropdown div {
+      font-size: var(--fs-xs);
+      font-weight: 500;
+    }
+
+    #searchRowsPanel .search-row option {
+      font-size: var(--fs-xs);
+    }
+
+    #searchRowsPanel .search-row .multi-select {
+      position: relative;
+      width: 100%;
+    }
+
+    #searchRowsPanel .search-row .multi-select-toggle {
+      width: 100%;
+      text-align: left;
+      font-size: var(--fs-xs);
+      min-width: 160px;
+      padding: 3px 12px;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #searchRowsPanel .search-row .multi-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 20;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      max-height: 220px;
+      padding: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    #searchRowsPanel .search-row .multi-select.is-open .multi-select-menu {
+      display: block;
+    }
+
+    #searchRowsPanel .search-row .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 2px;
+      cursor: pointer;
+      font-size: var(--fs-xs);
+      white-space: nowrap;
+      width: fit-content;
+    }
+
+    #searchRowsPanel .search-row .multi-select-option input[type="checkbox"] {
+      margin: 0;
+    }
+
+    #searchRowsPanel .search-row select:hover,
+    #searchRowsPanel .search-row input:not([type="checkbox"]):hover,
+    #searchRowsPanel .search-row .multi-select-toggle:hover {
+      border-color: #b0bdb5;
+    }
+
+    #searchRowsPanel .search-row select:focus,
+    #searchRowsPanel .search-row input:not([type="checkbox"]):focus,
+    #searchRowsPanel .search-row .multi-select.is-open .multi-select-toggle {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    #searchRowsPanel .search-row input::placeholder {
+      color: #9ca89f;
+    }
+
+    /* 検索条件エリア右端：クリアボタン（登録ボタンと同スタイル） */
+    .search-cancel-wrapper {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .btn-search-cancel {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: var(--fs-xs);
+      background: var(--color-clearbutton-background);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+      box-shadow: none;
+    }
+    .btn-search-cancel:hover {
+      background:var(--color-clearbutton-background-hover);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group > .content-box:first-of-type {
+      margin-bottom: 5px;
+    }
+    .content-box h3 {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+    /* 検索結果一覧テーブル（スクロール対応） */
+    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
+    #approvalListArea {
+      width: 100%;
+      max-height: 55vh;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      table-layout: fixed;
+    }
+    .result-table th,
+    .result-table td {
+      padding: 16px 10px;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .result-table th {
+      padding: 8px 10px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      font-weight: 600;
+      border-top: none;
+    }
+    .result-table tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+    .result-table tr:hover {
+      background: rgba(0, 134, 50, 0.06);
+    }
+    /* 図案管理番号リンク */
+    .result-table a {
+      color: #0066cc;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .result-table a:hover {
+      opacity: 0.9;
+    }
+
+    /* 画面右下固定アクションボタン群 */
+    .fab-actions {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      /* min-width: 140px; */
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
+    .view-layout-2 { padding: 0; }
+    .view-layout-2 .status-buttons { margin-bottom: 20px; }
+    .view-layout-2 .list-section-title {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+ /* #region レスポンシブ対応 */
     /* 画面の幅が650px以下ならスマホ*/
     @media (max-width: 768px) {
       .pc-only {
@@ -388,13 +650,19 @@
         background: var(--color-surface);
         flex-direction: column;
         flex: 1;
-        padding: 20px 20px 56px 20px;
+        padding: 20px 20px 88px 20px;
         margin-left: -220px;
         width: 100%;
+        overflow-y: auto;
       }
 
       .content {
-          padding: 12px 12px 56px 12px;
+          padding: 12px 12px 88px 12px;
+      }
+
+      .content.expanded {
+          margin-left: -220px;
+          padding-left: 12px;
       }
 
       .content:not(.expanded) {
@@ -406,6 +674,10 @@
         box-sizing: border-box;
         padding: 8px;
         min-height: 0;
+      }
+
+      .content-box .page-title {
+          margin: 0 0 10px;
       }
 
       /* イメージ案①: スマホ用 */
@@ -461,6 +733,7 @@
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px 20px;
+        padding: 12px 0 0;
       }
       .search-box.is-open .search-box-inner {
         display: grid;
@@ -615,7 +888,9 @@
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
       #approvalListArea {
         overflow-x: visible;
+        overflow-y: hidden;
         max-height: none;
+        margin-bottom: 80px;
       }
       #approvalListArea .result-table {
         min-width: 0;
@@ -706,33 +981,6 @@
       }
     }
 
-    #tenjikaiSelect:hover,
-    .dashboard-box select:hover {
-      border-color: var(--color-primary);
-    }
-
-    #tenjikaiSelect:focus,
-    .dashboard-box select:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
-    }
-
-    /* ========== イメージ案：3つとも一括表示 ========== */
-    .view-layout { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
-    .view-layout-1-group,
-    .view-layout-3 { width: 100%; min-width: 0; box-sizing: border-box; }
-
-    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
-    h1.view-layout-title {
-      margin: 4px 0 8px 12px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
-    .view-layout-1 { padding: 0; }
-
     /* keiyakushosofuiraikakunin.html と同じ: PC 用 search-row（#searchRowsPanel のみ。スマホは max-width:768 側） */
     @media (min-width: 769px) {
       .search-toggle-sp {
@@ -784,233 +1032,40 @@
         width: 100%;
         box-sizing: border-box;
       }
-    }
 
-    .filter-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .filter-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: nowrap;
-    }
-    .filter-row .filter-label {
-      margin-right: 4px;
-    }
-    .filter-row input[type="text"], .filter-row select {
-      padding: 8px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      min-width: 160px;
-    }
+      /* 仕様書検索（PC）: 一覧はメイン内の残り高さのみ使用し、固定FABの下に表示されない */
+      .content-box > .view-layout.view-layout-1-group {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
 
-    #searchRowsPanel .search-row .autocomplete-dropdown,
-    #searchRowsPanel .search-row .autocomplete-dropdown div {
-      font-size: var(--fs-xs);
-      font-weight: 500;
-    }
+      .view-layout-1-group > .content-area:first-of-type {
+        flex-shrink: 0;
+      }
 
-    #searchRowsPanel .search-row option {
-      font-size: var(--fs-xs);
-    }
+      .view-layout-1-group > #approvalNoticeArea {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-    #searchRowsPanel .search-row .multi-select {
-      position: relative;
-      width: 100%;
-    }
+      #approvalNoticeArea .view-layout-2 {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-    #searchRowsPanel .search-row .multi-select-toggle {
-      width: 100%;
-      text-align: left;
-      font-size: var(--fs-xs);
-      min-width: 160px;
-      padding: 3px 12px;
-      font-family: inherit;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      background: var(--color-card);
-      color: var(--color-text);
-      cursor: pointer;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    #searchRowsPanel .search-row .multi-select-menu {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      z-index: 20;
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      box-shadow: var(--shadow-lg);
-      max-height: 220px;
-      padding: 8px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      box-sizing: border-box;
-    }
-
-    #searchRowsPanel .search-row .multi-select.is-open .multi-select-menu {
-      display: block;
-    }
-
-    #searchRowsPanel .search-row .multi-select-option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 3px 2px;
-      cursor: pointer;
-      font-size: var(--fs-xs);
-      white-space: nowrap;
-      width: fit-content;
-    }
-
-    #searchRowsPanel .search-row .multi-select-option input[type="checkbox"] {
-      margin: 0;
-    }
-
-    #searchRowsPanel .search-row select:hover,
-    #searchRowsPanel .search-row input:not([type="checkbox"]):hover,
-    #searchRowsPanel .search-row .multi-select-toggle:hover {
-      border-color: #b0bdb5;
-    }
-
-    #searchRowsPanel .search-row select:focus,
-    #searchRowsPanel .search-row input:not([type="checkbox"]):focus,
-    #searchRowsPanel .search-row .multi-select.is-open .multi-select-toggle {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
-    }
-
-    #searchRowsPanel .search-row input::placeholder {
-      color: #9ca89f;
-    }
-
-    /* 検索条件エリア右端：クリアボタン（登録ボタンと同スタイル） */
-    .search-cancel-wrapper {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-    }
-    .btn-search-cancel {
-      display: inline-block;
-      padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-      font-weight: 600;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-    .btn-search-cancel:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-    }
-
-    /* 検索条件と検索結果一覧の間の余白（5px） */
-    .view-layout-1-group > .content-box:first-of-type {
-      margin-bottom: 5px;
-    }
-    .content-box h3 {
-      margin: 0 0 12px;
-      border-bottom: 2px solid var(--color-primary);
-      padding-bottom: 8px;
-    }
-    /* 検索結果一覧テーブル（スクロール対応） */
-    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
-    #approvalListArea {
-      width: 100%;
-      max-height: 55vh;
-      overflow-x: auto;
-      overflow-y: auto;
-    }
-    .result-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      table-layout: fixed;
-    }
-    .result-table th,
-    .result-table td {
-      padding: 16px 10px;
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-      border-left: none;
-      border-right: none;
-      text-align: left;
-      white-space: normal;
-      word-wrap: break-word;
-    }
-    .result-table th {
-      padding: 8px 10px;
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      font-weight: 600;
-      border-top: none;
-    }
-    .result-table tr:nth-child(even) {
-      background: var(--color-surface);
-    }
-    .result-table tr:hover {
-      background: rgba(0, 134, 50, 0.06);
-    }
-    /* 図案管理番号リンク */
-    .result-table a {
-      color: #0066cc;
-      font-weight: 600;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .result-table a:hover {
-      opacity: 0.9;
-    }
-
-    /* 画面右下固定アクションボタン群 */
-    .fab-actions {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 2001;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
-    .btn-fab-new {
-      display: inline-block;
-      text-decoration: none;
-      /* min-width: 140px; */
-      padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-    }
-    .btn-fab-new:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-    }
-
-    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
-    .view-layout-2 { padding: 0; }
-    .view-layout-2 .status-buttons { margin-bottom: 20px; }
-    .view-layout-2 .list-section-title {
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--color-border);
+      #approvalListArea {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+      }
     }
 
   </style>
@@ -1047,7 +1102,6 @@
     <div class="fab-actions">
       <a class="btn-fab-new" id="btnKaraKyotsuSetting">柄共通設定</a>
     </div>
-    <!-- #endregion -->
 
     <!--#region メインコンテンツ  -->
     <div class="content">

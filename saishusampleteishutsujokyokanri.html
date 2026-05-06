@@ -242,8 +242,10 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      padding: 24px 24px 56px 24px;
-      overflow-y: auto;
+      /* 右下固定「承認」と一覧が重ならないよう余白 */
+      padding: 24px 24px 88px 24px;
+      /* overflow-y: auto; */
+      overflow-y: hidden;
       transition: margin-left 0.3s ease, padding-left 0.3s ease;
     }
 
@@ -265,6 +267,7 @@
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-height: 0;
       /* overflow: hidden; */
     }
 
@@ -413,13 +416,47 @@
         width: 30px;
       }
 
-      .content {
+      /* スマホではサイドバー列をフレックス幅に含めない（PCでサイドバー開閉後に幅を縮めても本文が右にずれない） */
+      .main-wrapper {
+        position: relative;
+      }
+
+      #sidebarMount {
+        flex: 0 0 0;
+        width: 0;
+        min-width: 0;
+        overflow: visible;
+      }
+
+      /* 共通 style.css 非変更: マウント幅0でもドロワー幅220pxとメニューラベルを維持 */
+      #sidebarMount > .sidebar {
+        min-width: 220px;
+        width: 220px;
+        flex-shrink: 0;
+      }
+
+      #sidebarMount .menu-title {
+        min-width: 0;
+      }
+
+      #sidebarMount .menu-title > span {
+        white-space: nowrap;
+      }
+
+      .content,
+      .content.expanded {
         background: var(--color-surface);
+        display: flex;
         flex-direction: column;
         flex: 1;
-        padding: 20px 20px 56px 20px;
-        margin-left: -220px;
+        min-height: 0;
+        margin-left: 0;
         width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding: 12px 12px 88px 12px;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
 
       .content-box {
@@ -428,6 +465,10 @@
         padding: 8px;
         flex: none;
         min-height: 0;
+      }
+      
+      .content:not(.expanded) {
+        padding-left: 12px;
       }
 
       /* イメージ案①: スマホ用 */
@@ -756,6 +797,34 @@
       .search-box .search-box-inner .filter-row {
         margin-bottom: 0;
       }
+
+      /* 一覧はメイン内の残り高さのみ使用し、固定「承認」の下に表示されない */
+      .content-box > .view-layout.view-layout-1-group {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .view-layout-1-group > .content-area:first-of-type {
+        flex-shrink: 0;
+      }
+
+      .view-layout-1-group > #approvalNoticeArea {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      #approvalNoticeArea .view-layout-2 {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
     }
 
     .filter-row {
@@ -907,19 +976,24 @@
     .btn-search-cancel {
       display: inline-block;
       padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
+      font-size: var(--fs-xs);
+      background: var(--color-clearbutton-background);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
-      font-weight: 400;
+      font-weight: 600;
       font-family: inherit;
       white-space: nowrap;
+      box-shadow: none;
     }
     .btn-search-cancel:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
+      background:var(--color-clearbutton-background-hover);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      transform: none;
+      box-shadow: none;
     }
 
     /* 承認通知／検索結果・ボックス共通 */
@@ -940,6 +1014,16 @@
       overflow-x: auto;
       overflow-y: auto;
     }
+
+    /* ベースの max-height より後に指定（PC は残り高さ＋ max-height 解除） */
+    @media (min-width: 769px) {
+      #approvalListArea {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+      }
+    }
+
     .result-table {
       width: 100%;
       border-collapse: collapse;
@@ -1011,7 +1095,7 @@
     .btn-fab-new {
       display: inline-block;
       text-decoration: none;
-      min-width: 140px;
+      /* min-width: 140px; */
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -1362,7 +1446,22 @@
         overlay.classList.remove('show');
       }
 
+      /** 狭い幅では PC 用の collapsed / expanded を外し、本文の margin・padding の食い違いを防ぐ */
+      function syncSidebarLayoutForBreakpoint() {
+        const sidebar = document.querySelector('.sidebar');
+        const content = document.querySelector('.content');
+        const toggle = document.querySelector('.sidebar-toggle');
+        if (!sidebar || !content) return;
+        if (!window.matchMedia('(max-width: 768px)').matches) return;
+        sidebar.classList.remove('closed');
+        content.classList.remove('expanded');
+        const toggleImg = toggle && toggle.querySelector('img');
+        if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+      }
+
       loadSharedSidebar();
+      syncSidebarLayoutForBreakpoint();
+      window.matchMedia('(max-width: 768px)').addEventListener('change', syncSidebarLayoutForBreakpoint);
       
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');

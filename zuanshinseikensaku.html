@@ -135,8 +135,9 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      padding: 24px 24px 56px 24px;
-      overflow-y: auto;
+      padding: 24px 24px 72px 24px;
+      /* overflow-y: auto; */
+      overflow-y: hidden;
       transition: margin-left 0.3s ease, padding-left 0.3s ease;
     }
 
@@ -158,6 +159,7 @@
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-height: 0;
       /* overflow: hidden; */
     }
 
@@ -380,20 +382,25 @@
     .btn-search-cancel {
       display: inline-block;
       padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
+      font-size: var(--fs-xs);
+      background: var(--color-clearbutton-background);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
-      font-weight: 400;
+      font-weight: 600;
       font-family: inherit;
       white-space: nowrap;
+      box-shadow: none;
     }
 
     .btn-search-cancel:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
+      background:var(--color-clearbutton-background-hover);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      transform: none;
+      box-shadow: none;
     }
 
     .modal-window {
@@ -502,11 +509,9 @@
     }
 
     /* 検索結果一覧テーブル（スクロール対応） */
-    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
+    /* スマホは下のメディアクエリで上書き。769px以上は残り高さ内でスクロール */
     #approvalListArea {
       width: 100%;
-      max-height: 65vh;
-      flex: 1;
       overflow-x: auto;
       overflow-y: auto;
     }
@@ -728,7 +733,7 @@
     .btn-fab-new {
       display: inline-block;
       text-decoration: none;
-      min-width: 140px;
+      /* min-width: 140px; */
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -762,6 +767,36 @@
     @media (min-width: 769px) {
       .search-toggle-sp {
         display: none;
+      }
+
+      /* 一覧をメイン内の残り高さに収め、右下固定の「登録」と重ならないようにする */
+      .view-layout.view-layout-1-group {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+      }
+      .view-layout.view-layout-1-group > .content-area:first-of-type {
+        flex-shrink: 0;
+      }
+      #approvalNoticeArea {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #approvalNoticeArea .view-layout-2 {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #approvalListArea {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
       }
     }
 
@@ -814,6 +849,7 @@
         padding: 20px 20px 56px 20px;
         margin-left: -220px;
         width: 100%;
+        overflow-y: auto;
       }
 
       .content {
@@ -1041,20 +1077,33 @@
       .btn-search-cancel {
         display: inline-block;
         padding: 4px 8px;
-        background: var(--color-primary);
-        color: #fff;
-        border: none;
+        font-size: var(--fs-xs);
+        background: var(--color-clearbutton-background);
+        color: var(--color-text);
+        border: 1px solid var(--color-clearbutton-border);
         border-radius: var(--radius-sm);
         cursor: pointer;
         text-align: center;
-        font-weight: 400;
+        font-weight: 600;
         font-family: inherit;
         white-space: nowrap;
+        box-shadow: none;
+      }
+      .btn-search-cancel:hover {
+        /* background: var(--color-primary-dark);
+        color: #fff; */
+        background:var(--color-clearbutton-background-hover);
+        color: var(--color-text);
+        border: 1px solid var(--color-clearbutton-border);
+        transform: none;
+        box-shadow: none;
       }
     
       /* 検索結果一覧：スマホ時はカード形式 */
       #approvalListArea {
         max-height: none;
+        flex: none;
+        min-height: 0;
         overflow-x: visible;
         overflow-y: none;
         margin-bottom: 30px;
