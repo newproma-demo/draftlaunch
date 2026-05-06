@@ -380,51 +380,21 @@
         display: block;
       }
 
-      /* スマホではサイドバー列をフレックス幅に含めない（PCでサイドバー開閉後に幅を縮めても本文が右にずれない） */
-      .main-wrapper {
-        position: relative;
-      }
-
-      #sidebarMount {
-        flex: 0 0 0;
-        width: 0;
-        min-width: 0;
-        overflow: visible;
-      }
-
-      /* 共通 style.css 非変更: マウント幅0でもドロワー幅220pxとメニューラベルを維持 */
-      #sidebarMount > .sidebar {
-        min-width: 220px;
-        width: 220px;
-        flex-shrink: 0;
-      }
-
-      #sidebarMount .menu-title {
-        min-width: 0;
-      }
-
-      #sidebarMount .menu-title > span {
-        white-space: nowrap;
-      }
-
-      .content,
-      .content.expanded {
+      .content {
         background: var(--color-surface);
-        display: flex;
         flex-direction: column;
         flex: 1;
-        min-height: 0;
-        margin-left: 0;
+        padding: 20px 20px 56px 20px;
+        margin-left: -220px;
         width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        padding: 12px 12px 56px 12px;
-        overflow-y: auto;
-        overflow-x: hidden;
+      }
+
+      .content {
+          padding: 12px 12px 56px 12px;
       }
 
       .content:not(.expanded) {
-        padding-left: 12px;
+          padding-left: 12px;
       }
 
       .content-box {
@@ -645,24 +615,15 @@
       .btn-search-cancel {
         display: inline-block;
         padding: 4px 8px;
-        font-size: var(--fs-xs);
-        background: var(--color-clearbutton-background);
-        color: var(--color-text);
-        border: 1px solid var(--color-clearbutton-border);
+        background: var(--color-primary);
+        color: #fff;
+        border: none;
         border-radius: var(--radius-sm);
         cursor: pointer;
         text-align: center;
-        font-weight: 600;
+        font-weight: 400;
         font-family: inherit;
         white-space: nowrap;
-        box-shadow: none;
-      }
-      .btn-search-cancel:hover {
-        background:var(--color-clearbutton-background-hover);
-        color: var(--color-text);
-        border: 1px solid var(--color-clearbutton-border);
-        transform: none;
-        box-shadow: none;
       }
 
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
@@ -983,24 +944,19 @@
     .btn-search-cancel {
       display: inline-block;
       padding: 6px 14px;
-      font-size: var(--fs-xs);
-      background: var(--color-clearbutton-background);
-      color: var(--color-text);
-      border: 1px solid var(--color-clearbutton-border);
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
-      font-weight: 600;
+      font-weight: 400;
       font-family: inherit;
       white-space: nowrap;
-      box-shadow: none;
     }
     .btn-search-cancel:hover {
-      background:var(--color-clearbutton-background-hover);
-      color: var(--color-text);
-      border: 1px solid var(--color-clearbutton-border);
-      transform: none;
-      box-shadow: none;
+      background: var(--color-primary-dark);
+      color: #fff;
     }
 
     /* 承認通知／検索結果・ボックス共通 */
@@ -1142,6 +1098,16 @@
     .shohin-tab-panel { padding: 16px 18px; }
     .shohin-tab-panel[hidden] { display: none !important; }
     .shohin-tab-panel img { max-width: 100%; height: auto; display: block; margin: 0 auto; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-card); }
+    .shohin-ec-image-dir { margin: 0 0 10px; font-size: var(--fs-xs); color: var(--color-text-muted); word-break: break-all; }
+    .shohin-ec-image-list-head,
+    .shohin-ec-image-item { display: grid; grid-template-columns: 140px minmax(220px, 1fr) 170px; gap: 12px; align-items: center; }
+    .shohin-ec-image-list-head { padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); font-size: var(--fs-xs); font-weight: 700; color: var(--color-text-muted); }
+    .shohin-ec-image-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .shohin-ec-image-item { padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: #fff; }
+    .shohin-ec-image-thumb { width: 120px; height: 90px; object-fit: contain; margin: 0; cursor: zoom-in; }
+    .shohin-ec-image-filename { word-break: break-all; }
+    .shohin-ec-image-updated { font-size: var(--fs-xs); color: var(--color-text-muted); }
+    .shohin-ec-image-empty { margin: 0; color: var(--color-text-muted); }
     .shohin-custom-tab-panel-body { margin: 0; line-height: 1.6; color: var(--color-text); white-space: pre-wrap; }
     .shohin-tab-custom-settings { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--color-border); }
     .shohin-tab-custom-settings > summary { cursor: pointer; font-size: var(--fs-sm); font-weight: 600; color: var(--color-text-muted); list-style: none; }
@@ -1548,8 +1514,7 @@
         <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab1" aria-selected="false" aria-controls="shohinPanel1">商品詳細②</button></li>
         <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab2" aria-selected="false" aria-controls="shohinPanel2">仕様書</button></li>
         <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab3" aria-selected="false" aria-controls="shohinPanel3">発注書</button></li>
-        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab4" aria-selected="false" aria-controls="shohinPanel4">タブ⑤</button></li>
-        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab5" aria-selected="false" aria-controls="shohinPanel5">タブ⑥</button></li>
+        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab4" aria-selected="false" aria-controls="shohinPanel4">ECサイト画像</button></li>
       </ul>
       <div class="shohin-detail-panels">
         <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel0" aria-labelledby="shohinTab0"></div>
@@ -1561,35 +1526,17 @@
           <p class="shohin-shiyosho-external-wrap"><a class="shohin-teiban-external-link" href="shiyoshosakusei_teiban.html">仕様書作成（定番）画面を開く</a><span class="shohin-shiyosho-external-note">（仕様書検索一覧の仕様書No.リンクと同じ遷移先です。商品コードはクエリに付与しますが、デモでは定番画面側の参照は未実装です）</span></p>
         </div>
         <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel3" aria-labelledby="shohinTab3" hidden><p>発注書の参照・リンク用エリアです。</p><p><a href="chumonshorirekishokai_teiban.html">注文書履歴（例）</a></p></div>
-        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel4" aria-labelledby="shohinTab4" hidden></div>
-        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel5" aria-labelledby="shohinTab5" hidden></div>
-      </div>
-      <details class="shohin-tab-custom-settings" id="shohinTabCustomSettings">
-        <summary>タブ⑤・⑥の表示を設定</summary>
-        <div class="shohin-tab-custom-form">
-          <p class="shohin-tab-custom-hint">タブ⑤・⑥の見出しと本文を変更できます。内容はこのブラウザに保存され、次回以降も引き継がれます。</p>
-          <div class="shohin-tab-custom-block">
-            <label for="shohinCustomTab5Title">タブ⑤ 表示名</label>
-            <input type="text" id="shohinCustomTab5Title" maxlength="40" autocomplete="off" placeholder="例：関連資料">
+        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel4" aria-labelledby="shohinTab4" hidden>
+          <p class="shohin-ec-image-dir" id="shohinEcImageDir"></p>
+          <div class="shohin-ec-image-list-head" aria-hidden="true">
+            <span>サムネイル</span>
+            <span>ファイル名</span>
+            <span>更新日時</span>
           </div>
-          <div class="shohin-tab-custom-block">
-            <label for="shohinCustomTab5Body">タブ⑤ 本文</label>
-            <textarea id="shohinCustomTab5Body" rows="3" maxlength="4000" placeholder="表示する説明文やメモなど"></textarea>
-          </div>
-          <div class="shohin-tab-custom-block">
-            <label for="shohinCustomTab6Title">タブ⑥ 表示名</label>
-            <input type="text" id="shohinCustomTab6Title" maxlength="40" autocomplete="off" placeholder="例：社内メモ">
-          </div>
-          <div class="shohin-tab-custom-block">
-            <label for="shohinCustomTab6Body">タブ⑥ 本文</label>
-            <textarea id="shohinCustomTab6Body" rows="3" maxlength="4000" placeholder="表示する説明文やメモなど"></textarea>
-          </div>
-          <div class="shohin-tab-custom-actions">
-            <button type="button" class="search-button" id="shohinCustomTabSave">保存して反映</button>
-            <button type="button" class="btn-search-clear" id="shohinCustomTabReset">初期表示に戻す</button>
-          </div>
+          <p class="shohin-ec-image-empty" id="shohinEcImageEmpty">ECサイト画像を読み込み中です。</p>
+          <ul class="shohin-ec-image-list" id="shohinEcImageList"></ul>
         </div>
-      </details>
+      </div>
       </div>
       </div>
     </div>
@@ -1660,22 +1607,7 @@
         overlay.classList.remove('show');
       }
 
-      /** 狭い幅では PC 用の collapsed / expanded を外し、本文の margin・padding の食い違いを防ぐ */
-      function syncSidebarLayoutForBreakpoint() {
-        const sidebar = document.querySelector('.sidebar');
-        const content = document.querySelector('.content');
-        const toggle = document.querySelector('.sidebar-toggle');
-        if (!sidebar || !content) return;
-        if (!window.matchMedia('(max-width: 768px)').matches) return;
-        sidebar.classList.remove('closed');
-        content.classList.remove('expanded');
-        const toggleImg = toggle && toggle.querySelector('img');
-        if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
-      }
-
       loadSharedSidebar();
-      syncSidebarLayoutForBreakpoint();
-      window.matchMedia('(max-width: 768px)').addEventListener('change', syncSidebarLayoutForBreakpoint);
 
     const icon = document.querySelector('.header-account_circle');
     const menu = document.querySelector('.account-menu');
@@ -1884,110 +1816,15 @@
       var thumbImageModalBackdrop = document.getElementById('shohinThumbImageModalBackdrop');
       var thumbImageModalWrapper = thumbImageModal ? thumbImageModal.querySelector('.modal-wrapper') : null;
       var versionListEl = document.getElementById('shohinVersionHistoryList');
+      var ecImageListEl = document.getElementById('shohinEcImageList');
+      var ecImageEmptyEl = document.getElementById('shohinEcImageEmpty');
+      var ecImageDirEl = document.getElementById('shohinEcImageDir');
       var panel1 = document.getElementById('shohinPanel1');
       var tabs = modal.querySelectorAll('.shohin-detail-tab[role="tab"]');
       var panels = modal.querySelectorAll('.shohin-tab-panel[role="tabpanel"]');
-
-      var TAB56_STORAGE_KEY = 'proma_shohin_detail_tabs56';
-      var DEFAULT_TABS_56 = [
-        { title: 'タブ⑤', body: 'タブ⑤のコンテンツ領域です。\n下の「タブ⑤・⑥の表示を設定」から表示名と本文を変更できます。' },
-        { title: 'タブ⑥', body: 'タブ⑥のコンテンツ領域です。\n下の「タブ⑤・⑥の表示を設定」から表示名と本文を変更できます。' }
-      ];
-
-      function cloneDefaultTabs56() {
-        return DEFAULT_TABS_56.map(function (x) { return { title: x.title, body: x.body }; });
-      }
-
-      function loadTabs56() {
-        try {
-          var raw = localStorage.getItem(TAB56_STORAGE_KEY);
-          if (!raw) return cloneDefaultTabs56();
-          var parsed = JSON.parse(raw);
-          if (!Array.isArray(parsed) || parsed.length < 2) return cloneDefaultTabs56();
-          function one(i) {
-            var def = DEFAULT_TABS_56[i];
-            var p = parsed[i] && typeof parsed[i] === 'object' ? parsed[i] : {};
-            var title = (typeof p.title === 'string' ? p.title : def.title).trim().slice(0, 40);
-            if (!title) title = def.title;
-            var body = typeof p.body === 'string' ? p.body.slice(0, 4000) : def.body;
-            return { title: title, body: body };
-          }
-          return [one(0), one(1)];
-        } catch (err) {
-          return cloneDefaultTabs56();
-        }
-      }
-
-      function applyTabs56(cfg) {
-        var tab4Btn = document.getElementById('shohinTab4');
-        var tab5Btn = document.getElementById('shohinTab5');
-        var p4El = document.getElementById('shohinPanel4');
-        var p5El = document.getElementById('shohinPanel5');
-        if (tab4Btn) {
-          tab4Btn.textContent = cfg[0].title;
-          tab4Btn.setAttribute('aria-label', cfg[0].title);
-        }
-        if (tab5Btn) {
-          tab5Btn.textContent = cfg[1].title;
-          tab5Btn.setAttribute('aria-label', cfg[1].title);
-        }
-        function fillPanel(el, body) {
-          if (!el) return;
-          el.innerHTML = '';
-          var wrap = document.createElement('div');
-          wrap.className = 'shohin-custom-tab-panel-body';
-          wrap.textContent = body;
-          el.appendChild(wrap);
-        }
-        fillPanel(p4El, cfg[0].body);
-        fillPanel(p5El, cfg[1].body);
-      }
-
-      function syncCustomTabForm(cfg) {
-        var i5t = document.getElementById('shohinCustomTab5Title');
-        var i5b = document.getElementById('shohinCustomTab5Body');
-        var i6t = document.getElementById('shohinCustomTab6Title');
-        var i6b = document.getElementById('shohinCustomTab6Body');
-        if (i5t) i5t.value = cfg[0].title;
-        if (i5b) i5b.value = cfg[0].body;
-        if (i6t) i6t.value = cfg[1].title;
-        if (i6b) i6b.value = cfg[1].body;
-      }
-
-      function persistTabs56FromInputs() {
-        var cfg = [
-          {
-            title: (document.getElementById('shohinCustomTab5Title').value || '').trim().slice(0, 40) || DEFAULT_TABS_56[0].title,
-            body: (document.getElementById('shohinCustomTab5Body').value || '').slice(0, 4000)
-          },
-          {
-            title: (document.getElementById('shohinCustomTab6Title').value || '').trim().slice(0, 40) || DEFAULT_TABS_56[1].title,
-            body: (document.getElementById('shohinCustomTab6Body').value || '').slice(0, 4000)
-          }
-        ];
-        try {
-          localStorage.setItem(TAB56_STORAGE_KEY, JSON.stringify(cfg));
-        } catch (e) { /* 容量超過など */ }
-        applyTabs56(cfg);
-      }
-
-      function resetTabs56() {
-        try {
-          localStorage.removeItem(TAB56_STORAGE_KEY);
-        } catch (e2) { /* */ }
-        var d = cloneDefaultTabs56();
-        applyTabs56(d);
-        syncCustomTabForm(d);
-      }
-
-      var tab56State = loadTabs56();
-      applyTabs56(tab56State);
-      syncCustomTabForm(tab56State);
-
-      var btnSaveCustom = document.getElementById('shohinCustomTabSave');
-      var btnResetCustom = document.getElementById('shohinCustomTabReset');
-      if (btnSaveCustom) btnSaveCustom.addEventListener('click', persistTabs56FromInputs);
-      if (btnResetCustom) btnResetCustom.addEventListener('click', resetTabs56);
+      var EC_IMAGE_FOLDER_PATH = 'images/ecsite/';
+      var EC_IMAGE_MAX_SEQUENCE = 100;
+      var EC_IMAGE_MISS_LIMIT = 20;
 
       var DEFAULT_SHOHIN_THUMB = 'images/shohinjohoichiran_ppt_image.png';
       /** デモ用：キーは一覧行の商品コード。rowCode は一覧の行を開く。snapshot は一覧に無い旧版を表示。 */
@@ -2070,6 +1907,89 @@
         });
       }
 
+      function probeImage(src) {
+        return new Promise(function (resolve) {
+          var img = new Image();
+          img.onload = function () { resolve(true); };
+          img.onerror = function () { resolve(false); };
+          img.src = src;
+        });
+      }
+
+      async function getFileUpdatedAt(src) {
+        try {
+          var response = await fetch(src, { method: 'HEAD', cache: 'no-cache' });
+          var lastModified = response && response.headers ? response.headers.get('last-modified') : '';
+          if (!lastModified) return '—';
+          var dt = new Date(lastModified);
+          if (isNaN(dt.getTime())) return lastModified;
+          return dt.toLocaleString('ja-JP');
+        } catch (e) {
+          return '—';
+        }
+      }
+
+      async function collectEcImagesByShohinCode(shohinCode) {
+        if (!shohinCode) return [];
+        var result = [];
+        var missCount = 0;
+        for (var seq = 1; seq <= EC_IMAGE_MAX_SEQUENCE; seq++) {
+          var imagePath = EC_IMAGE_FOLDER_PATH + shohinCode + String(seq) + '.jpg';
+          var exists = await probeImage(imagePath);
+          if (exists) {
+            result.push({ seq: seq, src: imagePath });
+            missCount = 0;
+          } else {
+            missCount++;
+            if (missCount >= EC_IMAGE_MISS_LIMIT) break;
+          }
+        }
+        result.sort(function (a, b) { return a.seq - b.seq; });
+        return result;
+      }
+
+      async function renderEcImagePanel(shohinCode, shohinName) {
+        if (!ecImageListEl || !ecImageEmptyEl) return;
+        if (ecImageDirEl) ecImageDirEl.textContent = '格納ディレクトリ: ' + EC_IMAGE_FOLDER_PATH;
+        ecImageListEl.innerHTML = '';
+        ecImageEmptyEl.hidden = false;
+        ecImageEmptyEl.textContent = 'ECサイト画像を読み込み中です。';
+
+        var images = await collectEcImagesByShohinCode(shohinCode);
+        if (!images.length) {
+          ecImageEmptyEl.textContent = 'ECサイト画像が見つかりません。';
+          return;
+        }
+
+        ecImageEmptyEl.hidden = true;
+        for (var i = 0; i < images.length; i++) {
+          var entry = images[i];
+          var updatedAt = await getFileUpdatedAt(entry.src);
+          var li = document.createElement('li');
+          li.className = 'shohin-ec-image-item';
+          var img = document.createElement('img');
+          img.className = 'shohin-ec-image-thumb';
+          img.src = entry.src;
+          img.alt = (shohinName || shohinCode || '商品') + 'のECサイト画像 ' + entry.seq;
+          img.title = 'クリックで拡大表示';
+          img.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openThumbImageModalFromSource(this);
+          });
+          var fileName = document.createElement('span');
+          fileName.className = 'shohin-ec-image-filename';
+          fileName.textContent = shohinCode + String(entry.seq) + '.jpg';
+          var updated = document.createElement('span');
+          updated.className = 'shohin-ec-image-updated';
+          updated.textContent = updatedAt;
+          li.appendChild(img);
+          li.appendChild(fileName);
+          li.appendChild(updated);
+          ecImageListEl.appendChild(li);
+        }
+      }
+
       function renderVersionHistoryUL() {
         if (!versionListEl) return;
         versionListEl.innerHTML = '';
@@ -2124,7 +2044,7 @@
         overlay.classList.add('is-open');
         overlay.setAttribute('aria-hidden', 'false');
         modal.setAttribute('aria-hidden', 'false');
-        syncCustomTabForm(loadTabs56());
+        renderEcImagePanel(snap.code, snap.name);
         closeBtn.focus();
       }
 
@@ -2140,7 +2060,7 @@
         overlay.classList.add('is-open');
         overlay.setAttribute('aria-hidden', 'false');
         modal.setAttribute('aria-hidden', 'false');
-        syncCustomTabForm(loadTabs56());
+        renderEcImagePanel(d.code, d.name);
         closeBtn.focus();
       }
 
