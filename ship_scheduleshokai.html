@@ -1,0 +1,4369 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+<!--  <link rel="stylesheet" href="trade-cost-summary.css"> -->
+
+<style>
+* {
+  box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    /* font-family: "Yu Gothic", "Meiryo", sans-serif; */
+    background: #f3f6fb;
+    color: #1f2937;
+  }
+
+  /* #region ヘッダー */
+  .header {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+
+    background: var(--color-card);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header a {
+    text-decoration: none;
+    color: inherit;
+    letter-spacing: 0.02em;
+  }
+
+  .header a:hover {
+    color: var(--color-primary);
+  }
+
+  .hamburger {
+    display: none;
+  }
+
+  .header-title {
+    margin: 0;
+    font-size: var(--fs-xl);
+    font-weight: 700;
+  }
+
+  .header-user {
+    position: absolute;
+    right: 70px;
+    padding: 0;
+    font-size: 14pt;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .account-wrapper {
+    position: absolute;
+    right: 24px;
+  }
+
+  .account-menu {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    min-height: 41px;
+    background: var(--color-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: none;
+    min-width: 120px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .account-menu .menu-item {
+    padding: 12px 16px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+  }
+
+  .account-menu .menu-item:hover {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  .header-account_circle {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .header-account_circle:hover {
+    opacity: 0.85;
+  }
+  /* #endregion */
+
+  /* #region ヘッダー下のメニューとメインコンテンツ */
+  /* ヘッダーの下に全体レイアウトを配置 */
+  .main-wrapper {
+    display: flex;
+    flex: 1;
+    margin-top: 0;
+    min-height: calc(100vh - 48px);
+  }
+  /* #endregion */
+
+  /* #region メインコンテンツ */
+  .content {
+    background: var(--color-surface);
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 24px 56px 24px;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease, padding-left 0.3s ease;
+  }
+
+  .content:not(.expanded) {
+    padding-left: 32px;
+  }
+
+  .content.expanded {
+    margin-left: -220px;
+    padding-left: 32px;
+  }
+
+  .content h1 {
+    margin-top: 0;
+  }
+
+  /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+  .content-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    /* overflow: hidden; */
+  }
+
+  /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
+  .content-box .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+    /* color: #23466b; */
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8eef7;
+  }
+      
+  /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+  .content-box .pc-only {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-box .sp-only {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .content-box .content-section {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .btn-search-cancel {
+    background: #fff;
+  }
+  /* #endregion */
+
+  /* #region trade-cost-summary.css */
+  .page {
+  max-width: 1650px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #183b63;
+}
+
+.header-actions,
+.search-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #dce6f2;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #23466b;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #edf3fa;
+}
+
+.search-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  column-gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px 22px;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 18px 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: #475569;
+}
+
+.form-group-inline label {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: var(--fs-xs);
+  color: #111827;
+}
+
+/* 表示年月の入力欄は横幅を少し狭める */
+#periodFrom {
+  width: 50%;
+  min-width: 0;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.10);
+}
+
+.search-actions {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.search-card .search-actions {
+  margin-top: 0;
+}
+
+/* 切替ボタン */
+.summary-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.switch-btn {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #bfd4ee;
+  background: #f8fbff;
+  color: #2a5c92;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.switch-btn:hover {
+  background: #eef5ff;
+  border-color: #9fc0ea;
+}
+
+.switch-btn.active {
+  background:var(--color-primary);
+  /* background: linear-gradient(180deg, #3f73f1 0%, #2f61df 100%); */
+  color: #fff;
+  border-color: var(--color-primary);
+  /* border-color: #2f61df; */
+  box-shadow: 0 6px 14px rgba(47, 97, 223, 0.25);
+}
+
+/* KPI */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.kpi-card {
+  background: #fff;
+  border: 1px solid #dce6f2;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #163f6d;
+}
+
+.kpi-sub {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.total-kpi {
+  background: linear-gradient(135deg, #eaf3ff, #f7fbff);
+  border-color: #93c5fd;
+}
+
+/* パネル切替 */
+.panel-area {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.summary-panel {
+  display: none;
+}
+
+.summary-panel.active {
+  display: block;
+}
+
+.content-block {
+  margin-bottom: 18px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  color: #1d3f66;
+  text-align: left;
+}
+
+.section-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+  text-align: left;
+}
+
+/* 明細切替エリア：タイトル・説明文を左寄せ */
+.panel-area .section-header > div {
+  text-align: left;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 18px;
+}
+
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: scroll;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+/* Shipスケジュール：日付行＋先頭列（見出し）を固定し、スクロールはデータ領域のみ */
+#panel1 .table-wrap-sched-scroll {
+  overflow: auto;
+  max-height: min(72vh, 880px);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+#panel1 .table-wrap-sched-scroll + .table-wrap-sched-scroll {
+  margin-top: 14px;
+}
+
+/* 同一スクロール領域内でテーブルを分割表示（1つのスクロールバーを共有） */
+#panel1 .table-wrap-sched-scroll .data-table + .data-table {
+  margin-top: 18px;
+}
+
+#panel1 .table-wrap-sched-scroll .data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+#panel1 .table-wrap-sched-scroll .data-table thead th:first-child {
+  left: 0;
+  z-index: 6;
+  background-color: #f7faf8;
+}
+
+#panel1 .table-wrap-sched-scroll .data-table thead th.day-title-cell {
+  background-color: #f8fbff;
+}
+
+#panel1 .table-wrap-sched-scroll .data-table tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background-color: #f8fbff;
+  box-shadow: 3px 0 5px -2px rgba(15, 23, 42, 0.12);
+}
+
+#panel1 .table-wrap-sched-scroll .data-table tbody th.category-external {
+  background-color: #c8e6c9;
+}
+
+/* 総合計・小計で先頭が td の行 */
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.subtotal-row > td:first-child,
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.total-row > td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  box-shadow: 3px 0 5px -2px rgba(15, 23, 42, 0.12);
+}
+
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.subtotal-row > td:first-child {
+  background-color: #fff;
+}
+
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.total-row > td:first-child {
+  background: #f3f8ff;
+}
+
+/* 固定ヘッダーとデータ行の境界線（縦スクロール後も消えないよう疑似要素で描画） */
+#panel1 .table-wrap-sched-scroll .data-table thead th::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: #dbe4f0;
+  pointer-events: none;
+}
+
+/* 固定先頭列とデータ列の境界線（横スクロール後も消えないよう疑似要素で描画） */
+#panel1 .table-wrap-sched-scroll .data-table thead th:first-child,
+#panel1 .table-wrap-sched-scroll .data-table tbody th,
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.subtotal-row > td:first-child,
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.total-row > td:first-child {
+  position: sticky;
+}
+
+#panel1 .table-wrap-sched-scroll .data-table thead th:first-child::after,
+#panel1 .table-wrap-sched-scroll .data-table tbody th::after,
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.subtotal-row > td:first-child::after,
+#panel1 .table-wrap-sched-scroll .data-table tbody tr.total-row > td:first-child::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: #edf2f7;
+  pointer-events: none;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* 直送/外部ブロックの日別2列目上罫線と「INV No」行の上罫線を同一にする */
+#panel1 .data-table {
+  --ship-schedule-day-col2-border-top: 1px dashed #edf2f7;
+}
+
+/* 1列目のみ幅を広げる（colgroup の先頭 col のみ指定。table-layout は触れず他列の既定幅維持） */
+#panel1 .data-table col.sched-col-first {
+  min-width: 5rem;
+  width: 5rem;
+}
+
+.narrow-table {
+  min-width: 900px;
+}
+
+.data-table thead th {
+  background: #f7faf8;
+  color:var(--color-text);
+  /* background: #eef4fb;
+  color: #334155; */
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  padding: 4px 8px;
+  border-left: 1px solid #dbe4f0;
+  border-right: 1px solid #dbe4f0;
+  border-bottom: 1px solid #dbe4f0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.data-table tbody th {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  padding: 4px 8px;
+  color: var(--color-text);
+  font-family: inherit;
+  border-left: 1px solid #edf2f7;
+  border-right: 1px solid #edf2f7;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.data-table tbody td {
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 1.25;
+  border-left: 1px solid #edf2f7;
+  border-right: 1px solid #edf2f7;
+  border-bottom: 1px solid #edf2f7;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* 区切り線 */
+.section-separator-row th,
+.section-separator-row td {
+  border-top: 1px solid #d6e4f5;
+}
+
+/* 「金額」行の下線が border-collapse で INV 側の破線と潰れるのを防ぐ */
+#panel1 .data-table tbody tr.section-separator-row:has(+ tr.separator-inv-after-amount) > th,
+#panel1 .data-table tbody tr.section-separator-row:has(+ tr.separator-inv-after-amount) > td {
+  border-bottom: none;
+}
+
+/* 「金額」の次の「INV No」行 */
+#panel1 .data-table tbody tr.section-separator-row.separator-inv-after-amount > th,
+#panel1 .data-table tbody tr.section-separator-row.separator-inv-after-amount > td {
+  border-top: var(--ship-schedule-day-col2-border-top);
+}
+
+/* 先頭「外部」の直上だけ二重線：INV 行の下辺に付ける（外部行の罫線はブロック共通ルールのまま） */
+#panel1 .data-table tbody tr.section-separator-row.separator-inv-after-amount:has(+ tr.external-section-start) > th,
+#panel1 .data-table tbody tr.section-separator-row.separator-inv-after-amount:has(+ tr.external-section-start) > td {
+  border-bottom: 3px double #d6e4f5;
+}
+
+/* 区切り線二重線 */
+.section-separator-row-double th,
+.section-separator-row-double td {
+  border-top: 1px solid #d6e4f5;
+  border:double;
+}
+
+.data-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.total-cell {
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.total-row td {
+  /* background: #f3f8ff; */
+  font-weight: 700;
+  border-top: 2px solid #bfd7f6;
+}
+
+/* ①明細テーブル: 乙仲・コンテナは左、その他は右 */
+#panel1 .data-table thead th:nth-child(1),
+#panel1 .data-table thead th:nth-child(2) {
+  text-align: left;
+}
+
+#panel1 .data-table thead th:nth-child(n + 3) {
+  text-align: right;
+}
+
+#panel1 .data-table tbody tr:not(.subtotal-row):not(.total-row) td:nth-child(1),
+#panel1 .data-table tbody tr:not(.subtotal-row):not(.total-row) td:nth-child(2) {
+  text-align: left;
+}
+
+#panel1 .data-table tbody tr:not(.subtotal-row):not(.total-row) td:nth-child(n + 3) {
+  text-align: right;
+}
+
+#panel1 .data-table tbody tr.subtotal-row td:nth-child(1),
+#panel1 .data-table tbody tr.total-row td:nth-child(1) {
+  text-align: left;
+}
+
+#panel1 .data-table tbody tr.subtotal-row td:nth-child(n + 2),
+#panel1 .data-table tbody tr.total-row td:nth-child(n + 2) {
+  text-align: right;
+}
+
+/* 列位置指定より text-right を常に優先 */
+#panel1 .data-table tbody tr td.text-right,
+#panel1 .data-table tbody tr th.text-right {
+  text-align: right !important;
+}
+
+/* 一覧の td は class 指定なしなら左寄せ、text-right のみ右寄せ */
+#panel1 .data-table tbody td {
+  text-align: left !important;
+}
+
+#panel1 .data-table tbody td.text-right {
+  text-align: right !important;
+}
+
+.ratio-up {
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.ratio-down {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.chart-card {
+  min-height: 100%;
+}
+
+.fake-chart,
+.ranking-list,
+.stack-chart,
+.line-chart-mock {
+  background: #fbfdff;
+  border: 1px solid #e6eef7;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.chart-legend,
+.line-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.legend {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.legend.seto,
+.seto-bar {
+  background: #60a5fa;
+}
+
+.legend.chokuryu,
+.chokuryu-bar {
+  background: #34d399;
+}
+
+.legend.total,
+.total-bar {
+  background: #1d4ed8;
+}
+
+.legend.prev {
+  background: #94a3b8;
+}
+
+.legend.curr {
+  background: #2563eb;
+}
+
+.bar-group {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.month-label,
+.stack-label,
+.point-label {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 700;
+}
+
+.bars.horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar {
+  height: 14px;
+  border-radius: 999px;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ranking-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rank-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rank-no {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.rank-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.rank-bar-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rank-bar {
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.rank-value {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 700;
+}
+
+.stack-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stack-row {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.stack-bar {
+  display: flex;
+  width: 100%;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5edf7;
+}
+
+.stack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stack.fixed {
+  background: #64748b;
+}
+
+.stack.variable {
+  background: #2563eb;
+}
+
+.line-chart-mock {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.chart-axis {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  font-size: 12px;
+  color: #64748b;
+  padding-top: 28px;
+}
+
+.line-area {
+  width: 100%;
+}
+
+.line-points {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.point-row {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.point-track {
+  position: relative;
+  height: 22px;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
+.point {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.prev-pos {
+  background: #94a3b8;
+}
+
+.curr-pos {
+  background: #2563eb;
+}
+
+.btn,
+.btn-light {
+  min-width: 100px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.btn-secondary:hover {
+  background: #d1d5db;
+}
+
+.btn-light {
+  background: #eef4fb;
+  color: #23466b;
+  border: 1px solid #d7e5f4;
+}
+
+.w24 { width: 24%; }
+.w42 { width: 42%; }
+.w45 { width: 45%; }
+.w47 { width: 47%; }
+.w49 { width: 49%; }
+.w55 { width: 55%; }
+.w58 { width: 58%; }
+.w62 { width: 62%; }
+.w71 { width: 71%; }
+.w74 { width: 74%; }
+.w76 { width: 76%; }
+.w90 { width: 90%; }
+
+.p68 { left: 68%; }
+.p70 { left: 70%; }
+.p72 { left: 72%; }
+.p76 { left: 76%; }
+
+@media (max-width: 1300px) {
+  .search-grid {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+  }
+
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: flex-end;
+  }
+
+  .search-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 16px;
+  }
+
+  .search-grid,
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-switch {
+    flex-direction: column;
+  }
+
+  .header-actions {
+    flex-direction: column;
+  }
+
+  .btn,
+  .btn-light,
+  .switch-btn {
+    width: 100%;
+  }
+
+  .line-chart-mock {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-axis {
+    display: none;
+  }
+}
+
+.subtotal-row td {
+  /* background: #f8fbff; */
+  font-weight: 700;
+  /* color: #1e3a5f; */
+  border-top: 1px solid #d6e4f5;
+  border-bottom: 1px solid #d6e4f5;
+}
+
+.subtotal-row th {
+  border-top: 1px solid #d6e4f5;
+  border-bottom: 1px solid #d6e4f5;
+}
+
+/* 「合計」～「ケース数」の2行ブロックを1つの太枠で囲む */
+#panel1 .data-table tbody tr.summary-thick-row > :first-child {
+  border-left: 3px solid #94a3b8 !important;
+}
+
+#panel1 .data-table tbody tr.summary-thick-row > :last-child {
+  border-right: 3px solid #94a3b8 !important;
+}
+
+#panel1 .data-table tbody tr.summary-thick-start > th,
+#panel1 .data-table tbody tr.summary-thick-start > td {
+  border-top: 3px solid #94a3b8 !important;
+}
+
+#panel1 .data-table tbody tr.summary-thick-end > th,
+#panel1 .data-table tbody tr.summary-thick-end > td {
+  border-bottom: 3px solid #94a3b8 !important;
+}
+
+/* ケース数行と直送行の間の余白（左右線なし） */
+.table-gap-row td {
+  position: relative;
+  height: 18px;
+  padding: 0;
+  border: none !important;
+  background: #fff;
+}
+
+.table-gap-row td::before,
+.table-gap-row td::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  background: #fff;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.table-gap-row td::before {
+  left: -6px;
+}
+
+.table-gap-row td::after {
+  right: -6px;
+}
+
+.month-comparison-table {
+  min-width: 1100px;
+}
+
+.day-title-cell {
+  font-weight: 700;
+  text-align: center;
+  background: #f8fbff;
+}
+
+#panel1 .data-table thead th.day-title-cell {
+  text-align: center;
+}
+
+.row-item-cell {
+  font-weight: 700;
+  text-align: center;
+  background: #f8fbff;
+}
+
+/* 「外部」区分の見出しセル（rowspan の th） */
+.row-item-cell.category-external {
+  background: #c8e6c9;
+}
+
+/* 直送/外部の日別「1」～「31」2列セット（tr.ship-sched-pair-head＋その次行）：
+   左列（9:00／詳細情報）の上下罫線を消す、右列（20FT／数値）の上辺は破線。
+   （先頭「外部」前の二重線は、その直前 INV 行の下辺のみ—外部行見た目は他外部と同一） */
+#panel1 .data-table tbody tr.ship-sched-pair-head > td:nth-child(2n) {
+  border-top: none;
+  border-bottom: none;
+}
+
+#panel1 .data-table tbody tr.ship-sched-pair-head
+  + tr:not(.section-separator-row):not(.subtotal-row):not(.total-row) > td:nth-child(odd) {
+  border-top: none;
+}
+
+#panel1 .data-table tbody tr.ship-sched-pair-head > td:nth-child(2n + 1) {
+  border-top: var(--ship-schedule-day-col2-border-top);
+  border-bottom: none;
+}
+
+#panel1 .data-table tbody tr.ship-sched-pair-head
+  + tr:not(.section-separator-row):not(.subtotal-row):not(.total-row) > td:nth-child(even) {
+  border-top: var(--ship-schedule-day-col2-border-top);
+}
+
+.label-cell {
+  font-weight: 700;
+  text-align: center;
+  background: #fbfdff;
+}
+
+.compare-row td {
+  background: #fcfeff;
+}
+
+.month-comparison-table tbody tr:nth-child(3n) td {
+  border-bottom: 2px solid #d6e4f5;
+}
+
+@media (min-width: 769px) {
+    /* 画面右下固定 アクションボタン */
+    .btn-fab-bar {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      min-width: 140px;
+      width: 140px;
+      box-sizing: border-box;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    button.btn-fab-new {
+      font: inherit;
+    }
+  }
+
+  /* スマホ: trade-cost-list.html と同様（flex 維持 + 本文 margin 負値。sidebar/submenu は css/style.css 前提） */
+  @media (max-width: 768px) {
+    .search-card {
+      display: block;
+    }
+
+    html,
+    body {
+      height: auto;
+      min-height: 100%;
+      overflow-y: auto;
+    }
+
+    .main-wrapper {
+      display: flex;
+      width: 100%;
+      flex: 1;
+      height: auto;
+      min-height: calc(100vh - 48px);
+      overflow: visible;
+    }
+
+    /* #sidebarMount / .sidebar は上書きしない */
+
+    .header-title {
+      margin: 5px 0px 0px 35px;
+      font-size: var(--fs-xl);
+    }
+
+    .header-user {
+      display: none;
+    }
+
+    .content {
+      background: var(--color-surface);
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+      padding: 12px 12px 56px 12px;
+      margin-left: -220px;
+      overflow: visible;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 12px;
+    }
+
+    .content.expanded {
+      width: 100%;
+      margin-left: -220px;
+      padding-left: 12px;
+    }
+
+    .content-box {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      flex: none;
+      min-height: 0;
+    }
+
+    .content-box .page-title {
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+    }
+
+    .btn-fab-bar {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 2001;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: nowrap;
+    }
+
+    .btn-fab-new {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      min-width: 140px;
+      height: 34px;
+      padding: 6px 14px;
+      box-sizing: border-box;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* 条件クリア・集計する：狭めの同幅・右寄せ・横並び */
+    .search-card .search-actions {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .search-card .search-actions #searchBtn,
+    .search-card .search-actions #searchCancelAllBtn {
+      flex: 0 0 auto;
+      width: 120px;
+      min-width: 0;
+      padding: 5px 6px;
+      box-sizing: border-box;
+    }
+
+    /* 期間（開始/終了）は対象年セレクトと同じ幅に揃える */
+    #periodFrom,
+    #periodTo {
+      width: 92%;
+      min-width: 0;
+      max-width: 92%;
+      text-align: left;
+    }
+
+    #periodFrom::-webkit-date-and-time-value,
+    #periodTo::-webkit-date-and-time-value {
+      text-align: left;
+    }
+
+    /* ハンバーガーボタン */
+    .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+  }
+
+  /* クリアボタン */
+  #searchCancelAllBtn {
+    display: inline-block;
+  height: 42px;
+  min-height: 42px;
+    padding: 6px 14px;
+    font-size: var(--fs-xs);
+    background: var(--color-clearbutton-background);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    font-family: inherit;
+    white-space: nowrap;
+    box-shadow: none;
+  }
+
+  #searchCancelAllBtn:hover {
+    background:var(--color-clearbutton-background-hover);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    transform: none;
+    box-shadow: none;
+  }
+
+/* #endregion */  
+</style>
+</head>
+<body>
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!--#region ヘッダー  -->
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- ヘッダー下のレイアウト -->
+  <div class="main-wrapper">
+
+    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
+    <div id="sidebarMount"></div>
+    <!-- #endregion -->
+
+    <!--#region メインコンテンツ  -->
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">Shipスケジュール照会</h2>
+      <!-- 検索条件 -->
+      <section class="card search-card">
+        <div class="search-grid">
+          <div class="form-group form-group-inline">
+            <label for="periodFrom">表示年月</label>
+            <input type="month" id="periodFrom" value="2026-05">
+          </div>
+        </div>
+        <div class="search-actions">
+          <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
+        </div>
+      </section>
+
+      <!-- 一覧エリア -->
+      <div class="panel-area">
+        <!-- ① -->
+        <section id="panel1" class="summary-panel active">
+          <section class="card content-block">
+            <div class="table-wrap table-wrap-sched-scroll">
+              <table class="data-table">
+                <colgroup>
+                  <col class="sched-col-first">
+                  <col>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th colspan="2"></th>
+                    <th class="day-title-cell" colspan="2">1</th>
+                    <th class="day-title-cell" colspan="2">2</th>
+                    <th class="day-title-cell" colspan="2">3</th>
+                    <th class="day-title-cell" colspan="2">4</th>
+                    <th class="day-title-cell" colspan="2">5</th>
+                    <th class="day-title-cell" colspan="2">6</th>
+                    <th class="day-title-cell" colspan="2">7</th>
+                    <th class="day-title-cell" colspan="2">8</th>
+                    <th class="day-title-cell" colspan="2">9</th>
+                    <th class="day-title-cell" colspan="2">10</th>
+                    <th class="day-title-cell" colspan="2">11</th>
+                    <th class="day-title-cell" colspan="2">12</th>
+                    <th class="day-title-cell" colspan="2">13</th>
+                    <th class="day-title-cell" colspan="2">14</th>
+                    <th class="day-title-cell" colspan="2">15</th>
+                    <th class="day-title-cell" colspan="2">16</th>
+                    <th class="day-title-cell" colspan="2">17</th>
+                    <th class="day-title-cell" colspan="2">18</th>
+                    <th class="day-title-cell" colspan="2">19</th>
+                    <th class="day-title-cell" colspan="2">20</th>
+                    <th class="day-title-cell" colspan="2">21</th>
+                    <th class="day-title-cell" colspan="2">22</th>
+                    <th class="day-title-cell" colspan="2">23</th>
+                    <th class="day-title-cell" colspan="2">24</th>
+                    <th class="day-title-cell" colspan="2">25</th>
+                    <th class="day-title-cell" colspan="2">26</th>
+                    <th class="day-title-cell" colspan="2">27</th>
+                    <th class="day-title-cell" colspan="2">28</th>
+                    <th class="day-title-cell" colspan="2">29</th>
+                    <th class="day-title-cell" colspan="2">30</th>
+                    <th class="day-title-cell" colspan="2">31</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >直送</th>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                  </tr>
+                  <tr>
+                    <td>詳細情報０１</td><td class="text-right">100</td>
+                    <td>詳細情報０２</td><td class="text-right">100</td>
+                    <td>詳細情報０３</td><td class="text-right">100</td>
+                    <td>詳細情報０４</td><td class="text-right">100</td>
+                    <td>詳細情報０５</td><td class="text-right">100</td>
+                    <td>詳細情報０６</td><td class="text-right">100</td>
+                    <td>詳細情報０７</td><td class="text-right">100</td>
+                    <td>詳細情報０８</td><td class="text-right">100</td>
+                    <td>詳細情報０９</td><td class="text-right">100</td>
+                    <td>詳細情報１０</td><td class="text-right">100</td>
+                    <td>詳細情報１１</td><td class="text-right">1100</td>
+                    <td>詳細情報１２</td><td class="text-right">100</td>
+                    <td>詳細情報１３</td><td class="text-right">100</td>
+                    <td>詳細情報１４</td><td class="text-right">100</td>
+                    <td>詳細情報１５</td><td class="text-right">100</td>
+                    <td>詳細情報１６</td><td class="text-right">100</td>
+                    <td>詳細情報１７</td><td class="text-right">100</td>
+                    <td>詳細情報１８</td><td class="text-right">100</td>
+                    <td>詳細情報１９</td><td class="text-right">100</td>
+                    <td>詳細情報２０</td><td class="text-right">100</td>
+                    <td>詳細情報２１</td><td class="text-right">100</td>
+                    <td>詳細情報２２</td><td class="text-right">100</td>
+                    <td>詳細情報２３</td><td class="text-right">100</td>
+                    <td>詳細情報２４</td><td class="text-right">100</td>
+                    <td>詳細情報２５</td><td class="text-right">100</td>
+                    <td>詳細情報２６</td><td class="text-right">100</td>
+                    <td>詳細情報２７</td><td class="text-right">100</td>
+                    <td>詳細情報２８</td><td class="text-right">100</td>
+                    <td>詳細情報２９</td><td class="text-right">100</td>
+                    <td>詳細情報３０</td><td class="text-right">100</td>
+                    <td>詳細情報３１</td><td class="text-right">100</td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>INV-20260501001</td><td></td>
+                    <td>INV-20260502001</td><td></td>
+                    <td>INV-20260503001</td><td></td>
+                    <td>INV-20260504001</td><td></td>
+                    <td>INV-20260505001</td><td></td>
+                    <td>INV-20260506001</td><td></td>
+                    <td>INV-20260507001</td><td></td>
+                    <td>INV-20260508001</td><td></td>
+                    <td>INV-20260509001</td><td></td>
+                    <td>INV-20260510001</td><td></td>
+                    <td>INV-20260511001</td><td></td>
+                    <td>INV-20260512001</td><td></td>
+                    <td>INV-20260513001</td><td></td>
+                    <td>INV-20260514001</td><td></td>
+                    <td>INV-20260515001</td><td></td>
+                    <td>INV-20260516001</td><td></td>
+                    <td>INV-20260517001</td><td></td>
+                    <td>INV-20260518001</td><td></td>
+                    <td>INV-20260519001</td><td></td>
+                    <td>INV-20260520001</td><td></td>
+                    <td>INV-20260521001</td><td></td>
+                    <td>INV-20260522001</td><td></td>
+                    <td>INV-20260523001</td><td></td>
+                    <td>INV-20260524001</td><td></td>
+                    <td>INV-20260525001</td><td></td>
+                    <td>INV-20260526001</td><td></td>
+                    <td>INV-20260527001</td><td></td>
+                    <td>INV-20260528001</td><td></td>
+                    <td>INV-20260529001</td><td></td>
+                    <td>INV-20260530001</td><td></td>
+                    <td>INV-20260531001</td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >直送</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >直送</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >直送</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >直送</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >直送</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="external-section-start ship-sched-pair-head">
+                    <th class="row-item-cell category-external" scope="row" rowspan="2" colspan="2" >外部</th>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                  </tr>
+                  <tr>
+                    <td>詳細情報０１</td><td class="text-right">100</td>
+                    <td>詳細情報０２</td><td class="text-right">100</td>
+                    <td>詳細情報０３</td><td class="text-right">100</td>
+                    <td>詳細情報０４</td><td class="text-right">100</td>
+                    <td>詳細情報０５</td><td class="text-right">100</td>
+                    <td>詳細情報０６</td><td class="text-right">100</td>
+                    <td>詳細情報０７</td><td class="text-right">100</td>
+                    <td>詳細情報０８</td><td class="text-right">100</td>
+                    <td>詳細情報０９</td><td class="text-right">100</td>
+                    <td>詳細情報１０</td><td class="text-right">100</td>
+                    <td>詳細情報１１</td><td class="text-right">100</td>
+                    <td>詳細情報１２</td><td class="text-right">100</td>
+                    <td>詳細情報１３</td><td class="text-right">100</td>
+                    <td>詳細情報１４</td><td class="text-right">100</td>
+                    <td>詳細情報１５</td><td class="text-right">100</td>
+                    <td>詳細情報１６</td><td class="text-right">100</td>
+                    <td>詳細情報１７</td><td class="text-right">100</td>
+                    <td>詳細情報１８</td><td class="text-right">100</td>
+                    <td>詳細情報１９</td><td class="text-right">100</td>
+                    <td>詳細情報２０</td><td class="text-right">100</td>
+                    <td>詳細情報２１</td><td class="text-right">100</td>
+                    <td>詳細情報２２</td><td class="text-right">100</td>
+                    <td>詳細情報２３</td><td class="text-right">100</td>
+                    <td>詳細情報２４</td><td class="text-right">100</td>
+                    <td>詳細情報２５</td><td class="text-right">100</td>
+                    <td>詳細情報２６</td><td class="text-right">100</td>
+                    <td>詳細情報２７</td><td class="text-right">100</td>
+                    <td>詳細情報２８</td><td class="text-right">100</td>
+                    <td>詳細情報２９</td><td class="text-right">100</td>
+                    <td>詳細情報３０</td><td class="text-right">100</td>
+                    <td>詳細情報３１</td><td class="text-right">100</td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">金額</th>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">INV  No</th>
+                    <td>INV-20260501002</td><td></td>
+                    <td>INV-20260502002</td><td></td>
+                    <td>INV-20260503002</td><td></td>
+                    <td>INV-20260504002</td><td></td>
+                    <td>INV-20260505002</td><td></td>
+                    <td>INV-20260506002</td><td></td>
+                    <td>INV-20260507002</td><td></td>
+                    <td>INV-20260508002</td><td></td>
+                    <td>INV-20260509002</td><td></td>
+                    <td>INV-20260510002</td><td></td>
+                    <td>INV-20260511002</td><td></td>
+                    <td>INV-20260512002</td><td></td>
+                    <td>INV-20260513002</td><td></td>
+                    <td>INV-20260514002</td><td></td>
+                    <td>INV-20260515002</td><td></td>
+                    <td>INV-20260516002</td><td></td>
+                    <td>INV-20260517002</td><td></td>
+                    <td>INV-20260518002</td><td></td>
+                    <td>INV-20260519002</td><td></td>
+                    <td>INV-20260520002</td><td></td>
+                    <td>INV-20260521002</td><td></td>
+                    <td>INV-20260522002</td><td></td>
+                    <td>INV-20260523002</td><td></td>
+                    <td>INV-20260524002</td><td></td>
+                    <td>INV-20260525002</td><td></td>
+                    <td>INV-20260526002</td><td></td>
+                    <td>INV-20260527002</td><td></td>
+                    <td>INV-20260528002</td><td></td>
+                    <td>INV-20260529002</td><td></td>
+                    <td>INV-20260530002</td><td></td>
+                    <td>INV-20260531002</td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell category-external" scope="row" rowspan="2" colspan="2" >外部</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell category-external" scope="row" rowspan="2" colspan="2" >外部</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell category-external" scope="row" rowspan="2" colspan="2" >外部</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell category-external" scope="row" rowspan="2" colspan="2" >外部</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell category-external" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="external-section-start ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >瀬戸<br>8:30</th>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                    <td>13:00</td><td>40FT</td>
+                    <td>14:00</td><td>40HQ</td>
+                    <td>15:00</td><td>20FT</td>
+                    <td>16:00</td><td>40FT</td>
+                    <td>17:00</td><td>40HQ</td>
+                    <td>09:00</td><td>20FT</td>
+                    <td>10:00</td><td>40FT</td>
+                    <td>11:00</td><td>40HQ</td>
+                    <td>12:00</td><td>20FT</td>
+                  </tr>
+                  <tr>
+                    <td>詳細情報０１</td><td class="text-right">100</td>
+                    <td>詳細情報０２</td><td class="text-right">100</td>
+                    <td>詳細情報０３</td><td class="text-right">100</td>
+                    <td>詳細情報０４</td><td class="text-right">100</td>
+                    <td>詳細情報０５</td><td class="text-right">100</td>
+                    <td>詳細情報０６</td><td class="text-right">100</td>
+                    <td>詳細情報０７</td><td class="text-right">100</td>
+                    <td>詳細情報０８</td><td class="text-right">100</td>
+                    <td>詳細情報０９</td><td class="text-right">100</td>
+                    <td>詳細情報１０</td><td class="text-right">1000</td>
+                    <td>詳細情報１１</td><td class="text-right">100</td>
+                    <td>詳細情報１２</td><td class="text-right">100</td>
+                    <td>詳細情報１３</td><td class="text-right">100</td>
+                    <td>詳細情報１４</td><td class="text-right">100</td>
+                    <td>詳細情報１５</td><td class="text-right">100</td>
+                    <td>詳細情報１６</td><td class="text-right">100</td>
+                    <td>詳細情報１７</td><td class="text-right">100</td>
+                    <td>詳細情報１８</td><td class="text-right">100</td>
+                    <td>詳細情報１９</td><td class="text-right">100</td>
+                    <td>詳細情報２０</td><td class="text-right">100</td>
+                    <td>詳細情報２１</td><td class="text-right">100</td>
+                    <td>詳細情報２２</td><td class="text-right">100</td>
+                    <td>詳細情報２３</td><td class="text-right">100</td>
+                    <td>詳細情報２４</td><td class="text-right">100</td>
+                    <td>詳細情報２５</td><td class="text-right">100</td>
+                    <td>詳細情報２６</td><td class="text-right">100</td>
+                    <td>詳細情報２７</td><td class="text-right">100</td>
+                    <td>詳細情報２８</td><td class="text-right">100</td>
+                    <td>詳細情報２９</td><td class="text-right">100</td>
+                    <td>詳細情報３０</td><td class="text-right">100</td>
+                    <td>詳細情報３１</td><td class="text-right">100</td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                    <td class="text-right">¥1,000</td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>INV-20260501003</td><td></td>
+                    <td>INV-20260502003</td><td></td>
+                    <td>INV-20260503003</td><td></td>
+                    <td>INV-20260504003</td><td></td>
+                    <td>INV-20260505003</td><td></td>
+                    <td>INV-20260506003</td><td></td>
+                    <td>INV-20260507003</td><td></td>
+                    <td>INV-20260508003</td><td></td>
+                    <td>INV-20260509003</td><td></td>
+                    <td>INV-20260510003</td><td></td>
+                    <td>INV-20260511003</td><td></td>
+                    <td>INV-20260512003</td><td></td>
+                    <td>INV-20260513003</td><td></td>
+                    <td>INV-20260514003</td><td></td>
+                    <td>INV-20260515003</td><td></td>
+                    <td>INV-20260516003</td><td></td>
+                    <td>INV-20260517003</td><td></td>
+                    <td>INV-20260518003</td><td></td>
+                    <td>INV-20260519003</td><td></td>
+                    <td>INV-20260520003</td><td></td>
+                    <td>INV-20260521003</td><td></td>
+                    <td>INV-20260522003</td><td></td>
+                    <td>INV-20260523003</td><td></td>
+                    <td>INV-20260524003</td><td></td>
+                    <td>INV-20260525003</td><td></td>
+                    <td>INV-20260526003</td><td></td>
+                    <td>INV-20260527003</td><td></td>
+                    <td>INV-20260528003</td><td></td>
+                    <td>INV-20260529003</td><td></td>
+                    <td>INV-20260530003</td><td></td>
+                    <td>INV-20260531003</td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >&nbsp;</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >10:30</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >&nbsp;</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >13:00</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >&nbsp;</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >14:30</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" rowspan="2" colspan="2" >&nbsp;</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="section-separator-row">
+                    <th class="row-item-cell" scope="row" colspan="2">金額</th>
+                    <td class="text-right">&nbsp;</td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                    <td class="text-right"></td><td class="text-right"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">INV  No</th>
+                    <td>&nbsp;</td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="subtotal-row summary-thick-row summary-thick-start">
+                    <th class="row-item-cell" scope="row" colspan="2">合計</th>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                    <td class="text-right" colspan="2">¥2,000</td>
+                  </tr>
+                  <tr class="subtotal-row summary-thick-row summary-thick-end">
+                    <th class="row-item-cell" scope="row" colspan="2">ケース数</th>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                    <td class="text-right" colspan="2">300ケース</td>
+                  </tr>
+                  <tr class="table-gap-row">
+                    <td colspan="64"></td>
+                  </tr>
+                  <tr class="section-separator-row separator-inv-after-amount">
+                    <th class="row-item-cell" scope="row" colspan="2">直送</th>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" colspan="2" >外部</th>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                  </tr>
+                  <tr class="ship-sched-pair-head">
+                    <th class="row-item-cell" scope="row" colspan="2" >瀬戸</th>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                    <td class="text-right">¥1,000</td><td class="text-right">100</td>
+                  </tr>
+                  <tr class="subtotal-row summary-thick-row summary-thick-start summary-thick-end">
+                    <th class="row-item-cell" scope="row" colspan="2" >合計</th>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                    <td class="text-right">¥3,000</td><td class="text-right">300</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </div>
+    </div>
+
+  <script src="js/sidebar.js"></script>
+  <script>
+    // サイドバーの読み込み
+    function loadSharedSidebar() {
+      const mount = document.getElementById('sidebarMount');
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('closed')) {
+          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+        } else {
+          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+        }
+      });
+
+      toggle.dataset.bound = '1';
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle('active');
+
+      if (sidebar.classList.contains('active')) {
+        overlay.classList.add('show');
+      } else {
+        overlay.classList.remove('show');
+      }
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    loadSharedSidebar();
+
+    const icon = document.querySelector('.header-account_circle');
+    const menu = document.querySelector('.account-menu');
+
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation(); // クリックが外側に伝播しないように
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    const switchButtons = document.querySelectorAll('.switch-btn');
+    const panels = document.querySelectorAll('.summary-panel');
+
+    switchButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.dataset.target;
+
+        switchButtons.forEach(btn => btn.classList.remove('active'));
+        panels.forEach(panel => panel.classList.remove('active'));
+
+        button.classList.add('active');
+        document.getElementById(targetId).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
