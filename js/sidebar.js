@@ -78,6 +78,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="sampleshokai.html">サンプル管理</a></li>
+      <li><a href="sample_inquiry.html>サンプル貸出</a></li>
       <li><a href="sampleshinseikensaku.html">サンプル承認結果登録</a></li>
       <li><a href="saishusampleteishutsujokyokanri.html">最終サンプル提出状況管理（重点解除）</a></li>
     </ul>
