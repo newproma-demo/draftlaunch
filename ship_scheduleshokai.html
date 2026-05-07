@@ -1231,10 +1231,30 @@
     }
   }
 
-  /* スマホ: trade-cost-list.html と同様（flex 維持 + 本文 margin 負値。sidebar/submenu は css/style.css 前提） */
+  /* スマホ */
   @media (max-width: 768px) {
     .search-card {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .search-card .search-grid {
+      flex: 0 0 auto;
+      width: 100%;
+      min-width: 0;
+      grid-template-columns: 1fr;
+    }
+
+    .search-card .form-group-inline {
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      width: 100%;
     }
 
     html,
@@ -1332,18 +1352,19 @@
       color: #fff;
     }
 
-    /* 条件クリア・集計する：狭めの同幅・右寄せ・横並び */
     .search-card .search-actions {
+      flex: 0 0 auto;
       flex-direction: row;
       flex-wrap: nowrap;
       justify-content: flex-end;
       align-items: center;
       gap: 8px;
+      align-self: stretch;
       width: 100%;
+      margin-top: 0;
     }
 
-    .search-card .search-actions #searchBtn,
-    .search-card .search-actions #searchCancelAllBtn {
+    .search-card .search-actions #searchBtn {
       flex: 0 0 auto;
       width: 120px;
       min-width: 0;
@@ -1351,8 +1372,25 @@
       box-sizing: border-box;
     }
 
-    /* 期間（開始/終了）は対象年セレクトと同じ幅に揃える */
-    #periodFrom,
+    .search-card .search-actions #searchCancelAllBtn {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 0;
+      height: auto;
+      min-height: 0;
+      padding: 6px 14px;
+      box-sizing: border-box;
+    }
+
+    #periodFrom {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      flex: 1 1 auto;
+      box-sizing: border-box;
+      text-align: left;
+    }
+
     #periodTo {
       width: 92%;
       min-width: 0;
@@ -1363,6 +1401,12 @@
     #periodFrom::-webkit-date-and-time-value,
     #periodTo::-webkit-date-and-time-value {
       text-align: left;
+    }
+
+    /* 表の先頭列（行見出し th）：スマホで自動折り返ししない（意図的な <br> はそのまま） */
+    #panel1 .table-wrap-sched-scroll .data-table thead th:first-child,
+    #panel1 .table-wrap-sched-scroll .data-table tbody th.row-item-cell {
+      white-space: nowrap;
     }
 
     /* ハンバーガーボタン */
@@ -4364,6 +4408,15 @@
         document.getElementById(targetId).classList.add('active');
       });
     });
+
+    // 検索条件クリア: 画面を再読み込み（ship_scheduletoroku.html と同様）
+    (function () {
+      const clearBtn = document.getElementById('searchCancelAllBtn');
+      if (!clearBtn) return;
+      clearBtn.addEventListener('click', function () {
+        window.location.reload();
+      });
+    })();
   </script>
 </body>
 </html>
