@@ -95,6 +95,7 @@ window.SHARED_SIDEBAR_HTML = `
     <ul class="submenu">
       <li><a href="hinshitsukensazuankensaku.html">品質検査合格書登録</a></li>
       <li><a href="hinshitsukensagokakushokensaku.html">品質検査合格書決裁</a></li>
+      <li><a href="defect-management.html">不良品・問題商品管理</a></li>
     </ul>
   </div>
 
