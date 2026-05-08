@@ -1,0 +1,3354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proma</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="js/autocomplete.js"></script>
+    <!--   <link rel="stylesheet" href="style.css"> -->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            /* font-family: "Yu Gothic", "Meiryo", sans-serif; */
+            background: #f4f7fb;
+            color: #333;
+        }
+
+        /* #region ヘッダー */
+        .header {
+            position: relative;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+
+            background: var(--color-card);
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .header a {
+            text-decoration: none;
+            color: inherit;
+            letter-spacing: 0.02em;
+        }
+
+        .header a:hover {
+            color: var(--color-primary);
+        }
+
+        .hamburger {
+            display: none;
+        }
+
+        .header-title {
+            margin: 0;
+            font-size: var(--fs-xl);
+            font-weight: 700;
+        }
+
+        .header-user {
+            position: absolute;
+            right: 70px;
+            padding: 0;
+            font-size: 14pt;
+            font-weight: 500;
+            color: var(--color-text-muted);
+        }
+
+        .account-wrapper {
+            position: absolute;
+            right: 24px;
+        }
+
+        .account-menu {
+            position: absolute;
+            right: 0;
+            top: 40px;
+            min-height: 41px;
+            background: var(--color-card);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            display: none;
+            min-width: 120px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .account-menu .menu-item {
+            padding: 12px 16px;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+
+        .account-menu .menu-item:hover {
+            background: var(--color-primary);
+            color: #fff;
+        }
+
+        .header-account_circle {
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .header-account_circle:hover {
+            opacity: 0.85;
+        }
+        /* #endregion */
+
+        /* #region ヘッダー下のメニューとメインコンテンツ */
+        /* ヘッダーの下に全体レイアウトを配置 */
+        .main-wrapper {
+            display: flex;
+            flex: 1;
+            margin-top: 0;
+            min-height: calc(100vh - 48px);
+        }
+        /* #endregion */
+
+        /* #region メインコンテンツ */
+        .content {
+            background: var(--color-surface);
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 24px 56px 24px;
+            overflow-y: auto;
+            transition: margin-left 0.3s ease, padding-left 0.3s ease;
+        }
+
+        .content:not(.expanded) {
+            padding-left: 32px;
+        }
+
+        .content.expanded {
+            margin-left: -220px;
+            padding-left: 32px;
+        }
+
+        .content h1 {
+            margin-top: 0;
+        }
+
+        /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
+        .content-box {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            /* overflow: hidden; */
+        }
+
+        /* content-box内のpage-title */
+        .content-box .page-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 0 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--color-primary);
+            flex-shrink: 0;
+        }
+            
+        /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
+        .content-box .pc-only {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-box .sp-only {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .content-box .content-section {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .content-area {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .content-box .search-box {
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            font-family: inherit;
+            font-weight: 500;
+            color: var(--color-text);
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        .search-box .search-box-inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 16px 24px;
+            width: 100%;
+        }
+
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .search-row label {
+            margin: 0;
+            font-size: var(--fs-xs);
+            font-weight: 500;
+            color: var(--color-text-muted);
+            white-space: nowrap;
+        }
+
+        .search-row select,
+        .search-row input:not([type="checkbox"]) {
+            font-size: var(--fs-xs);
+            min-width: 160px;
+            padding: 3px 12px;
+            font-family: inherit;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: var(--color-card);
+            color: var(--color-text);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-row option {
+            font-size: var(--fs-xs);
+        }
+
+        .multi-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .multi-select-toggle {
+            width: 100%;
+            text-align: left;
+            font-size: var(--fs-xs);
+            min-width: 160px;
+            padding: 3px 12px;
+            font-family: inherit;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: var(--color-card);
+            color: var(--color-text);
+            cursor: pointer;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .multi-select-toggle:hover {
+            border-color: #b0bdb5;
+        }
+
+        .multi-select.is-open .multi-select-toggle {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+        }
+
+        .multi-select-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-lg);
+            max-height: 220px;
+            padding: 8px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .multi-select.is-open .multi-select-menu {
+            display: block;
+        }
+
+        .multi-select-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 2px;
+            cursor: pointer;
+            font-size: var(--fs-xs);
+            white-space: normal;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .multi-select-option input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .multi-select-option input[type="checkbox"]:focus,
+        .multi-select-option input[type="checkbox"]:focus-visible {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .search-row select:hover,
+        .search-row input:not([type="checkbox"]):hover {
+            border-color: #b0bdb5;
+        }
+
+        .search-row select:focus,
+        .search-row input:not([type="checkbox"]):focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+        }
+
+        .search-row input::placeholder {
+            color: #9ca89f;
+        }
+
+        .search-cancel-wrapper {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-search-cancel {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            font-weight: 400;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .btn-search-cancel:hover {
+            background: var(--color-primary-dark);
+            color: #fff;
+        }
+        /* #endregion */
+        /* #region sample_inquiry.css */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .wrapper {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1d3557;
+            margin: 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--color-primary);;
+            border: 1px solid var(--color-primary);;
+        }
+
+        .btn-secondary:hover {
+            background: #eef5ff;
+        }
+
+        .btn-success {
+            background: #2e8b57;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #236b43;
+        }
+
+        .btn-danger {
+            background: #d9534f;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #b33e3a;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-bottom: 22px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1d3557;
+            margin: 0 0 16px;
+            padding-left: 10px;
+            border-left: 5px solid var(--color-primary);
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(180px, 1fr));
+            gap: 14px 16px;
+        }
+
+        .search-toggle-sp {
+            display: none;
+        }
+
+        .inquiry-search-box {
+            display: block;
+        }
+
+        .inquiry-search-box .search-box-inner {
+            display: block;
+        }
+
+        .search-grid-actions {
+            display: flex;
+            grid-column: 1 / -1;
+            justify-content: flex-end;
+            align-items: end;
+            gap: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4a5a6a;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 40px;
+            padding: 8px 12px;
+            border: 1px solid #cfd8e3;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #1d73e8;
+            box-shadow: 0 0 0 3px rgba(29, 115, 232, 0.12);
+        }
+
+        textarea.form-control {
+            height: 90px;
+            resize: vertical;
+            padding-top: 10px;
+        }
+
+        .search-actions,
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .search-actions .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            padding: 0 14px;
+            line-height: 1;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1300px;
+            background: #fff;
+        }
+
+        .table thead th {
+            background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            /*background: #eaf2fd;*/
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            padding: 12px 10px;
+            border-top: 1px solid #d8e3f1;
+            border-bottom: 1px solid #d8e3f1;
+            border-left: none;
+            border-right: none;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 12px 10px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-left: none;
+            border-right: none;
+            font-size: 13px;
+            text-align: center;
+            background: #fff;
+        }
+
+        .table tbody tr:nth-child(even) td {
+            background: #f9fbfe;
+        }
+
+        .count-link {
+            display: inline-block;
+            min-width: 64px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #eef5ff;
+            color: #1d73e8;
+            font-weight: 700;
+            border: 1px solid #bfd6fb;
+        }
+
+        .count-link:hover {
+            background: #dceaff;
+        }
+
+        .info-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .branch-box {
+            background: #f8fbff;
+            border: 1px solid #d7e6f8;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .branch-box h3 {
+            margin: 0 0 12px;
+            font-size: 16px;
+            color: #1d3557;
+        }
+
+        .branch-list {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .branch-list th,
+        .branch-list td {
+            border: 1px solid #d9e4ef;
+            padding: 10px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .branch-list th {
+            background: #eef5ff;
+        }
+
+        .note-box {
+            background: #fff7e8;
+            border: 1px solid #f3d187;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .note-box h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            color: #8a5a00;
+        }
+
+        .note-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .note-box li {
+            margin-bottom: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .status-chip {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-available {
+            background: #e8f8ef;
+            color: #227a47;
+        }
+
+        .status-rental {
+            background: #fff4e5;
+            color: #b26b00;
+        }
+
+        .barcode-area {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .barcode-box {
+            background: #f8fbff;
+            border: 1px solid #d7e6f8;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .barcode-box h3 {
+            margin: 0 0 12px;
+            font-size: 16px;
+            color: #1d3557;
+        }
+
+        .barcode-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        #rentalProcessModal .barcode-input-row .btn-success,
+        #returnProcessModal .barcode-input-row .btn-danger,
+        #bulkReturnModal .barcode-input-row .btn-danger {
+            font-size: 14px;
+            white-space: nowrap;
+            line-height: 1.2;
+            flex-shrink: 0;
+        }
+
+        .barcode-preview {
+            margin-top: 12px;
+            padding: 14px;
+            border: 1px dashed #8fb5e8;
+            border-radius: 10px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .barcode-preview .code {
+            font-family: "Consolas", monospace;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #1d3557;
+        }
+
+        .rental-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 14px 16px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .subtext {
+            font-size: 12px;
+            color: #6c7a89;
+            margin-top: 4px;
+        }
+
+        .process-flow {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .flow-step {
+            background: #f8fbff;
+            border: 1px solid #d7e6f8;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .flow-step .step-no {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .flow-step h3 {
+            margin: 0 0 8px;
+            color: #1d3557;
+            font-size: 16px;
+        }
+
+        .flow-step p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #4f5f6f;
+        }
+
+        details {
+            border: 1px solid #d7e6f8;
+            border-radius: 12px;
+            background: #f8fbff;
+            padding: 0;
+        }
+
+        details summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            font-weight: 700;
+            color: #1d3557;
+            position: relative;
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details summary::after {
+            content: "＋";
+            position: absolute;
+            right: 16px;
+            top: 12px;
+            font-size: 20px;
+            color: #1d73e8;
+        }
+
+        details[open] summary::after {
+            content: "－";
+        }
+
+        .details-content {
+            padding: 0 16px 16px;
+        }
+
+        .footer-space {
+            height: 16px;
+        }
+
+        @media (max-width: 1200px) {
+            .search-grid,
+            .rental-grid,
+            .barcode-area,
+            .process-flow,
+            .info-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-cards,
+            .header-only-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pickup-footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pickup-footer-grid .full-width {
+                grid-column: 1 / -1;
+            }
+
+            .manual-add-grid,
+            .manual-add-grid-delete {
+                grid-template-columns: 1fr;
+            }
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 9999;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        .image-modal-box {
+            max-width: 960px;
+        }
+
+        .image-modal-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            background: #f4f7fb;
+        }
+
+        .image-modal-body img {
+            max-width: 100%;
+            max-height: calc(100vh - 180px);
+            height: auto;
+            border: 1px solid #d7e6f8;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background: #eaf2fd;
+            border-bottom: 1px solid #d7e6f8;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #1d3557;
+        }
+
+        .modal-close-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: #fff;
+            color: #1d3557;
+            font-size: 22px;
+            cursor: pointer;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            background: #dceaff;
+        }
+
+        .modal-body {
+            padding: 20px 22px;
+        }
+
+        /* 貸出処理/返却処理などの大型モーダルは、本文だけ縦スクロールさせる */
+        .modal-box.modal-box-lg {
+            max-height: calc(100vh - 48px); /* モーダル外枠の padding 24px×上下分を考慮 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-box.modal-box-lg .modal-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-box.modal-box-lg .modal-footer {
+            flex-shrink: 0;
+        }
+
+        #rentalProcessModal .modal-footer {
+            gap: 12px;
+        }
+
+        #returnProcessModal .modal-footer {
+            gap: 12px;
+        }
+
+        #bulkReturnModal .modal-footer {
+            gap: 12px;
+        }
+
+        .modal-footer {
+            padding: 0 22px 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .modal-info-item {
+            background: #f8fbff;
+            border: 1px solid #d7e6f8;
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .modal-info-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .modal-info-item .label {
+            color: #5b6d7f;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .count-link {
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .move-info-grid,
+            .delete-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .move-condition-row {
+                grid-template-columns: 1fr;
+            }
+
+            .delete-condition-row {
+                grid-template-columns: 1fr;
+            }
+
+            .delete-condition-row,
+            .manual-add-grid-delete.unified-add-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-container {
+                max-width: 100%;
+            }
+
+            .move-condition-row.unified-condition-row,
+            .manual-add-grid-move.unified-add-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .modal-info {
+                grid-template-columns: 1fr;
+            }
+
+            #rentalProcessModal .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #rentalProcessModal .modal-info > .modal-info-item:nth-child(1) {
+                grid-row: 1;
+                grid-column: 1;
+            }
+
+            #rentalProcessModal .modal-info > .modal-info-item:nth-child(2) {
+                grid-row: 1;
+                grid-column: 2;
+            }
+
+            #rentalProcessModal .modal-info > .modal-info-item:nth-child(3) {
+                grid-row: 2;
+                grid-column: 1 / -1;
+            }
+
+            #rentalProcessModal .modal-info > .modal-info-item:nth-child(4) {
+                grid-row: 3;
+                grid-column: 1 / -1;
+            }
+
+            #rentalProcessModal .modal-info > .modal-info-item:nth-child(5) {
+                grid-row: 4;
+                grid-column: 1;
+            }
+
+            #rentalProcessModal .modal-info > .modal-info-item:nth-child(6) {
+                grid-row: 4;
+                grid-column: 2;
+            }
+
+            /* 申請詳細モーダル：申請No+サンプル区分を横並び→得意先名→貸出理由 */
+            #requestDetailModal .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #requestDetailModal .modal-info > .modal-info-item:nth-child(1) {
+                grid-row: 1;
+                grid-column: 1;
+            }
+
+            #requestDetailModal .modal-info > .modal-info-item:nth-child(2) {
+                grid-row: 1;
+                grid-column: 2;
+            }
+
+            #requestDetailModal .modal-info > .modal-info-item:nth-child(3) {
+                grid-row: 2;
+                grid-column: 1 / -1;
+            }
+
+            #requestDetailModal .modal-info > .modal-info-item:nth-child(4) {
+                grid-row: 3;
+                grid-column: 1 / -1;
+            }
+
+            #requestDetailModal .modal-info > .modal-info-item:nth-child(5) {
+                grid-row: 4;
+                grid-column: 1;
+            }
+
+            #requestDetailModal .modal-info > .modal-info-item:nth-child(6) {
+                grid-row: 4;
+                grid-column: 2;
+            }
+
+            #returnDetailModal .modal-info,
+            #returnProcessModal .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #returnDetailModal .modal-info > .modal-info-item:nth-child(1),
+            #returnProcessModal .modal-info > .modal-info-item:nth-child(1) {
+                grid-row: 1;
+                grid-column: 1;
+            }
+
+            #returnDetailModal .modal-info > .modal-info-item:nth-child(2),
+            #returnProcessModal .modal-info > .modal-info-item:nth-child(2) {
+                grid-row: 1;
+                grid-column: 2;
+            }
+
+            #returnDetailModal .modal-info > .modal-info-item:nth-child(3),
+            #returnProcessModal .modal-info > .modal-info-item:nth-child(3) {
+                grid-row: 2;
+                grid-column: 1 / -1;
+            }
+
+            #returnDetailModal .modal-info > .modal-info-item:nth-child(4),
+            #returnProcessModal .modal-info > .modal-info-item:nth-child(4) {
+                grid-row: 3;
+                grid-column: 1 / -1;
+            }
+
+            #returnDetailModal .modal-info > .modal-info-item:nth-child(5),
+            #returnProcessModal .modal-info > .modal-info-item:nth-child(5) {
+                grid-row: 4;
+                grid-column: 1 / -1;
+            }
+
+            #returnDetailModal .modal-info > .modal-info-item:nth-child(6),
+            #returnProcessModal .modal-info > .modal-info-item:nth-child(6) {
+                grid-row: 5;
+                grid-column: 1 / -1;
+            }
+
+            #rentalProcessModal .table-wrap,
+            #bulkReturnModal .table-wrap,
+            #returnDetailModal .table-wrap,
+            #returnProcessModal .table-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #rentalProcessModal .branch-list,
+            #bulkReturnModal .branch-list,
+            #returnDetailModal .branch-list,
+            #returnProcessModal .branch-list {
+                min-width: 760px;
+            }
+
+            #rentalProcessModal .branch-list th,
+            #rentalProcessModal .branch-list td,
+            #bulkReturnModal .branch-list th,
+            #bulkReturnModal .branch-list td,
+            #returnDetailModal .branch-list th,
+            #returnDetailModal .branch-list td,
+            #returnProcessModal .branch-list th,
+            #returnProcessModal .branch-list td {
+                white-space: nowrap;
+            }
+
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 9999;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background: #eaf2fd;
+            border-bottom: 1px solid #d7e6f8;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #1d3557;
+        }
+
+        .modal-close-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: #fff;
+            color: #1d3557;
+            font-size: 22px;
+            cursor: pointer;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            background: #dceaff;
+        }
+
+        .modal-body {
+            padding: 20px 22px;
+        }
+
+        .modal-footer {
+            padding: 0 22px 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .modal-info-item {
+            background: #f8fbff;
+            border: 1px solid #d7e6f8;
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .modal-info-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .modal-info-item .label {
+            color: #5b6d7f;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .count-link {
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            padding: 18px 20px;
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #5f6f82;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1d3557;
+        }
+
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .no-margin {
+            margin: 0 !important;
+        }
+
+        .list-caption {
+            font-size: 13px;
+            color: #6b7b8c;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 7px 12px;
+            font-size: 12px;
+            min-width: 72px;
+        }
+
+        .status-request {
+            background: #eaf2fd;
+            color: #1d73e8;
+        }
+
+        .entry-table input.form-control {
+            min-width: 120px;
+        }
+
+        /* テーブル：縦線なし・横線のみ */
+        .table.entry-table thead th {
+            border-top: 1px solid #d8e3f1;
+            border-bottom: 1px solid #d8e3f1;
+            border-left: none;
+            border-right: none;
+        }
+
+        .table.entry-table tbody td {
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-left: none;
+            border-right: none;
+        }
+
+        .header-only-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(220px, 1fr));
+            gap: 14px 16px;
+        }
+
+        /* サンプル区分を1行フル幅にする */
+        .header-only-grid .sample-type {
+            grid-column: 1 / -1;
+        }
+
+        .reason-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px 24px;
+            align-items: center;
+            padding: 12px 14px;
+            border: 1px solid #d7e6f8;
+            border-radius: 10px;
+            background: #f8fbff;
+        }
+
+        .reason-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1d3557;
+        }
+
+        .reason-item input[type="radio"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .reason-item.other {
+            gap: 10px;
+        }
+
+        .other-input {
+            width: 220px;
+            height: 36px;
+        }
+        .pickup-entry-table .form-control {
+            min-width: 110px;
+        }
+
+        .pickup-footer-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 14px 16px;
+            align-items: start;
+        }
+
+        .pickup-footer-grid .full-width {
+            grid-column: auto;
+        }
+
+        .header-buttons-wide {
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .narrow-card {
+            max-width: 980px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .barcode-single-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .barcode-large {
+            height: 58px;
+            font-size: 22px;
+            text-align: center;
+            border-radius: 18px;
+        }
+
+        .manual-add-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 1fr 140px;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .manual-add-grid-delete {
+            grid-template-columns: 1.5fr 1fr 140px;
+        }
+
+        .form-group-button {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .full-btn {
+            width: 100%;
+            height: 40px;
+        }
+
+        .process-table th,
+        .process-table td {
+            white-space: nowrap;
+        }
+
+        .move-info-grid {
+            grid-template-columns: 1.1fr 0.7fr 1fr 1fr 1fr 140px;
+        }
+
+        .delete-info-grid {
+            grid-template-columns: 1.2fr 0.8fr 1fr 1fr 140px;
+        }
+
+        /* 画面右下固定 新規登録ボタン */
+        .btn-fab-new {
+            display: inline-block;
+            text-decoration: none;
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 2001;
+            /* min-width: 140px; */
+            padding: 6px 14px;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            }
+            .btn-fab-new:hover {
+            background: var(--color-primary-dark);
+            color: #fff;
+            }
+
+        @media (max-width: 1400px) {
+            .move-info-grid,
+            .delete-info-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        .move-condition-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .delete-condition-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .process-page {
+            max-width: 1540px;
+        }
+
+        .process-container {
+            max-width: 1220px;
+            margin: 0 auto;
+        }
+
+        .process-card {
+            width: 100%;
+            padding: 18px 20px 20px;
+            margin-bottom: 22px;
+        }
+
+        .unified-add-grid {
+            align-items: end;
+        }
+
+        .manual-add-grid-delete.unified-add-grid {
+            grid-template-columns: minmax(260px, 1.4fr) minmax(180px, 0.9fr) 140px;
+            gap: 16px;
+        }
+
+        .form-btn-height {
+            height: 40px;
+        }
+
+        .process-actions {
+            margin-top: 18px;
+        }
+
+        .process-table {
+            min-width: 900px;
+        }
+
+        .process-table thead th,
+        .process-table tbody td {
+            text-align: center;
+        }
+
+        .process-table tbody td {
+            height: 42px;
+            vertical-align: middle;
+        }
+
+        .barcode-single-row .barcode-large {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .unified-condition-row {
+            align-items: end;
+        }
+
+        .move-condition-row.unified-condition-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .manual-add-grid-move.unified-add-grid {
+            grid-template-columns: minmax(260px, 1.4fr) minmax(180px, 0.9fr) 140px;
+            gap: 16px;
+        }
+
+        .spec-link {
+            color: #1d73e8;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        .spec-link:hover {
+            color: #155fc2;
+        }
+
+        .detail-list-table th,
+        .detail-list-table td {
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        #requestDetailModal .detail-list-table th {
+            background: var(--color-primary);
+            color: #fff;
+            border-left: none;
+            border-right: none;
+        }
+
+        #requestDetailModal .detail-list-table td {
+            border-left: none;
+            border-right: none;
+        }
+
+        #rentalProcessModal .branch-list th,
+        #returnProcessModal .branch-list th {
+            background: var(--color-primary);
+            color: #fff;
+            border-left: none;
+            border-right: none;
+        }
+
+        #rentalProcessModal .branch-list td,
+        #returnProcessModal .branch-list td {
+            border-left: none;
+            border-right: none;
+        }
+
+        #returnDetailModal .branch-list th,
+        #bulkReturnModal .branch-list th {
+            background: var(--color-primary);
+            color: #fff;
+            border-left: none;
+            border-right: none;
+        }
+
+        #returnDetailModal .branch-list td,
+        #bulkReturnModal .branch-list td {
+            border-left: none;
+            border-right: none;
+        }
+        /* #endregion */
+
+        /* クリアボタン */
+        #searchCancelAllBtn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            padding: 0 14px;
+            /*font-size: var(--fs-xs);*/
+            font-size: 14px;
+            background: var(--color-clearbutton-background);
+            color: var(--color-text);
+            border: 1px solid var(--color-clearbutton-border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            font-family: inherit;
+            white-space: nowrap;
+            box-shadow: none;
+        }
+        #searchCancelAllBtn:hover {
+            background:var(--color-clearbutton-background-hover);
+            color: var(--color-text);
+            border: 1px solid var(--color-clearbutton-border);
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 追加・登録ボタン */
+        #searchAddBtn,
+        #searchRegisterBtn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            padding: 0 14px;
+            font-size: var(--fs-xs);
+            background: var(--color-primary);
+            color: #fff;
+            border: 1px solid var(--color-clearbutton-border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            font-family: inherit;
+            white-space: nowrap;
+            box-shadow: none;
+        }
+
+        #searchAddBtn {
+            width: auto;
+            align-self: flex-start;
+        }
+        #searchAddBtn:hover,
+        #searchRegisterBtn:hover {
+            background:var(--color-primary-dark);
+            color: #fff;
+            border: 1px solid var(--color-clearbutton-border);
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .search-toggle-sp {
+                display: flex;
+            }
+
+            /* 画面右下固定 アクションボタン */
+            .btn-fab-bar {
+                position: fixed;
+                right: 24px;
+                bottom: 24px;
+                z-index: 2001;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 12px;
+            }
+
+            .btn-fab-new {
+                display: inline-block;
+                text-decoration: none;
+                min-width: 140px;
+                width: 140px;
+                box-sizing: border-box;
+                padding: 6px 14px;
+                background: var(--color-primary);
+                color: #fff;
+                border: none;
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                text-align: center;
+            }
+
+            .btn-fab-new:hover {
+                background: var(--color-primary-dark);
+                color: #fff;
+            }
+
+            button.btn-fab-new {
+                font: inherit;
+            }
+
+            html,
+            body {
+                height: auto;
+                min-height: 100%;
+                overflow-y: auto;
+            }
+
+            .main-wrapper {
+                display: flex;
+                width: 100%;
+                flex: 1;
+                height: auto;
+                min-height: calc(100vh - 48px);
+                overflow: visible;
+            }
+
+            /* #sidebarMount / .sidebar は上書きしない */
+
+            .header-title {
+                margin: 5px 0px 0px 35px;
+                font-size: var(--fs-xl);
+            }
+
+            .header-user {
+                display: none;
+            }
+
+            .content {
+                background: var(--color-surface);
+                flex-direction: column;
+                flex: 1;
+                width: 100%;
+                padding: 12px 12px 56px 12px;
+                margin-left: -220px;
+                overflow: visible;
+            }
+
+            .content:not(.expanded) {
+                padding-left: 12px;
+            }
+
+            .content.expanded {
+                width: 100%;
+                margin-left: -220px;
+                padding-left: 12px;
+            }
+
+            .content-box {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 8px;
+                flex: none;
+                min-height: 0;
+            }
+
+            .content-box .page-title {
+                margin: 0 0 16px;
+                padding-bottom: 8px;
+            }
+
+            .section-title-row > .card-title {
+                flex: 1;
+                min-width: 0;
+                padding-right: 4px;
+            }
+
+            .section-title-row > .header-buttons {
+                flex-shrink: 0;
+                margin-bottom: 0;
+                justify-content: flex-end;
+            }
+
+            .move-condition-row,
+            .move-condition-row.unified-condition-row,
+            .manual-add-grid,
+            .manual-add-grid-move.unified-add-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .manual-add-grid .form-group-button {
+                align-items: flex-end;
+            }
+
+            #searchAddBtn {
+                align-self: flex-end;
+            }
+
+            .search-toggle-sp {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                padding: 14px 16px;
+                font-family: inherit;
+                font-weight: 500;
+                color: var(--color-text);
+                background: var(--color-card);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-md);
+                cursor: pointer;
+                text-align: left;
+                box-sizing: border-box;
+            }
+
+            .search-toggle-sp-label {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .search-toggle-sp-icon {
+                margin-right: 8px;
+                flex-shrink: 0;
+                vertical-align: middle;
+            }
+
+            .search-toggle-sp-text {
+                font-size: var(--fs-xs);
+            }
+
+            .search-toggle-sp::after {
+                content: "＋";
+                color: var(--color-text-muted);
+            }
+
+            .search-box {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+            }
+
+            .search-box .search-box-inner {
+                display: none;
+                padding: 12px 0 0;
+            }
+
+            .search-box.is-open .search-box-inner {
+                display: block;
+            }
+
+            .search-box.is-open .search-toggle-sp::after {
+                content: "ー";
+            }
+
+            .search-row {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0px;
+            }
+
+            .search-row label {
+                font-size: var(--fs-xs);
+                flex-shrink: 0;
+            }
+
+            .search-row select,
+            .search-row input {
+                min-width: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .search-row .multi-select,
+            .search-row .multi-select-toggle {
+                min-width: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .search-row .manufacturer-row,
+            .search-row .manufacturer-row .autocomplete,
+            .search-row .manufacturer-row .autocomplete .autocomplete-input {
+                min-width: 0;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* スマホ */
+            #periodFromOnly,
+            #date,
+            #time {
+                text-align: left !important;
+            }
+
+            #periodFromOnly::-webkit-datetime-edit,
+            #date::-webkit-datetime-edit,
+            #time::-webkit-datetime-edit {
+                text-align: left !important;
+            }
+
+            #periodFromOnly::-webkit-date-and-time-value,
+            #date::-webkit-date-and-time-value,
+            #time::-webkit-date-and-time-value {
+                text-align: left !important;
+            }
+
+            .multi-select-menu {
+                text-align: left;
+            }
+
+            .multi-select-option {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                align-items: center;
+                justify-content: flex-start;
+                justify-items: start;
+                column-gap: 8px;
+                text-align: left;
+            }
+
+            .multi-select-option span {
+                justify-self: start;
+                text-align: left;
+            }
+
+            .search-cancel-wrapper {
+                grid-column: 2;
+                margin-left: 0;
+                display: flex;
+                justify-content: flex-end;
+                align-items: flex-end;
+                align-self: end;
+            }
+
+            .btn-fab-new {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                width: 140px;
+                min-width: 140px;
+                height: 34px;
+                padding: 6px 14px;
+                box-sizing: border-box;
+                background: var(--color-primary);
+                color: #fff;
+                border: none;
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                text-align: center;
+            }
+
+            .btn-fab-new:hover {
+                background: var(--color-primary-dark);
+                color: #fff;
+            }
+
+            /* ハンバーガーボタン */
+            .hamburger {
+                display: block;
+                position: fixed;
+                margin: 6px 10px 0px 0px;
+                cursor: pointer;
+                z-index: 3000;
+            }
+
+            .hamburger img {
+                width: 30px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" onclick="closeSidebar()"></div>
+
+    <!--#region ヘッダー  -->
+    <div class="header">
+        <div class="hamburger" onclick="toggleSidebar()">
+            <img src="images/menu_50dp_008632.svg" />
+        </div>
+        <div class="header-title"><a href="dashboard.html">Proma</a></div>
+        <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+        <div class="account-wrapper">
+            <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+            <div class="account-menu">
+                <div class="menu-item">ログアウト</div>
+            </div>
+        </div>
+    </div>
+    <!-- #endregion -->
+    <!-- ヘッダー下のレイアウト -->
+    <div class="main-wrapper">
+
+        <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
+        <div id="sidebarMount"></div>
+        <!-- #endregion -->
+
+        <!--#region メインコンテンツ  -->
+        <div class="content">
+            <div class="content-box">
+                <h2 class="page-title">サンプル貸出管理</h2>
+                <div class="header-buttons header-buttons-wide">
+                    <a href="sample_inquiry.html" class="btn btn-secondary">サンプル照会へ戻る</a>
+                </div>
+
+                <div class="view-layout view-layout-1-group">
+                    <section class="card">
+                        <h2 class="card-title">検索条件</h2>
+                        <div class="search-box inquiry-search-box" id="searchBox">
+                            <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
+                                <span class="search-toggle-sp-label">
+                                    <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                                    <span class="search-toggle-sp-text">検索条件を開く</span>
+                                </span>
+                            </button>
+                            <div class="search-box-inner" id="searchRowsPanel">
+                                <div class="search-grid">
+                                    <div class="form-group">
+                                        <label>申請No</label>
+                                        <input type="text" class="form-control" placeholder="例：REQ-202604-001">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>サンプル区分</label>
+                                        <select class="form-control">
+                                            <option>すべて</option>
+                                            <option>新商品</option>
+                                            <option>発売済み</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>得意先名</label>
+                                        <input type="text" class="form-control" placeholder="得意先名を入力">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>商品コード</label>
+                                        <input type="text" class="form-control" placeholder="商品コードを入力">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>商品名</label>
+                                        <input type="text" class="form-control" placeholder="商品名を入力">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>状態</label>
+                                        <select class="form-control">
+                                            <option>すべて</option>
+                                            <option>貸出申請</option>
+                                            <option>貸出中</option>
+                                            <option>返却済</option>
+                                        </select>
+                                    </div>
+                                    <div class="search-grid-actions">
+                                        <button class="btn btn-secondary" id="searchCancelAllBtn">クリア</button>
+                                        <button class="btn btn-primary" id="searchSearchBtn">検索</button>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                    </section>
+
+                    <section class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-label">貸出申請件数</div>
+                            <div class="summary-value">8</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">貸出中件数</div>
+                            <div class="summary-value">15</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">返却予定近い件数</div>
+                            <div class="summary-value">4</div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="section-title-row">
+                            <h2 class="card-title no-margin">貸出申請一覧</h2>
+                            <span class="list-caption">まだ貸出処理前の申請データ</span>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>申請No</th>
+                                        <th>申請日</th>
+                                        <th>サンプル区分</th>
+                                        <th>得意先名</th>
+                                        <th>貸出理由</th>
+                                        <th>明細数</th>
+                                        <th>依頼合計数</th>
+                                        <th>手配合計数</th>
+                                        <th>受取日</th>
+                                        <th>返却予定日</th>
+                                        <th>状態</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>REQ-202604-001</td>
+                                        <td>2026/04/15</td>
+                                        <td>新商品</td>
+                                        <td>株式会社サンプル商事</td>
+                                        <td>商談用</td>
+                                        <td>3</td>
+                                        <td>12</td>
+                                        <td>10</td>
+                                        <td>2026/04/18</td>
+                                        <td>2026/04/25</td>
+                                        <td><span class="status-chip status-request">貸出申請</span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary btn-small request-detail-btn"
+                                                    data-request-no="REQ-202604-001"
+                                                    data-sample-type="新商品"
+                                                    data-client="株式会社サンプル商事"
+                                                    data-reason="商談用"
+                                                    data-receive-date="2026/04/18"
+                                                    data-return-date="2026/04/25">
+                                                    詳細
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-success btn-small rental-process-btn"
+                                                    data-request-no="REQ-202604-001"
+                                                    data-sample-type="新商品"
+                                                    data-client="株式会社サンプル商事"
+                                                    data-reason="商談用"
+                                                    data-receive-date="2026/04/18"
+                                                    data-return-date="2026/04/25">
+                                                    貸出処理
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>REQ-202604-002</td>
+                                        <td>2026/04/15</td>
+                                        <td>発売済み</td>
+                                        <td>○○物産株式会社</td>
+                                        <td>撮影用</td>
+                                        <td>2</td>
+                                        <td>5</td>
+                                        <td>5</td>
+                                        <td>2026/04/17</td>
+                                        <td>2026/04/22</td>
+                                        <td><span class="status-chip status-request">貸出申請</span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary btn-small request-detail-btn"
+                                                    data-request-no="REQ-202604-002"
+                                                    data-sample-type="発売済み"
+                                                    data-client="○○物産株式会社"
+                                                    data-reason="撮影用"
+                                                    data-receive-date="2026/04/17"
+                                                    data-return-date="2026/04/22">
+                                                    詳細
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-success btn-small rental-process-btn"
+                                                    data-request-no="REQ-202604-002"
+                                                    data-sample-type="発売済み"
+                                                    data-client="○○物産株式会社"
+                                                    data-reason="撮影用"
+                                                    data-receive-date="2026/04/17"
+                                                    data-return-date="2026/04/22">
+                                                    貸出処理
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="section-title-row">
+                            <h2 class="card-title no-margin">貸出中サンプル一覧</h2>
+                            <div class="header-buttons">
+                                <button type="button" class="btn btn-danger btn-small" id="bulkReturnOpenBtn">一括返却処理</button>
+                            </div>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>申請No</th>
+                                        <th>貸出日</th>
+                                        <th>サンプル区分</th>
+                                        <th>得意先名</th>
+                                        <th>商品コード</th>
+                                        <th>商品名</th>
+                                        <th>サンプルスペック</th>
+                                        <th>依頼数</th>
+                                        <th>手配数</th>
+                                        <th>受取日</th>
+                                        <th>返却予定日</th>
+                                        <th>貸出理由</th>
+                                        <th>状態</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>REQ-202604-003</td>
+                                        <td>2026/04/14</td>
+                                        <td>新商品</td>
+                                        <td>株式会社サンプル商事</td>
+                                        <td>A10023</td>
+                                        <td>ロゴプリントTシャツ</td>
+                                        <td>M / レッド</td>
+                                        <td>5</td>
+                                        <td>5</td>
+                                        <td>2026/04/14</td>
+                                        <td>2026/04/20</td>
+                                        <td>商談用</td>
+                                        <td><span class="status-chip status-rental">貸出中</span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button type="button" class="btn btn-secondary btn-small rental-detail-btn">詳細</button>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-small return-process-btn"
+                                                    data-request-no="REQ-202604-003"
+                                                    data-sample-type="新商品"
+                                                    data-client="株式会社サンプル商事"
+                                                    data-code="A10023"
+                                                    data-name="ロゴプリントTシャツ"
+                                                    data-spec="M / レッド">
+                                                    返却処理
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>REQ-202604-004</td>
+                                        <td>2026/04/13</td>
+                                        <td>発売済み</td>
+                                        <td>△△販売株式会社</td>
+                                        <td>B30012</td>
+                                        <td>キャンバストート</td>
+                                        <td>標準 / 生成り</td>
+                                        <td>3</td>
+                                        <td>3</td>
+                                        <td>2026/04/13</td>
+                                        <td>2026/04/18</td>
+                                        <td>撮影用</td>
+                                        <td><span class="status-chip status-rental">貸出中</span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button type="button" class="btn btn-secondary btn-small rental-detail-btn">詳細</button>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-small return-process-btn"
+                                                    data-request-no="REQ-202604-004"
+                                                    data-sample-type="発売済み"
+                                                    data-client="△△販売株式会社"
+                                                    data-code="B30012"
+                                                    data-name="キャンバストート"
+                                                    data-spec="標準 / 生成り">
+                                                    返却処理
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>REQ-202604-004</td>
+                                        <td>2026/04/13</td>
+                                        <td>発売済み</td>
+                                        <td>△△販売株式会社</td>
+                                        <td>B30013</td>
+                                        <td>ミニトート</td>
+                                        <td>小型 / ブラック</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                        <td>2026/04/13</td>
+                                        <td>2026/04/18</td>
+                                        <td>撮影用</td>
+                                        <td><span class="status-chip status-rental">貸出中</span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button type="button" class="btn btn-secondary btn-small rental-detail-btn">詳細</button>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-small return-process-btn"
+                                                    data-request-no="REQ-202604-004"
+                                                    data-sample-type="発売済み"
+                                                    data-client="△△販売株式会社"
+                                                    data-code="B30013"
+                                                    data-name="ミニトート"
+                                                    data-spec="小型 / ブラック">
+                                                    返却処理
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h2 class="card-title">運用イメージ</h2>
+                        <div class="process-flow">
+                            <div class="flow-step">
+                                <div class="step-no">1</div>
+                                <h3>貸出申請確認</h3>
+                                <p>申請ヘッダと明細内容を確認して、貸出対象サンプルを準備します。</p>
+                            </div>
+                            <div class="flow-step">
+                                <div class="step-no">2</div>
+                                <h3>バーコード読取で貸出処理</h3>
+                                <p>明細を見ながら対象バーコードを読み取り、貸出数を確認しながら処理します。</p>
+                            </div>
+                            <div class="flow-step">
+                                <div class="step-no">3</div>
+                                <h3>返却処理</h3>
+                                <p>個別返却は対象明細から、まとめ返却は一括返却画面からバーコードを連続読取して処理します。</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- 申請詳細モーダル -->
+            <div id="requestDetailModal" class="modal-overlay">
+                <div class="modal-box modal-box-lg">
+                    <div class="modal-header">
+                        <h2>貸出処理</h2>
+                        <button type="button" class="modal-close-btn" id="requestDetailCloseBtn">×</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="modal-info">
+                            <div class="modal-info-item">
+                                <span class="label">申請No</span>
+                                <span id="detailRequestNo">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">サンプル区分</span>
+                                <span id="detailSampleType">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">得意先名</span>
+                                <span id="detailClient">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">貸出理由</span>
+                                <span id="detailReason">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">受取日</span>
+                                <span id="detailReceiveDate">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">返却予定日</span>
+                                <span id="detailReturnDate">-</span>
+                            </div>
+                        </div>
+
+                        <div class="card sub-card">
+                            <h3 class="sub-card-title">申請明細</h3>
+                            <div class="table-wrap">
+                                <table class="branch-list detail-list-table">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>商品コード</th>
+                                            <th>商品名</th>
+                                            <th>サンプルスペック</th>
+                                            <th>依頼数</th>
+                                            <th>手配数</th>
+                                            <th>仕様書No</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="requestDetailBody">
+                                        <tr>
+                                            <td>1</td>
+                                            <td>A10023</td>
+                                            <td>ロゴプリントTシャツ</td>
+                                            <td>M / レッド</td>
+                                            <td>5</td>
+                                            <td>5</td>
+                                            <!--<td><a href="spec-sheet.html?specNo=S-2026-00125" class="spec-link">S-2026-00125</a></td>-->
+                                            <td><a href="images/spec-sheet.png" class="spec-link">S-2026-00125</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary request-detail-close">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 貸出処理モーダル -->
+            <div id="rentalProcessModal" class="modal-overlay">
+                <div class="modal-box modal-box-lg">
+                    <div class="modal-header">
+                        <h2>貸出処理</h2>
+                        <button type="button" class="modal-close-btn" id="rentalProcessCloseBtn">×</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="modal-info">
+                            <div class="modal-info-item">
+                                <span class="label">申請No</span>
+                                <span id="rentalRequestNo">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">サンプル区分</span>
+                                <span id="rentalSampleType">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">得意先名</span>
+                                <span id="rentalClient">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">貸出理由</span>
+                                <span id="rentalReason">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">受取日</span>
+                                <span id="rentalReceiveDate">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">返却予定日</span>
+                                <span id="rentalReturnDate">-</span>
+                            </div>
+                        </div>
+
+                        <div class="card sub-card">
+                            <h3 class="sub-card-title">申請明細</h3>
+                            <div class="table-wrap">
+                                <table class="branch-list">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>商品コード</th>
+                                            <th>商品名</th>
+                                            <th>サンプルスペック</th>
+                                            <th>依頼数</th>
+                                            <th>手配数</th>
+                                            <th>読取状況</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rentalDetailBody">
+                                        <tr>
+                                            <td>1</td>
+                                            <td>A10023</td>
+                                            <td>ロゴプリントTシャツ</td>
+                                            <td>M / レッド</td>
+                                            <td>5</td>
+                                            <td>5</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="barcode-process-area">
+                            <div class="barcode-box">
+                                <h3>バーコードスキャン貸出処理</h3>
+                                <div class="form-group">
+                                    <label>バーコード読取</label>
+                                    <div class="barcode-input-row">
+                                        <input type="text" class="form-control" placeholder="バーコードを読み取る">
+                                        <button type="button" class="btn btn-success">読取登録</button>
+                                    </div>
+                                </div>
+                                <div class="subtext">申請明細を確認しながら、対象サンプルのバーコードを順に読取する想定です。</div>
+                            </div>
+
+                            <div class="barcode-box">
+                                <h3>読取結果</h3>
+                                <table class="branch-list">
+                                    <tr>
+                                        <th>直近読取バーコード</th>
+                                        <td>A10023-000128</td>
+                                    </tr>
+                                    <tr>
+                                        <th>商品コード</th>
+                                        <td>A10023</td>
+                                    </tr>
+                                    <tr>
+                                        <th>商品名</th>
+                                        <td>ロゴプリントTシャツ</td>
+                                    </tr>
+                                    <tr>
+                                        <th>判定</th>
+                                        <td>貸出対象OK</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary rental-modal-close">閉じる</button>
+                        <button type="button" class="btn btn-success">貸出確定</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 返却詳細モーダル -->
+            <div id="returnDetailModal" class="modal-overlay">
+                <div class="modal-box modal-box-lg">
+                    <div class="modal-header">
+                        <h2>返却処理</h2>
+                        <button type="button" class="modal-close-btn" id="returnDetailCloseBtn">×</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="modal-info">
+                            <div class="modal-info-item">
+                                <span class="label">申請No</span>
+                                <span id="returnDetailRequestNo">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">サンプル区分</span>
+                                <span id="returnDetailSampleType">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">得意先名</span>
+                                <span id="returnDetailClient">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">商品コード</span>
+                                <span id="returnDetailCode">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">商品名</span>
+                                <span id="returnDetailName">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">サンプルスペック</span>
+                                <span id="returnDetailSpec">-</span>
+                            </div>
+                        </div>
+
+                        <div class="card sub-card">
+                            <h3 class="sub-card-title">返却対象情報</h3>
+                            <div class="table-wrap">
+                                <table class="branch-list">
+                                    <thead>
+                                        <tr>
+                                            <th>商品コード</th>
+                                            <th>商品名</th>
+                                            <th>サンプルスペック</th>
+                                            <th>依頼数</th>
+                                            <th>手配数</th>
+                                            <th>貸出数</th>
+                                            <th>読取状況</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="returnDetailInfoBody">
+                                        <tr>
+                                            <td>A10023</td>
+                                            <td>ロゴプリントTシャツ</td>
+                                            <td>M / レッド</td>
+                                            <td>5</td>
+                                            <td>5</td>
+                                            <td>5</td>
+                                            <td>0 / 5</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary return-modal-close">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 返却処理モーダル -->
+            <div id="returnProcessModal" class="modal-overlay">
+                <div class="modal-box modal-box-lg">
+                    <div class="modal-header">
+                        <h2>返却処理</h2>
+                        <button type="button" class="modal-close-btn" id="returnProcessCloseBtn">×</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="modal-info">
+                            <div class="modal-info-item">
+                                <span class="label">申請No</span>
+                                <span id="returnRequestNo">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">サンプル区分</span>
+                                <span id="returnSampleType">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">得意先名</span>
+                                <span id="returnClient">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">商品コード</span>
+                                <span id="returnCode">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">商品名</span>
+                                <span id="returnName">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <span class="label">サンプルスペック</span>
+                                <span id="returnSpec">-</span>
+                            </div>
+                        </div>
+
+                        <div class="card sub-card">
+                            <h3 class="sub-card-title">返却対象情報</h3>
+                            <div class="table-wrap">
+                                <table class="branch-list">
+                                    <thead>
+                                        <tr>
+                                            <th>商品コード</th>
+                                            <th>商品名</th>
+                                            <th>サンプルスペック</th>
+                                            <th>依頼数</th>
+                                            <th>手配数</th>
+                                            <th>貸出数</th>
+                                            <th>読取状況</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="returnDetailBody">
+                                        <tr>
+                                            <td>A10023</td>
+                                            <td>ロゴプリントTシャツ</td>
+                                            <td>M / レッド</td>
+                                            <td>5</td>
+                                            <td>5</td>
+                                            <td>5</td>
+                                            <td>0 / 5</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="barcode-box">
+                            <h3>バーコードスキャン返却処理</h3>
+                            <div class="form-group">
+                                <label>バーコード読取</label>
+                                <div class="barcode-input-row">
+                                    <input type="text" class="form-control" placeholder="バーコードを読み取る">
+                                    <button type="button" class="btn btn-danger">返却登録</button>
+                                </div>
+                            </div>
+                            <div class="subtext">
+                                貸出数に対して、何個返却読取できたかを確認しながら返却処理を行う想定です。
+                            </div>
+                        </div>
+
+                        <div class="footer-space"></div>
+
+                        <div class="barcode-box">
+                            <h3>読取結果</h3>
+                            <table class="branch-list">
+                                <tr>
+                                    <th>直近読取バーコード</th>
+                                    <td id="returnLastBarcode">A10023-000128</td>
+                                </tr>
+                                <tr>
+                                    <th>商品コード</th>
+                                    <td id="returnLastCode">A10023</td>
+                                </tr>
+                                <tr>
+                                    <th>商品名</th>
+                                    <td id="returnLastName">ロゴプリントTシャツ</td>
+                                </tr>
+                                <tr>
+                                    <th>判定</th>
+                                    <td id="returnLastJudge">返却対象OK</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary return-modal-close">閉じる</button>
+                        <button type="button" class="btn btn-danger">返却確定</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 一括返却モーダル -->
+            <div id="bulkReturnModal" class="modal-overlay">
+                <div class="modal-box modal-box-lg">
+                    <div class="modal-header">
+                        <h2>一括返却処理</h2>
+                        <button type="button" class="modal-close-btn" id="bulkReturnCloseBtn">×</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="note-box">
+                            <h3>想定運用</h3>
+                            <ul>
+                                <li>返却対象を1件ずつ選ばなくても、返却されたサンプルのバーコードを連続で読取して返却処理</li>
+                                <li>読取結果から該当の貸出中レコードを照合し、返却済みに更新</li>
+                                <li>大量返却時はこちらの画面を使う運用を想定</li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-space"></div>
+
+                        <div class="barcode-box">
+                            <h3>連続バーコード読取</h3>
+                            <div class="form-group">
+                                <label>バーコード読取</label>
+                                <div class="barcode-input-row">
+                                    <input type="text" class="form-control" placeholder="バーコードを連続で読み取る">
+                                    <button type="button" class="btn btn-danger">読取追加</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="footer-space"></div>
+
+                        <div class="table-wrap">
+                            <table class="branch-list">
+                                <thead>
+                                    <tr>
+                                        <th>読取順</th>
+                                        <th>バーコード</th>
+                                        <th>申請No</th>
+                                        <th>商品コード</th>
+                                        <th>商品名</th>
+                                        <th>判定</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>A10023-000128</td>
+                                        <td>REQ-202604-003</td>
+                                        <td>A10023</td>
+                                        <td>ロゴプリントTシャツ</td>
+                                        <td>返却対象OK</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>B30012-000052</td>
+                                        <td>REQ-202604-004</td>
+                                        <td>B30012</td>
+                                        <td>キャンバストート</td>
+                                        <td>返却対象OK</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary bulk-return-close">閉じる</button>
+                        <button type="button" class="btn btn-danger">一括返却確定</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 仕様書画像モーダル -->
+            <div id="specImageModal" class="modal-overlay">
+                <div class="modal-box image-modal-box">
+                    <div class="modal-header">
+                        <h2>仕様書プレビュー</h2>
+                        <button type="button" class="modal-close-btn" id="specImageCloseBtn">×</button>
+                    </div>
+                    <div class="image-modal-body">
+                        <img id="specImagePreview" src="" alt="仕様書画像">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary spec-image-close">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        // サイドバーの読み込み
+        function loadSharedSidebar() {
+            const mount = document.getElementById('sidebarMount');
+            if (!mount) return;
+
+            if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+            console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+            return;
+            }
+
+            mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+            initSidebarCollapseToggle();
+        }
+
+        function initSidebarCollapseToggle() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            const content = document.querySelector('.content');
+            if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+            const toggleImg = toggle.querySelector('img');
+            toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('closed');
+            content.classList.toggle('expanded');
+
+            if (sidebar.classList.contains('closed')) {
+                if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+            } else {
+                if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+            }
+            });
+
+            toggle.dataset.bound = '1';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            if (!sidebar || !overlay) return;
+
+            sidebar.classList.toggle('active');
+
+            if (sidebar.classList.contains('active')) {
+            overlay.classList.add('show');
+            } else {
+            overlay.classList.remove('show');
+            }
+        }
+
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            if (!sidebar || !overlay) return;
+
+            sidebar.classList.remove('active');
+            overlay.classList.remove('show');
+        }
+
+        loadSharedSidebar();
+
+        // スマホ: 検索条件の折りたたみ開閉
+        (function () {
+            var btn = document.getElementById("searchToggleSp");
+            var box = document.getElementById("searchBox");
+            if (btn && box) {
+            btn.addEventListener("click", function () {
+                var isOpen = box.classList.toggle("is-open");
+                btn.setAttribute("aria-expanded", isOpen);
+                var textEl = btn.querySelector(".search-toggle-sp-text");
+                if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+            });
+            }
+        })();
+
+        // クリアボタンクリック時は画面を再読み込み
+        (function () {
+            var clearBtn = document.getElementById("searchCancelAllBtn");
+            if (!clearBtn) return;
+            clearBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                location.reload();
+            });
+        })();
+
+        const icon = document.querySelector('.header-account_circle');
+        const menu = document.querySelector('.account-menu');
+
+        icon.addEventListener('click', (e) => {
+            e.stopPropagation(); // クリックが外側に伝播しないように
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+        const requestDetailModal = document.getElementById('requestDetailModal');
+        const requestDetailButtons = document.querySelectorAll('.request-detail-btn');
+        const requestDetailCloseBtn = document.getElementById('requestDetailCloseBtn');
+        const requestDetailCloseButtons = document.querySelectorAll('.request-detail-close');
+
+        const detailRequestNo = document.getElementById('detailRequestNo');
+        const detailSampleType = document.getElementById('detailSampleType');
+        const detailClient = document.getElementById('detailClient');
+        const detailReason = document.getElementById('detailReason');
+        const detailReceiveDate = document.getElementById('detailReceiveDate');
+        const detailReturnDate = document.getElementById('detailReturnDate');
+        const requestDetailBody = document.getElementById('requestDetailBody');
+
+        const rentalProcessModal = document.getElementById('rentalProcessModal');
+        const returnDetailModal = document.getElementById('returnDetailModal');
+        const returnProcessModal = document.getElementById('returnProcessModal');
+        const bulkReturnModal = document.getElementById('bulkReturnModal');
+        const specImageModal = document.getElementById('specImageModal');
+
+        const rentalProcessButtons = document.querySelectorAll('.rental-process-btn');
+        const rentalDetailButtons = document.querySelectorAll('.rental-detail-btn');
+        const returnProcessButtons = document.querySelectorAll('.return-process-btn');
+        const bulkReturnOpenBtn = document.getElementById('bulkReturnOpenBtn');
+
+        const rentalProcessCloseBtn = document.getElementById('rentalProcessCloseBtn');
+        const returnDetailCloseBtn = document.getElementById('returnDetailCloseBtn');
+        const returnProcessCloseBtn = document.getElementById('returnProcessCloseBtn');
+        const bulkReturnCloseBtn = document.getElementById('bulkReturnCloseBtn');
+        const specImageCloseBtn = document.getElementById('specImageCloseBtn');
+
+        const rentalModalCloseButtons = document.querySelectorAll('.rental-modal-close');
+        const returnModalCloseButtons = document.querySelectorAll('.return-modal-close');
+        const bulkReturnCloseButtons = document.querySelectorAll('.bulk-return-close');
+        const specImageCloseButtons = document.querySelectorAll('.spec-image-close');
+        const specImagePreview = document.getElementById('specImagePreview');
+
+        const rentalRequestNo = document.getElementById('rentalRequestNo');
+        const rentalSampleType = document.getElementById('rentalSampleType');
+        const rentalClient = document.getElementById('rentalClient');
+        const rentalReason = document.getElementById('rentalReason');
+        const rentalReceiveDate = document.getElementById('rentalReceiveDate');
+        const rentalReturnDate = document.getElementById('rentalReturnDate');
+        const rentalDetailBody = document.getElementById('rentalDetailBody');
+
+        const returnRequestNo = document.getElementById('returnRequestNo');
+        const returnSampleType = document.getElementById('returnSampleType');
+        const returnClient = document.getElementById('returnClient');
+        const returnCode = document.getElementById('returnCode');
+        const returnName = document.getElementById('returnName');
+        const returnSpec = document.getElementById('returnSpec');
+        const returnDetailBody = document.getElementById('returnDetailBody');
+        const returnDetailRequestNo = document.getElementById('returnDetailRequestNo');
+        const returnDetailSampleType = document.getElementById('returnDetailSampleType');
+        const returnDetailClient = document.getElementById('returnDetailClient');
+        const returnDetailCode = document.getElementById('returnDetailCode');
+        const returnDetailName = document.getElementById('returnDetailName');
+        const returnDetailSpec = document.getElementById('returnDetailSpec');
+        const returnDetailInfoBody = document.getElementById('returnDetailInfoBody');
+        const returnLastBarcode = document.getElementById('returnLastBarcode');
+        const returnLastCode = document.getElementById('returnLastCode');
+        const returnLastName = document.getElementById('returnLastName');
+        const returnLastJudge = document.getElementById('returnLastJudge');
+
+        requestDetailButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const requestNo = this.dataset.requestNo;
+                const sampleType = this.dataset.sampleType;
+                const client = this.dataset.client;
+                const reason = this.dataset.reason;
+                const receiveDate = this.dataset.receiveDate;
+                const returnDate = this.dataset.returnDate;
+
+                detailRequestNo.textContent = requestNo;
+                detailSampleType.textContent = sampleType;
+                detailClient.textContent = client;
+                detailReason.textContent = reason;
+                detailReceiveDate.textContent = receiveDate;
+                detailReturnDate.textContent = returnDate;
+
+                if (requestNo === 'REQ-202604-001') {
+                    requestDetailBody.innerHTML = `
+                        <tr>
+                            <td>1</td>
+                            <td>A10023</td>
+                            <td>ロゴプリントTシャツ</td>
+                            <td>M / レッド</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <!--<td><a href="spec-sheet.html?specNo=S-2026-00125" class="spec-link">S-2026-00125</a></td>-->
+                            <td><a href="images/spec-sheet.png" class="spec-link">S-2026-00125</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>A10024</td>
+                            <td>裏毛パーカー</td>
+                            <td>L / ネイビー</td>
+                            <td>4</td>
+                            <td>3</td>
+                            <!--<td><a href="spec-sheet.html?specNo=S-2026-00126" class="spec-link">S-2026-00126</a></td>-->
+                            <td><a href="images/spec-sheet.png" class="spec-link">S-2026-00126</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>B30012</td>
+                            <td>キャンバストート</td>
+                            <td>標準 / 生成り</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <!--<td><a href="spec-sheet.html?specNo=S-2026-00127" class="spec-link">S-2026-00127</a></td>-->
+                            <td><a href="images/spec-sheet.png" class="spec-link">S-2026-00127</a></td>
+                        </tr>
+                    `;
+                } else {
+                    requestDetailBody.innerHTML = `
+                        <tr>
+                            <td>1</td>
+                            <td>B30012</td>
+                            <td>キャンバストート</td>
+                            <td>標準 / 生成り</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <!--<td><a href="spec-sheet.html?specNo=S-2026-00127" class="spec-link">S-2026-00127</a></td>-->
+                            <td><a href="images/spec-sheet.png" class="spec-link">S-2026-00127</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>B30013</td>
+                            <td>ミニトート</td>
+                            <td>小型 / ブラック</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <!--<td><a href="spec-sheet.html?specNo=S-2026-00128" class="spec-link">S-2026-00128</a></td>-->
+                            <td><a href="images/spec-sheet.png" class="spec-link">S-2026-00128</a></td>
+                        </tr>
+                    `;
+                }
+
+                requestDetailModal.classList.add('show');
+            });
+        });
+
+        rentalProcessButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const requestNo = this.dataset.requestNo;
+                const sampleType = this.dataset.sampleType;
+                const client = this.dataset.client;
+                const reason = this.dataset.reason;
+                const receiveDate = this.dataset.receiveDate;
+                const returnDate = this.dataset.returnDate;
+
+                rentalRequestNo.textContent = requestNo;
+                rentalSampleType.textContent = sampleType;
+                rentalClient.textContent = client;
+                rentalReason.textContent = reason;
+                rentalReceiveDate.textContent = receiveDate;
+                rentalReturnDate.textContent = returnDate;
+
+                if (requestNo === 'REQ-202604-001') {
+                    rentalDetailBody.innerHTML = `
+                        <tr>
+                            <td>1</td>
+                            <td>A10023</td>
+                            <td>ロゴプリントTシャツ</td>
+                            <td>M / レッド</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>0 / 5</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>A10024</td>
+                            <td>裏毛パーカー</td>
+                            <td>L / ネイビー</td>
+                            <td>4</td>
+                            <td>3</td>
+                            <td>0 / 3</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>B30012</td>
+                            <td>キャンバストート</td>
+                            <td>標準 / 生成り</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>0 / 2</td>
+                        </tr>
+                    `;
+                } else {
+                    rentalDetailBody.innerHTML = `
+                        <tr>
+                            <td>1</td>
+                            <td>B30012</td>
+                            <td>キャンバストート</td>
+                            <td>標準 / 生成り</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>0 / 3</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>B30013</td>
+                            <td>ミニトート</td>
+                            <td>小型 / ブラック</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>0 / 2</td>
+                        </tr>
+                    `;
+                }
+
+                rentalProcessModal.classList.add('show');
+            });
+        });
+
+        rentalDetailButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const row = this.closest('tr');
+                if (!row) return;
+                const cells = row.querySelectorAll('td');
+                if (cells.length < 12) return;
+
+                returnDetailRequestNo.textContent = cells[0].textContent.trim();
+                returnDetailSampleType.textContent = cells[2].textContent.trim();
+                returnDetailClient.textContent = cells[3].textContent.trim();
+                returnDetailCode.textContent = cells[4].textContent.trim();
+                returnDetailName.textContent = cells[5].textContent.trim();
+                returnDetailSpec.textContent = cells[6].textContent.trim();
+
+                returnDetailInfoBody.innerHTML = `
+                        <tr>
+                            <td>${returnDetailCode.textContent}</td>
+                            <td>${returnDetailName.textContent}</td>
+                            <td>${returnDetailSpec.textContent}</td>
+                            <td>${cells[7].textContent.trim()}</td>
+                            <td>${cells[8].textContent.trim()}</td>
+                            <td>${cells[8].textContent.trim()}</td>
+                            <td>0 / ${cells[8].textContent.trim()}</td>
+                        </tr>
+                    `;
+
+                returnDetailModal.classList.add('show');
+            });
+        });
+
+        returnProcessButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const row = this.closest('tr');
+                const cells = row ? row.querySelectorAll('td') : null;
+
+                const requestNo = cells && cells.length >= 7 ? cells[0].textContent.trim() : this.dataset.requestNo;
+                const sampleType = cells && cells.length >= 7 ? cells[2].textContent.trim() : this.dataset.sampleType;
+                const client = cells && cells.length >= 7 ? cells[3].textContent.trim() : this.dataset.client;
+                const code = cells && cells.length >= 7 ? cells[4].textContent.trim() : this.dataset.code;
+                const name = cells && cells.length >= 7 ? cells[5].textContent.trim() : this.dataset.name;
+                const spec = cells && cells.length >= 7 ? cells[6].textContent.trim() : this.dataset.spec;
+
+                returnRequestNo.textContent = requestNo || '-';
+                returnSampleType.textContent = sampleType || '-';
+                returnClient.textContent = client || '-';
+                returnCode.textContent = code || '-';
+                returnName.textContent = name || '-';
+                returnSpec.textContent = spec || '-';
+
+                if (code === 'A10023') {
+                    returnDetailBody.innerHTML = `
+                        <tr>
+                            <td>A10023</td>
+                            <td>ロゴプリントTシャツ</td>
+                            <td>M / レッド</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>2 / 5</td>
+                        </tr>
+                    `;
+                    returnLastBarcode.textContent = 'A10023-000128';
+                    returnLastCode.textContent = 'A10023';
+                    returnLastName.textContent = 'ロゴプリントTシャツ';
+                    returnLastJudge.textContent = '返却対象OK';
+                } else if (code === 'B30012') {
+                    returnDetailBody.innerHTML = `
+                        <tr>
+                            <td>B30012</td>
+                            <td>キャンバストート</td>
+                            <td>標準 / 生成り</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>1 / 3</td>
+                        </tr>
+                    `;
+                    returnLastBarcode.textContent = 'B30012-000052';
+                    returnLastCode.textContent = 'B30012';
+                    returnLastName.textContent = 'キャンバストート';
+                    returnLastJudge.textContent = '返却対象OK';
+                } else {
+                    returnDetailBody.innerHTML = `
+                        <tr>
+                            <td>B30013</td>
+                            <td>ミニトート</td>
+                            <td>小型 / ブラック</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>0 / 2</td>
+                        </tr>
+                    `;
+                    returnLastBarcode.textContent = 'B30013-000031';
+                    returnLastCode.textContent = 'B30013';
+                    returnLastName.textContent = 'ミニトート';
+                    returnLastJudge.textContent = '返却対象OK';
+                }
+
+                returnProcessModal.classList.add('show');
+            });
+        });
+
+        bulkReturnOpenBtn.addEventListener('click', function () {
+            bulkReturnModal.classList.add('show');
+        });
+
+        document.addEventListener('click', function (e) {
+            const specLink = e.target.closest('a.spec-link');
+            if (!specLink) return;
+            if (!specLink.getAttribute('href') || !specLink.getAttribute('href').toLowerCase().endsWith('.png')) return;
+
+            e.preventDefault();
+            specImagePreview.src = specLink.getAttribute('href');
+            specImageModal.classList.add('show');
+        });
+
+        function closeModal(modal) {
+            modal.classList.remove('show');
+        }
+
+        requestDetailCloseBtn.addEventListener('click', () => closeModal(requestDetailModal));
+        rentalProcessCloseBtn.addEventListener('click', () => closeModal(rentalProcessModal));
+        returnDetailCloseBtn.addEventListener('click', () => closeModal(returnDetailModal));
+        returnProcessCloseBtn.addEventListener('click', () => closeModal(returnProcessModal));
+        bulkReturnCloseBtn.addEventListener('click', () => closeModal(bulkReturnModal));
+        specImageCloseBtn.addEventListener('click', () => closeModal(specImageModal));
+
+        requestDetailCloseButtons.forEach(button => {
+            button.addEventListener('click', () => closeModal(requestDetailModal));
+        });
+
+        rentalModalCloseButtons.forEach(button => {
+            button.addEventListener('click', () => closeModal(rentalProcessModal));
+        });
+
+        returnModalCloseButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                closeModal(returnDetailModal);
+                closeModal(returnProcessModal);
+            });
+        });
+
+        bulkReturnCloseButtons.forEach(button => {
+            button.addEventListener('click', () => closeModal(bulkReturnModal));
+        });
+
+        specImageCloseButtons.forEach(button => {
+            button.addEventListener('click', () => closeModal(specImageModal));
+        });
+
+        [requestDetailModal, rentalProcessModal, returnDetailModal, returnProcessModal, bulkReturnModal, specImageModal].forEach(modal => {
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    closeModal(modal);
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeModal(requestDetailModal);
+                closeModal(rentalProcessModal);
+                closeModal(returnDetailModal);
+                closeModal(returnProcessModal);
+                closeModal(bulkReturnModal);
+                closeModal(specImageModal);
+            }
+        });
+    </script>
+</body>
+</html>
