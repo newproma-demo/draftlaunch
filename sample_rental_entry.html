@@ -1122,7 +1122,7 @@
             border-radius: 14px;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
             padding: 18px 20px;
-            border-top: 4px solid #1d73e8;
+            border-top: 4px solid var(--color-primary);
         }
 
         .summary-label {
@@ -1177,6 +1177,21 @@
 
         .entry-table input.form-control {
             min-width: 120px;
+        }
+
+        /* 貸出明細入力テーブル：縦線なし・横線のみ */
+        .table.entry-table thead th {
+            border-top: 1px solid #d8e3f1;
+            border-bottom: 1px solid #d8e3f1;
+            border-left: none;
+            border-right: none;
+        }
+
+        .table.entry-table tbody td {
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-left: none;
+            border-right: none;
         }
 
         .header-only-grid {
@@ -1587,6 +1602,21 @@
                 padding-bottom: 8px;
             }
 
+            /* 申請ヘッダ：1列化で得意先名・受取日を縦並び、サンプル区分をカード幅内に収める */
+            .rental-grid.header-only-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .rental-grid.header-only-grid > .form-group {
+                min-width: 0;
+            }
+
+            .rental-grid.header-only-grid .sample-type select.form-control {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
             .delete-condition-row {
                 grid-template-columns: 1fr;
             }
@@ -1826,126 +1856,162 @@
         <!--#region メインコンテンツ  -->
         <div class="content">
             <div class="content-box">
-                <h2 class="page-title">サンプル削除処理</h2>
+                <h2 class="page-title">サンプル貸出申請入力</h2>
                 <div class="header-buttons header-buttons-wide">
-                    <a href="sample_inquiry.html" class="btn btn-secondary">サンプル照会へ戻る</a>
+                    <a href="sample_rental.html" class="btn btn-secondary">貸出管理へ戻る</a>
+                    <button class="btn btn-primary">下書き保存</button>
                 </div>
-    
+
                 <div class="view-layout view-layout-1-group">
                     <section class="card process-card">
-                        <h2 class="card-title">削除条件</h2>
-                        <div class="delete-condition-row">
-                            <div class="form-group">
-                                <label>削除区分</label>
+                        <h2 class="card-title">申請ヘッダ情報</h2>
+                        <div class="rental-grid header-only-grid">
+                            <div class="form-group sample-type">
+                                <label>サンプル区分</label>
                                 <select class="form-control">
-                                    <option>廃棄</option>
-                                    <option>紛失</option>
-                                    <option>破損</option>
-                                    <option>その他</option>
+                                    <option value="">選択してください</option>
+                                    <option value="新商品">新商品</option>
+                                    <option value="発売済み">発売済み</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label>削除理由</label>
-                                <select class="form-control">
-                                    <option>経年劣化</option>
-                                    <option>汚損</option>
-                                    <option>破損</option>
-                                    <option>棚卸差異</option>
-                                    <option>その他</option>
-                                </select>
+                                <label>得意先名</label>
+                                <input type="text" class="form-control" placeholder="得意先名を入力">
                             </div>
 
                             <div class="form-group">
-                                <label>拠点</label>
-                                <select class="form-control">
-                                    <option>東京本社</option>
-                                    <option>大阪支店</option>
-                                    <option>名古屋支店</option>
-                                </select>
+                                <label>受取日</label>
+                                <input type="date" class="form-control">
                             </div>
-                        </div>
-                    </section>
 
-                    <section class="card process-card">
-                        <h2 class="card-title">バーコード入力</h2>
-                        <div class="barcode-single-row">
-                            <input type="text" class="form-control barcode-large" placeholder="バーコードをスキャン">
-                        </div>
-                        <div class="subtext">バーコード読取時は対象商品を削除明細へ自動追加する想定です。</div>
-                    </section>
-
-                    <section class="card process-card">
-                        <h2 class="card-title">手動追加</h2>
-                        <div class="manual-add-grid manual-add-grid-move unified-add-grid">
                             <div class="form-group">
-                                <label>商品コード</label>
-                                <input type="text" class="form-control" placeholder="商品コード">
+                                <label>返却予定日</label>
+                                <input type="date" class="form-control">
                             </div>
-                            <div class="form-group">
-                                <label>枚数</label>
-                                <input type="number" class="form-control" placeholder="枚数">
+
+                            <div class="form-group full-width">
+                            <label>貸出理由</label>
+
+                            <div class="reason-box">
+                                <label class="reason-item">
+                                    <input type="radio" name="reason" value="商談用">
+                                    商談用
+                                </label>
+
+                                <label class="reason-item">
+                                    <input type="radio" name="reason" value="展示用">
+                                    展示用
+                                </label>
+
+                                <label class="reason-item">
+                                    <input type="radio" name="reason" value="カタログ掲載用">
+                                    カタログ掲載用
+                                </label>
+
+                                <label class="reason-item">
+                                    <input type="radio" name="reason" value="撮影用">
+                                    撮影用
+                                </label>
+
+                                <label class="reason-item other">
+                                    <input type="radio" name="reason" value="その他" id="reasonOther">
+                                    その他
+                                    <input type="text" id="otherText" class="form-control other-input" placeholder="理由を入力" disabled>
+                                </label>
                             </div>
-                            <div class="form-group form-group-button">
-                                <label>&nbsp;</label>
-                                <button type="button" class="btn btn-primary" id="searchAddBtn">追加</button>
-                            </div>
+                        </div>
                         </div>
                     </section>
 
-                    <section class="card process-card">
-                        <h2 class="card-title">登録明細</h2>
+                    <section class="card">
+                        <div class="section-title-row">
+                            <h2 class="card-title no-margin">貸出明細入力</h2>
+                            <div class="header-buttons">
+                                <button type="button" class="btn btn-secondary btn-small">行追加</button>
+                                <button type="button" class="btn btn-secondary btn-small">行削除</button>
+                            </div>
+                        </div>
+
                         <div class="table-wrap">
-                            <table class="table process-table">
+                            <table class="table entry-table">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>商品コード</th>
                                         <th>商品名</th>
-                                        <th>サンプル種類</th>
-                                        <th>削除枚数</th>
-                                        <th>拠点</th>
+                                        <th>依頼数</th>
+                                        <th>手配数</th>
+                                        <th>サンプルスペック</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>A10023</td>
-                                        <td>ロゴプリントTシャツ</td>
-                                        <td>1st</td>
                                         <td>1</td>
-                                        <td>東京本社</td>
+                                        <td><input type="text" class="form-control" value="A10023"></td>
+                                        <td><input type="text" class="form-control" value="ロゴプリントTシャツ"></td>
+                                        <td><input type="number" class="form-control" value="5"></td>
+                                        <td><input type="number" class="form-control" value="5"></td>
+                                        <td><input type="text" class="form-control" value="M / レッド"></td>
                                     </tr>
                                     <tr>
-                                        <td>B30012</td>
-                                        <td>キャンバストート</td>
-                                        <td>1st</td>
                                         <td>2</td>
-                                        <td>大阪支店</td>
+                                        <td><input type="text" class="form-control" value="B30012"></td>
+                                        <td><input type="text" class="form-control" value="キャンバストート"></td>
+                                        <td><input type="number" class="form-control" value="3"></td>
+                                        <td><input type="number" class="form-control" value="3"></td>
+                                        <td><input type="text" class="form-control" value="標準 / 生成り"></td>
                                     </tr>
                                     <tr>
-                                        <td>A10024</td>
-                                        <td>裏毛パーカー</td>
-                                        <td>2nd</td>
-                                        <td>1</td>
-                                        <td>名古屋支店</td>
+                                        <td>3</td>
+                                        <td><input type="text" class="form-control" placeholder="商品コード"></td>
+                                        <td><input type="text" class="form-control" placeholder="商品名"></td>
+                                        <td><input type="number" class="form-control" placeholder="依頼数"></td>
+                                        <td><input type="number" class="form-control" placeholder="手配数"></td>
+                                        <td><input type="text" class="form-control" placeholder="サンプルスペック"></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="form-actions process-actions">
+                        <div class="subtext">
+                            サンプル区分・得意先名・貸出理由は申請ヘッダで1回入力し、商品ごとの内容は明細で複数行登録する想定です。
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h2 class="card-title">明細サマリー</h2>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <div class="summary-label">登録明細数</div>
+                                <div class="summary-value">3</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">依頼合計数</div>
+                                <div class="summary-value">8</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">手配合計数</div>
+                                <div class="summary-value">8</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h2 class="card-title">登録操作</h2>
+                        <div class="form-actions">
                             <button type="button" class="btn btn-secondary">クリア</button>
-                            <button type="button" class="btn btn-primary">登録</button>
+                            <button type="button" class="btn btn-primary">申請登録</button>
                         </div>
                     </section>
                 </div>
             </div>
         </div>
-        <!-- #endregion -->
     </div>
 
     <script src="js/sidebar.js"></script>
     <script>
-        // サイドバーの読み込み
+            // サイドバーの読み込み
         function loadSharedSidebar() {
         const mount = document.getElementById('sidebarMount');
         if (!mount) return;
@@ -2025,6 +2091,21 @@
         icon.addEventListener('click', (e) => {
         e.stopPropagation(); // クリックが外側に伝播しないように
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        const reasonRadios = document.querySelectorAll('input[name="reason"]');
+        const otherText = document.getElementById('otherText');
+
+        reasonRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.value === 'その他') {
+                    otherText.disabled = false;
+                    otherText.focus();
+                } else {
+                    otherText.disabled = true;
+                    otherText.value = '';
+                }
+            });
         });
     </script>
 </body>
