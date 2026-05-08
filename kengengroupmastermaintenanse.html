@@ -553,51 +553,12 @@
         width: 30px;
       }
 
-      /* スマホではサイドバー列をフレックス幅に含めない（PCでサイドバー開閉後に幅を縮めても本文が右にずれない） */
-      .main-wrapper {
-        position: relative;
-      }
-
-      #sidebarMount {
-        flex: 0 0 0;
-        width: 0;
-        min-width: 0;
-        overflow: visible;
-      }
-
-      #sidebarMount > .sidebar {
-        min-width: 220px;
-        width: 220px;
-        flex-shrink: 0;
-      }
-
-      #sidebarMount .menu-title {
-        min-width: 0;
-      }
-
-      #sidebarMount .menu-title > span {
-        white-space: nowrap;
-      }
-
-      .content,
-      .content.expanded {
-        background: var(--color-surface);
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        min-height: 0;
-        margin-left: 0;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
+      .content {
         padding: 20px 14px 0;
+        margin-left: -220px;
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-      }
-
-      .content:not(.expanded) {
-        padding-left: 14px;
       }
 
       .screen-body {
@@ -861,8 +822,7 @@
     }
 
     @media (max-width: 430px) {
-      .content,
-      .content.expanded {
+      .content {
         padding: 14px 10px 0;
       }
 
@@ -1124,19 +1084,6 @@
       if (!sidebar || !overlay) return;
       sidebar.classList.remove('active');
       overlay.classList.remove('show');
-    }
-
-    /** 狭い幅では PC 用の collapsed / expanded を外し、本文の margin・padding の食い違いを防ぐ */
-    function syncSidebarLayoutForBreakpoint() {
-      const sidebar = document.querySelector('.sidebar');
-      const content = document.querySelector('.content');
-      const toggle = document.querySelector('.sidebar-toggle');
-      if (!sidebar || !content) return;
-      if (!window.matchMedia('(max-width: 768px)').matches) return;
-      sidebar.classList.remove('closed');
-      content.classList.remove('expanded');
-      const toggleImg = toggle && toggle.querySelector('img');
-      if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
     }
 
     function getRoleUpdater(roleName) {
@@ -1839,8 +1786,6 @@
     }
 
     loadSharedSidebar();
-    syncSidebarLayoutForBreakpoint();
-    window.matchMedia('(max-width: 768px)').addEventListener('change', syncSidebarLayoutForBreakpoint);
     initRoleListFromAutocomplete();
     initPermissionConfirmFlow();
     initMobileMatrixSelectors();
