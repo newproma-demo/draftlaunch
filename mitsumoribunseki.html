@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
+  <title>見積り分析 | Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+  <style>
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* #region ヘッダー */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+
+    /* #endregion */
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+    }
+
+    /* #region メニュー（サイドバーホバー用・style.css と整合） */
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1500;
+      backdrop-filter: blur(2px);
+    }
+
+    /* #endregion */
+
+    .content {
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 24px 56px 24px;
+      overflow-y: auto;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    /* #region 見積り分析（mitsumoribunseki/style.css 統合・Proma 配色） */
+    .mitsumori-page * {
+      box-sizing: border-box;
+    }
+
+    .mitsumori-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .mitsumori-page .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .mitsumori-page .page-lead {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+      line-height: 1.5;
+      max-width: 52rem;
+    }
+
+    .mitsumori-page .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .mitsumori-page .card {
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+      padding: 20px;
+    }
+
+    .mitsumori-page .filter-area {
+      margin-bottom: 20px;
+    }
+
+    .mitsumori-page .alert-threshold-area {
+      margin-bottom: 20px;
+    }
+
+    .mitsumori-page .alert-threshold-area .alert-threshold-toolbar {
+      margin-bottom: 0;
+    }
+
+    .mitsumori-page .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .mitsumori-page .section-title-row h2 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .filter-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mitsumori-page .filter-grid .filter-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .mitsumori-page .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mitsumori-page .form-group label {
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+
+    .mitsumori-page .form-group input,
+    .mitsumori-page .form-group select {
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0 12px;
+      font-size: var(--fs-lg);
+      background: var(--color-card);
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .form-group input:focus,
+    .mitsumori-page .form-group select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .mitsumori-page .form-group .autocomplete {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .mitsumori-page .form-group .autocomplete .autocomplete-input {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: var(--fs-lg);
+      background: var(--color-card);
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .filter-row .filter-actions-col {
+      grid-column: 3 / -1;
+      min-width: 0;
+    }
+
+    .mitsumori-page .filter-row .filter-actions-label {
+      visibility: hidden;
+    }
+
+    .mitsumori-page .filter-inline-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mitsumori-page .alert-threshold-toolbar {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 10px 14px;
+      margin-bottom: 14px;
+      min-width: 0;
+    }
+
+    .mitsumori-page .alert-threshold-toolbar .alert-threshold-label {
+      flex-shrink: 0;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .mitsumori-page .alert-threshold-toolbar .alert-threshold-input-wrap {
+      flex-shrink: 0;
+    }
+
+    .mitsumori-page .alert-threshold-toolbar .alert-threshold-input-wrap input {
+      width: 6.5rem;
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0 10px;
+      font-size: var(--fs-lg);
+      background: var(--color-card);
+      color: var(--color-text);
+      box-sizing: border-box;
+    }
+
+    .mitsumori-page .alert-threshold-toolbar .alert-threshold-input-wrap input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .mitsumori-page .alert-threshold-hint {
+      margin: 0;
+      flex: 1;
+      min-width: 0;
+      font-size: var(--fs-xs);
+      color: var(--color-text-muted);
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mitsumori-page .btn {
+      height: 40px;
+      padding: 0 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: var(--fs-lg);
+      font-weight: 600;
+      font-family: inherit;
+    }
+
+    .mitsumori-page .btn.primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .mitsumori-page .btn.primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .mitsumori-page .btn.secondary {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .mitsumori-page .btn.light {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+
+    .mitsumori-page .summary-area {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .mitsumori-page .summary-card {
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .mitsumori-page .summary-label {
+      font-size: var(--fs-xs);
+      color: var(--color-text-muted);
+      margin-bottom: 10px;
+    }
+
+    .mitsumori-page .summary-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .summary-value.danger {
+      color: #b91c1c;
+    }
+
+    .mitsumori-page .mitsumori-detail-bundle .tab-area {
+      margin-bottom: 0;
+      padding: 0;
+    }
+
+    .mitsumori-page .mitsumori-detail-bundle .detail-section {
+      margin-top: 0;
+      padding-top: 12px;
+    }
+
+    .mitsumori-page .mitsumori-sim-section + .mitsumori-sim-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .mitsumori-page .tab-area {
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      min-width: 0;
+    }
+
+    .mitsumori-page .tab-area .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .mitsumori-page .alert-threshold-toolbar--below-filter .alert-threshold-hint {
+      flex: 1 1 auto;
+      min-width: 12rem;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+    }
+
+    .mitsumori-page .tab {
+      padding: 10px 16px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: var(--fs-lg);
+      font-family: inherit;
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .tab.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    .mitsumori-page .detail-section {
+      margin-top: 0;
+    }
+
+    .mitsumori-page .detail-panel {
+      display: none;
+    }
+
+    .mitsumori-page .detail-panel.active {
+      display: block;
+    }
+
+    .mitsumori-page .simulation-detail-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .mitsumori-page .simulation-form-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(130px, 1fr));
+      gap: 16px;
+      align-items: end;
+    }
+
+    .mitsumori-page .simulation-action {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .mitsumori-page .simulation-action-inline {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      height: 100%;
+    }
+
+    .mitsumori-page .simulation-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .mitsumori-page .mini-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .mitsumori-page .mini-card span {
+      display: block;
+      font-size: var(--fs-xs);
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+
+    .mitsumori-page .mini-card strong {
+      font-size: 1.25rem;
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .danger-text {
+      color: #b91c1c;
+    }
+
+    .mitsumori-page .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+    }
+
+    .mitsumori-page table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+    }
+
+    .mitsumori-page thead th {
+      background: rgba(0, 134, 50, 0.08);
+      color: var(--color-primary-dark);
+      font-size: var(--fs-xs);
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .mitsumori-page tbody td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--fs-lg);
+      white-space: nowrap;
+      background: var(--color-card);
+    }
+
+    .mitsumori-page tbody tr:hover td {
+      background: var(--color-surface);
+    }
+
+    .mitsumori-page .badge {
+      display: inline-block;
+      min-width: 72px;
+      text-align: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+    }
+
+    .mitsumori-page .badge.normal {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .mitsumori-page .badge.warn {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .mitsumori-page .badge.danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .mitsumori-page .link-count {
+      border: none;
+      background: none;
+      color: var(--color-primary);
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      font-size: var(--fs-lg);
+      text-decoration: underline;
+      font-family: inherit;
+    }
+
+    .mitsumori-page .link-count:hover {
+      color: var(--color-primary-dark);
+    }
+
+    .mitsumori-page .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 2600;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .mitsumori-page .modal-overlay.show {
+      display: flex;
+    }
+
+    .mitsumori-page .modal-box {
+      width: min(1100px, 100%);
+      max-height: 85vh;
+      background: var(--color-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .mitsumori-page .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .mitsumori-page .modal-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .modal-close {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--color-text);
+    }
+
+    .mitsumori-page .modal-body {
+      padding: 20px;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+    }
+
+    .mitsumori-page .modal-body > .table-wrap {
+      flex: 1 1 auto;
+      min-height: 120px;
+      overflow: auto;
+    }
+
+    .mitsumori-page .modal-search-panel .autocomplete-dropdown {
+      z-index: 20;
+    }
+
+    .mitsumori-page .modal-search-panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .mitsumori-page .modal-search-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .mitsumori-page .spec-search-field {
+      display: none;
+    }
+
+    .mitsumori-page .category-tab-toolbar {
+      margin-bottom: 16px;
+      max-width: 400px;
+    }
+
+    .mitsumori-page .category-tab-toolbar .autocomplete {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .mitsumori-page .modal-result-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 14px 0 16px;
+      flex-wrap: wrap;
+    }
+
+    .mitsumori-page .modal-result-count {
+      font-size: var(--fs-lg);
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+
+    .mitsumori-page .modal-search-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mitsumori-page .modal-body .table-wrap {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-card);
+    }
+
+    .mitsumori-page .modal-body table {
+      min-width: 100%;
+    }
+
+    .mitsumori-page .modal-body thead th:first-child,
+    .mitsumori-page .modal-body tbody td:first-child {
+      width: 52px;
+      text-align: center;
+    }
+
+    .mitsumori-page .modal-body thead th:nth-child(2),
+    .mitsumori-page .modal-body tbody td:nth-child(2) {
+      width: 140px;
+    }
+
+    .mitsumori-page .modal-body thead th,
+    .mitsumori-page .modal-body tbody td {
+      vertical-align: middle;
+    }
+
+    .mitsumori-page .star-mark {
+      font-size: 18px;
+      line-height: 1;
+      color: #f59e0b;
+    }
+
+    .mitsumori-page .star-empty {
+      color: #cbd5e1;
+    }
+
+    .mitsumori-page .modal-empty {
+      text-align: center;
+      color: var(--color-text-muted);
+      padding: 24px 12px;
+    }
+
+    .mitsumori-page .modal-box-wide {
+      width: min(1280px, 100%);
+    }
+
+    @media (max-width: 1100px) {
+      .mitsumori-page .filter-grid .filter-row,
+      .mitsumori-page .summary-area,
+      .mitsumori-page .simulation-form-grid,
+      .mitsumori-page .simulation-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .mitsumori-page .page-header {
+        flex-direction: column;
+      }
+
+      .mitsumori-page .header-actions,
+      .mitsumori-page .filter-inline-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .mitsumori-page .filter-row .filter-actions-col {
+        grid-column: 1 / -1;
+      }
+
+      .mitsumori-page .modal-search-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .mitsumori-page .modal-search-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-title {
+        margin: 5px 0px 0px 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0px 0px;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+        height: 30px;
+        display: block;
+      }
+
+      .content {
+        flex-direction: column;
+        flex: 1;
+        padding: 12px 12px 56px 12px;
+        margin-left: -220px;
+        width: 100%;
+      }
+
+      .content:not(.expanded) {
+        padding-left: 12px;
+      }
+
+      .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 4px 0;
+        flex: none;
+      }
+    }
+
+    /* #endregion */
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" alt="" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg" alt="">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+
+    <div id="sidebarMount"></div>
+
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">見積り分析</h2>
+
+        <div class="mitsumori-page">
+          <header class="page-header">
+            <div>
+              <p class="page-lead">メーカー別・商品別に蓄積された単価、為替、経費率をもとに見積状況を分析</p>
+            </div>
+            <div class="header-actions">
+              <button type="button" class="btn secondary">CSV出力</button>
+              <button type="button" class="btn primary">分析条件を保存</button>
+            </div>
+          </header>
+
+          <section class="filter-area card">
+            <div class="section-title-row">
+              <h2>検索条件</h2>
+            </div>
+
+            <div class="filter-grid">
+              <div class="filter-row">
+                <div class="form-group">
+                  <label for="filterMaker">メーカー</label>
+                  <div class="autocomplete">
+                    <input type="text" id="filterMaker" class="autocomplete-input" data-list="supplier" placeholder="メーカー名で検索" autocomplete="off">
+                    <div class="autocomplete-dropdown"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="filterShohinCode">商品コード</label>
+                  <input type="text" id="filterShohinCode" placeholder="例：AB-1001" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                  <label for="filterShohinName">商品名</label>
+                  <div class="autocomplete">
+                    <input type="text" id="filterShohinName" class="autocomplete-input" data-list="productName" placeholder="商品名で検索" autocomplete="off">
+                    <div class="autocomplete-dropdown"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="filterCategory">カテゴリー</label>
+                  <div class="autocomplete">
+                    <input type="text" id="filterCategory" class="autocomplete-input" data-list="itemcategory" placeholder="カテゴリーで検索" autocomplete="off">
+                    <div class="autocomplete-dropdown"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-row">
+                <div class="form-group">
+                  <label>仕様</label>
+                  <select>
+                    <option>すべて</option>
+                    <option>綿100%</option>
+                    <option>ポリエステル混</option>
+                    <option>防水仕様</option>
+                    <option>中綿仕様</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>現在為替（円）</label>
+                  <input type="number" value="145">
+                </div>
+
+                <div class="form-group filter-actions-col">
+                  <label class="filter-actions-label" aria-hidden="true">&nbsp;</label>
+                  <div class="filter-inline-actions">
+                    <button type="button" class="btn light">条件クリア</button>
+                    <button type="button" class="btn primary">分析実行</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="alert-threshold-area card" aria-label="原価率しきい値">
+            <div class="section-title-row">
+              <h2>原価率しきい値</h2>
+            </div>
+            <div class="alert-threshold-toolbar alert-threshold-toolbar--below-filter" id="alertThresholdToolbar">
+              <label for="alertCostRateThreshold" class="alert-threshold-label">原価率しきい値（%）</label>
+              <div class="alert-threshold-input-wrap">
+                <input type="number" id="alertCostRateThreshold" min="0" max="100" step="0.1" placeholder="例：70" aria-describedby="alertThresholdHint">
+              </div>
+              <span class="alert-threshold-hint" id="alertThresholdHint">しきい値以上を表示（空欄ですべて表示）</span>
+            </div>
+          </section>
+
+          <section class="summary-area">
+            <div class="summary-card card">
+              <div class="summary-label">対象商品数</div>
+              <div class="summary-value">128</div>
+            </div>
+            <div class="summary-card card">
+              <div class="summary-label">原価率超過商品</div>
+              <div class="summary-value danger">24</div>
+            </div>
+            <div class="summary-card card">
+              <div class="summary-label">平均原価率</div>
+              <div class="summary-value">68.4%</div>
+            </div>
+          </section>
+
+          <div class="mitsumori-detail-bundle card">
+          <section class="tab-area">
+            <div class="tabs">
+              <button type="button" class="tab active" data-tab="alert">原価率アラート</button>
+              <button type="button" class="tab" data-tab="category">カテゴリー別</button>
+              <button type="button" class="tab" data-tab="spec">仕様別</button>
+              <button type="button" class="tab" data-tab="maker">メーカー別</button>
+              <button type="button" class="tab" data-tab="simulation">シミュレーション</button>
+            </div>
+          </section>
+
+          <section class="detail-section">
+            <div class="detail-panel active" id="panel-alert">
+                <div class="section-title-row">
+                  <h2>原価率アラート一覧</h2>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>メーカー</th>
+                        <th>商品コード</th>
+                        <th>商品名</th>
+                        <th>カテゴリー</th>
+                        <th>仕様</th>
+                        <th>単価区分</th>
+                        <th>見積単価</th>
+                        <th>現在為替</th>
+                        <th>経費率</th>
+                        <th>原価（円）</th>
+                        <th>現在原価率</th>
+                        <th>判定</th>
+                      </tr>
+                    </thead>
+                    <tbody id="alertTableBody">
+                      <tr>
+                        <td>メーカーA</td>
+                        <td>AB-1001</td>
+                        <td>ライトジャケット</td>
+                        <td>トップス</td>
+                        <td>防水仕様</td>
+                        <td>$</td>
+                        <td>1.3</td>
+                        <td>145</td>
+                        <td>1.23</td>
+                        <td>232</td>
+                        <td>72.4%</td>
+                        <td><span class="badge danger">要確認</span></td>
+                      </tr>
+                      <tr>
+                        <td>メーカーC</td>
+                        <td>EF-3208</td>
+                        <td>収納ポーチ</td>
+                        <td>雑貨</td>
+                        <td>ポリエステル混</td>
+                        <td>\</td>
+                        <td>980</td>
+                        <td>-</td>
+                        <td>1.05</td>
+                        <td>1,029</td>
+                        <td>74.3%</td>
+                        <td><span class="badge danger">要確認</span></td>
+                      </tr>
+                      <tr>
+                        <td>メーカーB</td>
+                        <td>JK-4412</td>
+                        <td>防寒ブルゾン</td>
+                        <td>トップス</td>
+                        <td>中綿仕様</td>
+                        <td>$</td>
+                        <td>2.0</td>
+                        <td>145</td>
+                        <td>1.23</td>
+                        <td>357</td>
+                        <td>73.5%</td>
+                        <td><span class="badge danger">要確認</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+
+            <div class="detail-panel" id="panel-category">
+                <div class="section-title-row">
+                  <h2>カテゴリー別一覧</h2>
+                </div>
+
+                <div class="category-tab-toolbar">
+                  <div class="form-group category-tab-filter-group">
+                    <label for="categoryTabFilterInput">カテゴリーで絞り込み</label>
+                    <div class="autocomplete">
+                      <input type="text" id="categoryTabFilterInput" class="autocomplete-input" data-list="mitsumoriRetailCategory" placeholder="例：トップス（空欄ですべて表示）" autocomplete="off">
+                      <div class="autocomplete-dropdown"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>カテゴリー</th>
+                        <th>件数</th>
+                        <th>平均単価（円）</th>
+                        <th>平均原価率</th>
+                        <th>要確認件数</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>トップス</td>
+                        <td><button type="button" class="link-count" data-detail-type="category" data-detail-name="トップス">52</button></td>
+                        <td>2,840</td>
+                        <td>69.2%</td>
+                        <td>8</td>
+                      </tr>
+                      <tr>
+                        <td>ボトムス</td>
+                        <td><button type="button" class="link-count" data-detail-type="category" data-detail-name="ボトムス">31</button></td>
+                        <td>3,120</td>
+                        <td>66.7%</td>
+                        <td>5</td>
+                      </tr>
+                      <tr>
+                        <td>雑貨</td>
+                        <td><button type="button" class="link-count" data-detail-type="category" data-detail-name="雑貨">45</button></td>
+                        <td>1,420</td>
+                        <td>71.8%</td>
+                        <td>11</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+
+            <div class="detail-panel" id="panel-spec">
+                <div class="section-title-row">
+                  <h2>仕様別一覧</h2>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>仕様</th>
+                        <th>件数</th>
+                        <th>平均単価（円）</th>
+                        <th>平均原価率</th>
+                        <th>改定候補件数</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>綿100%</td>
+                        <td><button type="button" class="link-count" data-detail-type="spec" data-detail-name="綿100%">26</button></td>
+                        <td>1,980</td>
+                        <td>67.5%</td>
+                        <td>6</td>
+                      </tr>
+                      <tr>
+                        <td>防水仕様</td>
+                        <td><button type="button" class="link-count" data-detail-type="spec" data-detail-name="防水仕様">18</button></td>
+                        <td>3,420</td>
+                        <td>73.4%</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td>中綿仕様</td>
+                        <td><button type="button" class="link-count" data-detail-type="spec" data-detail-name="中綿仕様">14</button></td>
+                        <td>4,150</td>
+                        <td>75.1%</td>
+                        <td>6</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+
+            <div class="detail-panel" id="panel-maker">
+                <div class="section-title-row">
+                  <h2>メーカー別一覧</h2>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>メーカー</th>
+                        <th>件数</th>
+                        <th>平均単価（円）</th>
+                        <th>平均原価率</th>
+                        <th>改定候補件数</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>メーカーA</td>
+                        <td><button type="button" class="link-count" data-detail-type="maker" data-detail-name="メーカーA">40</button></td>
+                        <td>2,950</td>
+                        <td>68.8%</td>
+                        <td>6</td>
+                      </tr>
+                      <tr>
+                        <td>メーカーB</td>
+                        <td><button type="button" class="link-count" data-detail-type="maker" data-detail-name="メーカーB">46</button></td>
+                        <td>2,730</td>
+                        <td>69.9%</td>
+                        <td>7</td>
+                      </tr>
+                      <tr>
+                        <td>メーカーC</td>
+                        <td><button type="button" class="link-count" data-detail-type="maker" data-detail-name="メーカーC">42</button></td>
+                        <td>2,410</td>
+                        <td>70.6%</td>
+                        <td>11</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+
+            <div class="detail-panel" id="panel-simulation">
+              <div class="simulation-detail-layout">
+                <div class="mitsumori-sim-section">
+                  <div class="section-title-row">
+                    <h2>シミュレーション条件</h2>
+                  </div>
+
+                  <div class="simulation-form-grid">
+                    <div class="form-group">
+                      <label>想定為替</label>
+                      <input type="number" value="150">
+                    </div>
+
+                    <div class="form-group">
+                      <label>経費率</label>
+                      <input type="number" value="0.12" step="0.01" placeholder="例：0.12（12%）">
+                    </div>
+
+                    <div class="form-group">
+                      <label>目標原価率（%）</label>
+                      <input type="number" value="30">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="simTargetCategory">対象カテゴリー</label>
+                      <div class="autocomplete">
+                        <input type="text" id="simTargetCategory" class="autocomplete-input" data-list="mitsumoriRetailCategory" placeholder="例：トップス（空欄ですべて）" autocomplete="off">
+                        <div class="autocomplete-dropdown"></div>
+                      </div>
+                    </div>
+                    <div class="simulation-action-inline">
+                      <button type="button" class="btn primary">再計算</button>
+                    </div>
+                  </div>
+
+                  <div class="simulation-summary">
+                    <div class="mini-card">
+                      <span>対象件数</span>
+                      <strong>42件</strong>
+                    </div>
+                    <div class="mini-card">
+                      <span>平均想定原価率</span>
+                      <strong>74.1%</strong>
+                    </div>
+                    <div class="mini-card">
+                      <span>価格改定候補</span>
+                      <strong class="danger-text">11件</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mitsumori-sim-section">
+                  <div class="section-title-row">
+                    <h2>価格改定候補一覧</h2>
+                  </div>
+
+                  <div class="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>★</th>
+                          <th>見積り日付</th>
+                          <th>メーカー</th>
+                          <th>カテゴリー</th>
+                          <th>商品コード</th>
+                          <th>商品名</th>
+                          <th>アイテム</th>
+                          <th>仕様</th>
+                          <th>上代</th>
+                          <th>想定原価(円)</th>
+                          <th>想定原価率</th>
+                          <th>判定</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>★</td>
+                          <td>2026/4/1</td>
+                          <td>メーカーA</td>
+                          <td>トップス</td>
+                          <td>AB-1001</td>
+                          <td>ライトジャケット</td>
+                          <td>ジャケット</td>
+                          <td>防水仕様</td>
+                          <td>3,980</td>
+                          <td>4500</td>
+                          <td>76.8%</td>
+                          <td><span class="badge danger">改定候補</span></td>
+                        </tr>
+                        <tr>
+                          <td>★</td>
+                          <td>2026/4/1</td>
+                          <td>メーカーC</td>
+                          <td>雑貨</td>
+                          <td>EF-3208</td>
+                          <td>収納ポーチ</td>
+                          <td>収納ポーチ</td>
+                          <td>ポリエステル混</td>
+                          <td>1000</td>
+                          <td>1500</td>
+                          <td>50.5%</td>
+                          <td><span class="badge danger">改定候補</span></td>
+                        </tr>
+                        <tr>
+                          <td>★</td>
+                          <td>2026/4/1</td>
+                          <td>メーカーC</td>
+                          <td>雑貨</td>
+                          <td>LM-5520</td>
+                          <td>マルチバッグ</td>
+                          <td>マルチバッグ</td>
+                          <td>撥水仕様</td>
+                          <td>1000</td>
+                          <td>1100</td>
+                          <td>40.8%</td>
+                          <td><span class="badge warn">要確認</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          </div>
+
+          <!-- モーダル（レイアウト優先で .mitsumori-page 内に配置） -->
+          <div class="modal-overlay" id="detailModal">
+            <div class="modal-box modal-box-wide">
+              <div class="modal-header">
+                <h3 id="modalTitle">明細一覧</h3>
+                <button type="button" class="modal-close" id="modalClose" aria-label="閉じる">×</button>
+              </div>
+
+              <div class="modal-body">
+                <div class="modal-search-panel">
+                  <div class="modal-search-grid">
+                    <div class="form-group">
+                      <label for="modalMakerInput">メーカー</label>
+                      <div class="autocomplete">
+                        <input type="text" id="modalMakerInput" class="autocomplete-input" data-list="supplier" placeholder="メーカーで検索" autocomplete="off">
+                        <div class="autocomplete-dropdown"></div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="modalCodeInput">商品コード</label>
+                      <input type="text" id="modalCodeInput" placeholder="商品コードで検索" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="modalNameInput">商品名</label>
+                      <div class="autocomplete">
+                        <input type="text" id="modalNameInput" class="autocomplete-input" data-list="productName" placeholder="商品名で検索" autocomplete="off">
+                        <div class="autocomplete-dropdown"></div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="modalCategoryInput">カテゴリー</label>
+                      <div class="autocomplete">
+                        <input type="text" id="modalCategoryInput" class="autocomplete-input" data-list="mitsumoriRetailCategory" placeholder="カテゴリーで検索" autocomplete="off">
+                        <div class="autocomplete-dropdown"></div>
+                      </div>
+                    </div>
+
+                    <div class="form-group spec-search-field" id="specSearchField">
+                      <label for="modalSpecInput">仕様</label>
+                      <div class="autocomplete">
+                        <input type="text" id="modalSpecInput" class="autocomplete-input" data-list="mitsumoriSpec" placeholder="仕様で検索" autocomplete="off">
+                        <div class="autocomplete-dropdown"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal-result-bar">
+                  <div class="modal-result-count" id="modalSearchInfo">0件</div>
+                  <div class="modal-search-actions">
+                    <button type="button" class="btn light" id="modalSearchClear">条件クリア</button>
+                    <button type="button" class="btn primary" id="modalSearchButton">検索</button>
+                  </div>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>★</th>
+                        <th>見積り日付</th>
+                        <th>メーカー</th>
+                        <th>カテゴリー</th>
+                        <th>商品コード</th>
+                        <th>商品名</th>
+                        <th>アイテム</th>
+                        <th>仕様</th>
+                        <th>単価区分</th>
+                        <th>見積単価</th>
+                        <th>為替</th>
+                        <th>経費率</th>
+                        <th>原価(円)</th>
+                        <th>原価率</th>
+                      </tr>
+                    </thead>
+                    <tbody id="modalTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/sidebar.js"></script>
+  <script>
+    function loadSharedSidebar() {
+      const mount = document.getElementById("sidebarMount");
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== "string" || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error("Sidebar include error: SHARED_SIDEBAR_HTML is not available.");
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector(".sidebar");
+      const toggle = document.querySelector(".sidebar-toggle");
+      const content = document.querySelector(".content");
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === "1") return;
+
+      const toggleImg = toggle.querySelector("img");
+      toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("closed");
+        content.classList.toggle("expanded");
+
+        if (sidebar.classList.contains("closed")) {
+          if (toggleImg) toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        } else {
+          if (toggleImg) toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+        }
+      });
+
+      toggle.dataset.bound = "1";
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.querySelector(".overlay");
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle("active");
+
+      if (sidebar.classList.contains("active")) {
+        overlay.classList.add("show");
+      } else {
+        overlay.classList.remove("show");
+      }
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.querySelector(".overlay");
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove("active");
+      overlay.classList.remove("show");
+    }
+
+    loadSharedSidebar();
+
+    const icon = document.querySelector(".header-account_circle");
+    const menu = document.querySelector(".account-menu");
+    if (icon && menu) {
+      icon.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+      });
+    }
+
+    /** 以下、mitsumoribunseki/script.js 統合 */
+    const tabs = document.querySelectorAll(".mitsumori-page .tab");
+    const panels = document.querySelectorAll(".mitsumori-page .detail-panel");
+    const modalSpecInput = document.getElementById("modalSpecInput");
+    const specSearchField = document.getElementById("specSearchField");
+    const categoryTabFilterInput = document.getElementById("categoryTabFilterInput");
+    const categoryTabTableBody = document.querySelector("#panel-category tbody");
+
+    function applyCategoryTabTableFilter() {
+      if (!categoryTabFilterInput || !categoryTabTableBody) return;
+      const kw = categoryTabFilterInput.value.trim().toLowerCase();
+      categoryTabTableBody.querySelectorAll("tr").forEach((tr) => {
+        const name = (tr.cells[0]?.textContent || "").trim().toLowerCase();
+        tr.style.display = !kw || name.includes(kw) ? "" : "none";
+      });
+    }
+
+    if (categoryTabFilterInput) {
+      categoryTabFilterInput.addEventListener("input", applyCategoryTabTableFilter);
+      categoryTabFilterInput.addEventListener("change", applyCategoryTabTableFilter);
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.tab;
+
+        tabs.forEach((btn) => btn.classList.remove("active"));
+        panels.forEach((panel) => panel.classList.remove("active"));
+
+        tab.classList.add("active");
+        document.getElementById(`panel-${target}`).classList.add("active");
+      });
+    });
+
+    const ALERT_CURRENT_GENKA_RATE_COL = 10;
+
+    function parseCostRatePercent(text) {
+      const n = parseFloat(String(text).replace(/%/g, "").replace(/,/g, "").trim());
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function applyAlertCostRateFilter() {
+      const input = document.getElementById("alertCostRateThreshold");
+      const tbody = document.getElementById("alertTableBody");
+      if (!input || !tbody) return;
+
+      const raw = input.value.trim();
+      const threshold = raw === "" ? null : parseFloat(raw);
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+
+      if (threshold !== null && Number.isFinite(threshold)) {
+        rows.forEach((tr) => {
+          const cell = tr.cells[ALERT_CURRENT_GENKA_RATE_COL];
+          const rate = cell ? parseCostRatePercent(cell.textContent) : NaN;
+          const show = Number.isFinite(rate) && rate >= threshold;
+          tr.style.display = show ? "" : "none";
+        });
+      } else {
+        rows.forEach((tr) => {
+          tr.style.display = "";
+        });
+      }
+    }
+
+    const alertCostRateThresholdInput = document.getElementById("alertCostRateThreshold");
+    if (alertCostRateThresholdInput) {
+      alertCostRateThresholdInput.addEventListener("input", applyAlertCostRateFilter);
+      alertCostRateThresholdInput.addEventListener("change", applyAlertCostRateFilter);
+    }
+
+    applyAlertCostRateFilter();
+
+    const detailData = {
+      category: {
+        トップス: [
+          ["★", "2026/04/01", "メーカーA", "トップス", "AB-1001", "ライトジャケット", "ジャケット", "防水仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーB", "トップス", "AB-1001", "ベーシックシャツ", "シャツ", "防水仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+        ボトムス: [
+          ["", "2026/04/01", "メーカーA", "ボトムス", "AB-1001", "ストレッチパンツ", "ストレッチパンツ", "防水仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーB", "ボトムス", "AB-1001", "ストレッチパンツ", "ストレッチパンツ", "防水仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+        雑貨: [
+          ["", "2026/04/01", "メーカーA", "雑貨", "AB-1001", "収納ポーチ", "収納ポーチ", "防水仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーB", "雑貨", "AB-1001", "マルチバッグ", "マルチバッグ", "防水仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+      },
+      spec: {
+        "綿100%": [
+          ["★", "2026/04/01", "メーカーA", "トップス", "AB-1001", "ライトジャケット", "ジャケット", "綿100%", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーB", "トップス", "AB-1001", "ベーシックシャツ", "シャツ", "綿100%", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+        防水仕様: [
+          ["★", "2026/04/01", "メーカーA", "トップス", "AB-1001", "ライトジャケット", "ジャケット", "防水仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーB", "トップス", "AB-1001", "ベーシックシャツ", "シャツ", "防水仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+        中綿仕様: [
+          ["★", "2026/04/01", "メーカーA", "トップス", "AB-1001", "ライトジャケット", "ジャケット", "中綿仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーB", "トップス", "AB-1001", "ベーシックシャツ", "シャツ", "中綿仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+      },
+      maker: {
+        メーカーA: [
+          ["★", "2026/04/01", "メーカーA", "トップス", "AB-1001", "ライトジャケット", "ジャケット", "中綿仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーA", "トップス", "AB-1001", "ベーシックシャツ", "シャツ", "中綿仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+        メーカーB: [
+          ["★", "2026/04/01", "メーカーB", "トップス", "AB-1001", "ライトジャケット", "ジャケット", "中綿仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーB", "トップス", "AB-1001", "ベーシックシャツ", "シャツ", "中綿仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+        メーカーC: [
+          ["★", "2026/04/01", "メーカーC", "トップス", "AB-1001", "ライトジャケット", "ジャケット", "中綿仕様", "$", "1.3", "120", "1.23", "192", "72.4%"],
+          ["★", "2026/04/10", "メーカーC", "トップス", "AB-1001", "ベーシックシャツ", "シャツ", "中綿仕様", "$", "2.0", "120", "1.23", "296", "62.4%"],
+        ],
+      },
+    };
+
+    const modal = document.getElementById("detailModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalTableBody = document.getElementById("modalTableBody");
+    const modalClose = document.getElementById("modalClose");
+    const modalSearchInfo = document.getElementById("modalSearchInfo");
+
+    const modalMakerInput = document.getElementById("modalMakerInput");
+    const modalCodeInput = document.getElementById("modalCodeInput");
+    const modalNameInput = document.getElementById("modalNameInput");
+    const modalCategoryInput = document.getElementById("modalCategoryInput");
+    const modalSearchButton = document.getElementById("modalSearchButton");
+    const modalSearchClear = document.getElementById("modalSearchClear");
+
+    let currentModalRows = [];
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function renderModalRows(rows) {
+      if (!rows.length) {
+        modalTableBody.innerHTML = `
+      <tr>
+        <td colspan="14" class="modal-empty">該当するデータがありません</td>
+      </tr>
+    `;
+        modalSearchInfo.textContent = "0件";
+        return;
+      }
+
+      modalTableBody.innerHTML = rows
+        .map((row) => {
+          const star =
+            row[0] === "★"
+              ? `<span class="star-mark">★</span>`
+              : `<span class="star-mark star-empty">☆</span>`;
+
+          return `
+      <tr>
+        <td>${star}</td>
+        <td>${escapeHtml(row[1])}</td>
+        <td>${escapeHtml(row[2])}</td>
+        <td>${escapeHtml(row[3])}</td>
+        <td>${escapeHtml(row[4])}</td>
+        <td>${escapeHtml(row[5])}</td>
+        <td>${escapeHtml(row[6])}</td>
+        <td>${escapeHtml(row[7])}</td>
+        <td>${escapeHtml(row[8])}</td>
+        <td>${escapeHtml(row[9])}</td>
+        <td>${escapeHtml(row[10])}</td>
+        <td>${escapeHtml(row[11])}</td>
+        <td>${escapeHtml(row[12])}</td>
+        <td>${escapeHtml(row[13])}</td>
+      </tr>
+    `;
+        })
+        .join("");
+
+      modalSearchInfo.textContent = `${rows.length}件`;
+    }
+
+    function getFilteredRows() {
+      const makerKeyword = modalMakerInput.value.trim().toLowerCase();
+      const codeKeyword = modalCodeInput.value.trim().toLowerCase();
+      const nameKeyword = modalNameInput.value.trim().toLowerCase();
+      const categoryKeyword = modalCategoryInput.value.trim().toLowerCase();
+      const specKeyword = modalSpecInput.value.trim().toLowerCase();
+
+      return currentModalRows.filter((row) => {
+        const maker = String(row[2]).toLowerCase();
+        const category = String(row[3]).toLowerCase();
+        const code = String(row[4]).toLowerCase();
+        const name = String(row[5]).toLowerCase();
+        const spec = String(row[7]).toLowerCase();
+
+        const makerMatch = !makerKeyword || maker.includes(makerKeyword);
+        const codeMatch = !codeKeyword || code.includes(codeKeyword);
+        const nameMatch = !nameKeyword || name.includes(nameKeyword);
+        const categoryMatch = !categoryKeyword || category.includes(categoryKeyword);
+        const specMatch = !specKeyword || spec.includes(specKeyword);
+
+        return makerMatch && codeMatch && nameMatch && categoryMatch && specMatch;
+      });
+    }
+
+    function executeModalSearch() {
+      const filteredRows = getFilteredRows();
+      renderModalRows(filteredRows);
+    }
+
+    function clearModalSearch() {
+      modalMakerInput.value = "";
+      modalCodeInput.value = "";
+      modalNameInput.value = "";
+      modalCategoryInput.value = "";
+      modalSpecInput.value = "";
+      renderModalRows(currentModalRows);
+    }
+
+    document.querySelectorAll(".mitsumori-page .link-count").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const type = btn.dataset.detailType;
+        const name = btn.dataset.detailName;
+        const rows = detailData[type]?.[name] || [];
+
+        currentModalRows = rows;
+
+        modalTitle.textContent = `${name} の明細一覧`;
+
+        if (type === "spec") {
+          specSearchField.style.display = "block";
+        } else {
+          specSearchField.style.display = "none";
+          modalSpecInput.value = "";
+        }
+
+        clearModalSearch();
+        modal.classList.add("show");
+      });
+    });
+
+    modalSearchButton.addEventListener("click", () => {
+      executeModalSearch();
+    });
+
+    modalSearchClear.addEventListener("click", () => {
+      clearModalSearch();
+    });
+
+    [modalMakerInput, modalCodeInput, modalNameInput, modalCategoryInput, modalSpecInput].forEach((input) => {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          executeModalSearch();
+        }
+      });
+    });
+
+    modalClose.addEventListener("click", () => {
+      modal.classList.remove("show");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("show");
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("show")) {
+        modal.classList.remove("show");
+      }
+    });
+  </script>
+</body>
+
+</html>
