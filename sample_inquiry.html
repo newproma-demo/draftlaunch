@@ -1202,6 +1202,10 @@
             grid-template-columns: 1.2fr 0.8fr 1fr 1fr 140px;
         }
 
+        .kenpinrireki-table{
+            vertical-align: top;
+        }
+
         @media (max-width: 1400px) {
             .move-info-grid,
             .delete-info-grid {
@@ -1659,6 +1663,16 @@
             .form-grid {
                 grid-template-columns: 1fr;
             }
+
+            #kenpinModal .table-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #kenpinModal .branch-list th,
+            #kenpinModal .branch-list td {
+                white-space: nowrap;
+            }
         }
     </style>
 </head>
@@ -1832,7 +1846,18 @@
                                             </button>
                                         </td>
                                         <td><span class="status-chip status-available">貸出可</span></td>
-                                        <td><a href="sample_kenpinrireki.html" class="btn btn-primary">検品履歴</a></td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary kenpinmodal-open-btn"
+                                                data-modal-type="final"
+                                                data-specno="S-2026-00125"
+                                                data-exhibition="2026 春展示会"
+                                                data-kubun="定番"
+                                                data-code="A10023"
+                                                data-name="ロゴプリントTシャツ">
+                                                検品履歴
+                                            </button>
                                         <td><a href="sampletoroku.html" class="btn btn-primary">サンプル登録･承認結果</a></td>
                                     </tr>
 
@@ -1872,7 +1897,19 @@
                                             </button>
                                         </td>
                                         <td><span class="status-chip status-rental">一部貸出中</span></td>
-                                        <td><a href="sample_kenpinrireki.html" class="btn btn-primary">検品履歴</a></td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary kenpinmodal-open-btn"
+                                                data-modal-type="final"
+                                                data-specno="S-2026-00126"
+                                                data-exhibition="2026 春展示会"
+                                                data-kubun="スポット"
+                                                data-code="A10024"
+                                                data-name="裏毛パーカー">
+                                                検品履歴
+                                            </button>
+                                        </td>
                                         <td><a href="sampletoroku.html" class="btn btn-primary">サンプル登録･承認結果</a></td>
                                     </tr>
 
@@ -1912,7 +1949,19 @@
                                             </button>
                                         </td>
                                         <td><span class="status-chip status-available">貸出可</span></td>
-                                        <td><a href="sample_kenpinrireki.html" class="btn btn-primary">検品履歴</a></td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary kenpinmodal-open-btn"
+                                                data-modal-type="final"
+                                                data-specno="S-2026-00127"
+                                                data-exhibition="2026 夏展示会"
+                                                data-kubun="定番"
+                                                data-code="B30012"
+                                                data-name="キャンバストート">
+                                                検品履歴
+                                            </button>
+                                        </td>
                                         <td><a href="sampletoroku.html" class="btn btn-primary">サンプル登録･承認結果</a></td>
                                     </tr>
                                 </tbody>
@@ -1936,7 +1985,7 @@
         </div>
     </div>
 
-    <!-- モーダル -->
+    <!-- サンプル数モーダル -->
     <div id="sampleModal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
@@ -2019,6 +2068,95 @@
             </div>
         </div>
     </div>
+
+    <!-- 検品履歴モーダル -->
+    <div id="kenpinModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 id="kenpinmodalTitle">検品履歴</h2>
+                <button type="button" class="modal-close-btn" id="kenpinmodalCloseBtn">×</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    <div class="modal-info-item">
+                        <span class="label">仕様書No</span>
+                        <span id="kenpinmodalSpecNo">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="label">展示会</span>
+                        <span id="kenpinmodalExhibition">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="label">販売区分</span>
+                        <span id="kenpinmodalKubun">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="label">商品コード</span>
+                        <span id="kenpinmodalCode">-</span>
+                    </div>
+                    <div class="modal-info-item full">
+                        <span class="label">商品名</span>
+                        <span id="kenpinmodalName">-</span>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="branch-list">
+                        <thead>
+                            <tr id="kenpinmodalHeadRow">
+                                <th>回</th>
+                                <th>検品日</th>
+                                <th>担当</th>
+                                <th>JANコード</th>
+                                <th>サンプルJANコード</th>
+                                <th>OK</th>
+                                <th>NG</th>
+                                <th colspan="2">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kenpinmodalTableBody">
+                            <tr>
+                                <td class="kenpinrireki-table">1st</td>
+                                <td class="kenpinrireki-table">2024/04/01</td>
+                                <td class="kenpinrireki-table">丸眞 花子</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">4500000000001<br>4500000000002<br>4500000000003</td>
+                                <td class="kenpinrireki-table">1枚</td>
+                                <td class="kenpinrireki-table">2枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
+                            </tr>
+                            <tr>
+                                <td class="kenpinrireki-table">2nd</td>
+                                <td class="kenpinrireki-table">2024/04/15</td>
+                                <td class="kenpinrireki-table">丸眞 花子</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">4500000000001<br>4500000000001<br>4500000000001</td>
+                                <td class="kenpinrireki-table">3枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
+                            </tr>
+                            <tr>
+                                <td class="kenpinrireki-table">3rd</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">チェック</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="kenpinmodalCloseBtn2">閉じる</button>
+            </div>
+        </div>
+    </div>
+
 
     <script src="js/sidebar.js"></script>
     <script>
@@ -2113,7 +2251,7 @@
         e.stopPropagation(); // クリックが外側に伝播しないように
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       });
-        
+        /*拠点数別サンプル数モーダル*/
         const modal = document.getElementById('sampleModal');
         const openButtons = document.querySelectorAll('.modal-open-btn');
         const closeBtn = document.getElementById('modalCloseBtn');
@@ -2128,6 +2266,20 @@
         const modalHeadRow = document.getElementById('modalHeadRow');
         const modalTableBody = document.getElementById('modalTableBody');
 
+        /*検品履歴モーダル*/
+        const kenpinmodal = document.getElementById('kenpinModal');
+        const kenpinopenButtons = document.querySelectorAll('.kenpinmodal-open-btn');
+        const kenpincloseBtn = document.getElementById('kenpinmodalCloseBtn');
+        const kenpincloseBtn2 = document.getElementById('kenpinmodalCloseBtn2');
+
+        const kenpinmodalSpecNo = document.getElementById('kenpinmodalSpecNo');
+        const kenpinmodalExhibition = document.getElementById('kenpinmodalExhibition');
+        const kenpinmodalKubun = document.getElementById('kenpinmodalKubun');
+        const kenpinmodalCode = document.getElementById('kenpinmodalCode');
+        const kenpinmodalName = document.getElementById('kenpinmodalName');
+        const kenpinmodalTableBody = document.getElementById('kenpinmodalTableBody');
+
+        /*拠点数別サンプル数モーダル*/
         openButtons.forEach(button => {
             button.addEventListener('click', function () {
                 const type = this.dataset.modalType;
@@ -2308,13 +2460,105 @@
                 modal.classList.add('show');
             });
         });
+        /*検品履歴モーダル*/
+        kenpinopenButtons.forEach(button => {
+            button.addEventListener('click', function () {
+
+                const type = this.dataset.modalType;
+                const specno = this.dataset.specno;
+                const exhibition = this.dataset.exhibition;
+                const kubun = this.dataset.kubun;
+                const code = this.dataset.code;
+                const name = this.dataset.name;
+
+                kenpinmodalSpecNo.textContent = specno;
+                kenpinmodalExhibition.textContent = exhibition;
+                kenpinmodalKubun.textContent = kubun;
+                kenpinmodalCode.textContent = code;
+                kenpinmodalName.textContent = name;
+
+                    if (code === 'A10023') {
+                        kenpinmodalTableBody.innerHTML = `
+                            <tr>
+                                <td class="kenpinrireki-table">1st</td>
+                                <td class="kenpinrireki-table">2024/04/01</td>
+                                <td class="kenpinrireki-table">丸眞 花子</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">4500000000001<br>4500000000002<br>4500000000003</td>
+                                <td class="kenpinrireki-table">1枚</td>
+                                <td class="kenpinrireki-table">2枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
+                            </tr>
+                            <tr>
+                                <td class="kenpinrireki-table">2nd</td>
+                                <td class="kenpinrireki-table">2024/04/15</td>
+                                <td class="kenpinrireki-table">丸眞 花子</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">4500000000001<br>4500000000001<br>4500000000001</td>
+                                <td class="kenpinrireki-table">3枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
+                            </tr>
+                            <tr>
+                                <td class="kenpinrireki-table">3rd</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">チェック</button></td>
+                            </tr>
+                        `;
+                    } else if (code === 'A10024') {
+                        kenpinmodalTableBody.innerHTML = `
+                            <td>1st</td>
+                                <td class="kenpinrireki-table">2024/04/01</td>
+                                <td class="kenpinrireki-table">丸眞 花子</td>
+                                <td class="kenpinrireki-table">4500000000010</td>
+                                <td class="kenpinrireki-table">4500000000001<br>4500000000002</td>
+                                <td class="kenpinrireki-table">1枚</td>
+                                <td class="kenpinrireki-table">1枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
+                            </tr>
+                            <tr>
+                                <td class="kenpinrireki-table">2nd</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">チェック</button></td>
+                            </tr>
+                        `;
+                    } else {
+                        kenpinmodalTableBody.innerHTML = `
+                            <td>1st</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">4500000000020</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">チェック</button></td>
+                            </td>
+                        `;
+                    }
+
+                kenpinmodal.classList.add('show');
+            });
+        });
 
         function closeModal() {
             modal.classList.remove('show');
+            kenpinmodal.classList.remove('show');
         }
 
         closeBtn.addEventListener('click', closeModal);
         closeBtn2.addEventListener('click', closeModal);
+        kenpincloseBtn.addEventListener('click', closeModal);
+        kenpincloseBtn2.addEventListener('click', closeModal);
 
         modal.addEventListener('click', function (e) {
             if (e.target === modal) {
