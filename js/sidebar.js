@@ -56,6 +56,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="mitsumoriiraikensaku.html">見積依頼・メーカー決定</a></li>
+      <li><a href="mitsumoribunseki.html">見積り分析</a></li>
     </ul>
   </div>
 
@@ -66,7 +67,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="shiyoshosakusei.html">仕様書作成</a></li>
+      <li><a href="shiyoshokensaku.html">仕様書作成</a></li>
     </ul>
   </div>
 
@@ -77,12 +78,9 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="sample_inquiry.html">サンプル照会</a></li>
+      <li><a href="sampleshokai.html">サンプル管理</a></li>
       <li><a href="sampleshinseikensaku.html">サンプル承認結果登録</a></li>
       <li><a href="saishusampleteishutsujokyokanri.html">最終サンプル提出状況管理（重点解除）</a></li>
-      <li><a href="sample_rental_entry.html">サンプル貸出申請入力</a></li>
-      <li><a href="sample_pickup_request.html">サンプル引き上げ申請入力</a></li>
-      <li><a href="sample_rental.html">サンプル貸出管理</a></li>
     </ul>
   </div>
 
@@ -95,7 +93,6 @@ window.SHARED_SIDEBAR_HTML = `
     <ul class="submenu">
       <li><a href="hinshitsukensazuankensaku.html">品質検査合格書登録</a></li>
       <li><a href="hinshitsukensagokakushokensaku.html">品質検査合格書決裁</a></li>
-      <li><a href="defect-management.html">不良品・問題商品管理</a></li>
     </ul>
   </div>
 
@@ -176,7 +173,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="tenjikainokimaintenanse.html">展示会納期設定</a></li>
-      <li><a href="tenjikainokiiko.html">展示会移行</a></li>
+      <li><a href="tenjikainokiido.html">展示会移動</a></li>
       <li><a href="costkanrihyo.html">コスト管理表</a></li>
       <li><a href="shohinjohoichiran.html">商品情報照会</a></li>
       <li><a href="systemsettingsmastermaintenance.html">システム設定マスタメンテナンス</a></li>
