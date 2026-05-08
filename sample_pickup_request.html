@@ -12,7 +12,6 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <script src="js/autocomplete.js"></script>
-    <!--   <link rel="stylesheet" href="style.css"> -->
     <style>
         * {
             box-sizing: border-box;
@@ -626,19 +625,14 @@
 
         .branch-list th,
         .branch-list td {
-            border-left: none;
-            border-right: none;
-            border-top: 1px solid #d9e4ef;
-            border-bottom: 1px solid #d9e4ef;
+            border: 1px solid #d9e4ef;
             padding: 10px;
             text-align: center;
             font-size: 13px;
         }
 
         .branch-list th {
-            background: var(--color-primary);
-            color: #fff;
-            font-weight: 700;
+            background: #eef5ff;
         }
 
         .note-box {
@@ -849,8 +843,127 @@
                 grid-template-columns: 1fr;
             }
         }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 9999;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background: #eaf2fd;
+            border-bottom: 1px solid #d7e6f8;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #1d3557;
+        }
+
+        .modal-close-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: #fff;
+            color: #1d3557;
+            font-size: 22px;
+            cursor: pointer;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            background: #dceaff;
+        }
+
+        .modal-body {
+            padding: 20px 22px;
+        }
+
+        .modal-footer {
+            padding: 0 22px 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .modal-info-item {
+            background: #f8fbff;
+            border: 1px solid #d7e6f8;
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .modal-info-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .modal-info-item .label {
+            color: #5b6d7f;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .count-link {
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
 
         @media (max-width: 900px) {
+            .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
             .move-info-grid,
             .delete-info-grid {
                 grid-template-columns: 1fr;
@@ -875,6 +988,12 @@
 
             .move-condition-row.unified-condition-row,
             .manual-add-grid-move.unified-add-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .modal-info {
                 grid-template-columns: 1fr;
             }
         }
@@ -919,8 +1038,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 18px 22px;
-            background: #e8f5ef;
-            border-bottom: 1px solid #c5e6d9;
+            background: #eaf2fd;
+            border-bottom: 1px solid #d7e6f8;
         }
 
         .modal-header h2 {
@@ -943,17 +1062,11 @@
         }
 
         .modal-close-btn:hover {
-            background: #d4ede2;
+            background: #dceaff;
         }
 
         .modal-body {
             padding: 20px 22px;
-        }
-
-        .modal-body .modal-sample-count-field select.form-control {
-            width: auto;
-            max-width: 92px;
-            margin-bottom: 8px;
         }
 
         .modal-footer {
@@ -970,8 +1083,8 @@
         }
 
         .modal-info-item {
-            background: #f3faf6;
-            border: 1px solid #c9e8db;
+            background: #f8fbff;
+            border: 1px solid #d7e6f8;
             border-radius: 10px;
             padding: 10px 12px;
             display: flex;
@@ -988,12 +1101,6 @@
             color: #5b6d7f;
             font-weight: 700;
             font-size: 12px;
-        }
-
-        @media (max-width: 900px) {
-            .modal-info {
-                grid-template-columns: 1fr 1fr;
-            }
         }
 
         .count-link {
@@ -1014,7 +1121,7 @@
             border-radius: 14px;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
             padding: 18px 20px;
-            border-top: 4px solid #1d73e8;
+            border-top: 4px solid var(--color-primary);
         }
 
         .summary-label {
@@ -1069,6 +1176,21 @@
 
         .entry-table input.form-control {
             min-width: 120px;
+        }
+
+        /* 貸出明細入力テーブル：縦線なし・横線のみ */
+        .table.entry-table thead th {
+            border-top: 1px solid #d8e3f1;
+            border-bottom: 1px solid #d8e3f1;
+            border-left: none;
+            border-right: none;
+        }
+
+        .table.entry-table tbody td {
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-left: none;
+            border-right: none;
         }
 
         .header-only-grid {
@@ -1189,6 +1311,28 @@
             grid-template-columns: 1.2fr 0.8fr 1fr 1fr 140px;
         }
 
+        /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
+        .btn-fab-new {
+            display: inline-block;
+            text-decoration: none;
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 2001;
+            /* min-width: 140px; */
+            padding: 6px 14px;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            }
+            .btn-fab-new:hover {
+            background: var(--color-primary-dark);
+            color: #fff;
+            }
+
         @media (max-width: 1400px) {
             .move-info-grid,
             .delete-info-grid {
@@ -1205,7 +1349,7 @@
 
         .delete-condition-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 16px;
             align-items: end;
         }
@@ -1223,13 +1367,6 @@
             width: 100%;
             padding: 18px 20px 20px;
             margin-bottom: 22px;
-        }
-
-        .delete-condition-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            align-items: end;
         }
 
         .unified-add-grid {
@@ -1328,8 +1465,9 @@
             box-shadow: none;
         }
 
-        /* 検索ボタン */
-        #searchSearchBtn {
+        /* 追加・登録ボタン */
+        #searchAddBtn,
+        #searchRegisterBtn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -1347,7 +1485,13 @@
             white-space: nowrap;
             box-shadow: none;
         }
-        #searchSearchBtn:hover {
+
+        #searchAddBtn {
+            width: auto;
+            align-self: flex-start;
+        }
+        #searchAddBtn:hover,
+        #searchRegisterBtn:hover {
             background:var(--color-primary-dark);
             color: #fff;
             border: 1px solid var(--color-clearbutton-border);
@@ -1394,7 +1538,7 @@
             }
 
             button.btn-fab-new {
-            font: inherit;
+                font: inherit;
             }
 
             html,
@@ -1455,6 +1599,60 @@
             .content-box .page-title {
                 margin: 0 0 16px;
                 padding-bottom: 8px;
+            }
+
+            /* 引き上げ明細入力：見出しと行追加/削除を1行で横並び・ボタンは右寄せ */
+            .section-title-row {
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .section-title-row > .card-title {
+                flex: 1;
+                min-width: 0;
+                padding-right: 4px;
+            }
+
+            .section-title-row > .header-buttons {
+                flex-shrink: 0;
+                margin-bottom: 0;
+                justify-content: flex-end;
+            }
+
+            /* 申請ヘッダ：1列化で得意先名・受取日を縦並び、サンプル区分をカード幅内に収める */
+            .rental-grid.header-only-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .rental-grid.header-only-grid > .form-group {
+                min-width: 0;
+            }
+
+            .rental-grid.header-only-grid .sample-type select.form-control {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .delete-condition-row {
+                grid-template-columns: 1fr;
+            }
+
+            .move-condition-row,
+            .move-condition-row.unified-condition-row,
+            .manual-add-grid,
+            .manual-add-grid-move.unified-add-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .manual-add-grid .form-group-button {
+                align-items: flex-end;
+            }
+
+            #searchAddBtn {
+                align-self: flex-end;
             }
 
             .search-toggle-sp {
@@ -1661,370 +1859,207 @@
         <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
         <div class="account-wrapper">
             <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
-        <div class="account-menu">
-            <div class="menu-item">ログアウト</div>
-        </div>
+            <div class="account-menu">
+                <div class="menu-item">ログアウト</div>
+            </div>
         </div>
     </div>
-  <!-- #endregion -->
-
-  <!-- ヘッダー下のレイアウト -->
+    <!-- #endregion -->
+    <!-- ヘッダー下のレイアウト -->
     <div class="main-wrapper">
 
         <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
         <div id="sidebarMount"></div>
         <!-- #endregion -->
+
         <!--#region メインコンテンツ  -->
         <div class="content">
             <div class="content-box">
-                <h2 class="page-title">サンプル照会</h2>
+                <h2 class="page-title">サンプル引き上げ申請</h2>
                 <div class="header-buttons header-buttons-wide">
-                    <a href="sample_move.html" class="btn btn-primary">サンプル移動処理へ</a>
-                    <a href="sample_delete.html" class="btn btn-primary">サンプル削除処理へ</a>
-                    <button class="btn btn-secondary">CSV出力</button>
+    <!--            <a href="sample_rental.html" class="btn btn-secondary">貸出管理へ戻る</a>-->
+                    <button class="btn btn-primary">下書き保存</button>
                 </div>
 
                 <div class="view-layout view-layout-1-group">
-                    <section class="card">
-                    <h2 class="card-title">検索条件</h2>
-                        <div class="search-box inquiry-search-box" id="searchBox">
-                            <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
-                                <span class="search-toggle-sp-label">
-                                    <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
-                                    <span class="search-toggle-sp-text">検索条件を開く</span>
-                                </span>
-                            </button>
-                            <div class="search-box-inner" id="searchRowsPanel">
-                                <div class="search-grid">
-                                    <div class="form-group">
-                                        <label>仕様書No</label>
-                                        <input type="text" class="form-control" placeholder="例：S-2026-00125">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>展示会</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>2026 春展示会</option>
-                                            <option>2026 夏展示会</option>
-                                            <option>2026 秋展示会</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>販売区分</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>定番</option>
-                                            <option>スポット</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>商品コード</label>
-                                        <input type="text" class="form-control" placeholder="例：A10023">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>商品名</label>
-                                        <input type="text" class="form-control" placeholder="商品名を入力">
-                                    </div>
+                    <section class="card process-card">
+                        <div class="section-title-row">
+                            <h2 class="card-title no-margin">引き上げ明細入力</h2>
+                            <div class="header-buttons">
+                                <button type="button" class="btn btn-secondary btn-small">行追加</button>
+                                <button type="button" class="btn btn-secondary btn-small">行削除</button>
+                            </div>
+                        </div>
 
-                                    <div class="form-group">
-                                        <label>カテゴリー</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>トップス</option>
-                                            <option>ボトムス</option>
-                                            <option>雑貨</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>ブランド/キャラ</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>ブランドA</option>
-                                            <option>ブランドB</option>
-                                            <option>キャラクターC</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>アイテム</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>Tシャツ</option>
-                                            <option>パーカー</option>
-                                            <option>バッグ</option>
-                                        </select>
-                                    </div>
-                                    <div class="search-grid-actions">
-                                        <button class="btn btn-secondary" id="searchCancelAllBtn">クリア</button>
-                                        <button class="btn btn-primary" id="searchSearchBtn">検索</button>
-                                    </div>
-                                </div>
+                        <div class="table-wrap">
+                            <table class="table entry-table pickup-entry-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>取引先コード</th>
+                                        <th>取引先名</th>
+                                        <th>営業担当</th>
+                                        <th>商品コード</th>
+                                        <th>品番</th>
+                                        <th>商品名</th>
+                                        <th>単位</th>
+                                        <th>数量</th>
+                                        <th>使用目的</th>
+                                        <th>確認欄</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td><input type="text" class="form-control" value="C0001"></td>
+                                        <td><input type="text" class="form-control" value="株式会社サンプル商事"></td>
+                                        <td><input type="text" class="form-control" value="山田"></td>
+                                        <td><input type="text" class="form-control" value="A10023"></td>
+                                        <td><input type="text" class="form-control" value="A10023-RD-M"></td>
+                                        <td><input type="text" class="form-control" value="ロゴプリントTシャツ"></td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option selected>枚</option>
+                                                <option>個</option>
+                                                <option>本</option>
+                                                <option>セット</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="number" class="form-control" value="5"></td>
+                                        <td><input type="text" class="form-control" value="展示会使用分回収"></td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option selected>未確認</option>
+                                                <option>確認済</option>
+                                                <option>不要</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>2</td>
+                                        <td><input type="text" class="form-control" value="C0002"></td>
+                                        <td><input type="text" class="form-control" value="○○物産株式会社"></td>
+                                        <td><input type="text" class="form-control" value="佐藤"></td>
+                                        <td><input type="text" class="form-control" value="B30012"></td>
+                                        <td><input type="text" class="form-control" value="B30012-NT"></td>
+                                        <td><input type="text" class="form-control" value="キャンバストート"></td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option>枚</option>
+                                                <option selected>個</option>
+                                                <option>本</option>
+                                                <option>セット</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="number" class="form-control" value="3"></td>
+                                        <td><input type="text" class="form-control" value="撮影使用分回収"></td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option>未確認</option>
+                                                <option selected>確認済</option>
+                                                <option>不要</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>3</td>
+                                        <td><input type="text" class="form-control" placeholder="取引先コード"></td>
+                                        <td><input type="text" class="form-control" placeholder="取引先名"></td>
+                                        <td><input type="text" class="form-control" placeholder="営業担当"></td>
+                                        <td><input type="text" class="form-control" placeholder="商品コード"></td>
+                                        <td><input type="text" class="form-control" placeholder="品番"></td>
+                                        <td><input type="text" class="form-control" placeholder="商品名"></td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option selected>選択</option>
+                                                <option>枚</option>
+                                                <option>個</option>
+                                                <option>本</option>
+                                                <option>セット</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="number" class="form-control" placeholder="数量"></td>
+                                        <td><input type="text" class="form-control" placeholder="使用目的"></td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option selected>未確認</option>
+                                                <option>確認済</option>
+                                                <option>不要</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subtext">
+                            取引先ごと・商品ごとに複数行で入力し、引き上げ対象をまとめて申請する想定です。
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h2 class="card-title">申請フッター情報</h2>
+                        <div class="pickup-footer-grid">
+                            <div class="form-group">
+                                <label>引き上げ希望日</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>備考欄</label>
+                                <textarea class="form-control" placeholder="引き上げ時の注意事項、回収先補足、連絡事項などを入力"></textarea>
                             </div>
                         </div>
                     </section>
 
                     <section class="card">
-                        <h2 class="card-title">サンプル一覧</h2>
-                        <div class="table-wrap">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>仕様書No</th>
-                                        <th>展示会</th>
-                                        <th>販売区分</th>
-                                        <th>商品コード</th>
-                                        <th>商品名</th>
-                                        <th>カテゴリー</th>
-                                        <th>ブランド/キャラ</th>
-                                        <th>アイテム</th>
-                                        <th>拠点別<br>サンプル数</th>
-                                        <th>拠点別<br>最終サンプル数</th>
-                                        <th>状態</th>
-                                        <th>&nbsp;</th>
-                                        <th>&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>S-2026-00125</td>
-                                        <td>2026 春展示会</td>
-                                        <td>定番</td>
-                                        <td>A10023</td>
-                                        <td>ロゴプリントTシャツ</td>
-                                        <td>トップス</td>
-                                        <td>ブランドA</td>
-                                        <td>Tシャツ</td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="count-link modal-open-btn"
-                                                data-modal-type="sample"
-                                                data-specno="S-2026-00125"
-                                                data-exhibition="2026 春展示会"
-                                                data-kubun="定番"
-                                                data-code="A10023"
-                                                data-name="ロゴプリントTシャツ">
-                                                25
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="count-link modal-open-btn"
-                                                data-modal-type="final"
-                                                data-specno="S-2026-00125"
-                                                data-exhibition="2026 春展示会"
-                                                data-kubun="定番"
-                                                data-code="A10023"
-                                                data-name="ロゴプリントTシャツ">
-                                                18
-                                            </button>
-                                        </td>
-                                        <td><span class="status-chip status-available">貸出可</span></td>
-                                        <td><a href="sample_kenpinrireki.html" class="btn btn-primary">検品履歴</a></td>
-                                        <td><a href="sampletoroku.html" class="btn btn-primary">サンプル登録･承認結果</a></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>S-2026-00126</td>
-                                        <td>2026 春展示会</td>
-                                        <td>スポット</td>
-                                        <td>A10024</td>
-                                        <td>裏毛パーカー</td>
-                                        <td>トップス</td>
-                                        <td>ブランドB</td>
-                                        <td>パーカー</td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="count-link modal-open-btn"
-                                                data-modal-type="sample"
-                                                data-specno="S-2026-00126"
-                                                data-exhibition="2026 春展示会"
-                                                data-kubun="スポット"
-                                                data-code="A10024"
-                                                data-name="裏毛パーカー">
-                                                12
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="count-link modal-open-btn"
-                                                data-modal-type="final"
-                                                data-specno="S-2026-00126"
-                                                data-exhibition="2026 春展示会"
-                                                data-kubun="スポット"
-                                                data-code="A10024"
-                                                data-name="裏毛パーカー">
-                                                9
-                                            </button>
-                                        </td>
-                                        <td><span class="status-chip status-rental">一部貸出中</span></td>
-                                        <td><a href="sample_kenpinrireki.html" class="btn btn-primary">検品履歴</a></td>
-                                        <td><a href="sampletoroku.html" class="btn btn-primary">サンプル登録･承認結果</a></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>S-2026-00127</td>
-                                        <td>2026 夏展示会</td>
-                                        <td>定番</td>
-                                        <td>B30012</td>
-                                        <td>キャンバストート</td>
-                                        <td>雑貨</td>
-                                        <td>キャラクターC</td>
-                                        <td>バッグ</td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="count-link modal-open-btn"
-                                                data-modal-type="sample"
-                                                data-specno="S-2026-00127"
-                                                data-exhibition="2026 夏展示会"
-                                                data-kubun="定番"
-                                                data-code="B30012"
-                                                data-name="キャンバストート">
-                                                30
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="count-link modal-open-btn"
-                                                data-modal-type="final"
-                                                data-specno="S-2026-00127"
-                                                data-exhibition="2026 夏展示会"
-                                                data-kubun="定番"
-                                                data-code="B30012"
-                                                data-name="キャンバストート">
-                                                26
-                                            </button>
-                                        </td>
-                                        <td><span class="status-chip status-available">貸出可</span></td>
-                                        <td><a href="sample_kenpinrireki.html" class="btn btn-primary">検品履歴</a></td>
-                                        <td><a href="sampletoroku.html" class="btn btn-primary">サンプル登録･承認結果</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <h2 class="card-title">明細サマリー</h2>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <div class="summary-label">登録明細数</div>
+                                <div class="summary-value">3</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">取引先件数</div>
+                                <div class="summary-value">2</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">数量合計</div>
+                                <div class="summary-value">8</div>
+                            </div>
                         </div>
                     </section>
 
                     <section class="card">
-                        <h2 class="card-title">画面イメージ補足</h2>
-                        <div class="note-box">
-                            <h3>想定動作</h3>
-                            <ul>
-                                <li>一覧の「サンプル数」「最終サンプル数」をクリックすると、拠点別内訳をポップアップ表示します。</li>
-                                <li>内訳列は、サンプル・最終サンプルともに「在庫数 / 使用予定 / 貸出中 / 貸出可能数」で統一しています。</li>
-                                <li>実際のシステム化では、クリックした商品コードをもとにDBから拠点別情報を取得して表示できます。</li>
-                            </ul>
+                        <h2 class="card-title">登録操作</h2>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary">クリア</button>
+                            <button type="button" class="btn btn-primary">申請登録</button>
                         </div>
                     </section>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- モーダル -->
-    <div id="sampleModal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h2 id="modalTitle">拠点別サンプル数</h2>
-                <button type="button" class="modal-close-btn" id="modalCloseBtn">×</button>
-            </div>
-
-            <div class="modal-body">
-                <div class="form-group modal-sample-count-field">
-                    <label>サンプル回数</label>
-                    <select class="form-control">
-                        <option>1st</option>
-                        <option>2nd</option>
-                        <option selected>3rd</option>
-                    </select>
-                </div>
-                <div class="modal-info">
-                    <div class="modal-info-item">
-                        <span class="label">仕様書No</span>
-                        <span id="modalSpecNo">-</span>
-                    </div>
-                    <div class="modal-info-item">
-                        <span class="label">展示会</span>
-                        <span id="modalExhibition">-</span>
-                    </div>
-                    <div class="modal-info-item">
-                        <span class="label">販売区分</span>
-                        <span id="modalKubun">-</span>
-                    </div>
-                    <div class="modal-info-item">
-                        <span class="label">商品コード</span>
-                        <span id="modalCode">-</span>
-                    </div>
-                    <div class="modal-info-item full">
-                        <span class="label">商品名</span>
-                        <span id="modalName">-</span>
-                    </div>
-                </div>
-
-                <div class="table-wrap">
-                    <table class="branch-list">
-                        <thead>
-                            <tr id="modalHeadRow">
-                                <th>拠点</th>
-                                <th>在庫数</th>
-                                <th>使用予定</th>
-                                <th>貸出中</th>
-                                <th>貸出可能数</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modalTableBody">
-                            <tr>
-                                <td>東京本社</td>
-                                <td>10</td>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>7</td>
-                            </tr>
-                            <tr>
-                                <td>大阪支店</td>
-                                <td>8</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>6</td>
-                            </tr>
-                            <tr>
-                                <td>名古屋支店</td>
-                                <td>7</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>7</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="modalCloseBtn2">閉じる</button>
             </div>
         </div>
     </div>
 
     <script src="js/sidebar.js"></script>
     <script>
-        // サイドバーの読み込み
-      function loadSharedSidebar() {
+            // サイドバーの読み込み
+        function loadSharedSidebar() {
         const mount = document.getElementById('sidebarMount');
         if (!mount) return;
 
         if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
-          console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
-          return;
+            console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
+            return;
         }
 
         mount.innerHTML = window.SHARED_SIDEBAR_HTML;
         initSidebarCollapseToggle();
-      }
+        }
 
-      function initSidebarCollapseToggle() {
+        function initSidebarCollapseToggle() {
         const sidebar = document.querySelector('.sidebar');
         const toggle = document.querySelector('.sidebar-toggle');
         const content = document.querySelector('.content');
@@ -2032,20 +2067,20 @@
 
         const toggleImg = toggle.querySelector('img');
         toggle.addEventListener('click', () => {
-          sidebar.classList.toggle('closed');
-          content.classList.toggle('expanded');
+            sidebar.classList.toggle('closed');
+            content.classList.toggle('expanded');
 
-          if (sidebar.classList.contains('closed')) {
+            if (sidebar.classList.contains('closed')) {
             if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
-          } else {
+            } else {
             if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
-          }
+            }
         });
 
         toggle.dataset.bound = '1';
-      }
+        }
 
-      function toggleSidebar() {
+        function toggleSidebar() {
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.querySelector('.overlay');
         if (!sidebar || !overlay) return;
@@ -2053,258 +2088,36 @@
         sidebar.classList.toggle('active');
 
         if (sidebar.classList.contains('active')) {
-          overlay.classList.add('show');
+            overlay.classList.add('show');
         } else {
-          overlay.classList.remove('show');
+            overlay.classList.remove('show');
         }
-      }
+        }
 
-      function closeSidebar() {
+        function closeSidebar() {
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.querySelector('.overlay');
         if (!sidebar || !overlay) return;
 
         sidebar.classList.remove('active');
         overlay.classList.remove('show');
-      }
+        }
 
-      loadSharedSidebar();
+        loadSharedSidebar();
 
-      // スマホ: 検索条件の折りたたみ開閉
-      (function () {
+        // スマホ: 検索条件の折りたたみ開閉
+        (function () {
         var btn = document.getElementById("searchToggleSp");
         var box = document.getElementById("searchBox");
         if (btn && box) {
-          btn.addEventListener("click", function () {
+            btn.addEventListener("click", function () {
             var isOpen = box.classList.toggle("is-open");
             btn.setAttribute("aria-expanded", isOpen);
             var textEl = btn.querySelector(".search-toggle-sp-text");
             if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-          });
-        }
-      })();
-
-      const icon = document.querySelector('.header-account_circle');
-      const menu = document.querySelector('.account-menu');
-
-      icon.addEventListener('click', (e) => {
-        e.stopPropagation(); // クリックが外側に伝播しないように
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      });
-        
-        const modal = document.getElementById('sampleModal');
-        const openButtons = document.querySelectorAll('.modal-open-btn');
-        const closeBtn = document.getElementById('modalCloseBtn');
-        const closeBtn2 = document.getElementById('modalCloseBtn2');
-
-        const modalTitle = document.getElementById('modalTitle');
-        const modalSpecNo = document.getElementById('modalSpecNo');
-        const modalExhibition = document.getElementById('modalExhibition');
-        const modalKubun = document.getElementById('modalKubun');
-        const modalCode = document.getElementById('modalCode');
-        const modalName = document.getElementById('modalName');
-        const modalHeadRow = document.getElementById('modalHeadRow');
-        const modalTableBody = document.getElementById('modalTableBody');
-
-        openButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const type = this.dataset.modalType;
-                const specno = this.dataset.specno;
-                const exhibition = this.dataset.exhibition;
-                const kubun = this.dataset.kubun;
-                const code = this.dataset.code;
-                const name = this.dataset.name;
-
-                modalSpecNo.textContent = specno;
-                modalExhibition.textContent = exhibition;
-                modalKubun.textContent = kubun;
-                modalCode.textContent = code;
-                modalName.textContent = name;
-
-                modalHeadRow.innerHTML = `
-                    <th>拠点</th>
-                    <th>在庫数</th>
-                    <th>使用予定</th>
-                    <th>貸出中</th>
-                    <th>貸出可能数</th>
-                `;
-
-                if (type === 'sample') {
-                    modalTitle.textContent = '拠点別サンプル数';
-
-                    if (code === 'A10023') {
-                        modalTableBody.innerHTML = `
-                            <tr>
-                                <td>東京本社</td>
-                                <td>10</td>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>7</td>
-                            </tr>
-                            <tr>
-                                <td>大阪支店</td>
-                                <td>8</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>6</td>
-                            </tr>
-                            <tr>
-                                <td>名古屋支店</td>
-                                <td>7</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>7</td>
-                            </tr>
-                        `;
-                    } else if (code === 'A10024') {
-                        modalTableBody.innerHTML = `
-                            <tr>
-                                <td>東京本社</td>
-                                <td>5</td>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>2</td>
-                            </tr>
-                            <tr>
-                                <td>大阪支店</td>
-                                <td>4</td>
-                                <td>0</td>
-                                <td>1</td>
-                                <td>3</td>
-                            </tr>
-                            <tr>
-                                <td>名古屋支店</td>
-                                <td>3</td>
-                                <td>0</td>
-                                <td>1</td>
-                                <td>2</td>
-                            </tr>
-                        `;
-                    } else {
-                        modalTableBody.innerHTML = `
-                            <tr>
-                                <td>東京本社</td>
-                                <td>12</td>
-                                <td>2</td>
-                                <td>1</td>
-                                <td>9</td>
-                            </tr>
-                            <tr>
-                                <td>大阪支店</td>
-                                <td>10</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>8</td>
-                            </tr>
-                            <tr>
-                                <td>名古屋支店</td>
-                                <td>8</td>
-                                <td>1</td>
-                                <td>0</td>
-                                <td>7</td>
-                            </tr>
-                        `;
-                    }
-                } else {
-                    modalTitle.textContent = '拠点別最終サンプル数';
-
-                    if (code === 'A10023') {
-                        modalTableBody.innerHTML = `
-                            <tr>
-                                <td>東京本社</td>
-                                <td>7</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>5</td>
-                            </tr>
-                            <tr>
-                                <td>大阪支店</td>
-                                <td>6</td>
-                                <td>1</td>
-                                <td>0</td>
-                                <td>5</td>
-                            </tr>
-                            <tr>
-                                <td>名古屋支店</td>
-                                <td>5</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>5</td>
-                            </tr>
-                        `;
-                    } else if (code === 'A10024') {
-                        modalTableBody.innerHTML = `
-                            <tr>
-                                <td>東京本社</td>
-                                <td>4</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>2</td>
-                            </tr>
-                            <tr>
-                                <td>大阪支店</td>
-                                <td>3</td>
-                                <td>0</td>
-                                <td>1</td>
-                                <td>2</td>
-                            </tr>
-                            <tr>
-                                <td>名古屋支店</td>
-                                <td>2</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>2</td>
-                            </tr>
-                        `;
-                    } else {
-                        modalTableBody.innerHTML = `
-                            <tr>
-                                <td>東京本社</td>
-                                <td>10</td>
-                                <td>2</td>
-                                <td>1</td>
-                                <td>7</td>
-                            </tr>
-                            <tr>
-                                <td>大阪支店</td>
-                                <td>9</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>7</td>
-                            </tr>
-                            <tr>
-                                <td>名古屋支店</td>
-                                <td>7</td>
-                                <td>1</td>
-                                <td>0</td>
-                                <td>6</td>
-                            </tr>
-                        `;
-                    }
-                }
-
-                modal.classList.add('show');
             });
-        });
-
-        function closeModal() {
-            modal.classList.remove('show');
         }
-
-        closeBtn.addEventListener('click', closeModal);
-        closeBtn2.addEventListener('click', closeModal);
-
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
+        })();
     </script>
 </body>
 </html>
