@@ -56,7 +56,7 @@ window.SHARED_SIDEBAR_HTML = `
     </div>
     <ul class="submenu">
       <li><a href="mitsumoriiraikensaku.html">見積依頼・メーカー決定</a></li>
-      <li><a href="mitsumoribunseki.html">見積り分析</a></li>
+      <li><a href="mitsumoribunseki.html">見積分析</a></li>
     </ul>
   </div>
 
