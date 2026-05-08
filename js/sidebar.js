@@ -78,9 +78,12 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="sampleshokai.html">サンプル管理</a></li>
+      <li><a href="sample_inquiry.html">サンプル照会</a></li>
       <li><a href="sampleshinseikensaku.html">サンプル承認結果登録</a></li>
       <li><a href="saishusampleteishutsujokyokanri.html">最終サンプル提出状況管理（重点解除）</a></li>
+      <li><a href="sample_rental_entry.html">サンプル貸出申請入力</a></li>
+      <li><a href="sample_pickup_request.html">サンプル引き上げ申請入力</a></li>
+      <li><a href="sample_rental.html">サンプル貸出管理</a></li>
     </ul>
   </div>
 
