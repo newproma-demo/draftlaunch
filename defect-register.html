@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+    <!-- <title>不良品・問題商品登録</title>
+    <link rel="stylesheet" href="defect-management.css"> -->
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f3f6fb;
+    color: #1f2937;
+}
+
+.header {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: var(--color-card);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.header a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.header a:hover {
+    color: var(--color-primary);
+}
+
+.hamburger {
+    display: none;
+}
+
+.header-title {
+    margin: 0;
+    font-size: var(--fs-xl);
+    font-weight: 700;
+}
+
+.header-user {
+    position: absolute;
+    right: 70px;
+    padding: 0;
+    font-size: 14pt;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.account-wrapper {
+    position: absolute;
+    right: 24px;
+}
+
+.account-menu {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    min-height: 41px;
+    background: var(--color-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: none;
+    min-width: 120px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.account-menu .menu-item {
+    padding: 12px 16px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.account-menu .menu-item:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.header-account_circle {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.main-wrapper {
+    display: flex;
+    flex: 1;
+    margin-top: 0;
+    min-height: calc(100vh - 48px);
+}
+
+.content {
+    background: var(--color-surface);
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 56px 12px;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease, padding-left 0.3s ease;
+}
+
+.content:not(.expanded) {
+    padding-left: 32px;
+}
+
+.content.expanded {
+    margin-left: -220px;
+    padding-left: 32px;
+}
+
+.content-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.content-box .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--color-primary);
+    flex-shrink: 0;
+}
+
+.page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.page-header h1 {
+    font-size: 30px;
+    color: #183b63;
+    margin-bottom: 6px;
+}
+
+.sub-title {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.header-actions,
+.bottom-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #dce6f2;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 18px;
+    color: #23466b;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #edf3fa;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #425466;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccd3db;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.multi-select {
+    position: relative;
+    width: 100%;
+}
+
+.multi-select-toggle {
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    padding: 10px 12px;
+    font-family: inherit;
+    border: 1px solid #ccd3db;
+    border-radius: 8px;
+    background: #fff;
+    color: #1f2937;
+    cursor: pointer;
+}
+
+.multi-select.is-open .multi-select-toggle {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+}
+
+.multi-select-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: #fff;
+    border: 1px solid #ccd3db;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    max-height: 220px;
+    padding: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.multi-select.is-open .multi-select-menu {
+    display: block;
+}
+
+.multi-select-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 2px;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+    width: fit-content;
+    text-align: left;
+}
+
+.multi-select-option input[type="checkbox"] {
+    margin: 0;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    height: 42px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    background: var(--color-clearbutton-background);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: var(--color-clearbutton-background-hover);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    transform: none;
+    box-shadow: none;
+}
+
+.file-upload-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    border: 1px dashed #b9c3d0;
+    border-radius: 10px;
+    padding: 14px;
+    background: #fafcff;
+}
+
+.file-upload-area input[type="file"] {
+    display: none;
+}
+
+.file-upload-label {
+    display: inline-block;
+    min-width: 100px;
+    height: 42px;
+    line-height: 42px;
+    text-align: center;
+    padding: 0 16px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.file-upload-note {
+    font-size: 13px;
+    color: #6b7785;
+}
+
+.bottom-actions {
+    justify-content: flex-end;
+    margin-top: 8px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1100px) {
+    .form-grid-3 {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow: hidden;
+    }
+
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 2500;
+    }
+
+    .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+    }
+
+    .hamburger img {
+        width: 30px;
+    }
+
+    .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+    }
+
+    .header-user {
+        display: none;
+    }
+
+    .main-wrapper {
+        position: relative;
+        margin-top: 48px; /* 固定ヘッダー分のオフセット */
+    }
+
+    .content {
+        width: 100%;
+        padding: 12px 12px 56px 12px;
+        margin-left: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: calc(100vh - 48px);
+    }
+
+    .content:not(.expanded),
+    .content.expanded {
+        padding-left: 12px;
+        margin-left: 0;
+    }
+
+    #sidebarMount {
+        flex: 0 0 0;
+        width: 0;
+        min-width: 0;
+        overflow: visible;
+    }
+
+    /* この画面だけ: マウント幅が0でもサイドバー本体は220pxを維持 */
+    #sidebarMount > .sidebar {
+        min-width: 220px;
+        width: 220px;
+        flex-shrink: 0;
+    }
+
+    #sidebarMount .menu-title {
+        min-width: 0;
+    }
+
+    #sidebarMount .menu-title > span {
+        white-space: nowrap;
+    }
+
+    .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        flex: none;
+        min-height: 0;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .form-grid-2,
+    .form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .bottom-actions {
+        justify-content: flex-start;
+    }
+
+    .content-box .page-title {
+        margin: 0 0 5px;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="overlay" onclick="closeSidebar()"></div>
+    <div class="header">
+        <div class="hamburger" onclick="toggleSidebar()">
+            <img src="images/menu_50dp_008632.svg" />
+        </div>
+        <div class="header-title"><a href="dashboard.html">Proma</a></div>
+        <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+        <div class="account-wrapper">
+            <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+            <div class="account-menu">
+                <div class="menu-item">ログアウト</div>
+            </div>
+        </div>
+    </div>
+    <div class="main-wrapper">
+        <div id="sidebarMount"></div>
+        <div class="content">
+            <div class="content-box">
+                <h2 class="page-title">不良品・問題商品登録</h2>
+                <div class="page">
+                    <header class="page-header">
+                        <div>
+                            <p class="sub-title">不良品・問題商品の内容、対応内容、工場への対応を登録する画面</p>
+                        </div>
+                        <div class="header-actions">
+                            <a href="defect-management.html" class="btn btn-secondary">一覧へ戻る</a>
+                            <button class="btn btn-primary" type="button">登録</button>
+                        </div>
+                    </header>
+
+                    <form>
+            <!-- 基本情報 -->
+            <section class="card">
+                <h2 class="section-title">基本情報</h2>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select>
+                            <option>対応中</option>
+                            <option>保留</option>
+                            <option>完了</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 不良品情報 -->
+            <section class="card">
+                <h2 class="section-title">【不良品情報】</h2>
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label>年月日</label>
+                        <input type="date">
+                    </div>
+
+                    <div class="form-group">
+                        <label>区分</label>
+                        <select id="defectCategory">
+                            <option>得意先返品</option>
+                            <option>消費者返品</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="tokuisakiGroup" style="display: none;">
+                        <label>得意先</label>
+                        <select id="tokuisakiSelect">
+                            <option value="">得意先を選択</option>
+                            <option>得意先１</option>
+                            <option>得意先２</option>
+                            <option>得意先３</option>
+                            <option>得意先４</option>
+                            <option>得意先５</option>
+                            <option>得意先６</option>
+                            <option>得意先７</option>
+                            <option>得意先８</option>
+                            <option>得意先９</option>
+                            <option>得意先１０</option>
+                            <option>得意先１１</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>返品内容</label>
+                        <select>
+                            <option>ほつれ</option>
+                            <option>縫製不良</option>
+                            <option>毛羽落ち</option>
+                            <option>スナップ不良</option>
+                            <option>ケース不良</option>
+                            <option>刺繍不良</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>商品コード</label>
+                        <input type="text" placeholder="商品コードを入力">
+                    </div>
+
+                    <div class="form-group">
+                        <label>商品名</label>
+                        <input type="text" placeholder="商品名を入力">
+                    </div>
+
+                    <div class="form-group">
+                        <label>メーカー</label>
+                        <div class="multi-select" id="makerMulti" data-list="supplier">
+                            <button type="button" class="multi-select-toggle" id="makerToggle" aria-haspopup="listbox" aria-expanded="false">選択してください</button>
+                            <div class="multi-select-menu" id="makerMenu" role="listbox" aria-multiselectable="true"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>枚数</label>
+                        <input type="text" placeholder="枚数を入力">
+                    </div>
+
+                    <div class="form-group">
+                        <label>過失</label>
+                        <select>
+                            <option>工場</option>
+                            <option>顧客</option>
+                            <option>不明</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label>画像</label>
+                        <div class="file-upload-area">
+                            <input type="file" id="imageUpload" accept="image/*">
+                            <label for="imageUpload" class="file-upload-label">画像を選択</label>
+                            <span class="file-upload-note">jpg / png / jpeg など</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label>備考（詳細）</label>
+                        <textarea rows="5" placeholder="不良内容・状況・補足などを入力"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 対応内容 -->
+            <section class="card">
+                <h2 class="section-title">【対応内容】</h2>
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label>年月日</label>
+                        <input type="date">
+                    </div>
+
+                    <div class="form-group">
+                        <label>担当者</label>
+                        <input type="text" placeholder="担当者名を入力">
+                    </div>
+
+                    <div class="form-group">
+                        <label>対応内容</label>
+                        <select>
+                            <option>交換</option>
+                            <option>代替品</option>
+                            <option>返金</option>
+                            <option>その他</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>返金金額</label>
+                        <input type="number" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                    </div>
+                    <div class="form-group">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>運賃区分</label>
+                        <select>
+                            <option>着払い</option>
+                            <option>返送</option>
+                            <option>発送</option>
+                            <option>その他</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>運賃</label>
+                        <input type="number" placeholder="0">
+                    </div>
+                    <br>
+                    <br>
+                    
+                    <div class="form-group">
+                        <label>運賃区分</label>
+                        <select>
+                            <option>着払い</option>
+                            <option>返送</option>
+                            <option>発送</option>
+                            <option>その他</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>運賃</label>
+                        <input type="number" placeholder="0">
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label>備考（詳細）</label>
+                        <textarea rows="5" placeholder="対応内容の詳細を入力"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 工場への対応 -->
+            <section class="card">
+                <h2 class="section-title">【工場への対応】</h2>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>対応内容</label> 
+                        <select>
+                            <option>メーカー返品</option>
+                            <option>請求</option>
+                            <option>相殺</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <div class="bottom-actions">
+                <a href="defect-management.html" class="btn btn-secondary">キャンセル</a>
+                <button class="btn btn-primary" type="submit">登録する</button>
+            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/sidebar.js"></script>
+    <script>
+        function loadSharedSidebar() {
+            const mount = document.getElementById('sidebarMount');
+            if (!mount) return;
+            if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) return;
+            mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+            initSidebarCollapseToggle();
+        }
+
+        function initSidebarCollapseToggle() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            const content = document.querySelector('.content');
+            if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+            const toggleImg = toggle.querySelector('img');
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('closed');
+                content.classList.toggle('expanded');
+                if (toggleImg) {
+                    toggleImg.src = sidebar.classList.contains('closed')
+                        ? 'images/chevron_right_20dp_FFFFF.svg'
+                        : 'images/chevron_left_20dp_FFFFF.svg';
+                }
+            });
+            toggle.dataset.bound = '1';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            if (!sidebar || !overlay) return;
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('show', sidebar.classList.contains('active'));
+        }
+
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            if (!sidebar || !overlay) return;
+            sidebar.classList.remove('active');
+            overlay.classList.remove('show');
+        }
+
+        loadSharedSidebar();
+
+        const accountIcon = document.querySelector('.header-account_circle');
+        const accountMenu = document.querySelector('.account-menu');
+        if (accountIcon && accountMenu) {
+            accountIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                accountMenu.style.display = accountMenu.style.display === 'block' ? 'none' : 'block';
+            });
+            document.addEventListener('click', () => {
+                accountMenu.style.display = 'none';
+            });
+        }
+
+        const defectCategory = document.getElementById('defectCategory');
+        const tokuisakiGroup = document.getElementById('tokuisakiGroup');
+
+        function toggleTokuisakiField() {
+            if (!defectCategory || !tokuisakiGroup) return;
+            const showTokuisaki = defectCategory.value === '得意先返品';
+            tokuisakiGroup.style.display = showTokuisaki ? 'flex' : 'none';
+        }
+
+        if (defectCategory) {
+            defectCategory.addEventListener('change', toggleTokuisakiField);
+            toggleTokuisakiField();
+        }
+
+        function buildMultiSelect(wrapId, toggleId, menuId) {
+            const wrap = document.getElementById(wrapId);
+            const toggle = document.getElementById(toggleId);
+            const menuEl = document.getElementById(menuId);
+            if (!wrap || !toggle || !menuEl) return null;
+
+            const listKey = wrap.getAttribute('data-list');
+            let source = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS[listKey];
+            if (!Array.isArray(source)) source = [];
+
+            menuEl.innerHTML = '';
+            source.forEach((item) => {
+                const label = document.createElement('label');
+                label.className = 'multi-select-option';
+
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.value = item;
+
+                const span = document.createElement('span');
+                span.textContent = item;
+
+                label.appendChild(input);
+                label.appendChild(span);
+                menuEl.appendChild(label);
+            });
+
+            function updateLabel() {
+                const checked = menuEl.querySelectorAll('input[type="checkbox"]:checked');
+                if (checked.length === 0) {
+                    toggle.textContent = '選択してください';
+                } else if (checked.length === 1) {
+                    toggle.textContent = checked[0].value;
+                } else {
+                    toggle.textContent = `${checked.length}件選択中`;
+                }
+            }
+
+            toggle.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const isOpen = wrap.classList.toggle('is-open');
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+
+            menuEl.addEventListener('change', updateLabel);
+            updateLabel();
+
+            return { wrap, toggle };
+        }
+
+        const makerMultiSelect = buildMultiSelect('makerMulti', 'makerToggle', 'makerMenu');
+
+        document.addEventListener('click', (event) => {
+            if (!makerMultiSelect) return;
+            if (!makerMultiSelect.wrap.contains(event.target)) {
+                makerMultiSelect.wrap.classList.remove('is-open');
+                makerMultiSelect.toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    </script>
+</body>
+</html>

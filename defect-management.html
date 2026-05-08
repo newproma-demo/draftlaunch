@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="js/autocomplete.js"></script>
+    <!-- <link rel="stylesheet" href="defect-management.css"> -->
+
+<style>
+* {
+  box-sizing: border-box;
+  }
+
+body {
+    margin: 0;
+    /* font-family: "Yu Gothic", "Meiryo", sans-serif; */
+    background: #f3f6fb;
+    color: #1f2937;
+}
+
+.header {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: var(--color-card);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.header a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.header a:hover {
+    color: var(--color-primary);
+}
+
+.hamburger {
+    display: none;
+}
+
+.header-title {
+    margin: 0;
+    font-size: var(--fs-xl);
+    font-weight: 700;
+}
+
+.header-user {
+    position: absolute;
+    right: 70px;
+    padding: 0;
+    font-size: 14pt;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.account-wrapper {
+    position: absolute;
+    right: 24px;
+}
+
+.account-menu {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    min-height: 41px;
+    background: var(--color-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: none;
+    min-width: 120px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.account-menu .menu-item {
+    padding: 12px 16px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.account-menu .menu-item:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.header-account_circle {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.main-wrapper {
+    display: flex;
+    flex: 1;
+    margin-top: 0;
+    min-height: calc(100vh - 48px);
+}
+
+.content {
+    background: var(--color-surface);
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 56px 12px;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease, padding-left 0.3s ease;
+}
+
+.content:not(.expanded) {
+    padding-left: 32px;
+}
+
+.content.expanded {
+    margin-left: -220px;
+    padding-left: 32px;
+}
+
+.content-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.content-box .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--color-primary);
+    flex-shrink: 0;
+}
+
+.page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.page-header h1 {
+    font-size: 30px;
+    color: #183b63;
+    margin-bottom: 6px;
+}
+
+.sub-title {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.header-actions,
+.bottom-actions,
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #dce6f2;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 18px;
+    color: #23466b;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #edf3fa;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #425466;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccd3db;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    height: 42px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    background: var(--color-clearbutton-background);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: var(--color-clearbutton-background-hover);
+    color: var(--color-text);
+    border: 1px solid var(--color-clearbutton-border);
+    transform: none;
+    box-shadow: none;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 10px;
+    padding-bottom: 12px;
+}
+
+.summary-area {
+    margin-bottom: 24px;
+}
+
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.summary-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 8px 14px;
+    border: 1px solid #cfd6df;
+    background: #fff;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: #2f6fed;
+    color: #fff;
+    border-color: #2f6fed;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.summary-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-left: 5px solid #2f6fed;
+}
+
+.summary-label {
+    font-size: 14px;
+    color: #5f6b7a;
+    margin-bottom: 10px;
+}
+
+.summary-value {
+    font-size: 30px;
+    font-weight: bold;
+    color: #1f2d3d;
+    line-height: 1;
+}
+
+.summary-unit {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #778394;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.list-info {
+    font-size: 14px;
+    color: #6b7785;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 980px;
+}
+
+thead {
+    background: #eef3fb;
+}
+
+th,
+td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e4e9ef;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    color: #334155;
+    font-weight: bold;
+}
+
+tbody tr:hover {
+    background: #f8fbff;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.file-upload-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    border: 1px dashed #b9c3d0;
+    border-radius: 10px;
+    padding: 14px;
+    background: #fafcff;
+}
+
+.file-upload-area input[type="file"] {
+    display: none;
+}
+
+.file-upload-label {
+    display: inline-block;
+    min-width: 100px;
+    height: 42px;
+    line-height: 42px;
+    text-align: center;
+    padding: 0 16px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.file-upload-note {
+    font-size: 13px;
+    color: #6b7785;
+}
+
+.bottom-actions {
+    justify-content: flex-end;
+    margin-top: 8px;
+    margin-bottom: 30px;
+}
+
+.image-upload-box {
+    border: 1px solid #ccd3db;
+    border-radius: 8px;
+    background: #fff;
+    padding: 14px;
+}
+
+.image-upload-box input[type="file"] {
+    display: none;
+}
+
+.image-upload-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.upload-btn {
+    min-width: auto;
+}
+
+.upload-note {
+    font-size: 13px;
+    color: #6b7785;
+}
+.summary-top-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-top-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-left: 5px solid #2f6fed;
+}
+
+.summary-top-label {
+    font-size: 14px;
+    color: #667588;
+    margin-bottom: 10px;
+}
+
+.summary-top-value {
+    font-size: 30px;
+    font-weight: bold;
+    color: #1f2d3d;
+    line-height: 1.1;
+}
+
+.summary-top-unit {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #7b8794;
+}
+
+.aggregate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.aggregate-tab-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.aggregate-tab {
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid #bfd4ee;
+    background: #f8fbff;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2a5c92;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.aggregate-tab:hover {
+    background: #eef5ff;
+    border-color: #9fc0ea;
+}
+
+.aggregate-tab.active {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+    box-shadow: 0 6px 14px rgba(47, 97, 223, 0.25);
+}
+
+.aggregate-panel {
+    display: none;
+}
+
+.aggregate-panel.active {
+    display: block;
+}
+
+.table-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.table-title {
+    font-size: 17px;
+    color: #25364a;
+}
+
+.table-note {
+    font-size: 13px;
+    color: #6b7785;
+}
+
+.aggregate-table td,
+.aggregate-table th {
+    white-space: nowrap;
+}
+
+tfoot th,
+tfoot td {
+    background: #f8fbff;
+    font-weight: bold;
+}
+
+.link-value {
+    border: none;
+    background: none;
+    color: #2f6fed;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    padding: 0;
+}
+
+.link-value:hover {
+    color: #1f4fb0;
+}
+
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 24px;
+}
+
+.popup-overlay.show {
+    display: flex;
+}
+
+.popup-box {
+    width: 100%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #e5e9f0;
+    background: #f8fafc;
+}
+
+.popup-header h3 {
+    font-size: 20px;
+    color: #1f2d3d;
+}
+
+.popup-close {
+    border: none;
+    background: none;
+    font-size: 28px;
+    line-height: 1;
+    color: #667085;
+    cursor: pointer;
+}
+
+.popup-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #e5e9f0;
+    background: #fcfdff;
+}
+
+.popup-summary-item {
+    background: #f4f7fb;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.popup-summary-label {
+    display: block;
+    font-size: 12px;
+    color: #6b7785;
+    margin-bottom: 6px;
+}
+
+.popup-summary-value {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1f2d3d;
+}
+
+.popup-table-wrap {
+    padding: 0 22px 22px;
+    overflow: auto;
+    flex: 1;
+}
+
+.image-upload-box {
+    border: 1px solid #ccd3db;
+    border-radius: 8px;
+    background: #fff;
+    padding: 14px;
+}
+
+.image-upload-box input[type="file"] {
+    display: none;
+}
+
+.image-upload-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.upload-btn {
+    min-width: auto;
+}
+
+.upload-note {
+    font-size: 13px;
+    color: #6b7785;
+}
+
+@media (max-width: 1100px) {
+    .filter-grid,
+    .form-grid-3 {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow: hidden;
+    }
+
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 2500;
+    }
+
+    .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+    }
+
+    .hamburger img {
+        width: 30px;
+    }
+
+    .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+    }
+
+    .header-user {
+        display: none;
+    }
+
+    .main-wrapper {
+        position: relative;
+        margin-top: 48px; /* 固定ヘッダー分のオフセット */
+    }
+
+    .content {
+        width: 100%;
+        padding: 12px 12px 56px 12px;
+        margin-left: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: calc(100vh - 48px);
+    }
+
+    .content:not(.expanded),
+    .content.expanded {
+        padding-left: 12px;
+        margin-left: 0;
+    }
+
+    #sidebarMount {
+        flex: 0 0 0;
+        width: 0;
+        min-width: 0;
+        overflow: visible;
+    }
+
+    /* この画面だけ: マウント幅が0でもサイドバー本体は220pxを維持 */
+    #sidebarMount > .sidebar {
+        min-width: 220px;
+        width: 220px;
+        flex-shrink: 0;
+    }
+
+    #sidebarMount .menu-title {
+        min-width: 0;
+    }
+
+    #sidebarMount .menu-title > span {
+        white-space: nowrap;
+    }
+
+    .content-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        flex: none;
+        min-height: 0;
+    }
+
+    /* .page {
+        padding: 16px;
+    } */
+
+    .page-header,
+    .summary-header,
+    .list-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .filter-grid,
+    .form-grid-2,
+    .form-grid-3,
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .bottom-actions {
+        justify-content: flex-start;
+    }
+
+    .content-box .page-title {
+        margin: 0 0 5px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .summary-top-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .popup-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .aggregate-header,
+    .table-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .summary-top-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .popup-overlay {
+        padding: 12px;
+    }
+
+    .popup-header,
+    .popup-summary,
+    .popup-table-wrap {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="overlay" onclick="closeSidebar()"></div>
+    <div class="header">
+        <div class="hamburger" onclick="toggleSidebar()">
+            <img src="images/menu_50dp_008632.svg" />
+        </div>
+        <div class="header-title"><a href="dashboard.html">Proma</a></div>
+        <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+        <div class="account-wrapper">
+            <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+            <div class="account-menu">
+                <div class="menu-item">ログアウト</div>
+            </div>
+        </div>
+    </div>
+    <div class="main-wrapper">
+        <div id="sidebarMount"></div>
+        <div class="content">
+            <div class="content-box">
+                <h2 class="page-title">不良品・問題商品管理</h2>
+                <div class="page">
+        <header class="page-header">
+            <div>
+                <p class="sub-title">不良品・問題商品の件数・商品枚数を切り口別に集計し、明細まで確認できる画面</p>
+            </div>
+            <div class="header-actions">
+                <a href="defect-register.html" class="btn btn-primary">＋ 新規登録</a>
+            </div>
+        </header>
+
+        <!-- 検索条件 -->
+        <section class="card">
+            <h2 class="section-title">検索・絞り込み</h2>
+            <div class="filter-grid">
+                <div class="form-group">
+                    <label>対象年月</label>
+                    <input type="month" value="2026-04">
+                </div>
+                <div class="form-group">
+                	<label>　</label>
+                    <input type="month" value="2026-05">
+                </div>
+                 <div class="form-group">
+                </div>
+
+                <div class="form-group">
+                    <label>メーカー名</label>
+                    <select>
+                        <option>すべて</option>
+                        <option>メーカーA</option>
+                        <option>メーカーB</option>
+                        <option>メーカーC</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>商品コード</label>
+                    <input type="text" placeholder="商品コードを入力">
+                </div>
+
+                <div class="form-group">
+                    <label>商品名</label>
+                    <input type="text" placeholder="商品名を入力">
+                </div>
+
+                <div class="form-group">
+                    <label>カテゴリー</label>
+                    <select>
+                        <option>すべて</option>
+                        <option>トップス</option>
+                        <option>ボトムス</option>
+                        <option>雑貨</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>ステータス</label>
+                    <select>
+                        <option>すべて</option>
+                        <option>対応中</option>
+                        <option>保留</option>
+                        <option>完了</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn-primary" type="button">検索</button>
+                <button class="btn btn-secondary" type="button">クリア</button>
+            </div>
+        </section>
+
+        <!-- サマリー -->
+        <section class="summary-top-grid">
+            <div class="summary-top-card">
+                <p class="summary-top-label">総件数</p>
+                <p class="summary-top-value">86</p>
+                <p class="summary-top-unit">件</p>
+            </div>
+            <div class="summary-top-card">
+                <p class="summary-top-label">総商品枚数</p>
+                <p class="summary-top-value">241</p>
+                <p class="summary-top-unit">枚</p>
+            </div>
+            <div class="summary-top-card">
+                <p class="summary-top-label">未完了件数</p>
+                <p class="summary-top-value">19</p>
+                <p class="summary-top-unit">件</p>
+            </div>
+            <div class="summary-top-card">
+                <p class="summary-top-label">返金総額</p>
+                <p class="summary-top-value">¥128,000</p>
+                <p class="summary-top-unit">累計</p>
+            </div>
+        </section>
+
+        <!-- 集計タブ -->
+        <section class="card">
+            <div class="aggregate-header">
+                <h2 class="section-title">集計表</h2>
+                <div class="aggregate-tab-list">
+                    <button type="button" class="aggregate-tab active" data-tab="maker">メーカー別</button>
+                    <button type="button" class="aggregate-tab" data-tab="item">アイテム別</button>
+                    <button type="button" class="aggregate-tab" data-tab="month">月別</button>
+                    <button type="button" class="aggregate-tab" data-tab="content">内容別</button>
+                    <button type="button" class="aggregate-tab" data-tab="process">処理方法別</button>
+                </div>
+            </div>
+
+            <!-- メーカー別 -->
+            <div class="aggregate-panel active" id="panel-maker">
+                <div class="table-title-row">
+                    <h3 class="table-title">メーカー別集計</h3>
+                    <p class="table-note">件数・商品枚数をクリックすると明細が表示されます</p>
+                </div>
+                <div class="table-wrap">
+                    <table class="aggregate-table">
+                        <thead>
+                            <tr>
+                                <th>メーカー名</th>
+                                <th class="text-right">件数</th>
+                                <th class="text-right">商品枚数</th>
+                                <th class="text-right">返金金額</th>
+                                <th class="text-right">運賃</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>メーカーA</td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーA：件数明細" data-type="maker-a-count">22</button>
+                                </td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーA：商品枚数明細" data-type="maker-a-qty">68</button>
+                                </td>
+                                <td class="text-right">¥38,000</td>
+                                <td class="text-right">¥7,200</td>
+                            </tr>
+                            <tr>
+                                <td>メーカーB</td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーB：件数明細" data-type="maker-b-count">18</button>
+                                </td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーB：商品枚数明細" data-type="maker-b-qty">51</button>
+                                </td>
+                                <td class="text-right">¥26,000</td>
+                                <td class="text-right">¥5,000</td>
+                            </tr>
+                            <tr>
+                                <td>メーカーC</td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーC：件数明細" data-type="maker-c-count">14</button>
+                                </td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーC：商品枚数明細" data-type="maker-c-qty">39</button>
+                                </td>
+                                <td class="text-right">¥18,500</td>
+                                <td class="text-right">¥3,600</td>
+                            </tr>
+                            <tr>
+                                <td>メーカーD</td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーD：件数明細" data-type="maker-d-count">32</button>
+                                </td>
+                                <td class="text-right">
+                                    <button class="link-value" data-title="メーカーD：商品枚数明細" data-type="maker-d-qty">83</button>
+                                </td>
+                                <td class="text-right">¥45,500</td>
+                                <td class="text-right">¥8,900</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>合計</th>
+                                <th class="text-right">86</th>
+                                <th class="text-right">241</th>
+                                <th class="text-right">¥128,000</th>
+                                <th class="text-right">¥24,700</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- アイテム別 -->
+            <div class="aggregate-panel" id="panel-item">
+                <div class="table-title-row">
+                    <h3 class="table-title">アイテム別集計</h3>
+                    <p class="table-note">件数・商品枚数をクリックすると明細が表示されます</p>
+                </div>
+                <div class="table-wrap">
+                    <table class="aggregate-table">
+                        <thead>
+                            <tr>
+                                <th>アイテム</th>
+                                <th class="text-right">件数</th>
+                                <th class="text-right">商品枚数</th>
+                                <th class="text-right">返金金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tシャツ</td>
+                                <td class="text-right"><button class="link-value" data-title="Tシャツ：件数明細" data-type="item-tshirt-count">27</button></td>
+                                <td class="text-right"><button class="link-value" data-title="Tシャツ：商品枚数明細" data-type="item-tshirt-qty">84</button></td>
+                                <td class="text-right">¥36,000</td>
+                            </tr>
+                            <tr>
+                                <td>パーカー</td>
+                                <td class="text-right"><button class="link-value" data-title="パーカー：件数明細" data-type="item-parka-count">14</button></td>
+                                <td class="text-right"><button class="link-value" data-title="パーカー：商品枚数明細" data-type="item-parka-qty">43</button></td>
+                                <td class="text-right">¥21,000</td>
+                            </tr>
+                            <tr>
+                                <td>バッグ</td>
+                                <td class="text-right"><button class="link-value" data-title="バッグ：件数明細" data-type="item-bag-count">19</button></td>
+                                <td class="text-right"><button class="link-value" data-title="バッグ：商品枚数明細" data-type="item-bag-qty">48</button></td>
+                                <td class="text-right">¥29,500</td>
+                            </tr>
+                            <tr>
+                                <td>パンツ</td>
+                                <td class="text-right"><button class="link-value" data-title="パンツ：件数明細" data-type="item-pants-count">11</button></td>
+                                <td class="text-right"><button class="link-value" data-title="パンツ：商品枚数明細" data-type="item-pants-qty">26</button></td>
+                                <td class="text-right">¥16,500</td>
+                            </tr>
+                            <tr>
+                                <td>その他</td>
+                                <td class="text-right"><button class="link-value" data-title="その他：件数明細" data-type="item-other-count">15</button></td>
+                                <td class="text-right"><button class="link-value" data-title="その他：商品枚数明細" data-type="item-other-qty">40</button></td>
+                                <td class="text-right">¥25,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 月別 -->
+            <div class="aggregate-panel" id="panel-month">
+                <div class="table-title-row">
+                    <h3 class="table-title">月別集計</h3>
+                    <p class="table-note">件数・商品枚数をクリックすると明細が表示されます</p>
+                </div>
+                <div class="table-wrap">
+                    <table class="aggregate-table">
+                        <thead>
+                            <tr>
+                                <th>月</th>
+                                <th class="text-right">件数</th>
+                                <th class="text-right">商品枚数</th>
+                                <th class="text-right">返金金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2026/01</td>
+                                <td class="text-right"><button class="link-value" data-title="2026/01：件数明細" data-type="month-202601-count">12</button></td>
+                                <td class="text-right"><button class="link-value" data-title="2026/01：商品枚数明細" data-type="month-202601-qty">35</button></td>
+                                <td class="text-right">¥18,000</td>
+                            </tr>
+                            <tr>
+                                <td>2026/02</td>
+                                <td class="text-right"><button class="link-value" data-title="2026/02：件数明細" data-type="month-202602-count">15</button></td>
+                                <td class="text-right"><button class="link-value" data-title="2026/02：商品枚数明細" data-type="month-202602-qty">46</button></td>
+                                <td class="text-right">¥24,500</td>
+                            </tr>
+                            <tr>
+                                <td>2026/03</td>
+                                <td class="text-right"><button class="link-value" data-title="2026/03：件数明細" data-type="month-202603-count">26</button></td>
+                                <td class="text-right"><button class="link-value" data-title="2026/03：商品枚数明細" data-type="month-202603-qty">72</button></td>
+                                <td class="text-right">¥39,500</td>
+                            </tr>
+                            <tr>
+                                <td>2026/04</td>
+                                <td class="text-right"><button class="link-value" data-title="2026/04：件数明細" data-type="month-202604-count">33</button></td>
+                                <td class="text-right"><button class="link-value" data-title="2026/04：商品枚数明細" data-type="month-202604-qty">88</button></td>
+                                <td class="text-right">¥46,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 内容別 -->
+            <div class="aggregate-panel" id="panel-content">
+                <div class="table-title-row">
+                    <h3 class="table-title">内容別集計</h3>
+                    <p class="table-note">件数・商品枚数をクリックすると明細が表示されます</p>
+                </div>
+                <div class="table-wrap">
+                    <table class="aggregate-table">
+                        <thead>
+                            <tr>
+                                <th>内容</th>
+                                <th class="text-right">件数</th>
+                                <th class="text-right">商品枚数</th>
+                                <th class="text-right">構成比</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>汚れ</td>
+                                <td class="text-right"><button class="link-value" data-title="汚れ：件数明細" data-type="content-dirt-count">24</button></td>
+                                <td class="text-right"><button class="link-value" data-title="汚れ：商品枚数明細" data-type="content-dirt-qty">67</button></td>
+                                <td class="text-right">27.9%</td>
+                            </tr>
+                            <tr>
+                                <td>破損</td>
+                                <td class="text-right"><button class="link-value" data-title="破損：件数明細" data-type="content-break-count">17</button></td>
+                                <td class="text-right"><button class="link-value" data-title="破損：商品枚数明細" data-type="content-break-qty">52</button></td>
+                                <td class="text-right">19.8%</td>
+                            </tr>
+                            <tr>
+                                <td>縫製不良</td>
+                                <td class="text-right"><button class="link-value" data-title="縫製不良：件数明細" data-type="content-sew-count">21</button></td>
+                                <td class="text-right"><button class="link-value" data-title="縫製不良：商品枚数明細" data-type="content-sew-qty">54</button></td>
+                                <td class="text-right">24.4%</td>
+                            </tr>
+                            <tr>
+                                <td>印字不良</td>
+                                <td class="text-right"><button class="link-value" data-title="印字不良：件数明細" data-type="content-print-count">13</button></td>
+                                <td class="text-right"><button class="link-value" data-title="印字不良：商品枚数明細" data-type="content-print-qty">39</button></td>
+                                <td class="text-right">15.1%</td>
+                            </tr>
+                            <tr>
+                                <td>その他</td>
+                                <td class="text-right"><button class="link-value" data-title="その他：件数明細" data-type="content-other-count">11</button></td>
+                                <td class="text-right"><button class="link-value" data-title="その他：商品枚数明細" data-type="content-other-qty">29</button></td>
+                                <td class="text-right">12.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 処理方法別 -->
+            <div class="aggregate-panel" id="panel-process">
+                <div class="table-title-row">
+                    <h3 class="table-title">処理方法別集計</h3>
+                    <p class="table-note">件数・商品枚数をクリックすると明細が表示されます</p>
+                </div>
+                <div class="table-wrap">
+                    <table class="aggregate-table">
+                        <thead>
+                            <tr>
+                                <th>処理方法</th>
+                                <th class="text-right">件数</th>
+                                <th class="text-right">商品枚数</th>
+                                <th class="text-right">返金金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>返金</td>
+                                <td class="text-right"><button class="link-value" data-title="返金：件数明細" data-type="process-refund-count">31</button></td>
+                                <td class="text-right"><button class="link-value" data-title="返金：商品枚数明細" data-type="process-refund-qty">76</button></td>
+                                <td class="text-right">¥62,000</td>
+                            </tr>
+                            <tr>
+                                <td>返品</td>
+                                <td class="text-right"><button class="link-value" data-title="返品：件数明細" data-type="process-return-count">18</button></td>
+                                <td class="text-right"><button class="link-value" data-title="返品：商品枚数明細" data-type="process-return-qty">53</button></td>
+                                <td class="text-right">¥0</td>
+                            </tr>
+                            <tr>
+                                <td>交換</td>
+                                <td class="text-right"><button class="link-value" data-title="交換：件数明細" data-type="process-change-count">22</button></td>
+                                <td class="text-right"><button class="link-value" data-title="交換：商品枚数明細" data-type="process-change-qty">70</button></td>
+                                <td class="text-right">¥0</td>
+                            </tr>
+                            <tr>
+                                <td>値引き対応</td>
+                                <td class="text-right"><button class="link-value" data-title="値引き対応：件数明細" data-type="process-discount-count">9</button></td>
+                                <td class="text-right"><button class="link-value" data-title="値引き対応：商品枚数明細" data-type="process-discount-qty">24</button></td>
+                                <td class="text-right">¥21,000</td>
+                            </tr>
+                            <tr>
+                                <td>再送</td>
+                                <td class="text-right"><button class="link-value" data-title="再送：件数明細" data-type="process-resend-count">6</button></td>
+                                <td class="text-right"><button class="link-value" data-title="再送：商品枚数明細" data-type="process-resend-qty">18</button></td>
+                                <td class="text-right">¥0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 明細ポップアップ -->
+    <div class="popup-overlay" id="detailPopup">
+        <div class="popup-box">
+            <div class="popup-header">
+                <h3 id="popupTitle">明細</h3>
+                <button type="button" class="popup-close" id="popupClose">×</button>
+            </div>
+
+            <div class="popup-summary">
+                <div class="popup-summary-item">
+                    <span class="popup-summary-label">対象</span>
+                    <span class="popup-summary-value" id="popupTarget">メーカーA</span>
+                </div>
+                <div class="popup-summary-item">
+                    <span class="popup-summary-label">件数</span>
+                    <span class="popup-summary-value" id="popupCount">3件</span>
+                </div>
+                <div class="popup-summary-item">
+                    <span class="popup-summary-label">商品枚数</span>
+                    <span class="popup-summary-value" id="popupQty">10枚</span>
+                </div>
+            </div>
+
+            <div class="table-wrap popup-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>年月日</th>
+                            <th>メーカー</th>
+                            <th>商品コード</th>
+                            <th>商品名</th>
+                            <th>内容</th>
+                            <th>処理方法</th>
+                            <th class="text-right">数量</th>
+                        </tr>
+                    </thead>
+                    <tbody id="popupDetailBody">
+                        <!-- JSで差し込み -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        function loadSharedSidebar() {
+            const mount = document.getElementById('sidebarMount');
+            if (!mount) return;
+            if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) return;
+            mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+            initSidebarCollapseToggle();
+        }
+
+        function initSidebarCollapseToggle() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            const content = document.querySelector('.content');
+            if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
+
+            const toggleImg = toggle.querySelector('img');
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('closed');
+                content.classList.toggle('expanded');
+                if (toggleImg) {
+                    toggleImg.src = sidebar.classList.contains('closed')
+                        ? 'images/chevron_right_20dp_FFFFF.svg'
+                        : 'images/chevron_left_20dp_FFFFF.svg';
+                }
+            });
+            toggle.dataset.bound = '1';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            if (!sidebar || !overlay) return;
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('show', sidebar.classList.contains('active'));
+        }
+
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            if (!sidebar || !overlay) return;
+            sidebar.classList.remove('active');
+            overlay.classList.remove('show');
+        }
+
+        loadSharedSidebar();
+
+        const accountIcon = document.querySelector('.header-account_circle');
+        const accountMenu = document.querySelector('.account-menu');
+        if (accountIcon && accountMenu) {
+            accountIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                accountMenu.style.display = accountMenu.style.display === 'block' ? 'none' : 'block';
+            });
+            document.addEventListener('click', () => {
+                accountMenu.style.display = 'none';
+            });
+        }
+
+        const tabs = document.querySelectorAll('.aggregate-tab');
+        const panels = document.querySelectorAll('.aggregate-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(btn => btn.classList.remove('active'));
+                panels.forEach(panel => panel.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        const detailData = {
+            "maker-a-count": {
+                target: "メーカーA",
+                count: "3件",
+                qty: "10枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "4"],
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "3"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "3"]
+                ]
+            },
+            "maker-a-qty": {
+                target: "メーカーA",
+                count: "4件",
+                qty: "68枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "18"],
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "15"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "20"],
+                    ["2026/04/16", "メーカーA", "A10031", "半袖Tシャツ", "汚れ", "再送", "15"]
+                ]
+            },
+            "maker-b-count": {
+                target: "メーカーB",
+                count: "3件",
+                qty: "11枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "5"],
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "2"],
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "4"]
+                ]
+            },
+            "maker-b-qty": {
+                target: "メーカーB",
+                count: "4件",
+                qty: "51枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "16"],
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "8"],
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "12"],
+                    ["2026/04/14", "メーカーB", "B20041", "ミニバッグ", "縫製不良", "値引き対応", "15"]
+                ]
+            },
+            "maker-c-count": {
+                target: "メーカーC",
+                count: "2件",
+                qty: "7枚",
+                rows: [
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "2"],
+                    ["2026/04/11", "メーカーC", "C33028", "ワイドパンツ", "縫製不良", "返金", "5"]
+                ]
+            },
+            "maker-c-qty": {
+                target: "メーカーC",
+                count: "3件",
+                qty: "39枚",
+                rows: [
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "10"],
+                    ["2026/04/11", "メーカーC", "C33028", "ワイドパンツ", "縫製不良", "返金", "12"],
+                    ["2026/04/15", "メーカーC", "C33034", "イージーパンツ", "汚れ", "返品", "17"]
+                ]
+            },
+            "maker-d-count": {
+                target: "メーカーD",
+                count: "4件",
+                qty: "13枚",
+                rows: [
+                    ["2026/04/02", "メーカーD", "D44003", "プリントスウェット", "汚れ", "返金", "6"],
+                    ["2026/04/07", "メーカーD", "D44018", "ロングTシャツ", "印字不良", "交換", "2"],
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "3"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "縫製不良", "交換", "2"]
+                ]
+            },
+            "maker-d-qty": {
+                target: "メーカーD",
+                count: "5件",
+                qty: "83枚",
+                rows: [
+                    ["2026/04/02", "メーカーD", "D44003", "プリントスウェット", "汚れ", "返金", "20"],
+                    ["2026/04/07", "メーカーD", "D44018", "ロングTシャツ", "印字不良", "交換", "12"],
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "14"],
+                    ["2026/04/13", "メーカーD", "D44029", "トレーナー", "縫製不良", "返品", "18"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "汚れ", "再送", "19"]
+                ]
+            },
+            "item-tshirt-count": {
+                target: "Tシャツ",
+                count: "3件",
+                qty: "9枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "4"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "3"],
+                    ["2026/04/16", "メーカーD", "D44018", "ロングTシャツ", "縫製不良", "交換", "2"]
+                ]
+            },
+            "item-tshirt-qty": {
+                target: "Tシャツ",
+                count: "4件",
+                qty: "84枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "24"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "18"],
+                    ["2026/04/16", "メーカーD", "D44018", "ロングTシャツ", "縫製不良", "交換", "20"],
+                    ["2026/04/18", "メーカーB", "B20055", "半袖Tシャツ", "汚れ", "再送", "22"]
+                ]
+            },
+            "item-parka-count": {
+                target: "パーカー",
+                count: "2件",
+                qty: "5枚",
+                rows: [
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "3"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "汚れ", "再送", "2"]
+                ]
+            },
+            "item-parka-qty": {
+                target: "パーカー",
+                count: "3件",
+                qty: "43枚",
+                rows: [
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "15"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "汚れ", "再送", "13"],
+                    ["2026/04/19", "メーカーC", "C33044", "裏毛パーカー", "破損", "返金", "15"]
+                ]
+            },
+            "item-bag-count": {
+                target: "バッグ",
+                count: "3件",
+                qty: "10枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "5"],
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "4"],
+                    ["2026/04/14", "メーカーB", "B20041", "ミニバッグ", "縫製不良", "値引き対応", "1"]
+                ]
+            },
+            "item-bag-qty": {
+                target: "バッグ",
+                count: "4件",
+                qty: "48枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "16"],
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "12"],
+                    ["2026/04/14", "メーカーB", "B20041", "ミニバッグ", "縫製不良", "値引き対応", "10"],
+                    ["2026/04/18", "メーカーA", "A10121", "トートバッグ", "汚れ", "返金", "10"]
+                ]
+            },
+            "item-pants-count": {
+                target: "パンツ",
+                count: "2件",
+                qty: "7枚",
+                rows: [
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "2"],
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "汚れ", "値引き対応", "5"]
+                ]
+            },
+            "item-pants-qty": {
+                target: "パンツ",
+                count: "3件",
+                qty: "26枚",
+                rows: [
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "8"],
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "汚れ", "値引き対応", "9"],
+                    ["2026/04/15", "メーカーC", "C33034", "イージーパンツ", "縫製不良", "返金", "9"]
+                ]
+            },
+            "item-other-count": {
+                target: "その他",
+                count: "2件",
+                qty: "6枚",
+                rows: [
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "2"],
+                    ["2026/04/17", "メーカーD", "D44102", "キャップ", "印字不良", "交換", "4"]
+                ]
+            },
+            "item-other-qty": {
+                target: "その他",
+                count: "3件",
+                qty: "40枚",
+                rows: [
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "8"],
+                    ["2026/04/17", "メーカーD", "D44102", "キャップ", "印字不良", "交換", "14"],
+                    ["2026/04/20", "メーカーA", "A10209", "マフラー", "その他", "返品", "18"]
+                ]
+            },
+            "month-202601-count": {
+                target: "2026/01",
+                count: "3件",
+                qty: "8枚",
+                rows: [
+                    ["2026/01/06", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "3"],
+                    ["2026/01/15", "メーカーC", "C33010", "デニムパンツ", "破損", "交換", "2"],
+                    ["2026/01/28", "メーカーD", "D44001", "スウェット", "縫製不良", "返品", "3"]
+                ]
+            },
+            "month-202601-qty": {
+                target: "2026/01",
+                count: "4件",
+                qty: "35枚",
+                rows: [
+                    ["2026/01/06", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "8"],
+                    ["2026/01/15", "メーカーC", "C33010", "デニムパンツ", "破損", "交換", "9"],
+                    ["2026/01/28", "メーカーD", "D44001", "スウェット", "縫製不良", "返品", "10"],
+                    ["2026/01/30", "メーカーB", "B20005", "バッグ", "印字不良", "再送", "8"]
+                ]
+            },
+            "month-202602-count": {
+                target: "2026/02",
+                count: "3件",
+                qty: "11枚",
+                rows: [
+                    ["2026/02/04", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "5"],
+                    ["2026/02/10", "メーカーD", "D44018", "ロングTシャツ", "汚れ", "返金", "2"],
+                    ["2026/02/23", "メーカーA", "A10022", "プリントTシャツ", "縫製不良", "交換", "4"]
+                ]
+            },
+            "month-202602-qty": {
+                target: "2026/02",
+                count: "4件",
+                qty: "46枚",
+                rows: [
+                    ["2026/02/04", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "10"],
+                    ["2026/02/10", "メーカーD", "D44018", "ロングTシャツ", "汚れ", "返金", "12"],
+                    ["2026/02/23", "メーカーA", "A10022", "プリントTシャツ", "縫製不良", "交換", "11"],
+                    ["2026/02/27", "メーカーC", "C33021", "デニムパンツ", "破損", "返品", "13"]
+                ]
+            },
+            "month-202603-count": {
+                target: "2026/03",
+                count: "4件",
+                qty: "13枚",
+                rows: [
+                    ["2026/03/03", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "3"],
+                    ["2026/03/07", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "2"],
+                    ["2026/03/14", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "3"],
+                    ["2026/03/25", "メーカーC", "C33034", "イージーパンツ", "汚れ", "返品", "5"]
+                ]
+            },
+            "month-202603-qty": {
+                target: "2026/03",
+                count: "5件",
+                qty: "72枚",
+                rows: [
+                    ["2026/03/03", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "14"],
+                    ["2026/03/07", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "10"],
+                    ["2026/03/14", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "12"],
+                    ["2026/03/25", "メーカーC", "C33034", "イージーパンツ", "汚れ", "返品", "16"],
+                    ["2026/03/29", "メーカーA", "A10030", "トートバッグ", "印字不良", "交換", "20"]
+                ]
+            },
+            "month-202604-count": {
+                target: "2026/04",
+                count: "4件",
+                qty: "14枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "5"],
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "3"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "汚れ", "返金", "3"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "破損", "再送", "3"]
+                ]
+            },
+            "month-202604-qty": {
+                target: "2026/04",
+                count: "5件",
+                qty: "88枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "16"],
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "15"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "汚れ", "返金", "18"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "破損", "再送", "20"],
+                    ["2026/04/20", "メーカーC", "C33050", "カーゴパンツ", "印字不良", "返品", "19"]
+                ]
+            },
+            "content-dirt-count": {
+                target: "汚れ",
+                count: "3件",
+                qty: "9枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "4"],
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "2"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "汚れ", "再送", "3"]
+                ]
+            },
+            "content-dirt-qty": {
+                target: "汚れ",
+                count: "4件",
+                qty: "67枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "18"],
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "10"],
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "汚れ", "再送", "19"],
+                    ["2026/04/20", "メーカーC", "C33050", "カーゴパンツ", "汚れ", "返品", "20"]
+                ]
+            },
+            "content-break-count": {
+                target: "破損",
+                count: "3件",
+                qty: "9枚",
+                rows: [
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "2"],
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "4"],
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "3"]
+                ]
+            },
+            "content-break-qty": {
+                target: "破損",
+                count: "4件",
+                qty: "52枚",
+                rows: [
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "12"],
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "14"],
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "11"],
+                    ["2026/04/22", "メーカーA", "A10109", "ロンT", "破損", "返金", "15"]
+                ]
+            },
+            "content-sew-count": {
+                target: "縫製不良",
+                count: "3件",
+                qty: "8枚",
+                rows: [
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "3"],
+                    ["2026/04/11", "メーカーC", "C33028", "ワイドパンツ", "縫製不良", "返金", "3"],
+                    ["2026/04/14", "メーカーB", "B20041", "ミニバッグ", "縫製不良", "値引き対応", "2"]
+                ]
+            },
+            "content-sew-qty": {
+                target: "縫製不良",
+                count: "4件",
+                qty: "54枚",
+                rows: [
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "15"],
+                    ["2026/04/11", "メーカーC", "C33028", "ワイドパンツ", "縫製不良", "返金", "12"],
+                    ["2026/04/14", "メーカーB", "B20041", "ミニバッグ", "縫製不良", "値引き対応", "10"],
+                    ["2026/04/17", "メーカーD", "D44102", "キャップ", "縫製不良", "返品", "17"]
+                ]
+            },
+            "content-print-count": {
+                target: "印字不良",
+                count: "2件",
+                qty: "8枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "5"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "3"]
+                ]
+            },
+            "content-print-qty": {
+                target: "印字不良",
+                count: "3件",
+                qty: "39枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "16"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "13"],
+                    ["2026/04/17", "メーカーD", "D44102", "キャップ", "印字不良", "交換", "10"]
+                ]
+            },
+            "content-other-count": {
+                target: "その他",
+                count: "2件",
+                qty: "6枚",
+                rows: [
+                    ["2026/04/18", "メーカーA", "A10209", "マフラー", "その他", "返品", "2"],
+                    ["2026/04/21", "メーカーC", "C33071", "帽子", "その他", "再送", "4"]
+                ]
+            },
+            "content-other-qty": {
+                target: "その他",
+                count: "3件",
+                qty: "29枚",
+                rows: [
+                    ["2026/04/18", "メーカーA", "A10209", "マフラー", "その他", "返品", "8"],
+                    ["2026/04/21", "メーカーC", "C33071", "帽子", "その他", "再送", "10"],
+                    ["2026/04/23", "メーカーB", "B20101", "ポーチ", "その他", "返金", "11"]
+                ]
+            },
+            "process-refund-count": {
+                target: "返金",
+                count: "3件",
+                qty: "8枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "4"],
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "2"],
+                    ["2026/04/11", "メーカーC", "C33028", "ワイドパンツ", "縫製不良", "返金", "2"]
+                ]
+            },
+            "process-refund-qty": {
+                target: "返金",
+                count: "4件",
+                qty: "76枚",
+                rows: [
+                    ["2026/04/03", "メーカーA", "A10001", "ベーシックTシャツ", "汚れ", "返金", "18"],
+                    ["2026/04/06", "メーカーB", "B20019", "ナイロンポーチ", "汚れ", "返金", "12"],
+                    ["2026/04/11", "メーカーC", "C33028", "ワイドパンツ", "縫製不良", "返金", "20"],
+                    ["2026/04/22", "メーカーA", "A10109", "ロンT", "破損", "返金", "26"]
+                ]
+            },
+            "process-return-count": {
+                target: "返品",
+                count: "3件",
+                qty: "9枚",
+                rows: [
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "4"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "3"],
+                    ["2026/04/18", "メーカーA", "A10209", "マフラー", "その他", "返品", "2"]
+                ]
+            },
+            "process-return-qty": {
+                target: "返品",
+                count: "4件",
+                qty: "53枚",
+                rows: [
+                    ["2026/04/09", "メーカーB", "B20023", "2WAYバッグ", "破損", "返品", "14"],
+                    ["2026/04/12", "メーカーA", "A10022", "プリントTシャツ", "印字不良", "返品", "13"],
+                    ["2026/04/18", "メーカーA", "A10209", "マフラー", "その他", "返品", "8"],
+                    ["2026/04/20", "メーカーC", "C33050", "カーゴパンツ", "汚れ", "返品", "18"]
+                ]
+            },
+            "process-change-count": {
+                target: "交換",
+                count: "3件",
+                qty: "10枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "5"],
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "2"],
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "3"]
+                ]
+            },
+            "process-change-qty": {
+                target: "交換",
+                count: "4件",
+                qty: "70枚",
+                rows: [
+                    ["2026/04/01", "メーカーB", "B20008", "キャンバストート", "印字不良", "交換", "16"],
+                    ["2026/04/05", "メーカーC", "C33021", "デニムパンツ", "破損", "交換", "12"],
+                    ["2026/04/08", "メーカーA", "A10015", "ロゴパーカー", "縫製不良", "交換", "15"],
+                    ["2026/04/17", "メーカーD", "D44102", "キャップ", "印字不良", "交換", "27"]
+                ]
+            },
+            "process-discount-count": {
+                target: "値引き対応",
+                count: "2件",
+                qty: "5枚",
+                rows: [
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "3"],
+                    ["2026/04/14", "メーカーB", "B20041", "ミニバッグ", "縫製不良", "値引き対応", "2"]
+                ]
+            },
+            "process-discount-qty": {
+                target: "値引き対応",
+                count: "3件",
+                qty: "24枚",
+                rows: [
+                    ["2026/04/10", "メーカーD", "D44027", "スウェットパンツ", "破損", "値引き対応", "9"],
+                    ["2026/04/14", "メーカーB", "B20041", "ミニバッグ", "縫製不良", "値引き対応", "7"],
+                    ["2026/04/24", "メーカーA", "A10251", "Tシャツ", "汚れ", "値引き対応", "8"]
+                ]
+            },
+            "process-resend-count": {
+                target: "再送",
+                count: "2件",
+                qty: "7枚",
+                rows: [
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "汚れ", "再送", "3"],
+                    ["2026/04/21", "メーカーC", "C33071", "帽子", "その他", "再送", "4"]
+                ]
+            },
+            "process-resend-qty": {
+                target: "再送",
+                count: "3件",
+                qty: "18枚",
+                rows: [
+                    ["2026/04/16", "メーカーD", "D44030", "ジップパーカー", "汚れ", "再送", "6"],
+                    ["2026/04/21", "メーカーC", "C33071", "帽子", "その他", "再送", "5"],
+                    ["2026/04/25", "メーカーB", "B20125", "バッグ", "破損", "再送", "7"]
+                ]
+            }
+        };
+
+        const popup = document.getElementById('detailPopup');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupTarget = document.getElementById('popupTarget');
+        const popupCount = document.getElementById('popupCount');
+        const popupQty = document.getElementById('popupQty');
+        const popupDetailBody = document.getElementById('popupDetailBody');
+        const popupClose = document.getElementById('popupClose');
+
+        document.querySelectorAll('.link-value').forEach(button => {
+            button.addEventListener('click', () => {
+                const title = button.dataset.title;
+                const type = button.dataset.type;
+                const data = detailData[type];
+
+                popupTitle.textContent = title;
+                popupTarget.textContent = data.target;
+                popupCount.textContent = data.count;
+                popupQty.textContent = data.qty;
+
+                popupDetailBody.innerHTML = '';
+                data.rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row[0]}</td>
+                        <td>${row[1]}</td>
+                        <td>${row[2]}</td>
+                        <td>${row[3]}</td>
+                        <td>${row[4]}</td>
+                        <td>${row[5]}</td>
+                        <td class="text-right">${row[6]}</td>
+                    `;
+                    popupDetailBody.appendChild(tr);
+                });
+
+                popup.classList.add('show');
+            });
+        });
+
+        popupClose.addEventListener('click', () => {
+            popup.classList.remove('show');
+        });
+
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                popup.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
