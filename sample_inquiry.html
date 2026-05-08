@@ -626,14 +626,19 @@
 
         .branch-list th,
         .branch-list td {
-            border: 1px solid #d9e4ef;
+            border-left: none;
+            border-right: none;
+            border-top: 1px solid #d9e4ef;
+            border-bottom: 1px solid #d9e4ef;
             padding: 10px;
             text-align: center;
             font-size: 13px;
         }
 
         .branch-list th {
-            background: #eef5ff;
+            background: var(--color-primary);
+            color: #fff;
+            font-weight: 700;
         }
 
         .note-box {
@@ -844,127 +849,8 @@
                 grid-template-columns: 1fr;
             }
         }
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.45);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            z-index: 9999;
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal-box {
-            width: 100%;
-            max-width: 900px;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-            animation: modalFadeIn 0.2s ease;
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 22px;
-            background: #eaf2fd;
-            border-bottom: 1px solid #d7e6f8;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 20px;
-            color: #1d3557;
-        }
-
-        .modal-close-btn {
-            width: 38px;
-            height: 38px;
-            border: none;
-            border-radius: 50%;
-            background: #fff;
-            color: #1d3557;
-            font-size: 22px;
-            cursor: pointer;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .modal-close-btn:hover {
-            background: #dceaff;
-        }
-
-        .modal-body {
-            padding: 20px 22px;
-        }
-
-        .modal-footer {
-            padding: 0 22px 20px;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .modal-info {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
-        .modal-info-item {
-            background: #f8fbff;
-            border: 1px solid #d7e6f8;
-            border-radius: 10px;
-            padding: 10px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 13px;
-        }
-
-        .modal-info-item.full {
-            grid-column: 1 / -1;
-        }
-
-        .modal-info-item .label {
-            color: #5b6d7f;
-            font-weight: 700;
-            font-size: 12px;
-        }
-
-        .count-link {
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-        }
 
         @media (max-width: 900px) {
-            .modal-info {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .modal-info {
-                grid-template-columns: 1fr 1fr;
-            }
-
             .move-info-grid,
             .delete-info-grid {
                 grid-template-columns: 1fr;
@@ -992,12 +878,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        @media (max-width: 600px) {
-            .modal-info {
-                grid-template-columns: 1fr;
-            }
-        }
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -1039,8 +919,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 18px 22px;
-            background: #eaf2fd;
-            border-bottom: 1px solid #d7e6f8;
+            background: #e8f5ef;
+            border-bottom: 1px solid #c5e6d9;
         }
 
         .modal-header h2 {
@@ -1063,11 +943,17 @@
         }
 
         .modal-close-btn:hover {
-            background: #dceaff;
+            background: #d4ede2;
         }
 
         .modal-body {
             padding: 20px 22px;
+        }
+
+        .modal-body .modal-sample-count-field select.form-control {
+            width: auto;
+            max-width: 92px;
+            margin-bottom: 8px;
         }
 
         .modal-footer {
@@ -1084,8 +970,8 @@
         }
 
         .modal-info-item {
-            background: #f8fbff;
-            border: 1px solid #d7e6f8;
+            background: #f3faf6;
+            border: 1px solid #c9e8db;
             border-radius: 10px;
             padding: 10px 12px;
             display: flex;
@@ -1102,6 +988,18 @@
             color: #5b6d7f;
             font-weight: 700;
             font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .modal-info {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modal-info {
+                grid-template-columns: 1fr;
+            }
         }
 
         .count-link {
@@ -2041,6 +1939,14 @@
             </div>
 
             <div class="modal-body">
+                <div class="form-group modal-sample-count-field">
+                    <label>サンプル回数</label>
+                    <select class="form-control">
+                        <option>1st</option>
+                        <option>2nd</option>
+                        <option selected>3rd</option>
+                    </select>
+                </div>
                 <div class="modal-info">
                     <div class="modal-info-item">
                         <span class="label">仕様書No</span>
