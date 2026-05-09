@@ -332,6 +332,11 @@
       vertical-align: top;
     }
 
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-1,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-right-column {
+      display: none !important;
+    }
+
     .deadline-panel-body .deadline-area-2 {
       min-height: 44px;
       display: flex;
@@ -604,6 +609,72 @@
     .spec-item.is-active {
       border-color: var(--color-primary);
       background: #edf8f0;
+    }
+
+    .spec-list > .spec-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    /* 柄共通の親／子で同一のボーダー・左アクセント（丸角は .spec-item 既定値） */
+    .spec-item.spec-item-kara-parent,
+    .spec-item.spec-item-kara-child {
+      margin: 0;
+      padding-left: 13px;
+      border: 1px solid rgba(215, 224, 217, 0.95);
+      border-left-width: 3px;
+      border-left-color: rgba(0, 134, 50, 0.42);
+      box-shadow:
+        inset 10px 0 14px rgba(0, 134, 50, 0.04),
+        0 1px 6px rgba(23, 52, 37, 0.04);
+      transition:
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+    }
+
+    .spec-item.spec-item-kara-parent:hover,
+    .spec-item.spec-item-kara-child:hover {
+      border-left-color: rgba(0, 134, 50, 0.58);
+      box-shadow:
+        inset 11px 0 18px rgba(0, 134, 50, 0.05),
+        0 4px 16px rgba(23, 52, 37, 0.08);
+    }
+
+    .spec-item.spec-item-kara-parent.is-active,
+    .spec-item.spec-item-kara-child.is-active {
+      border-color: var(--color-primary);
+      border-left-width: 3px;
+      border-left-color: var(--color-primary);
+      box-shadow:
+        inset 12px 0 20px rgba(0, 134, 50, 0.06),
+        0 2px 12px rgba(0, 134, 50, 0.12);
+    }
+
+    .spec-sublist {
+      margin: 0;
+      padding: 0;
+      padding-left: 10px;
+      margin-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* 柄共通グループ内・子リストの外にある通常の仕様書行 */
+    .spec-group-after {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .spec-group-after .spec-item {
+      margin: 0;
     }
 
     .spec-list-inner {
@@ -946,7 +1017,27 @@
         display: block;
       }
 
-      .spec-list .spec-item:not(.is-active) {
+      .spec-list > .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-list > .spec-group:not(:has(.spec-item.is-active)) {
+        display: none !important;
+      }
+
+      .spec-group .spec-item-kara-parent:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group:has(.spec-item-kara-child.is-active) .spec-item-kara-parent {
+        display: block !important;
+      }
+
+      .spec-group .spec-item-kara-child:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group .spec-group-after .spec-item:not(.is-active) {
         display: none !important;
       }
 
@@ -1149,7 +1240,27 @@
         display: block;
       }
 
-      .spec-list .spec-item:not(.is-active) {
+      .spec-list > .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-list > .spec-group:not(:has(.spec-item.is-active)) {
+        display: none !important;
+      }
+
+      .spec-group .spec-item-kara-parent:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group:has(.spec-item-kara-child.is-active) .spec-item-kara-parent {
+        display: block !important;
+      }
+
+      .spec-group .spec-item-kara-child:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group .spec-group-after .spec-item:not(.is-active) {
         display: none !important;
       }
 
@@ -1430,7 +1541,7 @@
           <div class="panel-body">
             <select id="specListSelect" class="spec-select" aria-label="仕様書を選択"></select>
             <ul class="spec-list" id="specList">
-              <li class="spec-item is-active" data-spec-no="SP-2026-001" data-hinmei="ディズニータオル企画（ギフト）"
+              <li class="spec-item" data-spec-no="SP-2026-001" data-hinmei="ディズニータオル企画（ギフト）"
                 data-product-name="ディズニータオルセットA"
                 data-hanbai-kubun="定番" data-exhibit="2026年4月 / 東京インターナショナルギフトショー"
                 data-category="単品" data-brand="ジブリ" data-item="フェイスタオル" data-designer="デザイナー①">
@@ -1468,22 +1579,118 @@
                   </div>
                 </div>
               </li>
-              <li class="spec-item" data-spec-no="SP-2026-103" data-hinmei="寝装コレクション（先行）"
-                data-product-name="寝装コレクションC"
-                data-hanbai-kubun="柄共通" data-exhibit=""
-                data-category="AW" data-brand="ディズニー" data-item="タオルケット" data-designer="デザイナー③">
-                <div class="spec-list-inner">
-                  <div class="spec-row">
-                    <span class="spec-line-val spec-doc-no"></span>
+              <li class="spec-group" aria-label="柄共通グループ">
+                <div class="spec-item spec-item-kara-parent"
+                  data-spec-no="SP-2026-103" data-hinmei="寝装コレクション（先行）"
+                  data-product-name="寝装コレクションC"
+                  data-hanbai-kubun="柄共通" data-exhibit=""
+                  data-category="AW" data-brand="ディズニー" data-item="タオルケット"
+                  data-designer="デザイナー③">
+                  <div class="spec-list-inner">
+                    <div class="spec-row">
+                      <span class="spec-line-val spec-doc-no"></span>
+                    </div>
+                    <div class="spec-row">
+                      <span class="spec-line-val spec-hinmei"></span>
+                    </div>
+                    <div class="spec-row">
+                      <span class="spec-line-val spec-designer"></span>
+                    </div>
+                    <div class="spec-row">
+                      <span class="spec-line-val spec-hanbai-exhibit"></span>
+                    </div>
                   </div>
-                  <div class="spec-row">
-                    <span class="spec-line-val spec-hinmei"></span>
+                </div>
+                <div class="spec-sublist">
+                  <div class="spec-item spec-item-kara-child"
+                    data-spec-no="SP-2026-101" data-hinmei="寝装コレクション（先行・定番SKU-A）"
+                    data-product-name="寝装ラインティーケット／定番"
+                    data-hanbai-kubun="定番"
+                    data-exhibit=""
+                    data-category="AW" data-brand="ディズニー" data-item="ティーケット"
+                    data-designer="デザイナー③">
+                    <div class="spec-list-inner">
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-doc-no"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hinmei"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-designer"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hanbai-exhibit"></span>
+                      </div>
+                    </div>
                   </div>
-                  <div class="spec-row">
-                    <span class="spec-line-val spec-designer"></span>
+                  <div class="spec-item spec-item-kara-child"
+                    data-spec-no="SP-2026-102" data-hinmei="寝装コレクション（先行・定番SKU-B）"
+                    data-product-name="寝装ラインタオルケット／定番"
+                    data-hanbai-kubun="定番"
+                    data-exhibit=""
+                    data-category="AW" data-brand="ディズニー" data-item="タオルケット"
+                    data-designer="デザイナー③">
+                    <div class="spec-list-inner">
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-doc-no"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hinmei"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-designer"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hanbai-exhibit"></span>
+                      </div>
+                    </div>
                   </div>
-                  <div class="spec-row">
-                    <span class="spec-line-val spec-hanbai-exhibit"></span>
+                </div>
+                <div class="spec-group-after">
+                  <div class="spec-item"
+                    data-spec-no="SP-2026-106" data-hinmei="寝装ライン単品（通常定番・参考）"
+                    data-product-name="寝装シングルセット／通常定番"
+                    data-hanbai-kubun="定番"
+                    data-exhibit=""
+                    data-category="単品" data-brand="ディズニー" data-item="シングルセット"
+                    data-designer="デザイナー③">
+                    <div class="spec-list-inner">
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-doc-no"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hinmei"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-designer"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hanbai-exhibit"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="spec-item"
+                    data-spec-no="SP-2026-107" data-hinmei="寝装ライン単品（通常別注・参考）"
+                    data-product-name="寝装シングルセット／通常別注"
+                    data-hanbai-kubun="別注"
+                    data-exhibit=""
+                    data-category="単品" data-brand="ディズニー" data-item="シングルセット"
+                    data-designer="デザイナー④">
+                    <div class="spec-list-inner">
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-doc-no"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hinmei"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-designer"></span>
+                      </div>
+                      <div class="spec-row">
+                        <span class="spec-line-val spec-hanbai-exhibit"></span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </li>
@@ -1495,14 +1702,14 @@
           <div class="panel-header">
             <div class="search-type-toggle cycle-toggle" role="group" aria-label="仕様書を選択"></div>
           </div>
-          <div class="panel-body deadline-panel-body">
-            <div class="deadline-area deadline-area-1" aria-label="エリア1">
+          <div class="panel-body deadline-panel-body deadline-panel-body--no-spec">
+            <div class="deadline-area deadline-area-1" aria-label="エリア1" aria-hidden="true">
               <div class="deadline-area-1-img-wrap">
                 <img class="deadline-area-1-img" src="images/帳票/仕様書/通常/定番/①試作依頼書.png"
                   alt="試作依頼書" decoding="async" loading="lazy">
               </div>
             </div>
-            <div class="deadline-right-column">
+            <div class="deadline-right-column" aria-hidden="true">
               <div class="deadline-area deadline-area-2" aria-label="エリア2">
                 <nav class="deadline-area-2-pagination-nav" id="deadlineArea2PaginationNav" aria-label="ページ"
                   hidden>
@@ -2012,16 +2219,21 @@
       let items = Array.from(specList.querySelectorAll('.spec-item'));
 
       function specOptionLabel(item) {
+        const prefix = item.classList.contains('spec-item-kara-child') ? '（柄共通・子） ' : '';
         const no = item.dataset.specNo || '';
         const hinmei = item.dataset.hinmei || '';
         const line = [no, hinmei].filter((part) => String(part || '').trim()).join(' / ');
-        return line || '（未設定）';
+        return prefix + (line || '（未設定）');
       }
 
       function rebuildSpecSelectOptions() {
         if (!specListSelect) return;
         const active = getActiveItem();
         specListSelect.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '仕様書を選択';
+        specListSelect.appendChild(placeholder);
         items.forEach((item, index) => {
           const opt = document.createElement('option');
           opt.value = String(index);
@@ -2030,23 +2242,43 @@
         });
         const idx = active ? items.indexOf(active) : -1;
         if (idx >= 0) specListSelect.value = String(idx);
+        else specListSelect.value = '';
       }
 
       function syncSpecSelectValue() {
         if (!specListSelect) return;
-        if (specListSelect.options.length !== items.length) rebuildSpecSelectOptions();
+        const expected = items.length + 1;
+        if (specListSelect.options.length !== expected) rebuildSpecSelectOptions();
         const active = getActiveItem();
         const idx = active ? items.indexOf(active) : -1;
         if (idx >= 0) specListSelect.value = String(idx);
+        else specListSelect.value = '';
       }
 
       function getActiveItem() {
         return items.find((item) => item.classList.contains('is-active')) || null;
       }
 
+      function syncDeadlinePanelBodyVisibility(hasSpec) {
+        const body = document.querySelector('.deadline-panel .deadline-panel-body');
+        if (!body) return;
+        body.classList.toggle('deadline-panel-body--no-spec', !hasSpec);
+        const area1 = body.querySelector('.deadline-area-1');
+        const right = body.querySelector('.deadline-right-column');
+        if (area1) {
+          if (hasSpec) area1.removeAttribute('aria-hidden');
+          else area1.setAttribute('aria-hidden', 'true');
+        }
+        if (right) {
+          if (hasSpec) right.removeAttribute('aria-hidden');
+          else right.setAttribute('aria-hidden', 'true');
+        }
+      }
+
       function selectItem(item) {
         items.forEach((candidate) => candidate.classList.remove('is-active'));
         item.classList.add('is-active');
+        syncDeadlinePanelBodyVisibility(true);
         syncFormFromItem(item);
         syncSpecSelectValue();
       }
@@ -2089,7 +2321,7 @@
 
       function syncFormFromItem(item) {
         syncCycleToggleButtons(item);
-        const specNo = (item.dataset.specNo || '').trim();
+        const specNo = item ? (item.dataset.specNo || '').trim() : '';
         const historyMount = document.getElementById('specHistoryCommentMount');
         if (historyMount) {
           historyMount.replaceChildren();
@@ -2147,6 +2379,46 @@
                 label: '2025/06/01 11:00 丸眞 花子',
                 text: '試作仕様書を入稿しました。'
               }
+            ],
+            'SP-2026-101': [
+              {
+                label: '2025/06/05 09:00 丸眞 花子',
+                text: '柄共通配下・定番の試作仕様書を一時保存しました。'
+              },
+              {
+                label: '2025/06/05 14:00 丸眞 花子',
+                text: '柄共通グループ単位での申請に含めるよう登録しました。'
+              }
+            ],
+            'SP-2026-102': [
+              {
+                label: '2025/06/05 09:10 丸眞 太郎',
+                text: '柄共通配下・定番の試作仕様書を一時保存しました。'
+              },
+              {
+                label: '2025/06/05 14:05 丸眞 太郎',
+                text: '柄共通グループ単位での申請に含めるよう登録しました。'
+              }
+            ],
+            'SP-2026-106': [
+              {
+                label: '2025/06/08 09:00 丸眞 花子',
+                text: '通常定番として試作仕様書を一時保存しました。'
+              },
+              {
+                label: '2025/06/08 14:30 丸眞 太郎',
+                text: '一覧用の別行として確認済みです。'
+              }
+            ],
+            'SP-2026-107': [
+              {
+                label: '2025/06/09 09:00 丸眞 一郎',
+                text: '通常別注として試作仕様書を一時保存しました。'
+              },
+              {
+                label: '2025/06/09 13:45 丸眞 一郎',
+                text: '柄共通リスト直下の別行として確認済みです。'
+              }
             ]
           };
           const histories = historyBySpecNo[specNo];
@@ -2172,9 +2444,21 @@
         }
       }
 
+      function clearSpecSelection() {
+        items.forEach((candidate) => candidate.classList.remove('is-active'));
+        rebuildSpecSelectOptions();
+        syncDeadlinePanelBodyVisibility(false);
+        syncFormFromItem(null);
+      }
+
       if (specListSelect) {
         specListSelect.addEventListener('change', () => {
-          const idx = parseInt(specListSelect.value, 10);
+          const raw = specListSelect.value;
+          if (raw === '') {
+            clearSpecSelection();
+            return;
+          }
+          const idx = parseInt(raw, 10);
           if (!Number.isFinite(idx) || !items[idx]) return;
           selectItem(items[idx]);
         });
@@ -2185,11 +2469,7 @@
         bindItem(item);
       });
 
-      rebuildSpecSelectOptions();
-      const initialActiveItem = getActiveItem() || items[0];
-      if (initialActiveItem) {
-        selectItem(initialActiveItem);
-      }
+      clearSpecSelection();
     }
 
     function initSearchConditionClear() {
