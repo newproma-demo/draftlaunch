@@ -65,7 +65,8 @@
       min-width: 0;
       width: 100%;
       display: grid;
-      grid-template-columns: 320px minmax(0, 1fr) 320px;
+      /* PC: 仕様書一覧 20% / 締切パネル 65% / 履歴 15% */
+      grid-template-columns: minmax(0, 20fr) minmax(0, 65fr) minmax(0, 15fr);
       gap: 16px;
       padding-right: 20px;
       box-sizing: border-box;
@@ -357,7 +358,8 @@
     }
 
     .deadline-pagination-item {
-      display: block;
+      display: flex;
+      align-items: stretch;
     }
 
     .deadline-pagination-item + .deadline-pagination-item {
@@ -367,11 +369,15 @@
     .deadline-pagination-link {
       position: relative;
       box-sizing: border-box;
-      display: block;
-      min-width: 20px;
-      padding: 0px 0px;
-      font-size: 13px;
-      line-height: 1.35;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 25px;
+      min-height: 25px;
+      height: 25px;
+      padding: 0 6px;
+      font-size: 12px;
+      line-height: 1.2;
       font-family: inherit;
       text-align: center;
       color: var(--color-primary, #008632);
@@ -380,6 +386,27 @@
       cursor: pointer;
       transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
       border-radius: 0;
+    }
+
+    .deadline-pagination-link.deadline-pagination-link--icon {
+      flex: 0 0 auto;
+      padding: 0 4px;
+      min-width: 25px;
+    }
+
+    .deadline-pagination-link.deadline-pagination-link--icon svg {
+      display: block;
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+
+    .deadline-pagination-link:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      color: rgba(32, 67, 49, 0.55);
+      background: #f8faf9;
     }
 
     .deadline-pagination-item:first-child .deadline-pagination-link {
@@ -394,18 +421,18 @@
 
     .deadline-pagination-item.is-active .deadline-pagination-link {
       z-index: 2;
-      color: #fff;
-      background-color: var(--color-primary, #008632);
+      color: var(--color-primary, #008632);
+      background-color: #edf8f0;
       border-color: var(--color-primary, #008632);
     }
 
-    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:hover {
+    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):hover {
       color: var(--color-primary-dark, #006b28);
       background: #edf8f0;
       border-color: var(--color-primary, #008632);
     }
 
-    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:focus-visible {
+    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):focus-visible {
       z-index: 3;
       outline: none;
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.2);
@@ -417,6 +444,40 @@
       align-items: center;
       justify-content: flex-end;
       gap: 8px;
+    }
+
+    .image-preview-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .image-preview-modal[hidden] {
+      display: none;
+    }
+
+    .image-preview-modal__dialog {
+      position: relative;
+      max-width: min(96vw, 1400px);
+      max-height: 92vh;
+      width: auto;
+    }
+
+    .image-preview-modal__image {
+      display: block;
+      max-width: 100%;
+      max-height: 92vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #fff;
     }
 
     .deadline-panel-body .deadline-area-3 {
@@ -437,6 +498,11 @@
       text-align: center;
     }
 
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-preview-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
     .deadline-panel-body .deadline-area-3 .deadline-area-3-empty {
       margin: 0;
       font-family: inherit;
@@ -444,6 +510,7 @@
       line-height: 1.45;
       font-weight: 400;
       color: rgba(23, 52, 37, 0.42);
+      white-space: pre-line;
     }
 
     .deadline-panel-body .deadline-area-3 .deadline-area-3-ai-head {
@@ -465,6 +532,10 @@
       border: 1px solid #d7e0d9;
       border-radius: var(--radius-sm);
       background: #fff;
+    }
+
+    #previewBtnArea3 {
+      padding: 3px 6px;
     }
 
     .progress-panel .panel-body {
@@ -786,7 +857,7 @@
       margin-top: 8px;
       border-top: 1px solid #cfdad2;
       min-height: 46px;
-      padding: 6px 10px;
+      padding: 6px 10px 6px 20px;
       box-sizing: border-box;
       display: flex;
       justify-content: flex-end;
@@ -860,18 +931,9 @@
       font-weight: 600;
     }
 
-    @media (max-width: 1300px) {
-      .screen-body {
-        grid-template-columns: 280px minmax(0, 1fr) 280px;
-      }
-    }
+    /* ---------- Responsive（幅の広い順 → 狭い順） ---------- */
 
-    @media (min-width: 1025px) {
-      .content-footer {
-        padding-right: 20px;
-      }
-    }
-
+    /* 768px–1024px: タブレット（仕様書 30% / 締切 70%、下段は履歴フル幅） */
     @media (min-width: 768px) and (max-width: 1024px) {
       .spec-select {
         display: block;
@@ -883,11 +945,16 @@
 
       .content {
         padding: 12px 10px 0 10px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
       }
 
       .screen-body {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: minmax(300px, auto) minmax(320px, 1fr);
+        flex: none;
+        min-height: auto;
+        grid-template-columns: minmax(0, 30fr) minmax(0, 70fr);
+        grid-template-rows: 500px auto;
         grid-template-areas:
           "spec deadline"
           "progress progress";
@@ -905,11 +972,22 @@
 
       .spec-panel {
         grid-area: spec;
+        height: 500px;
+        min-height: 500px;
+        max-height: 500px;
         overflow: hidden;
+      }
+
+      .spec-panel > .panel-body {
+        min-height: 0;
+        overflow: auto;
       }
 
       .deadline-panel {
         grid-area: deadline;
+        height: 500px;
+        min-height: 500px;
+        max-height: 500px;
         overflow: hidden;
       }
 
@@ -924,11 +1002,25 @@
       }
 
       .deadline-panel .panel-body.deadline-panel-body {
-        overflow: hidden;
+        overflow: auto;
+        min-height: 0;
       }
 
     }
 
+    /* ≤1024px: タブレット・モバイルでサイクル切替のスクロールバーを非表示 */
+    @media (max-width: 1024px) {
+      .search-type-toggle.cycle-toggle {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .search-type-toggle.cycle-toggle::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    /* ≤767px: モバイル（縦積み・ハンバーガー等） */
     @media (max-width: 767px) {
       .header-title {
         margin: 5px 0 0 35px;
@@ -1060,6 +1152,7 @@
       }
     }
 
+    /* ≤430px: 小画面モバイル（余白・締めの調整） */
     @media (max-width: 430px) {
       .content {
         padding: 14px 16px 0;
@@ -1408,20 +1501,21 @@
                   hidden>
                   <ul class="deadline-pagination" id="deadlineArea2PaginationList" role="list"></ul>
                 </nav>
-                <button type="button" class="btn-fab-new btn-ai-data-upload" id="aiDataUploadBtn"
-                  aria-label="aiデータをアップロード">aiデータをアップロード</button>
                 <button type="button" class="btn-secondary btn-area2-page-delete" id="deadlineArea2DeletePageBtn" hidden
-                  aria-label="このページを削除">このページを削除</button>
+                  aria-label="表示中のページを削除">表示中のページを削除</button>
                 <button type="button" class="btn-fab-new btn-ai-data-upload" id="deadlineArea2AddPageBtn" hidden
                   aria-label="ページを追加">+ページを追加</button>
                 <input type="file" id="aiDataUploadInput" accept=".ai" hidden aria-hidden="true">
               </div>
               <div class="deadline-area deadline-area-3" aria-label="エリア3">
-                <div class="deadline-area-3-empty-wrap" id="deadlineArea3EmptyHint" aria-hidden="false">
-                  <p class="deadline-area-3-empty">aiデータは未登録です。</p>
+                <div id="deadlineArea3Content">
+                  <div class="deadline-area-3-empty-wrap" id="deadlineArea3EmptyHint" aria-hidden="false">
+                    <p class="deadline-area-3-empty">ここをクリックしてファイルを選択するか、ドラッグアンドドロップしてください。</p>
+                  </div>
                 </div>
               </div>
               <div class="deadline-area deadline-area-4" aria-label="エリア4">
+                <button type="button" class="btn-secondary" id="previewBtnArea3" data-preview-open="1" aria-label="プレビュー">プレビュー</button>
                 <button type="button" class="btn-fab-new btn-temp-save" id="tempSaveBtn" aria-label="一時保存">一時保存</button>
               </div>
             </div>
@@ -1437,9 +1531,15 @@
 
       <div class="content-footer">
         <button type="button" class="btn-secondary">取消</button>
+        <button type="button" class="btn-secondary" id="previewBtn" data-preview-open="1" aria-label="プレビュー">プレビュー</button>
         <button type="button" class="btn-fab-new" id="nyukoBtn">入稿</button>
         <button type="button" class="btn-fab-new" id="shinseiBtn">申請</button>
       </div>
+    </div>
+  </div>
+  <div class="image-preview-modal" id="imagePreviewModal" role="dialog" aria-modal="true" aria-label="画像プレビュー" hidden>
+    <div class="image-preview-modal__dialog">
+      <img class="image-preview-modal__image" id="imagePreviewModalImage" alt="仕様書プレビュー">
     </div>
   </div>
 
@@ -1606,10 +1706,33 @@
         '共通_最終仕様書'
       ].map((s) => normalizeDeadlineDocLabel(s))
     );
-    const DEADLINE_AREA3_EMPTY_TEXT_DEFAULT = 'aiデータは未登録です。';
+    const DEADLINE_AREA3_EMPTY_TEXT_DEFAULT = 'aiデータ(PDF互換ファイル)は未登録です。\n\nここをクリックしてファイルを選択するか、\nドラッグアンドドロップしてください。';
     let deadlineArea2PageCount = 0;
     let deadlineArea2ActivePage = 1;
     let deadlineArea2PagingBoundDocLabel = '';
+
+    /** Material Symbols(keyboard_double_arrow_*) と chevron（images/material_symbols_*.svg と同一） */
+    const MS_PAGINATION_PATH_FIRST = 'M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z';
+    const MS_PAGINATION_PATH_PREV = 'M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z';
+    const MS_PAGINATION_PATH_NEXT = 'M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z';
+    const MS_PAGINATION_PATH_LAST = 'M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z';
+
+    /** ページ番号ボタンは同時に表示する最大数（先頭・末尾ボタン＋ページネーション矢印とは別） */
+    const DEADLINE_PAGINATION_VISIBLE_PAGE_COUNT = 5;
+
+    function deadlinePaginationMsIcon(pathD) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 -960 960 960');
+      svg.setAttribute('width', '15');
+      svg.setAttribute('height', '15');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', pathD);
+      p.setAttribute('fill', 'currentColor');
+      svg.appendChild(p);
+      return svg;
+    }
 
     function renderDeadlineArea2Pagination() {
       const ul = document.getElementById('deadlineArea2PaginationList');
@@ -1621,7 +1744,44 @@
         return;
       }
       nav.hidden = false;
-      for (let i = 1; i <= deadlineArea2PageCount; i++) {
+
+      function appendNavControl(label, pathD, disabled, onActivate) {
+        const li = document.createElement('li');
+        li.className = 'deadline-pagination-item';
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'deadline-pagination-link deadline-pagination-link--icon';
+        b.setAttribute('aria-label', label);
+        b.disabled = !!disabled;
+        b.appendChild(deadlinePaginationMsIcon(pathD));
+        b.addEventListener('click', () => {
+          if (b.disabled) return;
+          onActivate();
+          renderDeadlineArea2Pagination();
+        });
+        li.appendChild(b);
+        ul.appendChild(li);
+      }
+
+      const atFirst = deadlineArea2ActivePage <= 1;
+      const atLast = deadlineArea2ActivePage >= deadlineArea2PageCount;
+
+      appendNavControl('先頭のページへ', MS_PAGINATION_PATH_FIRST, atFirst, () => {
+        deadlineArea2ActivePage = 1;
+      });
+      appendNavControl('前のページへ', MS_PAGINATION_PATH_PREV, atFirst, () => {
+        deadlineArea2ActivePage = Math.max(1, deadlineArea2ActivePage - 1);
+      });
+
+      const total = deadlineArea2PageCount;
+      const maxVis = DEADLINE_PAGINATION_VISIBLE_PAGE_COUNT;
+      let rangeStart = 1;
+      let rangeEnd = total;
+      if (total > maxVis) {
+        rangeStart = Math.max(1, Math.min(deadlineArea2ActivePage - 2, total - maxVis + 1));
+        rangeEnd = rangeStart + maxVis - 1;
+      }
+      for (let i = rangeStart; i <= rangeEnd; i++) {
         const li = document.createElement('li');
         li.className = 'deadline-pagination-item';
         if (i === deadlineArea2ActivePage) li.classList.add('is-active');
@@ -1640,6 +1800,13 @@
         li.appendChild(b);
         ul.appendChild(li);
       }
+
+      appendNavControl('次のページへ', MS_PAGINATION_PATH_NEXT, atLast, () => {
+        deadlineArea2ActivePage = Math.min(deadlineArea2PageCount, deadlineArea2ActivePage + 1);
+      });
+      appendNavControl('末尾のページへ', MS_PAGINATION_PATH_LAST, atLast, () => {
+        deadlineArea2ActivePage = deadlineArea2PageCount;
+      });
     }
 
     function syncDeadlineArea2Ui() {
@@ -1653,7 +1820,7 @@
       const fileInput = document.getElementById('aiDataUploadInput');
       const emptyHint = document.getElementById('deadlineArea3EmptyHint');
       const emptyText = emptyHint && emptyHint.querySelector('.deadline-area-3-empty');
-      if (!nav || !aiBtn || !deleteBtn || !addBtn) return;
+      if (!nav || !deleteBtn || !addBtn) return;
 
       const hideAiUpload = DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(docLabel);
       const hidePagingUi = DEADLINE_AREA2_HIDE_PAGING_LABELS.has(docLabel);
@@ -1673,9 +1840,11 @@
       }
 
       function setAiUploadSuppressed(on) {
-        aiBtn.hidden = !!on;
-        aiBtn.classList.toggle('deadline-area2-ai-upload--suppressed', !!on);
-        aiBtn.toggleAttribute('aria-hidden', !!on);
+        if (aiBtn) {
+          aiBtn.hidden = !!on;
+          aiBtn.classList.toggle('deadline-area2-ai-upload--suppressed', !!on);
+          aiBtn.toggleAttribute('aria-hidden', !!on);
+        }
         if (fileInput) {
           fileInput.hidden = true;
           fileInput.setAttribute('aria-hidden', 'true');
@@ -2249,16 +2418,24 @@
     function initAiDataUpload() {
       const btn = document.getElementById('aiDataUploadBtn');
       const input = document.getElementById('aiDataUploadInput');
+      const emptyWrap = document.getElementById('deadlineArea3EmptyHint');
       const area3 = document.querySelector('.deadline-area-3');
-      if (!btn || !input || !area3) return;
+      const area3Content = document.getElementById('deadlineArea3Content');
+      if (!input || !area3 || !area3Content) return;
 
-      btn.addEventListener('click', () => {
+      function openAiUploadPicker() {
         input.value = '';
         input.click();
-      });
+      }
 
-      input.addEventListener('change', () => {
-        const file = input.files && input.files[0];
+      if (btn) {
+        btn.addEventListener('click', openAiUploadPicker);
+      }
+      if (emptyWrap) {
+        emptyWrap.addEventListener('click', openAiUploadPicker);
+      }
+
+      function renderAiFilePreview(file) {
         if (!file) return;
 
         const lower = file.name.toLowerCase();
@@ -2267,11 +2444,11 @@
             URL.revokeObjectURL(lastAiDataPreviewUrl);
             lastAiDataPreviewUrl = null;
           }
-          area3.replaceChildren();
+          area3Content.replaceChildren();
           const p = document.createElement('p');
           p.className = 'deadline-area-3-ai-head';
           p.textContent = '拡張子 .ai のファイルを選択してください。';
-          area3.appendChild(p);
+          area3Content.appendChild(p);
           return;
         }
 
@@ -2280,7 +2457,7 @@
           lastAiDataPreviewUrl = null;
         }
 
-        area3.replaceChildren();
+        area3Content.replaceChildren();
         const headEl = document.createElement('div');
         headEl.className = 'deadline-area-3-ai-head';
         const nameEl = document.createElement('div');
@@ -2290,7 +2467,7 @@
         metaEl.textContent = 'サイズ: ' + formatFileBytes(file.size);
         headEl.appendChild(nameEl);
         headEl.appendChild(metaEl);
-        area3.appendChild(headEl);
+        area3Content.appendChild(headEl);
 
         const pdfFile = new File([file], file.name, { type: 'application/pdf' });
         lastAiDataPreviewUrl = URL.createObjectURL(pdfFile);
@@ -2299,7 +2476,52 @@
         iframe.title = file.name + ' のプレビュー';
         iframe.setAttribute('referrerpolicy', 'no-referrer');
         iframe.src = lastAiDataPreviewUrl;
-        area3.appendChild(iframe);
+        area3Content.appendChild(iframe);
+      }
+
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        renderAiFilePreview(file);
+      });
+
+      area3.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+
+      area3.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+        renderAiFilePreview(file);
+      });
+    }
+
+    function initPreviewModal() {
+      const previewBtns = document.querySelectorAll('[data-preview-open="1"]');
+      const sourceImg = document.querySelector('.deadline-area-1-img');
+      const modal = document.getElementById('imagePreviewModal');
+      const modalImg = document.getElementById('imagePreviewModalImage');
+      if (!previewBtns.length || !sourceImg || !modal || !modalImg) return;
+
+      function closeModal() {
+        modal.hidden = true;
+        modalImg.removeAttribute('src');
+      }
+
+      previewBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const src = sourceImg.getAttribute('src');
+          if (!src) return;
+          modalImg.src = src;
+          modalImg.alt = sourceImg.alt || '仕様書プレビュー';
+          modal.hidden = false;
+        });
+      });
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.hidden) closeModal();
       });
     }
 
@@ -2313,6 +2535,7 @@
     initDeadlineArea2Paging();
     initSpecSearch();
     initAiDataUpload();
+    initPreviewModal();
     syncDeadlineArea2Ui();
   </script>
 </body>
