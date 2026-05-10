@@ -254,6 +254,7 @@
         display: flex;
         flex-direction: column;
         flex: 1;
+        min-height: 0;
         padding: 20px;
         margin-left: -220px;
         width: 100%;
@@ -281,11 +282,32 @@
       .content-area-1 {
         position: relative;
         z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+
+      /* ボタンは常にこのブロックの先頭に固定（明細の行数で位置が上に押し上げられない） */
+      .content-area-1-header {
+        flex: 0 0 auto;
       }
 
       .btn-sel-product {
         position: relative;
         z-index: 3;
+      }
+
+      /* 商品名などが多いときはこの領域だけ縦スクロール */
+      .detail-table-scroll-wrap {
+        flex: 1 1 auto;
+        min-height: 0;
+        max-height: min(50vh, calc(100vh - 320px));
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
       }
 
       /* スマホ: 商品選択モーダルの各入力行を同じ開始位置/幅に揃える（ラベル列を確保して入力を右に寄せる） */
@@ -737,11 +759,15 @@
       <!-- ========== : 検索条件・検索結果一覧 ========== -->
       <!-- 検索条件ボックス -->
       <div class="content-area-1">
-        <button type="button" class="btn-sel-product" id="btnSelProduct">商品を選択</button>
-        <table class="detail-table" id="detailTableProductList">
-          <tbody id="detailTableProductListBody">
-          </tbody>
-        </table>
+        <div class="content-area-1-header">
+          <button type="button" class="btn-sel-product" id="btnSelProduct">商品を選択</button>
+        </div>
+        <div class="detail-table-scroll-wrap">
+          <table class="detail-table" id="detailTableProductList">
+            <tbody id="detailTableProductListBody">
+            </tbody>
+          </table>
+        </div>
       </div>
       <div class="content-area-2">
         <div class="image-panel-toolbar">
