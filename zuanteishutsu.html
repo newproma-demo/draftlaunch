@@ -258,6 +258,8 @@
         padding: 20px;
         margin-left: -220px;
         width: 100%;
+        /* 明細追加時のスクロールアンカーで表示位置が跳ねるのを防ぐ */
+        overflow-anchor: none;
       }
 
       .dashboard-section {
@@ -286,13 +288,22 @@
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
-        flex: 1 1 auto;
+        /* 親の余白を取りにいかない＝ボタン直上の位置が明細行数で変わらない */
+        flex: 0 0 auto;
+        align-self: stretch;
         min-height: 0;
+        width: 100%;
+        box-sizing: border-box;
       }
 
-      /* ボタンは常にこのブロックの先頭に固定（明細の行数で位置が上に押し上げられない） */
+      /* スクロール時もボタンをこの列の上端に留める（メインの .content スクロールに追従） */
       .content-area-1-header {
         flex: 0 0 auto;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--color-surface);
+        padding-bottom: 2px;
       }
 
       .btn-sel-product {
@@ -300,14 +311,15 @@
         z-index: 3;
       }
 
-      /* 商品名などが多いときはこの領域だけ縦スクロール */
+      /* 商品名などが多いときはこの領域だけ縦スクロール（高さは伸ばさない） */
       .detail-table-scroll-wrap {
-        flex: 1 1 auto;
+        flex: 0 1 auto;
         min-height: 0;
         max-height: min(50vh, calc(100vh - 320px));
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
+        overflow-anchor: none;
       }
 
       /* スマホ: 商品選択モーダルの各入力行を同じ開始位置/幅に揃える（ラベル列を確保して入力を右に寄せる） */
