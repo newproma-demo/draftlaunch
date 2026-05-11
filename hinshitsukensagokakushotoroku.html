@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -219,9 +219,15 @@
         width: 100%;
         max-width: 100%;
         min-width: 0;
-        padding: 20px;
+        padding: 12px 16px 56px 12px;
         overflow-y: auto;
         overflow-x: hidden;
+        /* hinshitsukensagokakushokessai.html と同様にトラックを明示（狭い画面は下記520pxで1列に） */
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto auto auto;
+        height: auto;
+        min-height: 97vh;
+        align-content: start;
       }
 
       .content:not(.expanded) {
@@ -250,6 +256,13 @@
       .content-area-1 {
         position: relative;
         z-index: 2;
+        min-width: 0;
+        align-self: start;
+      }
+
+      .content-area-1 .detail-table {
+        width: 100%;
+        max-width: 100%;
       }
 
       .btn-sel-product {
@@ -288,6 +301,24 @@
         justify-self: stretch;
       }
 
+      /* スマホ: 商品選択モーダルの結果テーブルは折り返さず横スクロール */
+      .modal-product-select-page .modal-result-table-wrap {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .modal-product-select-page .modal-result-table {
+        width: max-content;
+        min-width: 100%;
+        table-layout: auto;
+      }
+
+      .modal-product-select-page .modal-result-table th,
+      .modal-product-select-page .modal-result-table td {
+        white-space: nowrap;
+      }
+
       /* スマホ: 明細画像をラベル（品名・メタ）の下に配置 */
       .detail-table tr {
         display: grid;
@@ -296,6 +327,13 @@
           "delete text"
           "delete image";
         align-items: start;
+      }
+
+      .detail-table tr:not(:has(.detail-delete-cell)) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "text"
+          "image";
       }
 
       .detail-table td.detail-delete-cell {
@@ -349,6 +387,77 @@
 
       .detail-row-upload .product-image-wrapper img.product-image {
         object-position: center;
+      }
+
+      /* 決裁ページと同様：スマホは左列トラックにプレビュー幅をそろえる */
+      .content-area-2 {
+        align-items: stretch;
+        align-self: stretch;
+        justify-content: flex-start;
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+        box-sizing: border-box;
+      }
+
+      .content-area-2 .product-card {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 100%;
+        min-height: 200px;
+        height: auto;
+        padding: 2px;
+        margin-left: 0;
+        margin-right: 0;
+        align-self: stretch;
+        box-sizing: border-box;
+      }
+
+      .content-area-2 .product-image-wrapper {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .content-area-3 {
+        min-width: 0;
+        align-self: start;
+      }
+    }
+
+    /*
+     * 520px以下：2カラムのまま最小幅が合わず重なる場合は決裁ページと同じく縦積み
+     *（content-area-2 を content-area-1 の続きとして下へ）
+     */
+    @media (max-width: 520px) {
+
+      .content,
+      .content.expanded {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto auto auto;
+      }
+
+      .content h1 {
+        grid-column: 1 / -1;
+        grid-row: 1;
+      }
+
+      .content-area-1 {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .content-area-3 {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .content-area-2 {
+        grid-column: 1;
+        grid-row: 4 / 5;
+      }
+
+      .content-area-2 .product-card {
+        min-height: 220px;
       }
     }
 
@@ -477,8 +586,8 @@
       right: 24px;
       bottom: 12px;
       z-index: 2001;
-      /* min-width: 100px;
-      width: clamp(80px, 5vw, 120px); */
+      min-width: 100px;
+      width: clamp(80px, 5vw, 120px);
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
