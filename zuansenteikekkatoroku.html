@@ -1331,22 +1331,6 @@
         }
       }
 
-      function getFilesFromDataTransfer(dt) {
-        if (!dt) return null;
-        if (dt.files && dt.files.length) return dt.files;
-        if (dt.items && dt.items.length) {
-          var arr = [];
-          for (var i = 0; i < dt.items.length; i++) {
-            if (dt.items[i].kind === 'file') {
-              var f = dt.items[i].getAsFile();
-              if (f) arr.push(f);
-            }
-          }
-          if (arr.length) return arr;
-        }
-        return null;
-      }
-
       function handleFiles(files) {
         if (!files || !files.length) return;
         var normalized = [];
@@ -1398,50 +1382,17 @@
         });
       }
 
-      var dropZone = wrapper.closest('.product-card') || wrapper;
-
-      function setDragOver(active) {
-        wrapper.classList.toggle('dragover', active);
-        if (dropZone !== wrapper) dropZone.classList.toggle('dragover', active);
-      }
-
-      function isOutsideDropZone(target) {
-        if (!target || !dropZone.contains) return true;
-        return !dropZone.contains(target);
-      }
-
-      dropZone.addEventListener('dragenter', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragOver(true);
-      }, true);
-
-      dropZone.addEventListener('dragover', function (e) {
+      // image-panel-stage 内では D&D による追加・差し替えを受け付けない（ページ遷移も防ぐ）
+      function preventPanelFileDrop(e) {
         e.preventDefault();
         e.stopPropagation();
         try {
-          e.dataTransfer.dropEffect = 'copy';
+          if (e.dataTransfer) e.dataTransfer.dropEffect = 'none';
         } catch (err) { /* ignore */ }
-        setDragOver(true);
-      }, true);
-
-      dropZone.addEventListener('dragleave', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (isOutsideDropZone(e.relatedTarget)) setDragOver(false);
-      }, true);
-
-      dropZone.addEventListener('drop', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragOver(false);
-        var fileList = getFilesFromDataTransfer(e.dataTransfer);
-        if (fileList && fileList.length) handleFiles(fileList);
-      }, true);
-
-      dropZone.addEventListener('dragend', function () {
-        setDragOver(false);
-      }, true);
+      }
+      stage.addEventListener('dragenter', preventPanelFileDrop, true);
+      stage.addEventListener('dragover', preventPanelFileDrop, true);
+      stage.addEventListener('drop', preventPanelFileDrop, true);
 
       if (pdfOpenTab) {
         pdfOpenTab.addEventListener('click', function (e) {
