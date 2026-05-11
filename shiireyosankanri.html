@@ -2015,7 +2015,10 @@
     }
 
     function renderTerms() {
-      termContainer.innerHTML = frameSelections.map(frame => buildTable(frame)).join("");
+      const orderedFrames = [...frameSelections].sort(
+        (a, b) => Number(b.selectedTerm) - Number(a.selectedTerm)
+      );
+      termContainer.innerHTML = orderedFrames.map(frame => buildTable(frame)).join("");
       bindDetailEvents();
       bindBasisButtons();
     }
