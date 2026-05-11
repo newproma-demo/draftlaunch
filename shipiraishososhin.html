@@ -582,6 +582,10 @@
         box-shadow: none;
         overflow: hidden;
       }
+      /* スマホ: 展開中はクリアボタンの枠線欠け防止のため隠しを解除 */
+      .search-box.is-open {
+        overflow: visible;
+      }
       /* スマホ: 検索条件エリアは一覧の横幅に追従させず、1画面内に収める */
       .view-layout-1-group > .content-area:first-of-type {
         width: calc(100vw - 24px);
@@ -617,6 +621,10 @@
         height: auto;
         opacity: 1;
         visibility: visible;
+      }
+      /* 最下段右端のクリアボタン枠線が欠けないよう余白を確保 */
+      .search-box.is-open .search-cancel-wrapper {
+        padding: 0 1px 1px 0;
       }
       .search-box.is-open .search-toggle-sp::after {
         content: "ー";
@@ -1114,11 +1122,7 @@
     /* スマホ：横はみ出しは .content の横スクロール。各 .approval-list-area に横スクロールバーは出さない */
     @media (max-width: 768px) {
       /*
-       * 列幅の個別調整：#approvalNoticeArea の CSS 変数（px 等）を編集してください。
-       * 左：--ship-sp-left-1 … 9 ／ 右：--ship-sp-right-1 … 9（1列目＝チェック、2列目＝管理番号）
-       * 既定の9列は --ship-left-cols-default / --ship-right-cols-default にまとめて反映される。
-       * 行ごとに変える：該当 <tr style="--ship-row-grid: トラック9個;"> 。見出しと揃えるときは
-       * <table style="--ship-thead-left-grid: …"> または --ship-thead-right-grid（詳細は下のコメント）
+       * 列幅の個別調整
        */
       #approvalNoticeArea {
         --ship-sp-left-1: 35px;
@@ -1197,6 +1201,9 @@
         grid-template-columns: var(--ship-row-grid, var(--ship-left-cols-default));
         width: 100%;
         box-sizing: border-box;
+      }
+      #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .result-table tbody tr.is-left-hidden {
+        display: none !important;
       }
 
       #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table thead tr {
@@ -2005,6 +2012,23 @@
           });
         }
 
+        function isLeftRowHidden(leftTr) {
+          if (!leftTr) return false;
+          return leftTr.classList.contains("is-left-hidden") || leftTr.style.display === "none";
+        }
+
+        function hideLeftRow(leftTr) {
+          if (!leftTr) return;
+          leftTr.classList.add("is-left-hidden");
+          leftTr.style.display = "none";
+        }
+
+        function showLeftRow(leftTr) {
+          if (!leftTr) return;
+          leftTr.classList.remove("is-left-hidden");
+          leftTr.style.display = "";
+        }
+
         function updateRightVisibleCountLabel() {
           if (!rightVisibleCountLabel) return;
           var count = 0;
@@ -2081,7 +2105,7 @@
 
           var leftVisibleCount = 0;
           Array.prototype.forEach.call(tbodyLeft.rows, function (tr) {
-            if (tr.style.display !== "none") leftVisibleCount++;
+            if (!isLeftRowHidden(tr)) leftVisibleCount++;
           });
 
           var rightVisibleCount = 0;
@@ -2100,7 +2124,7 @@
         if (btnSelectToRight) {
           btnSelectToRight.addEventListener("click", function () {
             Array.prototype.forEach.call(tbodyLeft.rows, function (leftTr, index) {
-              if (leftTr.style.display === "none") return;
+              if (isLeftRowHidden(leftTr)) return;
               var leftCheckbox = leftTr.querySelector("td:first-child input[type='checkbox']");
               if (!leftCheckbox || !leftCheckbox.checked) return;
 
@@ -2111,7 +2135,7 @@
                 if (rightCheckbox) rightCheckbox.checked = false;
               }
 
-              leftTr.style.display = "none";
+              hideLeftRow(leftTr);
               leftCheckbox.checked = false;
             });
 
@@ -2135,7 +2159,7 @@
                 var rightCheckbox = rightTr.querySelector("td:first-child input[type='checkbox']");
                 if (rightCheckbox) rightCheckbox.checked = false;
               }
-              leftTr.style.display = "none";
+              hideLeftRow(leftTr);
               var leftCheckbox = leftTr.querySelector("td:first-child input[type='checkbox']");
               if (leftCheckbox) leftCheckbox.checked = false;
             });
@@ -2160,7 +2184,7 @@
 
               var leftTr = tbodyLeft.rows[index];
               if (leftTr) {
-                leftTr.style.display = "";
+                showLeftRow(leftTr);
                 var leftCheckbox = leftTr.querySelector("td:first-child input[type='checkbox']");
                 if (leftCheckbox) leftCheckbox.checked = false;
               }
@@ -2189,7 +2213,7 @@
 
               var leftTr = tbodyLeft.rows[index];
               if (leftTr) {
-                leftTr.style.display = "";
+                showLeftRow(leftTr);
                 var leftCheckbox = leftTr.querySelector("td:first-child input[type='checkbox']");
                 if (leftCheckbox) leftCheckbox.checked = false;
               }
