@@ -122,51 +122,11 @@
       background-color: #f0f8ff;
     }
 
-    .image-switch-btn {
-      border: none;
-      background: rgba(255, 255, 255, 0.96);
-      color: #14452d;
-      font-size: var(--fs-sm);
-      font-weight: 800;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
-      font-family: inherit;
-      line-height: 1.2;
-      z-index: 2;
-    }
-
     .image-panel-stage {
       width: min(100%, 760px);
       position: relative;
-      padding-right: 90px;
+      padding-right: 0;
       box-sizing: border-box;
-    }
-
-    .image-switch-btn--floating-prev {
-      position: absolute;
-      left: -90px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .image-switch-btn--floating-next {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .image-switch-btn:hover:not(:disabled) {
-      background: #fff;
-      color: var(--color-primary);
-    }
-
-    .image-switch-btn:disabled {
-      opacity: 0.45;
-      cursor: default;
-      box-shadow: none;
     }
 
     .image-add-btn {
@@ -184,19 +144,77 @@
       background: var(--color-primary-dark);
     }
 
-    .image-clear-btn {
+    /* 画像内オーバーレイ（×・＜前へ・＞次へ 共通） */
+    .product-image-remove-btn,
+    .product-image-prev-btn,
+    .product-image-next-btn {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      margin: 0;
       border: none;
-      background: var(--color-primary);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
       color: #fff;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 700;
       cursor: pointer;
-      font-family: var(--font-sans);
-      z-index: 3;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      box-sizing: border-box;
     }
 
-    .image-clear-btn:hover {
-      background: var(--color-primary-dark);
+    /* × は右上（noimage 時は JS で hidden） */
+    .product-image-remove-btn {
+      top: 8px;
+      right: 8px;
+    }
+
+    /* 「前へ」は画像左・縦中央 */
+    .product-image-prev-btn {
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* 「次へ」は画像右・縦中央（× と縦位置は別で重ならない） */
+    .product-image-next-btn {
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .product-image-remove-btn:hover,
+    .product-image-prev-btn:hover:not(:disabled),
+    .product-image-next-btn:hover:not(:disabled) {
+      background: rgba(0, 0, 0, 0.72);
+    }
+
+    .product-image-prev-btn:disabled,
+    .product-image-next-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .product-image-prev-btn img,
+    .product-image-next-btn img {
+      width: 20px;
+      height: 20px;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* HTML の hidden が author stylesheet の display:flex に負けるのを防ぐ */
+    .product-image-remove-btn[hidden],
+    .product-image-prev-btn[hidden] {
+      display: none !important;
+      pointer-events: none;
     }
 
     .image-index-indicator {
@@ -368,15 +386,14 @@
         white-space: nowrap;
       }
 
-      /* 図案追加・図案削除: 登録ボタン（.btn-fab-new）と同系・ラベルは改行しない */
+      /* 図案追加: 登録ボタン（.btn-fab-new）と同系・ラベルは改行しない */
       .image-toolbar-main-actions {
         flex-wrap: nowrap;
         align-items: center;
         gap: 8px;
       }
 
-      .image-add-btn,
-      .image-clear-btn {
+      .image-add-btn {
         white-space: nowrap;
         flex-shrink: 0;
         box-sizing: border-box;
@@ -396,8 +413,8 @@
         max-height: 320px;
         padding-right: 0;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
         gap: 8px;
       }
 
@@ -419,64 +436,10 @@
       }
 
       .image-panel-stage .product-card {
-        grid-column: 1 / 3;
-        grid-row: 2;
-        height: 100%;
-        max-height: 100%;
-      }
-
-      .image-panel-stage .image-switch-btn--floating-prev {
-        position: static;
-        left: auto;
-        top: auto;
-        transform: none;
-        order: -1;
         grid-column: 1;
         grid-row: 1;
-        justify-self: start;
-        margin-bottom: 4px;
-      }
-
-      .image-panel-stage .image-switch-btn--floating-next {
-        position: static;
-        right: auto;
-        top: auto;
-        transform: none;
-        order: -1;
-        grid-column: 2;
-        grid-row: 1;
-        justify-self: end;
-        margin-bottom: 4px;
-      }
-
-      .image-panel-stage .image-switch-btn {
-        height: 44px;
-        min-height: 44px;
-        flex: 0 0 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-        padding: 0 12px;
-        line-height: 1;
-        font-size: var(--fs-sm);
-        font-weight: 800;
-        min-width: 96px;
-        box-shadow: none;
-        border-radius: 10px;
-        appearance: none;
-        -webkit-appearance: none;
-      }
-
-      .image-panel-stage .image-switch-btn:disabled {
-        box-shadow: none;
-      }
-
-      #productImageNextBtn,
-      #productImagePrevBtn {
-        height: 44px;
-        min-height: 44px;
-        flex-basis: 44px;
+        height: 100%;
+        max-height: 100%;
       }
     }
 
@@ -790,14 +753,18 @@
           <div class="image-toolbar-actions">
             <div class="image-toolbar-main-actions">
               <button type="button" class="image-add-btn" id="productImageAddBtn">図案追加</button>
-              <button type="button" class="image-clear-btn" id="productImageClearBtn" title="図案削除"
-                aria-label="図案を削除">図案削除</button>
             </div>
           </div>
         </div>
         <div class="image-panel-stage">
           <div class="product-card is-active">
             <div class="product-image-wrapper">
+              <button type="button" class="product-image-prev-btn" id="productImageNextBtn" title="前へ"
+                aria-label="前へ" hidden aria-hidden="true"><img src="images/chevron_left_20dp_F4F6F9.svg" alt="" width="20"
+                  height="20" decoding="async"></button>
+              <button type="button" class="product-image-next-btn" id="productImagePrevBtn" title="次へ"
+                aria-label="次へ"><img src="images/chevron_right_20dp_F4F6F9.svg" alt="" width="20" height="20"
+                  decoding="async"></button>
               <img class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
               <div class="product-pdf-canvas-wrap" aria-hidden="true">
                 <canvas class="product-pdf-canvas"></canvas>
@@ -806,12 +773,12 @@
                 <p>この環境では埋め込み表示できません。</p>
                 <p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">PDF / AI を新しいタブで開く</a></p>
               </div>
+              <button type="button" class="product-image-remove-btn" id="productImageRemoveBtn" hidden
+                aria-hidden="true" title="図案をクリア" aria-label="図案をクリア">×</button>
             </div>
             <input type="file" id="productImageInput" accept="image/*,application/pdf,.pdf,.ai" multiple
               class="product-image-input" style="display: none;">
           </div>
-          <button type="button" class="image-switch-btn image-switch-btn--next image-switch-btn--floating-prev" id="productImageNextBtn">＜前へ</button>
-          <button type="button" class="image-switch-btn image-switch-btn--prev image-switch-btn--floating-next" id="productImagePrevBtn">次へ＞</button>
         </div>
       </div>
     </div>
@@ -983,9 +950,9 @@
           content.classList.toggle('expanded');
 
           if (sidebar.classList.contains('closed')) {
-            if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+            if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_F4F6F9.svg';
           } else {
-            if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+            if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_F4F6F9.svg';
           }
         });
 
@@ -1055,10 +1022,10 @@
       const pdfCanvas = document.querySelector('.product-pdf-canvas');
       const pdfOpenTab = document.querySelector('.product-pdf-open-tab');
       const fileInput = document.getElementById('productImageInput');
-      const btnNext = document.getElementById('productImageNextBtn'); // 左側「次へ」
-      const btnPrev = document.getElementById('productImagePrevBtn'); // 右側「前へ」
+      const btnNext = document.getElementById('productImageNextBtn'); // 画像内「前へ」（＜）
+      const btnPrev = document.getElementById('productImagePrevBtn'); // 画像内「次へ」（＞）
       const btnAdd = document.getElementById('productImageAddBtn');
-      const btnClear = document.getElementById('productImageClearBtn');
+      const btnRemove = document.getElementById('productImageRemoveBtn');
       const indexIndicator = document.getElementById('productImageIndexIndicator');
 
       if (!wrapper || !img || !fileInput) return;
@@ -1147,8 +1114,11 @@
 
       function updateSwitchButtons() {
         if (!btnNext || !btnPrev) return;
-        // 「前へ」は先頭ページでは非活性
-        btnNext.disabled = currentMediaIndex <= 0;
+        // 「前へ」（左シェブロン）は先頭ページでは非表示
+        var atFirst = currentMediaIndex <= 0;
+        btnNext.hidden = atFirst;
+        btnNext.setAttribute('aria-hidden', atFirst ? 'true' : 'false');
+        btnNext.disabled = false;
         // 「次へ」は末尾でも新規ページ追加できるため常に活性
         btnPrev.disabled = false;
       }
@@ -1160,14 +1130,55 @@
         indexIndicator.textContent = current + " / " + total;
       }
 
+      function srcIsNoimagePng(src) {
+        if (src == null || src === '') return false;
+        var s = String(src).trim();
+        if (/noimage\.png(\?|#|$)/i.test(s)) return true;
+        try {
+          var path = new URL(s, document.baseURI).pathname;
+          return /(^|\/)noimage\.png$/i.test(path);
+        } catch (err) {
+          return /noimage\.png/i.test(s);
+        }
+      }
+
+      function isCurrentMediaClearable() {
+        var cur = mediaItems[currentMediaIndex];
+        if (!cur) return false;
+        if (cur.type === 'pdf-file') return true;
+        if (cur.type === 'image-file') {
+          var fn = cur.file && String(cur.file.name || '');
+          if (/^noimage\.png$/i.test(fn)) return false;
+          return true;
+        }
+        if (cur.type === 'image-url') {
+          if (cur.isPlaceholder) return false;
+          if (srcIsNoimagePng(cur.src)) return false;
+          if (img && srcIsNoimagePng(img.src)) return false;
+          return true;
+        }
+        return false;
+      }
+
+      function updateRemoveButtonVisibility() {
+        if (!btnRemove) return;
+        var show = isCurrentMediaClearable();
+        btnRemove.hidden = !show;
+        btnRemove.setAttribute('aria-hidden', show ? 'false' : 'true');
+      }
+
       function renderCurrentMedia() {
         var current = mediaItems[currentMediaIndex];
-        if (!current) return;
+        if (!current) {
+          updateRemoveButtonVisibility();
+          return;
+        }
 
         if (current.type === 'image-url') {
           showImagePreview(current.src);
           updateSwitchButtons();
           updateIndexIndicator();
+          updateRemoveButtonVisibility();
           return;
         }
 
@@ -1175,6 +1186,7 @@
           showPdfPreview(current.file);
           updateSwitchButtons();
           updateIndexIndicator();
+          updateRemoveButtonVisibility();
           return;
         }
 
@@ -1184,10 +1196,12 @@
           reader.onload = function (e) {
             if (renderToken !== currentMediaIndex) return;
             showImagePreview(e.target.result);
+            updateRemoveButtonVisibility();
           };
           reader.readAsDataURL(current.file);
           updateSwitchButtons();
           updateIndexIndicator();
+          updateRemoveButtonVisibility();
         }
       }
 
@@ -1238,8 +1252,10 @@
       // 画像（エリア）クリックでファイル選択 or カメラ起動
       wrapper.addEventListener('click', function (e) {
         var target = e.target;
-        if (target && target.closest && target.closest('.image-switch-btn')) return;
         if (target && target.closest && target.closest('.image-add-btn')) return;
+        if (target && target.closest && target.closest('.product-image-prev-btn')) return;
+        if (target && target.closest && target.closest('.product-image-next-btn')) return;
+        if (target && target.closest && target.closest('.product-image-remove-btn')) return;
         if (target && target.closest && target.closest('.product-pdf-open-tab')) return;
         fileInput.click();
       });
@@ -1278,18 +1294,23 @@
         });
       }
 
-      if (btnClear) {
-        btnClear.addEventListener('click', function (e) {
+      if (btnRemove) {
+        btnRemove.addEventListener('click', function (e) {
           e.stopPropagation();
+          e.preventDefault();
+          if (!isCurrentMediaClearable()) return;
+          // 2ページ以上: 現在ページを削除して総数を1減らし、前ページ（より小さいインデックス）を表示
           if (mediaItems.length <= 1) {
-            mediaItems.splice(0, 1, { type: 'image-url', src: 'images/noimage.png', isPlaceholder: true });
+            mediaItems.splice(0, 1, {
+              type: 'image-url',
+              src: 'images/noimage.png',
+              isPlaceholder: true,
+            });
             currentMediaIndex = 0;
-            renderCurrentMedia();
-            return;
+          } else {
+            mediaItems.splice(currentMediaIndex, 1);
+            currentMediaIndex = Math.max(0, currentMediaIndex - 1);
           }
-
-          mediaItems.splice(currentMediaIndex, 1);
-          currentMediaIndex = Math.max(0, currentMediaIndex - 1);
           renderCurrentMedia();
         });
       }

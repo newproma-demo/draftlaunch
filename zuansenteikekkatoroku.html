@@ -91,51 +91,70 @@
       margin-bottom: 8px;
     }
 
-    .image-switch-btn {
-      border: none;
-      background: rgba(255, 255, 255, 0.96);
-      color: #14452d;
-      font-size: var(--fs-sm);
-      font-weight: 800;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
-      font-family: inherit;
-      line-height: 1.2;
-      z-index: 2;
-    }
-
     .image-panel-stage {
       width: min(100%, 760px);
       position: relative;
-      padding-right: 90px;
+      padding-right: 0;
       box-sizing: border-box;
     }
 
-    .image-switch-btn--floating-prev {
+    /* 画像内：前へ・次へオーバーレイ（図案提出ページと同一トーン） */
+    .product-image-prev-btn,
+    .product-image-next-btn {
       position: absolute;
-      left: -90px;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      cursor: pointer;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      box-sizing: border-box;
+    }
+
+    .product-image-prev-btn {
+      left: 8px;
       top: 50%;
       transform: translateY(-50%);
     }
 
-    .image-switch-btn--floating-next {
-      position: absolute;
-      right: 0;
+    .product-image-next-btn {
+      right: 8px;
       top: 50%;
       transform: translateY(-50%);
     }
 
-    .image-switch-btn:hover:not(:disabled) {
-      background: #fff;
-      color: var(--color-primary);
+    .product-image-prev-btn:hover:not(:disabled),
+    .product-image-next-btn:hover:not(:disabled) {
+      background: rgba(0, 0, 0, 0.72);
     }
 
-    .image-switch-btn:disabled {
+    .product-image-prev-btn:disabled,
+    .product-image-next-btn:disabled {
       opacity: 0.45;
       cursor: default;
-      box-shadow: none;
+    }
+
+    .product-image-prev-btn img,
+    .product-image-next-btn img {
+      width: 20px;
+      height: 20px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .product-image-prev-btn[hidden],
+    .product-image-next-btn[hidden] {
+      display: none !important;
+      pointer-events: none;
     }
 
     .image-index-indicator {
@@ -458,77 +477,17 @@
         max-height: 320px;
         padding-right: 0;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
         gap: 8px;
       }
 
       .image-panel-stage .product-card {
-        grid-column: 1 / 3;
-        grid-row: 2;
+        grid-column: 1;
+        grid-row: 1;
         height: 100%;
         max-height: 100%;
       }
-
-      .image-panel-stage .image-switch-btn--floating-prev {
-        position: static;
-        left: auto;
-        top: auto;
-        transform: none;
-        order: -1;
-        grid-column: 1;
-        grid-row: 1;
-        justify-self: start;
-        margin-bottom: 4px;
-      }
-
-      .image-panel-stage .image-switch-btn--floating-next {
-        position: static;
-        right: auto;
-        top: auto;
-        transform: none;
-        order: -1;
-        grid-column: 2;
-        grid-row: 1;
-        justify-self: end;
-        margin-bottom: 4px;
-      }
-
-      .image-panel-stage .image-switch-btn {
-        height: 44px;
-        min-height: 44px;
-        flex: 0 0 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-        padding: 0 12px;
-        line-height: 1;
-        font-size: var(--fs-sm);
-        font-weight: 800;
-        min-width: 96px;
-        box-shadow: none;
-        border-radius: 10px;
-        appearance: none;
-        -webkit-appearance: none;
-      }
-
-      .image-panel-stage .image-switch-btn:disabled {
-        box-shadow: none;
-      }
-
-      #productImageNextBtn,
-      #productImagePrevBtn {
-        height: 44px;
-        min-height: 44px;
-        flex-basis: 44px;
-      }
-/*
-      .image-switch-btn,
-      .image-index-indicator {
-        font-size: inherit;
-      }
-*/
     }
 
 
@@ -960,6 +919,12 @@
         <div class="image-panel-stage" id="mainImagePanelStage">
           <div class="product-card is-active">
             <div class="product-image-wrapper">
+              <button type="button" class="product-image-prev-btn" id="productImageNextBtn" title="前へ"
+                aria-label="前へ" hidden aria-hidden="true"><img src="images/chevron_left_20dp_F4F6F9.svg" alt="" width="20"
+                  height="20" decoding="async"></button>
+              <button type="button" class="product-image-next-btn" id="productImagePrevBtn" title="次へ"
+                aria-label="次へ"><img src="images/chevron_right_20dp_F4F6F9.svg" alt="" width="20" height="20"
+                  decoding="async"></button>
               <img class="product-image" name="allimage" src="images/zuan001.png" alt="商品画像プレビュー">
               <div class="product-pdf-canvas-wrap" aria-hidden="true">
                 <canvas class="product-pdf-canvas"></canvas>
@@ -972,10 +937,6 @@
             <input type="file" id="productImageInput" accept="image/*,application/pdf,.pdf,.ai" multiple
               class="product-image-input" style="display: none;">
           </div>
-          <button type="button" class="image-switch-btn image-switch-btn--next image-switch-btn--floating-prev"
-            id="productImageNextBtn">＜前へ</button>
-          <button type="button" class="image-switch-btn image-switch-btn--prev image-switch-btn--floating-next"
-            id="productImagePrevBtn">次へ＞</button>
         </div>
       </div>
     </div>
@@ -1137,9 +1098,9 @@
         content.classList.toggle('expanded');
 
         if (sidebar.classList.contains('closed')) {
-          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
+          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_F4F6F9.svg';
         } else {
-          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_F4F6F9.svg';
         }
       });
 
@@ -1306,8 +1267,14 @@
 
       function updateSwitchButtons() {
         if (!btnNext || !btnPrev) return;
-        btnNext.disabled = currentMediaIndex <= 0;
-        btnPrev.disabled = currentMediaIndex >= mediaItems.length - 1;
+        var atFirst = currentMediaIndex <= 0;
+        var atLast = mediaItems.length > 0 && currentMediaIndex >= mediaItems.length - 1;
+        btnNext.hidden = atFirst;
+        btnNext.setAttribute('aria-hidden', atFirst ? 'true' : 'false');
+        btnNext.disabled = false;
+        btnPrev.hidden = atLast;
+        btnPrev.setAttribute('aria-hidden', atLast ? 'true' : 'false');
+        btnPrev.disabled = false;
       }
 
       function updateIndexIndicator() {
@@ -1334,7 +1301,10 @@
 
       function renderCurrentMedia() {
         var current = mediaItems[currentMediaIndex];
-        if (!current) return;
+        if (!current) {
+          afterDisplayUpdate();
+          return;
+        }
 
         if (current.type === 'image-url') {
           showImagePreview(current.src);
@@ -1398,7 +1368,8 @@
 
       wrapper.addEventListener('click', function (e) {
         var target = e.target;
-        if (target && target.closest && target.closest('.image-switch-btn')) return;
+        if (target && target.closest && target.closest('.product-image-prev-btn')) return;
+        if (target && target.closest && target.closest('.product-image-next-btn')) return;
         if (target && target.closest && target.closest('.product-pdf-open-tab')) return;
         fileInput.click();
       });
