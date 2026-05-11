@@ -169,6 +169,17 @@ window.SHARED_SIDEBAR_HTML = `
     </ul>
   </div>
 
+  <div class="menu-item">
+    <div class="menu-title">
+      <img src="images/analytics_20dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg">
+      <span>仕入予算管理</span>
+      <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
+    </div>
+    <ul class="submenu">
+      <li><a href="shiireyosankanri.html">仕入予算管理</a></li>
+    </ul>
+  </div>
+
   <div class="menu-item master-menu">
     <div class="menu-title">
       <img src="images/database_20dp_F4F6F9_FILL0_wght400_GRAD0_opsz20.svg">
