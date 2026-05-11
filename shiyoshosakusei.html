@@ -967,6 +967,7 @@
 
     /* btn-fab-new のコンパクト版（柄共通追加・一時保存など） */
     .btn-fab-new.btn-kara-kyotsu-add,
+    .btn-fab-new.btn-quality-check,
     .btn-fab-new.btn-temp-save,
     .btn-fab-new.btn-ai-data-upload {
       padding: 3px 6px;
@@ -983,6 +984,10 @@
     }
 
     #deadlineArea2DeletePageBtn.deadline-area2-delete-page--suppressed {
+      display: none !important;
+    }
+
+    #qualityCheckBtn.quality-check--suppressed {
       display: none !important;
     }
 
@@ -1730,6 +1735,8 @@
               </div>
               <div class="deadline-area deadline-area-4" aria-label="エリア4">
                 <button type="button" class="btn-secondary" id="previewBtnArea3" data-preview-open="1" aria-label="プレビュー">プレビュー</button>
+                <button type="button" class="btn-fab-new btn-quality-check quality-check--suppressed" id="qualityCheckBtn"
+                  aria-label="品管確認" aria-hidden="true" hidden>品管確認</button>
                 <button type="button" class="btn-fab-new btn-temp-save" id="tempSaveBtn" aria-label="一時保存">一時保存</button>
               </div>
             </div>
@@ -1921,6 +1928,15 @@
         '共通_最終仕様書'
       ].map((s) => normalizeDeadlineDocLabel(s))
     );
+    const DEADLINE_QUALITY_CHECK_TARGETS = new Set(
+      [
+        ['定番', '資材試作依頼書'],
+        ['定番', '最終資材仕様書'],
+        ['別注', '別注資材試作依頼書'],
+        ['別注', '別注最終資材仕様書'],
+        ['柄共通', '柄別_最終校正・資材指示書']
+      ].map(([kubun, label]) => `${kubun}::${normalizeDeadlineDocLabel(label)}`)
+    );
     const DEADLINE_AREA3_EMPTY_TEXT_DEFAULT = 'aiデータ(PDF互換ファイル)は未登録です。\n\nここをクリックしてファイルを選択するか、\nドラッグアンドドロップしてください。';
     let deadlineArea2PageCount = 0;
     let deadlineArea2ActivePage = 1;
@@ -2028,10 +2044,13 @@
       const cycleGroup = getDeadlinePanelCycleToggle();
       const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
       const docLabel = normalizeDeadlineDocLabel(activeBtn && activeBtn.dataset.docLabel);
+      const activeSpecItem = document.querySelector('#specList .spec-item.is-active');
+      const kubun = (activeSpecItem && activeSpecItem.dataset && activeSpecItem.dataset.hanbaiKubun || '').trim();
       const nav = document.getElementById('deadlineArea2PaginationNav');
       const aiBtn = document.getElementById('aiDataUploadBtn');
       const deleteBtn = document.getElementById('deadlineArea2DeletePageBtn');
       const addBtn = document.getElementById('deadlineArea2AddPageBtn');
+      const qualityCheckBtn = document.getElementById('qualityCheckBtn');
       const fileInput = document.getElementById('aiDataUploadInput');
       const emptyHint = document.getElementById('deadlineArea3EmptyHint');
       const emptyText = emptyHint && emptyHint.querySelector('.deadline-area-3-empty');
@@ -2039,6 +2058,13 @@
 
       const hideAiUpload = DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(docLabel);
       const hidePagingUi = DEADLINE_AREA2_HIDE_PAGING_LABELS.has(docLabel);
+      const showQualityCheck = DEADLINE_QUALITY_CHECK_TARGETS.has(`${kubun}::${docLabel}`);
+
+      if (qualityCheckBtn) {
+        qualityCheckBtn.hidden = !showQualityCheck;
+        qualityCheckBtn.classList.toggle('quality-check--suppressed', !showQualityCheck);
+        qualityCheckBtn.toggleAttribute('aria-hidden', !showQualityCheck);
+      }
 
       function setAddPageBtnVisible(show) {
         addBtn.hidden = !show;
