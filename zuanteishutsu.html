@@ -111,7 +111,7 @@
       align-items: center;
       border: 2px dashed var(--color-border);
       border-radius: var(--radius-md);
-      cursor: pointer;
+      /* cursor: pointer; */
       background-color: #fafafa;
       transition: background-color 0.2s ease, border-color 0.2s ease;
     }
@@ -212,7 +212,8 @@
 
     /* HTML の hidden が author stylesheet の display:flex に負けるのを防ぐ */
     .product-image-remove-btn[hidden],
-    .product-image-prev-btn[hidden] {
+    .product-image-prev-btn[hidden],
+    .product-image-next-btn[hidden] {
       display: none !important;
       pointer-events: none;
     }
@@ -749,7 +750,7 @@
       </div>
       <div class="content-area-2">
         <div class="image-panel-toolbar">
-          <div class="image-index-indicator" id="productImageIndexIndicator">1 / 1</div>
+          <div class="image-index-indicator" id="productImageIndexIndicator">0 / 0</div>
           <div class="image-toolbar-actions">
             <div class="image-toolbar-main-actions">
               <button type="button" class="image-add-btn" id="productImageAddBtn">図案追加</button>
@@ -763,8 +764,8 @@
                 aria-label="前へ" hidden aria-hidden="true"><img src="images/chevron_left_20dp_F4F6F9.svg" alt="" width="20"
                   height="20" decoding="async"></button>
               <button type="button" class="product-image-next-btn" id="productImagePrevBtn" title="次へ"
-                aria-label="次へ"><img src="images/chevron_right_20dp_F4F6F9.svg" alt="" width="20" height="20"
-                  decoding="async"></button>
+                aria-label="次へ" hidden aria-hidden="true"><img src="images/chevron_right_20dp_F4F6F9.svg" alt=""
+                  width="20" height="20" decoding="async"></button>
               <img class="product-image" name="allimage" src="images/noimage.png" alt="商品画像プレビュー">
               <div class="product-pdf-canvas-wrap" aria-hidden="true">
                 <canvas class="product-pdf-canvas"></canvas>
@@ -1015,7 +1016,7 @@
       selHanbaiCommon.addEventListener("change", toggleTenjikaiByHanbai);
     })();
 
-    // 画像／PDF クリック／ドラッグ＆ドロップで複数登録・切り替え表示（PDFは PDF.js で canvas 描画）
+    // 画像／PDF：図案追加・前後ページ・× など（image-panel-stage 内は D&D 不可。PDFは PDF.js で canvas 描画）
     (function () {
       const wrapper = document.querySelector('.product-image-wrapper');
       const img = document.querySelector('.product-image');
@@ -1119,15 +1120,51 @@
         btnNext.hidden = atFirst;
         btnNext.setAttribute('aria-hidden', atFirst ? 'true' : 'false');
         btnNext.disabled = false;
-        // 「次へ」は末尾でも新規ページ追加できるため常に活性
+        // 「次へ」（右シェブロン）は最終ページでは非表示
+        var atLast = mediaItems.length > 0 && currentMediaIndex >= mediaItems.length - 1;
+        btnPrev.hidden = atLast;
+        btnPrev.setAttribute('aria-hidden', atLast ? 'true' : 'false');
         btnPrev.disabled = false;
       }
 
       function updateIndexIndicator() {
         if (!indexIndicator) return;
-        var current = mediaItems.length ? currentMediaIndex + 1 : 0;
+        if (allMediaSlotsAreNoimageOnly()) {
+          indexIndicator.textContent = "0 / 0";
+          return;
+        }
         var total = mediaItems.length;
+        var current = total ? currentMediaIndex + 1 : 0;
         indexIndicator.textContent = current + " / " + total;
+      }
+
+      /** 全スロットが未選択（noimage／プレースホルダのみ）なら true → インジケータは 0 / 0 */
+      function allMediaSlotsAreNoimageOnly() {
+        if (!mediaItems.length) return true;
+        for (var i = 0; i < mediaItems.length; i++) {
+          var it = mediaItems[i];
+          if (!it) return false;
+          if (it.type === 'pdf-file' || it.type === 'image-file') return false;
+          if (it.type === 'image-url') {
+            if (it.isPlaceholder || srcIsNoimagePng(it.src)) continue;
+            return false;
+          }
+          return false;
+        }
+        return true;
+      }
+
+      /** 図案追加で「現在ページを差し替え」にするか（noimage／プレースホルダのみ true） */
+      function isCurrentSlotEmptyForAdd() {
+        var cur = mediaItems[currentMediaIndex];
+        if (!cur) return true;
+        if (cur.type === 'pdf-file' || cur.type === 'image-file') return false;
+        if (cur.type === 'image-url') {
+          if (cur.isPlaceholder) return true;
+          if (srcIsNoimagePng(cur.src)) return true;
+          return false;
+        }
+        return true;
       }
 
       function srcIsNoimagePng(src) {
@@ -1170,6 +1207,8 @@
       function renderCurrentMedia() {
         var current = mediaItems[currentMediaIndex];
         if (!current) {
+          updateSwitchButtons();
+          updateIndexIndicator();
           updateRemoveButtonVisibility();
           return;
         }
@@ -1205,22 +1244,6 @@
         }
       }
 
-      function getFilesFromDataTransfer(dt) {
-        if (!dt) return null;
-        if (dt.files && dt.files.length) return dt.files;
-        if (dt.items && dt.items.length) {
-          var arr = [];
-          for (var i = 0; i < dt.items.length; i++) {
-            if (dt.items[i].kind === 'file') {
-              var f = dt.items[i].getAsFile();
-              if (f) arr.push(f);
-            }
-          }
-          if (arr.length) return arr;
-        }
-        return null;
-      }
-
       function handleFiles(files, options) {
         if (!files || !files.length) return;
         var replaceOnly = !!(options && options.replaceCurrentOnly);
@@ -1237,14 +1260,15 @@
 
         if (!normalized.length) return;
         if (replaceOnly) {
-          // 「図案追加」からは現在ページのみ更新
-          mediaItems.splice(currentMediaIndex, 1, normalized[0]);
-        } else {
-          // 画像エリアからは現在ページに添付し、2件目以降は次ページとして挿入
+          // 現在が noimage／プレースホルダのとき「図案追加」: 現在ページを差し替え（複数なら続けて挿入）
           mediaItems.splice(currentMediaIndex, 1, normalized[0]);
           if (normalized.length > 1) {
             Array.prototype.splice.apply(mediaItems, [currentMediaIndex + 1, 0].concat(normalized.slice(1)));
           }
+        } else {
+          // 現在に中身があるとき「図案追加」: 選択を末尾ページとして追加し、最後に追加したページを表示
+          Array.prototype.push.apply(mediaItems, normalized);
+          currentMediaIndex = mediaItems.length - 1;
         }
         renderCurrentMedia();
       }
@@ -1278,7 +1302,7 @@
       if (btnAdd) {
         btnAdd.addEventListener('click', function (e) {
           e.stopPropagation();
-          replaceCurrentOnly = true;
+          replaceCurrentOnly = isCurrentSlotEmptyForAdd();
           fileInput.click();
         });
       }
@@ -1304,51 +1328,20 @@
         });
       }
 
-      // ドラッグ＆ドロップ（capture で子要素＝canvas 上でも drop 可能に）
-      var dropZone = wrapper.closest('.product-card') || wrapper;
-
-      function setDragOver(active) {
-        wrapper.classList.toggle('dragover', active);
-        if (dropZone !== wrapper) dropZone.classList.toggle('dragover', active);
-      }
-
-      function isOutsideDropZone(target) {
-        if (!target || !dropZone.contains) return true;
-        return !dropZone.contains(target);
-      }
-
-      dropZone.addEventListener('dragenter', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragOver(true);
-      }, true);
-
-      dropZone.addEventListener('dragover', function (e) {
+      // image-panel-stage 内では D&D による追加・差し替えを受け付けない（ページ遷移も防ぐ）
+      var imagePanelStage = wrapper.closest('.image-panel-stage');
+      function preventPanelFileDrop(e) {
         e.preventDefault();
         e.stopPropagation();
         try {
-          e.dataTransfer.dropEffect = 'copy';
+          if (e.dataTransfer) e.dataTransfer.dropEffect = 'none';
         } catch (err) { /* ignore */ }
-        setDragOver(true);
-      }, true);
-
-      dropZone.addEventListener('dragleave', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (isOutsideDropZone(e.relatedTarget)) setDragOver(false);
-      }, true);
-
-      dropZone.addEventListener('drop', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragOver(false);
-        var fileList = getFilesFromDataTransfer(e.dataTransfer);
-        if (fileList && fileList.length) handleFiles(fileList);
-      }, true);
-
-      dropZone.addEventListener('dragend', function () {
-        setDragOver(false);
-      }, true);
+      }
+      if (imagePanelStage) {
+        imagePanelStage.addEventListener('dragenter', preventPanelFileDrop, true);
+        imagePanelStage.addEventListener('dragover', preventPanelFileDrop, true);
+        imagePanelStage.addEventListener('drop', preventPanelFileDrop, true);
+      }
 
       if (pdfOpenTab) {
         pdfOpenTab.addEventListener('click', function (e) {
