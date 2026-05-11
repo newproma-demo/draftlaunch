@@ -247,7 +247,7 @@
     /* 画面の幅が768px以下ならスマホ*/
     @media (max-width: 767px) {
       /*
-       * ルートフォントを bk_0415 の css/style.css と同じに（現行 style.css の html { font-size: var(--fs-base); } を上書き）
+       * ルートフォントを bk_0415 の css/style.css と同じに
        */
       html {
         font-size: clamp(12px, 0.5vw + 8px, var(--fs-base));
@@ -285,8 +285,10 @@
 
       .content {
         background: var(--color-surface);
+        display: flex;
         flex-direction: column;
         flex: 1;
+        min-height: 0;
         padding: 20px;
         margin-left: -220px;
         width: 100%;
@@ -321,7 +323,53 @@
         z-index: 3;
       }
 
-      /* bk_202604 draftlaunch-main_0415 と同様：resultSelect は固定幅を外し列内いっぱい。承認図案も同じ幅 */
+      /* 明細：品名・メタの下に画像セルを左寄せ（モーダル追加行は削除×を1行目右端） */
+      .content-area-1 .detail-table {
+        width: 100%;
+        display: block;
+      }
+
+      .content-area-1 .detail-table tbody {
+        display: block;
+      }
+
+      .content-area-1 .detail-table tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        column-gap: 10px;
+        row-gap: 10px;
+        align-items: start;
+      }
+
+      .content-area-1 .detail-table tr > td:not(.detail-delete-cell):not(.detail-image-cell) {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .content-area-1 .detail-table tr > td.detail-delete-cell {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: start;
+        width: auto;
+        box-sizing: border-box;
+      }
+
+      .content-area-1 .detail-table tr > td.detail-image-cell {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-self: start;
+        width: auto;
+        max-width: 100%;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      /*承認図案 */
       .result-select-block .filter-item {
         width: 100%;
         box-sizing: border-box;
@@ -343,18 +391,118 @@
         box-sizing: border-box;
       }
 
+      /* zuanteishutsu.html と同様：タイトル直下に画像パネル（content-area-2）を配置 */
+      .content h1 {
+        order: -2;
+      }
+
+      .content-area-2 {
+        order: -1;
+        min-height: 5px;
+        max-height: none;
+        overflow: visible;
+        flex-shrink: 0;
+        flex-grow: 0;
+      }
+
       .image-panel-stage {
         width: 100%;
+        height: 48vh;
+        max-height: 320px;
         padding-right: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr;
         gap: 8px;
       }
 
-      /* 0415 には無い要素：本文（html）のスケールに合わせ var(--fs-sm) による差をなくす */
+      /* メイン画像のみ：320px 上限と .product-card の max-height で縦が潰れないようにする */
+      .content-area-2 .image-panel-stage {
+        height: clamp(300px, 52vh, min(85vh, 560px));
+        max-height: none;
+        min-height: 300px;
+      }
+
+      .image-panel-stage .product-card {
+        grid-column: 1 / 3;
+        grid-row: 2;
+        height: 100%;
+        max-height: 100%;
+      }
+
+      .content-area-2 .image-panel-stage .product-card {
+        max-height: none;
+        height: 100%;
+        min-height: 0;
+      }
+
+      .content-area-2 .product-card .product-image-wrapper {
+        flex-shrink: 0;
+        flex-grow: 1;
+        min-height: 220px;
+      }
+
+      .image-panel-stage .image-switch-btn--floating-prev {
+        position: static;
+        left: auto;
+        top: auto;
+        transform: none;
+        order: -1;
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+        margin-bottom: 4px;
+      }
+
+      .image-panel-stage .image-switch-btn--floating-next {
+        position: static;
+        right: auto;
+        top: auto;
+        transform: none;
+        order: -1;
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        margin-bottom: 4px;
+      }
+
+      .image-panel-stage .image-switch-btn {
+        height: 44px;
+        min-height: 44px;
+        flex: 0 0 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 0 12px;
+        line-height: 1;
+        font-size: var(--fs-sm);
+        font-weight: 800;
+        min-width: 96px;
+        box-shadow: none;
+        border-radius: 10px;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+
+      .image-panel-stage .image-switch-btn:disabled {
+        box-shadow: none;
+      }
+
+      #productImageNextBtn,
+      #productImagePrevBtn {
+        height: 44px;
+        min-height: 44px;
+        flex-basis: 44px;
+      }
+/*
       .image-switch-btn,
       .image-index-indicator {
         font-size: inherit;
       }
+*/
     }
+
 
     .filter-row {
       display: flex;
@@ -454,7 +602,7 @@
       cursor: default;
     }
 
-    /* 枠内に必ず収める（縦横比は維持・はみ出し・スクロールなし）— zuanteishutsu.html と同じ */
+    /* 枠内に必ず収める */
     img.product-image {
       width: auto;
       height: auto;
@@ -583,7 +731,7 @@
       background: #f0f0f0;
     }
 
-    /* detail-meta の後ろ列：行ごとの画像アップロード（product-card と同機能・コンパクト） */
+    /* detail-meta の後ろ列：行ごとの画像アップロード */
     .detail-table td.detail-image-cell {
       width: 150px;
       max-width: 160px;
