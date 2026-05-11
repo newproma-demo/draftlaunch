@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>仕入予算管理 | Proma</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .pc-only { display: block; }
+    .sp-only { display: none; }
+
+    html {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+      max-width: 100vw;
+      box-sizing: border-box;
+    }
+
+    /* #region ヘッダー・レイアウト（他画面と共通） */
+    .header {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      font-size: var(--fs-base);
+      background: var(--color-card);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header a {
+      text-decoration: none;
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .header a:hover {
+      color: var(--color-primary);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+    }
+
+    .header-user {
+      position: absolute;
+      right: 70px;
+      padding: 0;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .account-wrapper {
+      position: absolute;
+      right: 24px;
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-height: 41px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: none;
+      min-width: 120px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .account-menu .menu-item {
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .account-menu .menu-item:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .header-account_circle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-account_circle:hover {
+      opacity: 0.85;
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1500;
+      backdrop-filter: blur(2px);
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 0;
+      min-height: calc(100vh - 48px);
+      min-width: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .content {
+      font-size: 14px;
+      background: var(--color-surface);
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      transition: margin-left 0.3s ease, padding-left 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .content:not(.expanded) {
+      padding-left: 32px;
+    }
+
+    .content.expanded {
+      margin-left: -220px;
+      padding-left: 32px;
+    }
+
+    /* flex 子が中身幅で親を押し広げないよう（期別カード内の横スクロールに閉じる） */
+    .content-box {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ページタイトル：mitsumoribunseki.html 等と同一 */
+    .content-box .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    /* スマホ・狭幅（mitsumoribunseki.html と同じ：スクロールは .content 内のみ → ヘッダー／ハンバーゲー固定） */
+    @media (max-width: 768px) {
+      .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+        height: 30px;
+        display: block;
+      }
+
+      .content {
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        max-width: 100%;
+        padding: 12px 12px calc(56px + env(safe-area-inset-bottom, 0px)) 12px;
+        margin-left: -220px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        box-sizing: border-box;
+      }
+
+      .content:not(.expanded) {
+        padding-left: 12px;
+      }
+
+      .content.expanded {
+        width: 100%;
+        max-width: 100%;
+        margin-left: -220px;
+        padding-left: 12px;
+      }
+
+      .content-box {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 4px 0;
+        flex: none;
+        min-height: 0;
+      }
+
+      .account-wrapper {
+        right: 16px;
+      }
+    }
+
+    /* タブレット〜中幅：検索4列や基準ボタンが詰まるのを緩和 */
+    @media (max-width: 1024px) {
+      .shiire-page .page-header {
+        flex-wrap: wrap;
+      }
+
+      .shiire-page .header-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        width: 100%;
+      }
+
+      .shiire-page .basis-switch {
+        flex-wrap: wrap;
+      }
+
+      .shiire-page .basis-buttons {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .shiire-page .basis-btn {
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .shiire-page .wide-summary-wrap {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 12px;
+        padding-right: 12px;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    /* #endregion */
+
+    /* ========== shiire/purchase-plan.css 統合（body のみ省略） ========== */
+    .shiire-page * {
+      box-sizing: border-box;
+    }
+
+    .shiire-page {
+      margin: 0;
+      font-family: "Yu Gothic", "Meiryo", sans-serif;
+      color: #1f2937;
+      max-width: 1600px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
+      flex: 1;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .shiire-page .page {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 0 32px;
+      min-width: 0;
+    }
+
+    #termContainer {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .shiire-page .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .shiire-page .sub-text {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .shiire-page .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .shiire-page .card {
+      background: #ffffff;
+      border: 1px solid #d9e0ea;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      margin-bottom: 16px;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .shiire-page .card-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid #e7edf5;
+    }
+
+    .shiire-page .card-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .shiire-page .filter-area {
+      padding: 18px;
+    }
+
+    /* スマホ・タブレット：検索条件の折りたたみ（初期は .is-open で展開、hatchujokyokanri と同系） */
+    .shiire-search-toggle-sp {
+      display: none;
+    }
+
+    .shiire-search-collapse {
+      display: block;
+    }
+
+    @media (max-width: 1024px) {
+      .shiire-search-toggle-sp {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0;
+        padding: 14px 16px;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: var(--fs-sm);
+        color: var(--color-text);
+        background: var(--color-card);
+        border: none;
+        border-bottom: 1px solid #e7edf5;
+        border-radius: 0;
+        cursor: pointer;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .shiire-search-toggle-sp-label {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+        gap: 8px;
+      }
+
+      .shiire-search-toggle-sp-icon {
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .shiire-search-toggle-sp-text {
+        font-size: var(--fs-sm);
+      }
+
+      .shiire-search-toggle-sp::after {
+        content: "＋";
+        font-size: 1.15em;
+        color: var(--color-text-muted);
+        flex-shrink: 0;
+      }
+
+      .shiire-search-collapse.is-open .shiire-search-toggle-sp::after {
+        content: "ー";
+      }
+
+      .shiire-search-panel {
+        display: none;
+      }
+
+      .shiire-search-collapse.is-open .shiire-search-panel {
+        display: block;
+      }
+
+      .shiire-page .filter-card.shiire-filter-card {
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .shiire-page .filter-card.shiire-filter-card .card-header.shiire-search-card-header {
+        display: none;
+      }
+
+      .shiire-search-collapse:not(.is-open) .shiire-search-toggle-sp {
+        border-radius: var(--radius-lg);
+        border-bottom: none;
+      }
+
+      .shiire-search-collapse.is-open .shiire-search-toggle-sp {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .shiire-search-panel {
+        display: block !important;
+      }
+    }
+
+    .shiire-page .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .shiire-page .grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .shiire-page .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .shiire-page .form-group input,
+    .shiire-page .form-group select {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #cfd7e3;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .shiire-page .form-group input:focus,
+    .shiire-page .form-group select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .shiire-page .form-footer {
+      display: flex;
+      gap: 10px;
+    }
+
+    .shiire-page .btn {
+      height: 40px;
+      padding: 0 18px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: var(--fs-lg);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .shiire-page .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .shiire-page .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .shiire-page .btn-secondary {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .shiire-page .btn-secondary:hover {
+      filter: brightness(1.08);
+    }
+
+    .shiire-page .btn-light {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+
+    .shiire-page .btn-light:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .shiire-page .term-card {
+      padding-top: 8px;
+      overflow: hidden;
+    }
+
+    .shiire-page .term-title-row {
+      padding: 12px 16px 0;
+    }
+
+    .shiire-page .term-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .shiire-page .term-title-left {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .shiire-page .term-title-left h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .shiire-page .inline-rate {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .shiire-page .inline-rate span {
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .shiire-page .inline-rate strong {
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .shiire-page .wide-summary-wrap {
+      padding: 14px 16px 16px;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .shiire-page .matrix-table {
+      width: 100%;
+      min-width: 1450px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+    }
+
+    .shiire-page .matrix-table th,
+    .shiire-page .matrix-table td {
+      border: 1px solid #4b5563;
+      text-align: center;
+      padding: 0;
+      height: 52px;
+      font-size: 14px;
+    }
+
+    .shiire-page .matrix-table thead th {
+      height: 32px;
+      font-weight: 400;
+      background: #ffffff;
+    }
+
+    .shiire-page .item-col {
+      width: 210px;
+      min-width: 210px;
+      text-align: left !important;
+      padding-left: 14px !important;
+      background: #ffffff;
+    }
+
+    .shiire-page .row-name {
+      color: black;
+      font-weight: 400;
+    }
+
+    .shiire-page .highlight-head,
+    .shiire-page .highlight-cell {
+      background: #efe7bf !important;
+    }
+
+    .shiire-page .total-col {
+      width: 100px;
+      min-width: 100px;
+      background: #ffffff;
+    }
+
+    .shiire-page .total-cell {
+      background: #ffffff;
+      font-weight: 700;
+      padding: 0 10px !important;
+    }
+
+    .shiire-page .cell-link {
+      width: 100%;
+      height: 100%;
+      min-height: 52px;
+      border: none;
+      background: transparent;
+      color: #111827;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .shiire-page .cell-link:hover {
+      background: rgba(0, 134, 50, 0.08);
+      color: var(--color-primary-dark);
+    }
+
+    #detailModal.detail-modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 1000;
+    }
+
+    #detailModal.detail-modal-overlay.show {
+      display: flex;
+    }
+
+    #detailModal .modal-content {
+      width: min(900px, 100%);
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    #detailModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px 20px;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    #detailModal .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+      border-bottom: none;
+      color: #1f2937;
+    }
+
+    #detailModal .modal-subtitle {
+      margin: 6px 0 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    #detailModal .modal-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    #detailModal .modal-close:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    #detailModal .modal-summary {
+      display: flex;
+      gap: 14px;
+      padding: 18px 20px 0;
+      flex-wrap: wrap;
+    }
+
+    #detailModal .mini-stat {
+      min-width: 140px;
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    #detailModal .mini-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    #detailModal .mini-stat strong {
+      font-size: 20px;
+    }
+
+    /* 明細テーブル（モーダル内のみ・一覧と区別） */
+    #detailModal .detail-table-wrap {
+      padding: 16px 20px 20px;
+      overflow-x: auto;
+    }
+
+    #detailModal .detail-table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+    }
+
+    #detailModal .detail-table th,
+    #detailModal .detail-table td {
+      border: 1px solid #d9e1ea;
+      padding: 12px 14px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    #detailModal .detail-table thead th {
+      background: #f8fafc;
+      font-weight: 700;
+    }
+
+    #detailModal .text-right {
+      text-align: right !important;
+    }
+
+    .shiire-page .top-margin {
+      margin-top: 18px;
+    }
+
+    .shiire-page .basis-card {
+      padding: 14px 18px;
+    }
+
+    .shiire-page .basis-switch {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .shiire-page .basis-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .shiire-page .basis-buttons {
+      display: inline-flex;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .shiire-page .basis-btn {
+      min-width: 120px;
+      height: 40px;
+      padding: 0 18px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .shiire-page .basis-btn:hover:not(.active) {
+      background: rgba(0, 134, 50, 0.06);
+      color: var(--color-text);
+    }
+
+    .shiire-page .basis-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .shiire-page .basis-btn.active:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .shiire-page .basis-chip {
+      display: inline-flex;
+      align-items: center;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(0, 134, 50, 0.1);
+      color: var(--color-primary-dark);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1024px) {
+      .shiire-page .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .shiire-page {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .shiire-page .page {
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .shiire-page .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .shiire-page .header-actions {
+        justify-content: stretch;
+        gap: 8px;
+      }
+
+      .shiire-page .header-actions .btn {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .shiire-page .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .shiire-page .form-footer {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .shiire-page .term-title-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      #budgetEntryModal.modal-budget-overlay {
+        align-items: flex-end;
+        justify-content: center;
+        padding: 12px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+      }
+
+      #budgetEntryModal .budget-modal-sheet {
+        width: 100%;
+        max-width: 100%;
+        max-height: 92vh;
+        max-height: min(92dvh, 100%);
+        border-radius: 16px 16px 0 0;
+      }
+
+      #detailModal.detail-modal-overlay {
+        padding: 12px;
+        align-items: flex-end;
+      }
+
+      #detailModal .modal-content {
+        width: 100%;
+        max-height: 90vh;
+        max-height: 90dvh;
+        overflow-y: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #budgetEntryModal .budget-scope .grid-3,
+      #budgetEntryModal .budget-scope .grid-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========== 予算登録モーダル（budget-entry.css をスコープ） ========== */
+    #budgetEntryModal.modal-budget-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 1100;
+      overflow-y: auto;
+    }
+
+    #budgetEntryModal.modal-budget-overlay.show {
+      display: flex;
+    }
+
+    #budgetEntryModal .budget-modal-sheet {
+      width: min(960px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow: hidden auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    #budgetEntryModal .budget-scope * {
+      box-sizing: border-box;
+    }
+
+    #budgetEntryModal .budget-scope {
+      padding: 20px 24px 28px;
+      color: #1f2937;
+      font-family: "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    #budgetEntryModal .budget-scope .budget-modal-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-right: 0;
+    }
+
+    #budgetEntryModal .budget-scope .budget-modal-heading h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      border-bottom: none;
+      color: #1f2937;
+    }
+
+    #budgetEntryModal .budget-scope .budget-modal-heading .sub-text {
+      margin: 6px 0 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    #budgetEntryModal .budget-scope .budget-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    #budgetEntryModal .budget-scope .budget-close:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    #budgetEntryModal .budget-scope .full-width {
+      width: 100%;
+    }
+
+    #budgetEntryModal .budget-scope .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      margin-bottom: 0;
+    }
+
+    #budgetEntryModal .budget-scope .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    #budgetEntryModal .budget-scope .card-header h2 {
+      margin: 0;
+      font-size: 18px;
+      border-bottom: none;
+      color: #1f2937;
+    }
+
+    #budgetEntryModal .budget-scope .segment-wrap {
+      padding: 20px 20px 0;
+    }
+
+    #budgetEntryModal .budget-scope .segment-label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4b5563;
+    }
+
+    #budgetEntryModal .budget-scope .segment {
+      display: inline-flex;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+    }
+
+    #budgetEntryModal .budget-scope .segment-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      transition: background 0.2s ease, color 0.2s ease;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    #budgetEntryModal .budget-scope .segment-btn:hover:not(.active) {
+      background: rgba(0, 134, 50, 0.06);
+      color: var(--color-text);
+    }
+
+    #budgetEntryModal .budget-scope .segment-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    #budgetEntryModal .budget-scope .segment-btn.active:hover {
+      background: var(--color-primary-dark);
+    }
+
+    #budgetEntryModal .budget-scope .form-panel {
+      display: none;
+      padding: 20px;
+    }
+
+    #budgetEntryModal .budget-scope .form-panel.active {
+      display: block;
+    }
+
+    #budgetEntryModal .budget-scope .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    #budgetEntryModal .budget-scope .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    #budgetEntryModal .budget-scope .grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    #budgetEntryModal .budget-scope .budget-standard-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-block {
+      margin-top: 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px 16px;
+      background: var(--color-card);
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    #budgetEntryModal .budget-scope .budget-bulk-inline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #budgetEntryModal .budget-scope .budget-bulk-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    #budgetEntryModal .budget-scope .budget-bulk-input {
+      width: 104px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      text-align: right;
+    }
+
+    #budgetEntryModal .budget-scope .budget-bulk-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    #budgetEntryModal .budget-scope .btn-compact {
+      height: 36px;
+      padding: 0 12px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 8px 6px;
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-cell {
+      min-width: 0;
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-cell > label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--color-text-muted);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-cell input {
+      width: 100%;
+      height: 38px;
+      padding: 0 6px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      text-align: right;
+      box-sizing: border-box;
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-cell input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(0, 134, 50, 0.1);
+    }
+
+    #budgetEntryModal .budget-scope .budget-month-cell input::placeholder {
+      color: #9ca3af;
+      opacity: 1;
+      font-size: 12px;
+    }
+
+    #budgetEntryModal .budget-scope .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    #budgetEntryModal .budget-scope .form-group input,
+    #budgetEntryModal .budget-scope .form-group select {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    #budgetEntryModal .budget-scope .form-group input:focus,
+    #budgetEntryModal .budget-scope .form-group select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    #budgetEntryModal .budget-scope .form-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    #budgetEntryModal .budget-scope .btn {
+      height: 40px;
+      padding: 0 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-size: var(--fs-lg);
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    #budgetEntryModal .budget-scope .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    #budgetEntryModal .budget-scope .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    #budgetEntryModal .budget-scope .btn-light {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+
+    #budgetEntryModal .budget-scope .btn-light:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    @media (max-width: 900px) {
+      #budgetEntryModal .budget-scope .grid-3,
+      #budgetEntryModal .budget-scope .grid-4 {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      #budgetEntryModal .budget-scope .budget-month-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      #budgetEntryModal .budget-scope {
+        padding: 16px;
+      }
+
+      #budgetEntryModal .budget-scope .budget-modal-heading {
+        flex-direction: column;
+      }
+
+      #budgetEntryModal .budget-scope .budget-modal-heading .budget-close {
+        align-self: flex-end;
+      }
+
+      #budgetEntryModal .budget-scope .grid-3,
+      #budgetEntryModal .budget-scope .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      #budgetEntryModal .budget-scope .budget-standard-top {
+        grid-template-columns: 1fr;
+      }
+
+      #budgetEntryModal .budget-scope .budget-month-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      #budgetEntryModal .budget-scope .budget-bulk-inline {
+        width: 100%;
+      }
+
+      #budgetEntryModal .budget-scope .budget-bulk-input {
+        flex: 1 1 80px;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <img src="images/menu_50dp_008632.svg" alt="" />
+    </div>
+    <div class="header-title"><a href="dashboard.html">Proma</a></div>
+    <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
+    <div class="account-wrapper">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg" alt="">
+      <div class="account-menu">
+        <div class="menu-item">ログアウト</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+
+    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
+    <div id="sidebarMount"></div>
+    <!-- #endregion -->
+
+    <div class="content">
+      <div class="content-box">
+        <h2 class="page-title">仕入予算管理</h2>
+
+        <div class="shiire-page">
+          <div class="page">
+            <header class="page-header">
+              <div>
+                <p class="sub-text">検索条件に応じて、各期の予算を一覧表示</p>
+              </div>
+              <div class="header-actions">
+                <button type="button" id="openBudgetModal" class="btn btn-primary">予算登録</button>
+                <button type="button" class="btn btn-secondary">CSV出力</button>
+              </div>
+            </header>
+
+            <!-- 検索条件（～1024px は折りたたみ可・初期展開） -->
+            <section class="card filter-card shiire-filter-card">
+              <div class="shiire-search-collapse is-open" id="shiireSearchBox">
+                <button type="button" class="shiire-search-toggle-sp" id="shiireSearchToggleSp" aria-expanded="true" aria-controls="shiireSearchPanel">
+                  <span class="shiire-search-toggle-sp-label">
+                    <img class="shiire-search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
+                    <span class="shiire-search-toggle-sp-text">検索条件を閉じる</span>
+                  </span>
+                </button>
+                <div id="shiireSearchPanel" class="shiire-search-panel">
+                  <div class="card-header shiire-search-card-header">
+                    <h2>検索条件</h2>
+                  </div>
+
+                  <div class="filter-area">
+                    <div class="form-grid grid-4">
+                      <div class="form-group">
+                        <label>年度</label>
+                        <select>
+                          <option>2026年度</option>
+                          <option>2025年度</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label>区分</label>
+                        <select>
+                          <option>すべて</option>
+                          <option>定番</option>
+                          <option>別注</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label>得意先</label>
+                        <select>
+                          <option>すべて</option>
+                          <option>ABC商事</option>
+                          <option>サンプル商会</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label>営業担当</label>
+                        <select>
+                          <option>すべて</option>
+                          <option>田中</option>
+                          <option>鈴木</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-footer top-margin">
+                      <button type="button" class="btn btn-light">クリア</button>
+                      <button type="button" class="btn btn-primary">検索</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="card basis-card">
+              <div class="basis-switch">
+                <span class="basis-label">表示基準</span>
+                <div class="basis-buttons">
+                  <button type="button" class="basis-btn active" data-basis="previous">前年ベース</button>
+                  <button type="button" class="basis-btn" data-basis="target">目標ベース</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- 期別一覧 -->
+            <div id="termContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 明細ポップアップ -->
+  <div id="detailModal" class="detail-modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>明細表示</h2>
+          <p id="modalTitle" class="modal-subtitle">営業在庫金額 / 2月 / 1期</p>
+        </div>
+        <button type="button" id="closeModal" class="modal-close" aria-label="閉じる">×</button>
+      </div>
+
+      <div class="modal-summary">
+        <div class="mini-stat">
+          <span class="mini-label">合計</span>
+          <strong id="modalTotal">0</strong>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-label">件数</span>
+          <strong id="modalCount">0件</strong>
+        </div>
+      </div>
+
+      <div class="detail-table-wrap">
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>分類</th>
+              <th>金額</th>
+            </tr>
+          </thead>
+          <tbody id="modalDetailBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 予算登録モーダル（budget-entry 統合） -->
+  <div id="budgetEntryModal" class="modal-budget-overlay" aria-hidden="true">
+    <div class="budget-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="budgetModalTitle">
+      <div class="budget-scope">
+        <header class="budget-modal-heading">
+          <div>
+            <h2 id="budgetModalTitle">予算登録</h2>
+            <p class="sub-text">区分ごとに登録項目を切り替えて入力</p>
+          </div>
+          <button type="button" id="closeBudgetModal" class="budget-close" aria-label="閉じる">×</button>
+        </header>
+
+        <section class="card form-card full-width">
+          <div class="card-header">
+            <h2>予算入力</h2>
+          </div>
+
+          <div class="segment-wrap">
+            <span class="segment-label">区分</span>
+            <div class="segment">
+              <button type="button" class="segment-btn active" data-type="standard">定番</button>
+              <button type="button" class="segment-btn" data-type="custom">別注</button>
+            </div>
+          </div>
+
+          <div id="standardForm" class="form-panel active">
+            <div class="budget-standard-top">
+              <div class="form-group">
+                <label for="budgetStandardYear">年度</label>
+                <select id="budgetStandardYear">
+                  <option value="2026">2026年度</option>
+                  <option value="2025">2025年度</option>
+                  <option value="2024">2024年度</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="budgetStandardLanding">在庫着地目標</label>
+                <input type="number" id="budgetStandardLanding" inputmode="decimal" autocomplete="off" placeholder="例：90（百万円など運用単位で）" title="在庫着地目標">
+              </div>
+            </div>
+
+            <div class="budget-month-block">
+              <div class="budget-month-head">
+                <span class="budget-month-title">仕入目標（9月〜8月・年度順）</span>
+                <div class="budget-bulk-inline">
+                  <label class="budget-bulk-label" for="budgetStandardBulkAmount">同一金額を全月に反映</label>
+                  <input type="number" class="budget-bulk-input" id="budgetStandardBulkAmount" inputmode="decimal" autocomplete="off" placeholder="金額" title="入力後に「反映」を押すと12ヶ月にコピー">
+                  <button type="button" class="btn btn-light btn-compact" id="budgetStandardBulkApply">反映</button>
+                </div>
+              </div>
+              <div class="budget-month-grid" role="group" aria-label="月別仕入目標">
+                <div class="budget-month-cell">
+                  <label for="budgetStdM0">9月</label>
+                  <input type="number" id="budgetStdM0" data-standard-month-index="0" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM1">10月</label>
+                  <input type="number" id="budgetStdM1" data-standard-month-index="1" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM2">11月</label>
+                  <input type="number" id="budgetStdM2" data-standard-month-index="2" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM3">12月</label>
+                  <input type="number" id="budgetStdM3" data-standard-month-index="3" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM4">1月</label>
+                  <input type="number" id="budgetStdM4" data-standard-month-index="4" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM5">2月</label>
+                  <input type="number" id="budgetStdM5" data-standard-month-index="5" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM6">3月</label>
+                  <input type="number" id="budgetStdM6" data-standard-month-index="6" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM7">4月</label>
+                  <input type="number" id="budgetStdM7" data-standard-month-index="7" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM8">5月</label>
+                  <input type="number" id="budgetStdM8" data-standard-month-index="8" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM9">6月</label>
+                  <input type="number" id="budgetStdM9" data-standard-month-index="9" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM10">7月</label>
+                  <input type="number" id="budgetStdM10" data-standard-month-index="10" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+                <div class="budget-month-cell">
+                  <label for="budgetStdM11">8月</label>
+                  <input type="number" id="budgetStdM11" data-standard-month-index="11" inputmode="decimal" autocomplete="off" placeholder="ー">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <button type="button" class="btn btn-light" id="budgetStandardClear">クリア</button>
+              <button type="button" class="btn btn-primary">定番予算を登録</button>
+            </div>
+          </div>
+
+          <div id="customForm" class="form-panel">
+            <div class="form-grid grid-4">
+              <div class="form-group">
+                <label>年月</label>
+                <input type="month" value="2026-04">
+              </div>
+              <div class="form-group">
+                <label>得意先</label>
+                <select>
+                  <option>ABC商事</option>
+                  <option>サンプル商会</option>
+                  <option>テスト物産</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ライセンス</label>
+                <select>
+                  <option>キャラクターA</option>
+                  <option>キャラクターB</option>
+                  <option>ブランドC</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>品種</label>
+                <select>
+                  <option>インテリア</option>
+                  <option>文房具</option>
+                  <option>雑貨</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>営業担当</label>
+                <select>
+                  <option>田中</option>
+                  <option>鈴木</option>
+                  <option>佐藤</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>定番フォロー仕入金額</label>
+                <input type="number" id="followAmount" placeholder="例：80">
+              </div>
+              <div class="form-group">
+                <label>月内出荷仕入金額</label>
+                <input type="number" id="shipmentAmount" placeholder="例：120">
+              </div>
+              <div class="form-group">
+                <label>合計</label>
+                <input type="number" id="totalAmount" readonly>
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <button type="button" class="btn btn-light">クリア</button>
+              <button type="button" class="btn btn-primary">別注予算を登録</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/sidebar.js"></script>
+  <script>
+    function loadSharedSidebar() {
+      const mount = document.getElementById("sidebarMount");
+      if (!mount) return;
+
+      if (typeof window.SHARED_SIDEBAR_HTML !== "string" || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error("Sidebar include error: SHARED_SIDEBAR_HTML is not available.");
+        return;
+      }
+
+      mount.innerHTML = window.SHARED_SIDEBAR_HTML;
+      initSidebarCollapseToggle();
+    }
+
+    function initSidebarCollapseToggle() {
+      const sidebar = document.querySelector(".sidebar");
+      const toggle = document.querySelector(".sidebar-toggle");
+      const content = document.querySelector(".content");
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === "1") return;
+
+      const toggleImg = toggle.querySelector("img");
+      toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("closed");
+        content.classList.toggle("expanded");
+
+        if (sidebar.classList.contains("closed")) {
+          if (toggleImg) toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        } else {
+          if (toggleImg) toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+        }
+      });
+
+      toggle.dataset.bound = "1";
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.querySelector(".overlay");
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.toggle("active");
+
+      if (sidebar.classList.contains("active")) {
+        overlay.classList.add("show");
+      } else {
+        overlay.classList.remove("show");
+      }
+    }
+
+    function closeSidebar() {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.querySelector(".overlay");
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove("active");
+      overlay.classList.remove("show");
+    }
+
+    loadSharedSidebar();
+
+    const icon = document.querySelector(".header-account_circle");
+    const menu = document.querySelector(".account-menu");
+    if (icon && menu) {
+      icon.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+      });
+    }
+
+    (function initShiireSearchCollapse() {
+      const btn = document.getElementById("shiireSearchToggleSp");
+      const box = document.getElementById("shiireSearchBox");
+      if (!btn || !box) return;
+      btn.addEventListener("click", () => {
+        const isOpen = box.classList.toggle("is-open");
+        btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        const textEl = btn.querySelector(".shiire-search-toggle-sp-text");
+        if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
+      });
+    })();
+
+    /* 予算登録モーダル開閉 */
+    const budgetEntryModal = document.getElementById("budgetEntryModal");
+    const openBudgetModalBtn = document.getElementById("openBudgetModal");
+    const closeBudgetModalBtn = document.getElementById("closeBudgetModal");
+
+    function openBudgetModal() {
+      if (!budgetEntryModal) return;
+      budgetEntryModal.classList.add("show");
+      budgetEntryModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeBudgetModal() {
+      if (!budgetEntryModal) return;
+      budgetEntryModal.classList.remove("show");
+      budgetEntryModal.setAttribute("aria-hidden", "true");
+    }
+
+    if (openBudgetModalBtn) {
+      openBudgetModalBtn.addEventListener("click", openBudgetModal);
+    }
+    if (closeBudgetModalBtn) {
+      closeBudgetModalBtn.addEventListener("click", closeBudgetModal);
+    }
+    if (budgetEntryModal) {
+      budgetEntryModal.addEventListener("click", (e) => {
+        if (e.target === budgetEntryModal) {
+          closeBudgetModal();
+        }
+      });
+    }
+
+    /** 一覧・明細ロジック（purchase-summary と同一） */
+    const months = ["9月", "10月", "11月", "12月", "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月"];
+    const highlightMonths = ["2月", "3月", "4月", "5月", "6月", "7月", "8月"];
+
+    let currentBasis = "previous";
+
+    const termDataMap = {
+      previous: {
+        "1": {
+          term: "1期",
+          salesTurnoverRate: "2.40",
+          accountingTurnoverRate: "2.10",
+          rows: [
+            { label: "営業在庫金額", values: [120, 110, 115, 105, 98, 102, 108, 100, 96, 94, 91, 88] },
+            { label: "経理在庫金額", values: [118, 108, 113, 103, 95, 100, 104, 98, 94, 92, 89, 86] },
+            { label: "売上",         values: [180, 210, 205, 220, 230, 190, 215, 240, 250, 245, 260, 255] },
+            { label: "仕入",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] },
+            { label: "瀬戸ケース在庫",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] },
+            { label: "1ケースあたりの在庫金額",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] }
+          ]
+        },
+        "2": {
+          term: "2期",
+          salesTurnoverRate: "2.65",
+          accountingTurnoverRate: "2.32",
+          rows: [
+            { label: "営業在庫金額", values: [95, 98, 100, 96, 92, 90, 93, 97, 101, 99, 96, 94] },
+            { label: "経理在庫金額", values: [90, 93, 96, 92, 88, 87, 90, 93, 95, 94, 91, 89] },
+            { label: "売上",         values: [200, 220, 210, 225, 240, 235, 228, 250, 260, 255, 265, 270] },
+            { label: "仕入",         values: [175, 180, 182, 190, 200, 205, 198, 210, 215, 212, 220, 225] },
+            { label: "瀬戸ケース在庫",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] },
+            { label: "1ケースあたりの在庫金額",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] }
+          ]
+        },
+        "3": {
+          term: "3期",
+          salesTurnoverRate: "2.18",
+          accountingTurnoverRate: "1.96",
+          rows: [
+            { label: "営業在庫金額", values: [140, 138, 136, 132, 129, 126, 124, 120, 118, 116, 114, 112] },
+            { label: "経理在庫金額", values: [135, 133, 130, 128, 124, 121, 119, 116, 114, 112, 109, 107] },
+            { label: "売上",         values: [150, 160, 170, 168, 175, 180, 178, 185, 190, 195, 198, 205] },
+            { label: "仕入",         values: [145, 150, 152, 156, 160, 162, 164, 170, 172, 175, 178, 180] },
+            { label: "瀬戸ケース在庫",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] },
+            { label: "1ケースあたりの在庫金額",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] }
+          ]
+        }
+      },
+      target: {
+        "1": {
+          term: "1期",
+          salesTurnoverRate: "2.55",
+          accountingTurnoverRate: "2.28",
+          rows: [
+            { label: "営業在庫金額", values: [115, 108, 110, 102, 95, 98, 100, 97, 94, 92, 90, 86] },
+            { label: "経理在庫金額", values: [112, 105, 108, 100, 92, 95, 98, 95, 91, 89, 86, 84] },
+            { label: "売上",         values: [190, 220, 215, 228, 238, 205, 225, 248, 258, 252, 268, 262] },
+            { label: "仕入",         values: [155, 180, 170, 192, 178, 165, 188, 202, 198, 210, 208, 218] },
+            { label: "瀬戸ケース在庫",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] },
+            { label: "1ケースあたりの在庫金額",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] }
+          ]
+        },
+        "2": {
+          term: "2期",
+          salesTurnoverRate: "2.78",
+          accountingTurnoverRate: "2.40",
+          rows: [
+            { label: "営業在庫金額", values: [92, 95, 97, 94, 90, 88, 91, 94, 98, 96, 93, 90] },
+            { label: "経理在庫金額", values: [88, 90, 93, 90, 85, 84, 87, 90, 92, 91, 88, 86] },
+            { label: "売上",         values: [210, 228, 218, 232, 248, 242, 235, 258, 268, 262, 272, 278] },
+            { label: "仕入",         values: [170, 176, 178, 186, 195, 198, 192, 205, 208, 206, 214, 220] },
+            { label: "瀬戸ケース在庫",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] },
+            { label: "1ケースあたりの在庫金額",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] }
+          ]
+        },
+        "3": {
+          term: "3期",
+          salesTurnoverRate: "2.30",
+          accountingTurnoverRate: "2.05",
+          rows: [
+            { label: "営業在庫金額", values: [135, 132, 130, 128, 124, 120, 118, 115, 112, 110, 108, 105] },
+            { label: "経理在庫金額", values: [130, 127, 124, 122, 118, 115, 113, 110, 108, 106, 103, 100] },
+            { label: "売上",         values: [158, 168, 178, 175, 182, 186, 184, 192, 196, 202, 206, 212] },
+            { label: "仕入",         values: [140, 146, 148, 152, 156, 158, 160, 165, 168, 171, 174, 176] },
+            { label: "瀬戸ケース在庫",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] },
+            { label: "1ケースあたりの在庫金額",         values: [160, 190, 175, 200, 185, 170, 195, 210, 205, 220, 215, 225] }
+          ]
+        }
+      }
+    };
+
+    const frameSelections = [
+      { frameId: 1, selectedTerm: "1" },
+      { frameId: 2, selectedTerm: "2" },
+      { frameId: 3, selectedTerm: "3" }
+    ];
+
+    const termContainer = document.getElementById("termContainer");
+
+    const modal = document.getElementById("detailModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDetailBody = document.getElementById("modalDetailBody");
+    const modalTotal = document.getElementById("modalTotal");
+    const modalCount = document.getElementById("modalCount");
+    const closeModalBtn = document.getElementById("closeModal");
+
+    function formatNumber(value) {
+      return Number(value).toLocaleString("ja-JP");
+    }
+
+    function createDetailData(label, value) {
+      const a = Math.round(value * 0.4);
+      const b = Math.round(value * 0.25);
+      const c = value - a - b;
+
+      if (label.includes("売上")) {
+        return [
+          ["国内売上", a],
+          ["EC売上", b],
+          ["海外売上", c]
+        ];
+      }
+
+      if (label.includes("仕入")) {
+        const teiban = Math.round(value * 0.65);
+        const batchu = value - teiban;
+        return [
+          ["定番仕入", teiban],
+          ["別注仕入", batchu]
+        ];
+      }
+
+      return [
+        ["インテリア", a],
+        ["文房具", b],
+        ["営業部", c]
+      ];
+    }
+
+    function buildTable(frameInfo) {
+      const termInfo = termDataMap[currentBasis][frameInfo.selectedTerm];
+
+      const rowsHtml = termInfo.rows.map(row => {
+        const total = row.values.reduce((sum, value) => sum + value, 0);
+
+        const valueCells = row.values.map((value, index) => {
+          const month = months[index];
+          const highlightClass = highlightMonths.includes(month) ? "highlight-cell" : "";
+
+          return `
+          <td class="${highlightClass}">
+            <button
+              type="button"
+              class="cell-link open-detail"
+              data-basis="${currentBasis}"
+              data-term="${termInfo.term}"
+              data-label="${row.label}"
+              data-month="${month}"
+              data-value="${value}">
+              ${formatNumber(value)}
+            </button>
+          </td>
+        `;
+        }).join("");
+
+        return `
+        <tr>
+          <th class="item-col row-name">${row.label}</th>
+          ${valueCells}
+          <td class="total-cell">${formatNumber(total)}</td>
+        </tr>
+      `;
+      }).join("");
+
+      const headerCells = months.map(month => {
+        const highlightClass = highlightMonths.includes(month) ? "highlight-head" : "";
+        return `<th class="${highlightClass}">${month}</th>`;
+      }).join("");
+
+      const basisLabel = currentBasis === "previous" ? "前年ベース" : "目標ベース";
+
+      return `
+      <section class="card term-card">
+        <div class="term-title-row">
+          <div class="term-header">
+            <div class="term-title-left">
+              <h2>${termInfo.term}</h2>
+              <span class="basis-chip">${basisLabel}</span>
+              <div class="inline-rate">
+                <span>営業在庫回転率</span>
+                <strong>${termInfo.salesTurnoverRate}</strong>
+              </div>
+              <div class="inline-rate">
+                <span>経理在庫回転率</span>
+                <strong>${termInfo.accountingTurnoverRate}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wide-summary-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th class="item-col">項目</th>
+                ${headerCells}
+                <th class="total-col">合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    `;
+    }
+
+    function renderTerms() {
+      termContainer.innerHTML = frameSelections.map(frame => buildTable(frame)).join("");
+      bindDetailEvents();
+      bindBasisButtons();
+    }
+
+    function bindBasisButtons() {
+      document.querySelectorAll(".basis-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          currentBasis = button.dataset.basis;
+          document.querySelectorAll(".basis-btn").forEach(btn => btn.classList.remove("active"));
+          button.classList.add("active");
+          renderTerms();
+        });
+      });
+    }
+
+    function bindDetailEvents() {
+      document.querySelectorAll(".open-detail").forEach(button => {
+        button.addEventListener("click", () => {
+          const term = button.dataset.term;
+          const label = button.dataset.label;
+          const month = button.dataset.month;
+          const value = Number(button.dataset.value);
+          const basis = button.dataset.basis === "previous" ? "前年ベース" : "目標ベース";
+
+          const details = createDetailData(label, value);
+          const total = details.reduce((sum, row) => sum + row[1], 0);
+
+          modalTitle.textContent = `${label} / ${month} / ${term} / ${basis}`;
+          modalTotal.textContent = formatNumber(total);
+          modalCount.textContent = `${details.length}件`;
+
+          modalDetailBody.innerHTML = details.map(row => `
+          <tr>
+            <td>${row[0]}</td>
+            <td class="text-right">${formatNumber(row[1])}</td>
+          </tr>
+        `).join("");
+
+          modal.classList.add("show");
+        });
+      });
+    }
+
+    closeModalBtn.addEventListener("click", () => {
+      modal.classList.remove("show");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("show");
+      }
+    });
+
+    renderTerms();
+
+    /* budget-entry と同一のフォーム連携 */
+    const segmentButtons = document.querySelectorAll("#budgetEntryModal .segment-btn");
+    const standardForm = document.getElementById("standardForm");
+    const customForm = document.getElementById("customForm");
+
+    segmentButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        segmentButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        if (btn.dataset.type === "standard") {
+          standardForm.classList.add("active");
+          customForm.classList.remove("active");
+        } else {
+          customForm.classList.add("active");
+          standardForm.classList.remove("active");
+        }
+      });
+    });
+
+    const followAmount = document.getElementById("followAmount");
+    const shipmentAmount = document.getElementById("shipmentAmount");
+    const totalAmount = document.getElementById("totalAmount");
+
+    function calcTotal() {
+      const follow = Number(followAmount.value) || 0;
+      const shipment = Number(shipmentAmount.value) || 0;
+      totalAmount.value = follow + shipment;
+    }
+
+    if (followAmount && shipmentAmount && totalAmount) {
+      followAmount.addEventListener("input", calcTotal);
+      shipmentAmount.addEventListener("input", calcTotal);
+    }
+
+    /* 定番：月別仕入の一括反映・クリア */
+    function getStandardMonthInputs() {
+      return Array.from(document.querySelectorAll("#standardForm [data-standard-month-index]"));
+    }
+
+    function clearStandardBudgetForm() {
+      const year = document.getElementById("budgetStandardYear");
+      const landing = document.getElementById("budgetStandardLanding");
+      const bulk = document.getElementById("budgetStandardBulkAmount");
+      if (year) year.selectedIndex = 0;
+      if (landing) landing.value = "";
+      if (bulk) bulk.value = "";
+      getStandardMonthInputs().forEach((inp) => {
+        inp.value = "";
+      });
+    }
+
+    const budgetStandardBulkApply = document.getElementById("budgetStandardBulkApply");
+    const budgetStandardBulkAmount = document.getElementById("budgetStandardBulkAmount");
+    if (budgetStandardBulkApply && budgetStandardBulkAmount) {
+      budgetStandardBulkApply.addEventListener("click", () => {
+        const raw = budgetStandardBulkAmount.value.trim();
+        if (raw === "") {
+          getStandardMonthInputs().forEach((inp) => {
+            inp.value = "";
+          });
+          return;
+        }
+        const n = Number(raw);
+        if (!Number.isFinite(n)) return;
+        const str = String(n);
+        getStandardMonthInputs().forEach((inp) => {
+          inp.value = str;
+        });
+      });
+      budgetStandardBulkAmount.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          budgetStandardBulkApply.click();
+        }
+      });
+    }
+
+    const budgetStandardClear = document.getElementById("budgetStandardClear");
+    if (budgetStandardClear) {
+      budgetStandardClear.addEventListener("click", clearStandardBudgetForm);
+    }
+  </script>
+</body>
+
+</html>
