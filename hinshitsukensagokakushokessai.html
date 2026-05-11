@@ -130,7 +130,7 @@
       align-items: center;
       border: 2px dashed var(--color-border);
       border-radius: var(--radius-md);
-      cursor: pointer;
+      /* cursor: pointer; */
       background-color: #fafafa;
       transition: background-color 0.2s ease, border-color 0.2s ease;
     }
@@ -899,8 +899,10 @@
         return null;
       }
 
-      function bindImageUploader(container) {
+      function bindImageUploader(container, opts) {
         if (!container) return;
+        opts = opts || {};
+        var noClickDrop = !!opts.noClickDrop;
         var wrapper = container.querySelector('.product-image-wrapper');
         var img = container.querySelector('.product-image');
         var pdfCanvas = container.querySelector('.product-pdf-canvas');
@@ -980,46 +982,63 @@
           r.readAsDataURL(file);
         }
 
-        wrapper.addEventListener('click', function () { fileInput.click(); });
         fileInput.addEventListener('change', function (e) { handleFiles(e.target.files); });
 
-        var dropZone = container.classList.contains('product-card') ? container :
-          (container.classList.contains('detail-row-upload') ? container : wrapper);
+        if (!noClickDrop) {
+          wrapper.addEventListener('click', function () { fileInput.click(); });
 
-        function setDragOver(active) {
-          wrapper.classList.toggle('dragover', active);
-          dropZone.classList.toggle('dragover', active);
+          var dropZone = container.classList.contains('product-card') ? container :
+            (container.classList.contains('detail-row-upload') ? container : wrapper);
+
+          function setDragOver(active) {
+            wrapper.classList.toggle('dragover', active);
+            dropZone.classList.toggle('dragover', active);
+          }
+
+          function isOutsideDropZone(target) {
+            if (!target || !dropZone.contains) return true;
+            return !dropZone.contains(target);
+          }
+
+          dropZone.addEventListener('dragenter', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            setDragOver(true);
+          }, true);
+          dropZone.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            try { e.dataTransfer.dropEffect = 'copy'; } catch (err) {}
+            setDragOver(true);
+          }, true);
+          dropZone.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isOutsideDropZone(e.relatedTarget)) setDragOver(false);
+          }, true);
+          dropZone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            setDragOver(false);
+            var fileList = getFilesFromDataTransfer(e.dataTransfer);
+            if (fileList && fileList.length) handleFiles(fileList);
+          }, true);
+          dropZone.addEventListener('dragend', function () { setDragOver(false); }, true);
+        } else {
+          if (container.dataset.fileDropDisabled !== '1') {
+            container.dataset.fileDropDisabled = '1';
+            function preventPanelFileDrop(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              try {
+                if (e.dataTransfer) e.dataTransfer.dropEffect = 'none';
+              } catch (err) { /* ignore */ }
+            }
+            container.addEventListener('dragenter', preventPanelFileDrop, true);
+            container.addEventListener('dragover', preventPanelFileDrop, true);
+            container.addEventListener('drop', preventPanelFileDrop, true);
+          }
         }
-
-        function isOutsideDropZone(target) {
-          if (!target || !dropZone.contains) return true;
-          return !dropZone.contains(target);
-        }
-
-        dropZone.addEventListener('dragenter', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          setDragOver(true);
-        }, true);
-        dropZone.addEventListener('dragover', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          try { e.dataTransfer.dropEffect = 'copy'; } catch (err) {}
-          setDragOver(true);
-        }, true);
-        dropZone.addEventListener('dragleave', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (isOutsideDropZone(e.relatedTarget)) setDragOver(false);
-        }, true);
-        dropZone.addEventListener('drop', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          setDragOver(false);
-          var fileList = getFilesFromDataTransfer(e.dataTransfer);
-          if (fileList && fileList.length) handleFiles(fileList);
-        }, true);
-        dropZone.addEventListener('dragend', function () { setDragOver(false); }, true);
 
         if (pdfOpenTab) {
           pdfOpenTab.addEventListener('click', function (e) {
@@ -1029,10 +1048,10 @@
         }
       }
 
-      // メインの product-card
+      // メインの product-card.is-active（クリック・D&D でファイル選択しない）
       var mainInput = document.getElementById('productImageInput');
       if (mainInput) {
-        bindImageUploader(mainInput.closest('.product-card'));
+        bindImageUploader(mainInput.closest('.product-card'), { noClickDrop: true });
       }
       // detail-table 各行の detail-row-upload
       document.querySelectorAll('.detail-row-upload').forEach(function (el) {
