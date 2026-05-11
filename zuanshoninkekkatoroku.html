@@ -73,15 +73,14 @@
 
     .content-area-2 {
       grid-column: 2;
-      /* タイトル下の2段分をまたぎ、縦いっぱいに画像エリアを伸ばす */
+      /* タイトル下の2段分をまたぎ、縦いっぱいに画像エリア */
       grid-row: 2 / 4;
-      min-height: 0;
-      overflow: hidden;
+      min-height: 600px;
+      max-height: calc(100vh - 170px);
+      overflow: visible;
       display: flex;
       flex-direction: column;
-      width: 96%;
-      height: 96%;
-      margin: auto;
+      align-items: center;
     }
 
     .content-area-3 {
@@ -89,6 +88,23 @@
       grid-row: 3;
       width: 100%;
       box-sizing: border-box;
+    }
+
+    /* zuansenteikekkatoroku.html と同系：ステージでメイン画像の高さを揃える */
+    .content-area-2 .image-panel-stage {
+      width: min(100%, 760px);
+      position: relative;
+      padding-right: 0;
+      box-sizing: border-box;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* モバイルで前へ／次へ行相当の縦空白（選定結果ページの image-panel-stage グリッドに合わせる） */
+    .content-area-2 .image-panel-stage-spacer {
+      display: none;
     }
 
     .result-select-block {
@@ -186,9 +202,12 @@
 
       .content {
         background: var(--color-surface);
+        display: flex;
         flex-direction: column;
         flex: 1;
-        padding: 20px;
+        min-height: 0;
+        /* ヘッダー直下の空白を詰め、メイン画像（content-area-2）の開始を上げる */
+        padding: 8px 20px 20px;
         margin-left: -220px;
         width: 100%;
       }
@@ -220,6 +239,113 @@
       .btn-sel-product {
         position: relative;
         z-index: 3;
+      }
+
+      /* 名・メタの下に画像セルを左寄せ（モーダル追加行は削除×を1行目右端） */
+      .content-area-1 .detail-table {
+        width: 100%;
+        display: block;
+      }
+
+      .content-area-1 .detail-table tbody {
+        display: block;
+      }
+
+      .content-area-1 .detail-table tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        column-gap: 10px;
+        row-gap: 10px;
+        align-items: start;
+      }
+
+      .content-area-1 .detail-table tr > td:not(.detail-delete-cell):not(.detail-image-cell) {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .content-area-1 .detail-table tr > td.detail-delete-cell {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: start;
+        width: auto;
+        box-sizing: border-box;
+      }
+
+      .content-area-1 .detail-table tr > td.detail-image-cell {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-self: start;
+        width: auto;
+        max-width: 100%;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      /* タイトル直下にメイン画像（content-area-2） */
+      .content h1 {
+        order: -2;
+        flex-shrink: 0;
+        margin-bottom: 4px;
+      }
+
+      .content-area-2 {
+        order: -1;
+        min-height: 5px;
+        max-height: none;
+        overflow: visible;
+        flex-shrink: 0;
+        flex-grow: 0;
+        width: 100%;
+        margin: -px 0 0;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* メイン画像エリアの高さ */
+      .content-area-2 .image-panel-stage-spacer {
+        display: block;
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 0px;
+        height: 0px;
+        flex-shrink: 0;
+      }
+
+      .content-area-2 .image-panel-stage {
+        width: 100%;
+        height: clamp(300px, 52vh, min(85vh, 560px));
+        max-height: none;
+        min-height: 300px;
+        padding-right: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        gap: 8px;
+        box-sizing: border-box;
+      }
+
+      .content-area-2 .image-panel-stage .product-card.allimage-card {
+        grid-column: 1;
+        grid-row: 2;
+        width: min(100%, 760px);
+        justify-self: center;
+        max-height: none;
+        height: 100%;
+        min-height: 0;
+      }
+
+      .content-area-2 .product-card.allimage-card .product-image-wrapper {
+        flex-shrink: 0;
+        flex-grow: 1;
+        min-height: 220px;
       }
     }
 
@@ -449,13 +575,23 @@
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       padding: 10px;
+      margin-top: 0;
       margin-bottom: 3px;
       box-sizing: border-box;
       background: #fff;
       width: 100%;
-      height: 100%;
+      height: min(860px, calc(100vh - 220px));
+      max-height: calc(100vh - 220px);
       min-height: 0;
       overflow: hidden;
+    }
+
+    .content-area-2 .image-panel-stage .product-card.allimage-card {
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      height: auto;
+      max-height: none;
     }
 
     .product-nav {
@@ -485,10 +621,12 @@
       cursor: default;
     }
 
-    /* 枠内に必ず収める（縦横比は維持・はみ出し・スクロールなし） */
+    /* 枠内に必ず収める */
     img.product-image {
-      width: 100%;
-      height: 100%;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       object-position: center;
       display: block;
@@ -517,6 +655,8 @@
     .product-pdf-canvas {
       display: block;
       max-width: 100%;
+      max-height: 100%;
+      width: auto;
       height: auto;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
     }
@@ -610,7 +750,7 @@
       background: #f0f0f0;
     }
 
-    /* detail-meta の後ろ列：行ごとの画像アップロード（product-card と同機能・コンパクト） */
+    /* detail-meta の後ろ列：行ごとの画像アップロード*/
     .detail-table td.detail-image-cell {
       width: 150px;
       max-width: 160px;
@@ -748,19 +888,22 @@
       </div>
 
       <div class="content-area-2">
-        <div class="product-card is-active allimage-card">
-          <div class="product-image-wrapper allimage-panel">
-            <img class="product-image" name="allimage" src="images/noimage.png" alt="プレビュー">
-            <div class="product-pdf-canvas-wrap" aria-hidden="true">
-              <canvas class="product-pdf-canvas"></canvas>
+        <div class="image-panel-stage">
+          <div class="image-panel-stage-spacer" aria-hidden="true"></div>
+          <div class="product-card is-active allimage-card">
+            <div class="product-image-wrapper allimage-panel">
+              <img class="product-image" name="allimage" src="images/noimage.png" alt="プレビュー">
+              <div class="product-pdf-canvas-wrap" aria-hidden="true">
+                <canvas class="product-pdf-canvas"></canvas>
+              </div>
+              <div class="product-pdf-fallback">
+                <p>この環境では埋め込み表示できません。</p>
+                <p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">PDF / AI を新しいタブで開く</a></p>
+              </div>
             </div>
-            <div class="product-pdf-fallback">
-              <p>この環境では埋め込み表示できません。</p>
-              <p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">PDF / AI を新しいタブで開く</a></p>
-            </div>
+            <input type="file" id="productImageInput" accept="image/*,application/pdf,.pdf,.ai"
+              class="product-image-input" style="display: none;">
           </div>
-          <input type="file" id="productImageInput" accept="image/*,application/pdf,.pdf,.ai"
-            class="product-image-input" style="display: none;">
         </div>
       </div>
     </div>
