@@ -394,26 +394,26 @@
 
     .btn-search-cancel {
       display: inline-block;
-      padding: 6px 14px;
-      font-size: var(--fs-xs);
-      background: var(--color-clearbutton-background);
-      color: var(--color-text);
-      border: 1px solid var(--color-clearbutton-border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-      font-weight: 600;
-      font-family: inherit;
-      white-space: nowrap;
-      box-shadow: none;
+        padding: 4px 8px;
+        font-size: var(--fs-xs);
+        background: var(--color-clearbutton-background);
+        color: var(--color-text);
+        border: 1px solid var(--color-clearbutton-border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        text-align: center;
+        font-weight: 600;
+        font-family: inherit;
+        white-space: nowrap;
+        box-shadow: none;
     }
 
     .btn-search-cancel:hover {
-      background:var(--color-clearbutton-background-hover);
-      color: var(--color-text);
-      border: 1px solid var(--color-clearbutton-border);
-      transform: none;
-      box-shadow: none;
+        background:var(--color-clearbutton-background-hover);
+        color: var(--color-text);
+        border: 1px solid var(--color-clearbutton-border);
+        transform: none;
+        box-shadow: none;
     }
 
     .modal-window {
@@ -435,9 +435,6 @@
     /* #region レスポンシブ対応 */
     /* 画面の幅が650px以下ならスマホ*/
     @media (max-width: 768px) {
-      .main-wrapper {
-        overflow: visible;
-      }
       .btn-fab-new {
         bottom: -8px;
       }
@@ -481,59 +478,30 @@
         width: 30px;
       }
 
-      /* スマホではサイドバー列をフレックス幅に含めない（PCでサイドバー開閉後に幅を縮めても本文が右にずれない） */
-      .main-wrapper {
-        position: relative;
-      }
-
-      #sidebarMount {
-        flex: 0 0 0;
-        width: 0;
-        min-width: 0;
-        overflow: visible;
-      }
-
-      /* 共通 style.css 非変更: マウント幅0でもドロワー幅220pxとメニューラベルを維持 */
-      #sidebarMount > .sidebar {
-        min-width: 220px;
-        width: 220px;
-        flex-shrink: 0;
-      }
-
-      #sidebarMount .menu-title {
-        min-width: 0;
-      }
-
-      #sidebarMount .menu-title > span {
-        white-space: nowrap;
-      }
-
-      .content,
-      .content.expanded {
+      .content {
         background: var(--color-surface);
-        display: flex;
         flex-direction: column;
         flex: 1;
-        min-height: 0;
-        margin-left: 0;
+        padding: 20px 20px 56px 20px;
+        margin-left: -220px;
         width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        padding: 12px 12px 56px 12px;
+        overflow-x: auto;
         overflow-y: auto;
-        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .content-box .page-title {
-          margin: 0 0 10px;
+      .content {
+          padding: 12px 12px 56px 12px;
       }
+
 
       .content:not(.expanded) {
-        padding-left: 12px;
+          padding-left: 12px;
       }
 
       .content-box {
         width: 100%;
+        min-width: 0;
         box-sizing: border-box;
         padding: 8px;
         flex: none;
@@ -614,12 +582,25 @@
         box-shadow: none;
         overflow: hidden;
       }
+      /* スマホ: 検索条件エリアは一覧の横幅に追従させず、1画面内に収める */
+      .view-layout-1-group > .content-area:first-of-type {
+        width: calc(100vw - 24px);
+        max-width: calc(100vw - 24px);
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      #searchBox,
+      #searchRowsPanel {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
 
       .search-box .search-box-inner {
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px 16px;
-        padding: 12px 0 0;
         visibility: hidden;
       }
 
@@ -671,73 +652,6 @@
       /* スマホでは autocomplete 自体も全幅にする */
       .manufacturer-row .autocomplete {
         width: 100%;
-      }
-
-      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
-      .approval-list-area {
-        overflow-x: visible;
-        max-height: none;
-      }
-      .approval-list-area .result-table {
-        min-width: 0;
-      }
-      .approval-list-area .result-table thead {
-        display: none;
-      }
-      .approval-list-area .result-table tbody tr {
-        display: block;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        padding: 5px 10px;
-        margin-bottom: 5px;
-        background: var(--color-card);
-      }
-      .approval-list-area .result-table tbody tr::before {
-
-        display: block;
-        color: var(--color-primary);
-        padding-bottom: 8px;
-        margin-bottom: 8px;
-        border-bottom: 1px solid var(--color-border);
-      }
-      .approval-list-area .result-table tbody td {
-        display: block;
-        border: none;
-        padding: 4px 0;
-        white-space: normal;
-      }
-      /* 先頭列はチェックボックスのため、2列目以降にラベルを付与 */
-      .approval-list-area .result-table tbody td:nth-child(2)::before {
-        content: "管理番号：";
-        font-weight: 600;
-      }
-      .approval-list-area .result-table tbody td:nth-child(3)::before {
-        content: "Ship予定日：";
-        font-weight: 600;
-      }
-      .approval-list-area .result-table tbody td:nth-child(4)::before {
-        content: "目的港：";
-        font-weight: 600;
-      }
-      .approval-list-area .result-table tbody td:nth-child(5)::before {
-        content: "定番/別注：";
-        font-weight: 600;
-      }
-      .approval-list-area .result-table tbody td:nth-child(6)::before {
-        content: "得意先：";
-        font-weight: 600;
-      }
-      .approval-list-area .result-table tbody td:nth-child(7)::before {
-        content: "商品コード：";
-        font-weight: 600;
-      }
-      .approval-list-area .result-table tbody td:nth-child(8)::before {
-        content: "商品名：";
-        font-weight: 600;
-      }
-      .approval-list-area .result-table tbody td:nth-child(9)::before {
-        content: "数量：";
-        font-weight: 600;
       }
 
       /* イメージ案②: スマホ用 */
@@ -888,12 +802,10 @@
       opacity: 0.9;
     }
 
-    /* 左一覧の「数量」列：スマホ以外は右寄せ（右一覧は数量列なしのため対象外） */
-    @media (min-width: 769px) {
-      .result-lists-dual > .result-list-col:first-of-type .result-table th:nth-child(6),
-      .result-lists-dual > .result-list-col:first-of-type .result-table td:nth-child(6) {
-        text-align: right;
-      }
+    /* 承認通知エリア・左右一覧の「得意先」列（6列目）：左寄せ */
+    #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .result-table :is(th, td):nth-child(6),
+    #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table :is(th, td):nth-child(6) {
+      text-align: left !important;
     }
 
     /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
@@ -904,7 +816,7 @@
       right: 24px;
       bottom: 24px;
       z-index: 2001;
-      /* min-width: 140px; */
+      min-width: 140px;
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -974,6 +886,7 @@
 
     /* 二つの一覧の間：データ移動ボタン */
     .result-lists-transfer {
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -1001,94 +914,132 @@
         margin-top: 8px;
       }
     }
+    /* スマホ：左 | 移動 | 右。横方向のはみ出しは .content でスクロール（各表エリアに横スクロールバーを付けない） */
     @media (max-width: 768px) {
-      .result-lists-dual {
+      #approvalNoticeArea {
+        min-width: min-content;
+        overflow-x: visible;
+      }
+
+      #approvalNoticeArea .result-lists-dual {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+        width: max-content;
+        min-width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+        overflow: visible;
+        position: relative;
+        isolation: isolate;
+      }
+
+      #approvalNoticeArea .result-lists-dual > .result-list-col {
+        flex: 0 0 auto;
+        width: max-content;
+        min-width: min-content;
+        max-width: none;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        overflow: visible;
+        order: 0;
+        position: relative;
+        box-sizing: border-box;
       }
-      .result-lists-dual > .result-list-col {
-        width: 100%;
-        min-width: 0;
-      }
-      /* 左一覧が縦に伸びすぎて以降項目が見えなくなるのを防ぐ */
+
       #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .approval-list-area {
-        max-height: 45vh;
-        overflow-y: auto;
+        flex: 0 1 auto;
+        min-height: auto;
+        width: max-content;
+        max-width: none;
+        box-sizing: border-box;
+        max-height: none;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
       }
-      .result-lists-transfer-top-spacer {
-        display: none;
-      }
-      /* スマホでも操作ボタン列と右側一覧を表示 */
-      .result-lists-transfer {
+
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type {
         display: flex !important;
-        order: 2;
-        width: 100%;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 10px;
-        /*background: var(--color-card);*/
-        /*border: 1px solid var(--color-border);*/
-        /*border-radius: var(--radius-md);*/
-        /*box-shadow: var(--shadow-sm);*/
-        /*box-sizing: border-box;*/
+        flex-direction: column;
+        order: 0;
+        min-width: min-content;
+        max-width: none;
       }
-      .result-lists-transfer .btn-transfer {
-        display: inline-flex !important;
-        min-width: 44px;
-        min-height: 44px;
-      }
-      #btnSelectAllToRight,
-      #btnSelectToRight {
-        transform: rotate(90deg);
-        transform-origin: center;
-      }
-      #btnDischargeToLeft,
-      #btnDischargeAllToLeft {
-        transform: rotate(90deg);
-        transform-origin: center;
-      }
-      .result-lists-transfer br {
-        display: none;
-      }
-      .result-lists-dual > .result-list-col:last-of-type {
-        display: flex !important;
-        order: 3;
-        width: 100%;
-      }
-      .result-lists-dual > .result-list-col:first-of-type { order: 1; }
-      /* スマホ：右一覧は表示件数に応じてパネル高さを自動拡張 */
+
       #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .approval-list-area {
-        max-height: 45vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
+        flex: 0 1 auto;
+        min-height: auto;
+        width: max-content;
+        max-width: none;
+        box-sizing: border-box;
+        max-height: none;
+        overflow: visible;
+        justify-content: flex-start;
       }
-      /* 左右どちらにもデータがある時は、1画面で
-         左1レコード + ボタン + 右1レコード が見える高さに圧縮 */
-      #approvalNoticeArea.mobile-dual-has-both .result-lists-dual > .result-list-col:first-of-type .approval-list-area,
-      #approvalNoticeArea.mobile-dual-has-both .result-lists-dual > .result-list-col:last-of-type .approval-list-area {
-        max-height: 24vh;
+
+      #approvalNoticeArea .right-volume-label {
+        flex-shrink: 0;
+        min-width: 0;
+        white-space: nowrap;
       }
-      #approvalNoticeArea.mobile-dual-has-both .result-lists-transfer {
-        padding-top: 6px;
-        padding-bottom: 6px;
+
+      #approvalNoticeArea .result-lists-transfer-top-spacer {
+        display: block;
+        visibility: hidden;
+        margin: 0 0 12px 0;
+        padding: 0 0 8px;
+        border-bottom: 1px solid var(--color-border);
+        pointer-events: none;
+        user-select: none;
       }
-      /* スマホ：右表が未選択（右側に表示データなし）のとき、移動ボタンを上側に寄せる */
-      #approvalNoticeArea:not(.mobile-dual-has-both) .result-lists-transfer {
-        margin-top: -45px;
+
+      #approvalNoticeArea .result-lists-transfer {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        flex: 0 0 auto;
+        order: 0;
+        width: auto;
+        min-width: 48px;
+        max-width: 56px;
+        align-self: stretch;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0 2px;
+        margin-top: 0 !important;
+        gap: 8px;
+        position: relative;
+        z-index: 2;
+        box-sizing: border-box;
       }
-      /* 右一覧も左一覧と同じカード表示設定に揃える */
-      .result-lists-dual > .result-list-col:last-of-type .result-table thead {
-        display: none !important;
+
+      #approvalNoticeArea .result-lists-transfer .result-lists-transfer-top-spacer + .btn-transfer {
+        margin-top: 8px;
       }
-      .result-lists-dual > .result-list-col:last-of-type .result-table tbody tr.is-right-visible {
-        display: block !important;
+
+      #approvalNoticeArea .result-lists-transfer .btn-transfer.btn-transfer-circle {
+        position: relative !important;
+        margin-top: 0 !important;
+        z-index: 2;
       }
+
+      #approvalNoticeArea #btnSelectAllToRight,
+      #approvalNoticeArea #btnSelectToRight,
+      #approvalNoticeArea #btnDischargeToLeft,
+      #approvalNoticeArea #btnDischargeAllToLeft {
+        transform: none !important;
+      }
+      #approvalNoticeArea #btnSelectToRight {
+        margin-top: 0 !important;
+      }
+
+      #approvalNoticeArea .result-lists-transfer br {
+        display: none;
+      }
+
+      /* 行ごとの列幅は下の @media ブロック内の Grid 設定（--ship-row-grid 等）を参照 */
     }
     .btn-transfer {
       font-family: inherit;
@@ -1112,28 +1063,88 @@
       outline: 2px solid var(--color-primary);
       outline-offset: 2px;
     }
-    /* 一覧間の移動ボタン：いずれも正方形（親の stretch を避けて縦横同寸） */
-    .btn-transfer-square {
-      box-sizing: border-box;
-      width: 26px;
-      height: 26px;
-      min-width: 26px;
-      min-height: 26px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      align-self: center;
-      line-height: 1;
-    }
+    /* 一覧間の移動ボタン*/
     .approval-list-area .result-table tbody tr {
       cursor: default;
     }
 
-    /* スマホ最終上書き：操作ボタンと右テーブルを必ず表示 */
+    .btn-transfer-circle {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      box-sizing: border-box;
+    }
+    /* 移動ボタン */
+    #btnSelectAllToRight {
+      position: relative;
+      top: 0px;
+    }
+
+    #btnSelectToRight {
+      position: relative;
+      top: 200px;
+    }
+
+    #btnDischargeToLeft {
+      position: relative;
+      top: 210px;
+    }
+   
+    #btnDischargeAllToLeft {
+      position: relative;
+      top: 380px;
+    }
+
+    /* スマホ：横はみ出しは .content の横スクロール。各 .approval-list-area に横スクロールバーは出さない */
     @media (max-width: 768px) {
-      /* スマホ最終上書き：内部スクロールをなくし、全体1本スクロールに統一 */
+      /*
+       * 列幅の個別調整：#approvalNoticeArea の CSS 変数（px 等）を編集してください。
+       * 左：--ship-sp-left-1 … 9 ／ 右：--ship-sp-right-1 … 9（1列目＝チェック、2列目＝管理番号）
+       * 既定の9列は --ship-left-cols-default / --ship-right-cols-default にまとめて反映される。
+       * 行ごとに変える：該当 <tr style="--ship-row-grid: トラック9個;"> 。見出しと揃えるときは
+       * <table style="--ship-thead-left-grid: …"> または --ship-thead-right-grid（詳細は下のコメント）
+       */
+      #approvalNoticeArea {
+        --ship-sp-left-1: 35px;
+        --ship-sp-left-2: 60px;
+        --ship-sp-left-3: 110px;
+        --ship-sp-left-4: 130px;
+        --ship-sp-left-5: 60px;
+        --ship-sp-left-6: 100px;
+        --ship-sp-left-7: 75px;
+        --ship-sp-left-8: 90px;
+        --ship-sp-left-9: 50px;
+
+        --ship-sp-right-1: 35px;
+        --ship-sp-right-2: 60px;
+        --ship-sp-right-3: 110px;
+        --ship-sp-right-4: 130px;
+        --ship-sp-right-5: 60px;
+        --ship-sp-right-6: 100px;
+        --ship-sp-right-7: 75px;
+        --ship-sp-right-8: 90px;
+        --ship-sp-right-9: 50px;
+        /* 既定の9列トラック（スペース区切り）。行ごとに変えたい <tr> に style="--ship-row-grid: …" を指定 */
+        --ship-left-cols-default: var(--ship-sp-left-1) var(--ship-sp-left-2) var(--ship-sp-left-3) var(--ship-sp-left-4) var(--ship-sp-left-5) var(--ship-sp-left-6) var(--ship-sp-left-7) var(--ship-sp-left-8) var(--ship-sp-left-9);
+        --ship-right-cols-default: var(--ship-sp-right-1) var(--ship-sp-right-2) var(--ship-sp-right-3) var(--ship-sp-right-4) var(--ship-sp-right-5) var(--ship-sp-right-6) var(--ship-sp-right-7) var(--ship-sp-right-8) var(--ship-sp-right-9);
+      }
+
       #approvalNoticeArea .approval-list-area,
       #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .approval-list-area,
       #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .approval-list-area,
@@ -1142,7 +1153,94 @@
         max-height: none !important;
         overflow-x: visible !important;
         overflow-y: visible !important;
+        width: max-content !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
       }
+
+      /*
+       * スマホ：一覧は「行＝CSS Grid」の9列。既定は --ship-left-cols-default / --ship-right-cols-default。
+       * 行ごとに変える例（左表の <tr>）:
+       *   style="--ship-row-grid: 40px 5rem 2fr 3fr 1fr 2fr 4rem 2fr 3rem;"
+       * 見出し行をデータ行と揃える場合は <table> に例:
+       *   style="--ship-thead-left-grid: 40px 5rem 2fr 3fr 1fr 2fr 4rem 2fr 3rem;"
+       * 右表は --ship-thead-right-grid / 行の --ship-row-grid（右 tbody の tr に指定）
+       */
+      #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .result-table,
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table {
+        display: block !important;
+        width: max-content !important;
+        min-width: 100% !important;
+        max-width: none !important;
+        table-layout: auto !important;
+        border-collapse: collapse;
+      }
+
+      #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .result-table thead,
+      #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .result-table tbody,
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table thead,
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table tbody {
+        display: block !important;
+        width: 100%;
+      }
+
+      #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .result-table thead tr {
+        display: grid !important;
+        grid-template-columns: var(--ship-thead-left-grid, var(--ship-left-cols-default));
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #approvalNoticeArea .result-lists-dual > .result-list-col:first-of-type .result-table tbody tr {
+        display: grid !important;
+        grid-template-columns: var(--ship-row-grid, var(--ship-left-cols-default));
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table thead tr {
+        display: grid !important;
+        grid-template-columns: var(--ship-thead-right-grid, var(--ship-right-cols-default));
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table tbody tr.is-right-visible {
+        display: grid !important;
+        grid-template-columns: var(--ship-row-grid, var(--ship-right-cols-default));
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #approvalNoticeArea .result-table th,
+      #approvalNoticeArea .result-table td {
+        display: block;
+        width: auto !important;
+        min-width: 0;
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        box-sizing: border-box !important;
+      }
+
+      /* チェック列のみ改行しない */
+      #approvalNoticeArea .result-table :is(th, td):nth-child(1) {
+        white-space: nowrap !important;
+      }
+
+      #approvalNoticeArea .approval-list-area .result-table tbody td {
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+        line-height: 1.2 !important;
+      }
+
+      #approvalNoticeArea .right-volume-label {
+        display: block;
+        white-space: nowrap;
+        overflow-x: visible;
+      }
+
       #approvalNoticeArea .result-lists-transfer {
         display: flex !important;
         visibility: visible !important;
@@ -1160,14 +1258,8 @@
         opacity: 1 !important;
       }
       #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .approval-list-area {
-        display: block !important;
-      }
-      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table {
-        display: table !important;
-        width: 100%;
-      }
-      #approvalNoticeArea .result-lists-dual > .result-list-col:last-of-type .result-table thead {
-        display: none !important;
+        display: flex !important;
+        flex-direction: column !important;
       }
 
       /* スマホ：送信ボタンを画面下寄せにする */
@@ -1329,6 +1421,7 @@
                       <th style="width: 5%;">数量</th>
                     </tr>
                   </thead>
+                  <!-- スマホ：行ごとの列幅は <tr style="--ship-row-grid: 40px 5rem 2fr 3fr 1fr 2fr 4rem 2fr 3rem;"> のように9トラック指定。見出しと揃える場合は table に style="--ship-thead-left-grid: 同じ値;" -->
                   <tbody id="approvalListTbodyLeft" aria-multiselectable="true">
                     <tr>
                       <td><input type="checkbox" /></td>
@@ -1503,13 +1596,18 @@
               </div>
               <div class="result-lists-transfer" role="group" aria-label="一覧間のデータ移動">
                 <h3 class="list-section-title result-lists-transfer-top-spacer" aria-hidden="true"></h3>
-                <button type="button" class="btn-transfer btn-transfer-square" id="btnSelectAllToRight" title="selectall">▶▶</button>
-                <br><br><br><br><br><br><br>
-                <button type="button" class="btn-transfer btn-transfer-square" id="btnSelectToRight" title="select">▶</button>
-                <br>
-                <button type="button" class="btn-transfer btn-transfer-square" id="btnDischargeToLeft" title="discharge">◀</button>
-                <br><br><br><br><br><br><br>
-                <button type="button" class="btn-transfer btn-transfer-square" id="btnDischargeAllToLeft" title="dischargeall">◀◀</button>
+                <button type="button" class="btn-transfer btn-transfer-circle" id="btnSelectAllToRight" title="selectall">
+                  <img src="images/keyboard_double_arrow_right_30dp_F4F6F9.svg" alt="selectall" width="30"height="30" decoding="async">
+                </button>
+                <button type="button" class="btn-transfer btn-transfer-circle" id="btnSelectToRight" title="select">
+                  <img src="images/keyboard_arrow_right_30dp_F4F6F9.svg" alt="select" width="30"height="30" decoding="async">
+                </button>
+                <button type="button" class="btn-transfer btn-transfer-circle" id="btnDischargeToLeft" title="discharge">
+                  <img src="images/keyboard_arrow_left_30dp_F4F6F9.svg" alt="select" width="30"height="30" decoding="async">
+                </button>
+                <button type="button" class="btn-transfer btn-transfer-circle" id="btnDischargeAllToLeft" title="dischargeall">
+                  <img src="images/keyboard_double_arrow_left_30dp_F4F6F9.svg" alt="dischargeall" width="30"height="30" decoding="async">
+                </button>
               </div>
               <div class="result-list-col">
               <div class="approval-list-area">
@@ -1528,6 +1626,7 @@
                       <th style="width: 5%;">数量</th>
                     </tr>
                   </thead>
+                  <!-- スマホ：右表も左と同様、行ごとは tr の --ship-row-grid、見出しは table の --ship-thead-right-grid -->
                   <tbody id="approvalListTbodyRight" aria-multiselectable="true">
                     <tr>
                       <td><input type="checkbox" /></td>
@@ -1771,22 +1870,7 @@
         overlay.classList.remove('show');
       }
 
-      /** 狭い幅では PC 用の collapsed / expanded を外し、本文の margin・padding の食い違いを防ぐ */
-      function syncSidebarLayoutForBreakpoint() {
-        const sidebar = document.querySelector('.sidebar');
-        const content = document.querySelector('.content');
-        const toggle = document.querySelector('.sidebar-toggle');
-        if (!sidebar || !content) return;
-        if (!window.matchMedia('(max-width: 768px)').matches) return;
-        sidebar.classList.remove('closed');
-        content.classList.remove('expanded');
-        const toggleImg = toggle && toggle.querySelector('img');
-        if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
-      }
-
       loadSharedSidebar();
-      syncSidebarLayoutForBreakpoint();
-      window.matchMedia('(max-width: 768px)').addEventListener('change', syncSidebarLayoutForBreakpoint);
       
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
@@ -1949,30 +2033,41 @@
           if (!leftHeaderRow || !rightHeaderRow) return;
           leftHeaderRow.style.height = "";
           rightHeaderRow.style.height = "";
-          if (window.matchMedia("(max-width: 768px)").matches) return;
           var h = rightHeaderRow.offsetHeight;
           if (h > 0) leftHeaderRow.style.height = h + "px";
         }
 
         function syncLeftHeaderOffsetByLabel() {
           if (!leftTable) return;
-          if (window.matchMedia("(max-width: 768px)").matches) {
-            leftTable.style.marginTop = "";
-            return;
-          }
           var labelHeight = rightVisibleCountLabel ? rightVisibleCountLabel.offsetHeight : 0;
           leftTable.style.marginTop = (8 + labelHeight) + "px";
         }
 
         function refreshScrollbars() {
           // 表示/非表示（display/class変更）の直後に、レイアウト再計算を促してスクロールバーを反映する
+          var isSp = window.matchMedia("(max-width: 768px)").matches;
           if (leftArea) {
-            leftArea.style.overflowY = "auto";
+            if (isSp) {
+              leftArea.style.removeProperty("overflow");
+              leftArea.style.removeProperty("overflow-x");
+              leftArea.style.removeProperty("overflow-y");
+              leftArea.style.removeProperty("max-height");
+            } else {
+              leftArea.style.overflowY = "auto";
+              leftArea.style.overflowX = "auto";
+            }
             leftArea.offsetHeight;
           }
           if (rightArea) {
-            rightArea.style.overflowY = "auto";
-            rightArea.style.overflowX = "hidden";
+            if (isSp) {
+              rightArea.style.removeProperty("overflow");
+              rightArea.style.removeProperty("overflow-x");
+              rightArea.style.removeProperty("overflow-y");
+              rightArea.style.removeProperty("max-height");
+            } else {
+              rightArea.style.overflowY = "auto";
+              rightArea.style.overflowX = "auto";
+            }
             rightArea.offsetHeight;
           }
         }
@@ -2001,7 +2096,7 @@
           }
         }
 
-        // select（▶）：左側一覧でチェックした行を右側一覧に表示
+        // select（>）：左側一覧でチェックした行を右側一覧に表示
         if (btnSelectToRight) {
           btnSelectToRight.addEventListener("click", function () {
             Array.prototype.forEach.call(tbodyLeft.rows, function (leftTr, index) {
@@ -2030,7 +2125,7 @@
           });
         }
 
-        // selectall（▶▶）：左側一覧の全行を右側一覧に表示
+        // selectall（>>）：左側一覧の全行を右側一覧に表示
         if (btnSelectAllToRight) {
           btnSelectAllToRight.addEventListener("click", function () {
             Array.prototype.forEach.call(tbodyLeft.rows, function (leftTr, index) {
@@ -2055,7 +2150,7 @@
           });
         }
 
-        // discharge（◀）：右側一覧でチェックした行だけ左側一覧へ戻す
+        // discharge（<）：右側一覧でチェックした行だけ左側一覧へ戻す
         if (btnDischargeToLeft) {
           btnDischargeToLeft.addEventListener("click", function () {
             Array.prototype.forEach.call(tbodyRight.rows, function (rightTr, index) {
@@ -2084,7 +2179,7 @@
           });
         }
 
-        // dischargeall（◀◀）：右側一覧の全行を左側一覧へ戻す
+        // dischargeall（<<）：右側一覧の全行を左側一覧へ戻す
         if (btnDischargeAllToLeft) {
           btnDischargeAllToLeft.addEventListener("click", function () {
             Array.prototype.forEach.call(tbodyRight.rows, function (rightTr, index) {
