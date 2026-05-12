@@ -534,6 +534,227 @@
       background: #fff;
     }
 
+    /* 契約書送付依頼モーダル */
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #keiyakushoIraiEmbedModal.modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 9999;
+      box-sizing: border-box;
+    }
+
+    #keiyakushoIraiEmbedModal.modal-overlay.show {
+      display: flex;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-box {
+      width: 100%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      max-height: min(90vh, 800px);
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      background: #e8f5ef;
+      border-bottom: 1px solid #c5e6d9;
+      flex-shrink: 0;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #1d3557;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-close-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 50%;
+      background: #fff;
+      color: #1d3557;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-close-btn:hover {
+      background: #d4ede2;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-body {
+      padding: 20px 22px 4px;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .view-layout-1-group {
+      padding: 0;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .content-box {
+      background: var(--color-card, #fff);
+      /*border: 1px solid var(--color-border, #d7e0d9);*/
+      /*border-radius: var(--radius-lg, 12px);*/
+      padding: 0px 0px 0px;
+      margin-bottom: 0;
+      box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08));
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:last-child {
+      margin-bottom: 0px;
+    }
+
+    /* メーカー候補は JS で fixed 配置（画面全体の高さは変えず、リストだけ下方向に広げる） */
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete.keiyaku-mfr-ac--open .autocomplete-dropdown {
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-row .filter-label {
+      margin-right: 4px;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-label.manufacturer-label {
+      white-space: nowrap;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions .autocomplete {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete-input {
+      padding: 6px 10px;
+      border: 1px solid var(--color-border, #d7e0d9);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .btn-panel-register {
+      display: inline-block;
+      text-decoration: none;
+      position: absolute;
+      right: 24px;
+      bottom: 12px;
+      z-index: 1;
+      min-width: 100px;
+      width: clamp(80px, 5vw, 120px);
+      padding: 6px 14px;
+      background: var(--color-primary, #008632);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-family: inherit;
+      font-weight: 600;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .btn-panel-register:hover {
+      background: var(--color-primary-dark, #006b28);
+      color: #fff;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer {
+      margin-top: 0;
+      padding: 4px 22px 14px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-primary {
+      background: var(--color-primary, #008632);
+      color: #fff;
+      border: 1px solid var(--color-primary, #008632);
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-primary:hover {
+      background: var(--color-primary-dark, #006b28);
+      color: #fff;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-secondary {
+      background: #fff;
+      color: var(--color-primary, #008632);
+      border: 1px solid var(--color-primary, #008632);
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-secondary:hover {
+      background: #eef5ff;
+    }
+
     .deadline-panel-body .deadline-area-3 {
       display: flex;
       flex-direction: column;
@@ -1694,7 +1915,7 @@
           <div class="panel-header spec-list-panel-header">
             <span id="listPanelHeader" class="spec-list-panel-title">契約依頼・発注書一覧</span>
 
-            <a href="keiyakushosofuirai.html" class="btn-fab-new btn-kara-kyotsu-add" id="searchAddBtn" aria-label="追加">＋ 追加</a>
+            <button type="button" class="btn-fab-new btn-kara-kyotsu-add" id="searchAddBtn" aria-label="追加" aria-haspopup="dialog" aria-controls="keiyakushoIraiEmbedModal">＋ 追加</button>
           </div>
           <div class="panel-body">
             <select id="specListSelect" class="spec-select" aria-label="契約依頼・発注書を選択"></select>
@@ -2087,6 +2308,59 @@
   <div class="image-preview-modal" id="imagePreviewModal" role="dialog" aria-modal="true" aria-label="画像プレビュー" hidden>
     <div class="image-preview-modal__dialog">
       <img class="image-preview-modal__image" id="imagePreviewModalImage" alt="仕様書プレビュー">
+    </div>
+  </div>
+
+  <!-- 契約書送付依頼モーダル -->
+  <div id="keiyakushoIraiEmbedModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="keiyakushoIraiEmbedHeading" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="keiyakushoIraiEmbedHeading">契約書送付依頼</h2>
+        <button type="button" class="modal-close-btn" id="keiyakushoIraiEmbedCloseX" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="keiyaku-sofukai-form">
+          <div class="view-layout view-layout-1-group">
+            <div class="content-area">
+              <div class="content-box" id="keiyakuModalSearchBox">
+                <div class="search-box-inner" id="keiyakuModalSearchRowsPanel">
+                  <div class="filter-row">
+                    <div class="filter-item">
+                      <span class="filter-label">発注区分：</span>
+                      <label><input type="radio" name="keiyakuModalOrderType" value="standard" checked> 定番</label>
+                      <label><input type="radio" name="keiyakuModalOrderType" value="custom"> 別注</label>
+                      <label><input type="radio" name="keiyakuModalOrderType" value="processing"> 定番加工</label>
+                      <label><input type="radio" name="keiyakuModalOrderType" value="material"> 資材</label>
+                    </div>
+                  </div>
+                  <div class="filter-row">
+                    <div class="filter-item">
+                      <span class="filter-label">登録区分：</span>
+                      <label><input type="radio" name="keiyakuModalRegType" value="new" checked> 新規</label>
+                      <label><input type="radio" name="keiyakuModalRegType" value="add"> 追加</label>
+                    </div>
+                  </div>
+                  <div class="filter-row">
+                    <div class="filter-item manufacturer-item">
+                      <label class="filter-label manufacturer-label" for="keiyakuModalManufacturerInput">メーカー：</label>
+                      <div class="manufacturer-row input-actions">
+                        <div class="autocomplete">
+                          <input type="text" class="autocomplete-input" id="keiyakuModalManufacturerInput" data-list="supplier" placeholder="メーカー検索" autocomplete="off">
+                          <div class="autocomplete-dropdown"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="keiyakushoIraiEmbedRegister">登録</button>
+        <button type="button" class="btn btn-secondary" id="keiyakushoIraiEmbedClose">閉じる</button>
+      </div>
     </div>
   </div>
 
@@ -3037,6 +3311,61 @@
       });
 
       clearSpecSelection();
+
+      window.appendSpecListFromKeiyakuIraiModal = function appendSpecListFromKeiyakuIraiModal() {
+        const orderEl = document.querySelector('#keiyakushoIraiEmbedModal input[name="keiyakuModalOrderType"]:checked');
+        const regEl = document.querySelector('#keiyakushoIraiEmbedModal input[name="keiyakuModalRegType"]:checked');
+        const mfrInput = document.getElementById('keiyakuModalManufacturerInput');
+        const orderVal = orderEl ? orderEl.value : 'standard';
+        const regVal = regEl ? regEl.value : 'new';
+        const maker = mfrInput ? String(mfrInput.value || '').trim() : '';
+
+        function hatchuLabel(v) {
+          const map = { standard: '定番', custom: '別注', processing: '定番加工', material: '資材' };
+          return map[v] || '定番';
+        }
+        function shinkiLabel(v) {
+          return v === 'add' ? '追加' : '新規';
+        }
+
+        let maxAc = 0;
+        let maxCt = 0;
+        items.forEach((li) => {
+          const ac = String(li.dataset.iraino || '').match(/^AC-(\d+)$/i);
+          if (ac) maxAc = Math.max(maxAc, parseInt(ac[1], 10));
+          const ct = String(li.dataset.keiyakusyoNo || '').match(/^CT-2026-(\d+)$/i);
+          if (ct) maxCt = Math.max(maxCt, parseInt(ct[1], 10));
+        });
+        const iraino = 'AC-' + String(maxAc + 1).padStart(4, '0');
+        /*const keiyakusyoNo = 'CT-2026-' + String(maxCt + 1).padStart(4, '0');*/
+
+        const li = document.createElement('li');
+        li.className = 'spec-item';
+        li.dataset.iraino = iraino;
+        li.dataset.shinki = shinkiLabel(regVal);
+        li.dataset.hatchu = hatchuLabel(orderVal);
+        li.dataset.maker = maker;
+        li.dataset.supplier = 'ー';
+        li.dataset.totalPrice = 'ー';
+        li.dataset.keiyakusyoNo = 'ー';
+
+        li.innerHTML =
+          '<div class="spec-list-inner">' +
+          '<div class="spec-row"><span class="spec-line-val spec-irai-no"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-kubun-shinki-tsuika"></span>' +
+          '<span class="spec-line-val spec-kubun-hatchu"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-maker"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-supplier"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-total-price"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-keiyakusyo-no"></span></div>' +
+          '</div>';
+
+        specList.appendChild(li);
+        items = Array.from(specList.querySelectorAll('.spec-item'));
+        renderSpecMeta(li);
+        bindItem(li);
+        selectItem(li);
+      };
     }
 
     function initSearchConditionClear() {
@@ -3349,6 +3678,120 @@
       });
     }
 
+    function resetKeiyakuManufacturerDropdownLayout(forceHideDropdown) {
+      const input = document.getElementById('keiyakuModalManufacturerInput');
+      if (!input) return;
+      const box = input.closest('.autocomplete');
+      const dropdown = box && box.querySelector('.autocomplete-dropdown');
+      if (box) box.classList.remove('keiyaku-mfr-ac--open');
+      if (!dropdown) return;
+      ['position', 'top', 'left', 'width', 'maxHeight', 'zIndex', 'boxSizing'].forEach((prop) => {
+        dropdown.style[prop] = '';
+      });
+      if (forceHideDropdown) dropdown.style.display = 'none';
+    }
+
+    /** メーカー autocomplete: ビューポート高さは変えず、候補リストだけ入力下に fixed で下方向へ広げる */
+    function initKeiyakuModalManufacturerPanelExpand() {
+      const modal = document.getElementById('keiyakushoIraiEmbedModal');
+      const input = document.getElementById('keiyakuModalManufacturerInput');
+      if (!modal || !input) return;
+      const box = input.closest('.autocomplete');
+      const dropdown = box && box.querySelector('.autocomplete-dropdown');
+      if (!box || !dropdown) return;
+      const modalBody = modal.querySelector('.modal-body');
+      const contentBox = document.getElementById('keiyakuModalSearchBox');
+
+      function clearDropdownViewportStyles() {
+        ['position', 'top', 'left', 'width', 'maxHeight', 'zIndex', 'boxSizing'].forEach((prop) => {
+          dropdown.style[prop] = '';
+        });
+      }
+
+      function positionDropdownFixed() {
+        if (dropdown.style.display !== 'block') return;
+        const r = input.getBoundingClientRect();
+        const margin = 8;
+        const spaceBelow = Math.max(0, window.innerHeight - r.bottom - margin);
+        const maxH = Math.min(spaceBelow, 200);
+        dropdown.style.position = 'fixed';
+        dropdown.style.left = r.left + 'px';
+        dropdown.style.top = r.bottom + 2 + 'px';
+        dropdown.style.width = r.width + 'px';
+        dropdown.style.maxHeight = maxH + 'px';
+        dropdown.style.zIndex = '10002';
+        dropdown.style.boxSizing = 'border-box';
+      }
+
+      function sync() {
+        const open = dropdown.style.display === 'block';
+        if (open) {
+          box.classList.add('keiyaku-mfr-ac--open');
+          requestAnimationFrame(() => {
+            positionDropdownFixed();
+            requestAnimationFrame(() => positionDropdownFixed());
+          });
+        } else {
+          box.classList.remove('keiyaku-mfr-ac--open');
+          clearDropdownViewportStyles();
+        }
+      }
+
+      const obs = new MutationObserver(sync);
+      obs.observe(dropdown, { attributes: true, attributeFilter: ['style'] });
+
+      function onScrollOrResize() {
+        if (dropdown.style.display === 'block') positionDropdownFixed();
+      }
+
+      window.addEventListener('resize', onScrollOrResize);
+      if (modalBody) modalBody.addEventListener('scroll', onScrollOrResize, { passive: true });
+      if (contentBox) contentBox.addEventListener('scroll', onScrollOrResize, { passive: true });
+
+      sync();
+    }
+
+    function initKeiyakushoIraiEmbedModal() {
+      const openBtn = document.getElementById('searchAddBtn');
+      const modal = document.getElementById('keiyakushoIraiEmbedModal');
+      const closeX = document.getElementById('keiyakushoIraiEmbedCloseX');
+      const closeFooter = document.getElementById('keiyakushoIraiEmbedClose');
+      if (!openBtn || !modal) return;
+
+      function openModal() {
+        resetKeiyakuManufacturerDropdownLayout(false);
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        if (closeFooter) closeFooter.focus();
+      }
+
+      function closeModal() {
+        resetKeiyakuManufacturerDropdownLayout(true);
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      openBtn.addEventListener('click', openModal);
+      if (closeX) closeX.addEventListener('click', closeModal);
+      if (closeFooter) closeFooter.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('show')) closeModal();
+      });
+
+      const registerBtn = document.getElementById('keiyakushoIraiEmbedRegister');
+      if (registerBtn) {
+        registerBtn.addEventListener('click', () => {
+          if (typeof window.appendSpecListFromKeiyakuIraiModal === 'function') {
+            window.appendSpecListFromKeiyakuIraiModal();
+          }
+          closeModal();
+        });
+      }
+    }
+
     function initPreviewModal() {
       const previewBtns = document.querySelectorAll('[data-preview-open="1"]');
       const sourceImg = document.querySelector('.deadline-area-1-img-wrap .deadline-area-1-img');
@@ -3391,6 +3834,8 @@
     initSpecSearch();
     initAiDataUpload();
     initDeadlineArea3HatchuFilePick();
+    initKeiyakushoIraiEmbedModal();
+    initKeiyakuModalManufacturerPanelExpand();
     initPreviewModal();
     syncDeadlineArea2Ui();
   </script>
