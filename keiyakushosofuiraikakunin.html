@@ -817,6 +817,13 @@
         width: 100%;
         max-width: 100%;
       }
+
+      /* メーカー候補（absolute）がモーダルで切れないようにする */
+      #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-box,
+      #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-body,
+      #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .keiyaku-sofukai-form .content-box {
+        overflow: visible;
+      }
     }
 
     .deadline-panel-body .deadline-area-3 {
@@ -3755,7 +3762,7 @@
       if (forceHideDropdown) dropdown.style.display = 'none';
     }
 
-    /** メーカー autocomplete: ビューポート高さは変えず、候補リストだけ入力下に fixed で下方向へ広げる */
+    /** メーカー autocomplete: 狭い画面は absolute（入力直下）、それ以外は fixed。候補の再配置とクリップ対策あり */
     function initKeiyakuModalManufacturerPanelExpand() {
       const modal = document.getElementById('keiyakushoIraiEmbedModal');
       const input = document.getElementById('keiyakuModalManufacturerInput');
@@ -3772,12 +3779,28 @@
         });
       }
 
+      function isKeiyakuModalManufacturerNarrow() {
+        return window.matchMedia('(max-width: 767px)').matches;
+      }
+
+      function layoutViewportBottom() {
+        const vv = window.visualViewport;
+        if (vv) return vv.offsetTop + vv.height;
+        return window.innerHeight;
+      }
+
       function positionDropdownFixed() {
         if (dropdown.style.display !== 'block') return;
+        if (isKeiyakuModalManufacturerNarrow()) {
+          clearDropdownViewportStyles();
+          dropdown.style.zIndex = '10002';
+          dropdown.style.boxSizing = 'border-box';
+          return;
+        }
         const r = input.getBoundingClientRect();
         const margin = 8;
-        const spaceBelow = Math.max(0, window.innerHeight - r.bottom - margin);
-        const maxH = Math.min(spaceBelow, 200);
+        const spaceBelow = Math.max(0, layoutViewportBottom() - r.bottom - margin);
+        const maxH = Math.min(Math.max(spaceBelow, 1), 200);
         dropdown.style.position = 'fixed';
         dropdown.style.left = r.left + 'px';
         dropdown.style.top = r.bottom + 2 + 'px';
@@ -3787,14 +3810,21 @@
         dropdown.style.boxSizing = 'border-box';
       }
 
+      function scheduleRepositionDropdown() {
+        if (dropdown.style.display !== 'block') return;
+        requestAnimationFrame(() => positionDropdownFixed());
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => positionDropdownFixed());
+        });
+        setTimeout(() => positionDropdownFixed(), 120);
+        setTimeout(() => positionDropdownFixed(), 350);
+      }
+
       function sync() {
         const open = dropdown.style.display === 'block';
         if (open) {
           box.classList.add('keiyaku-mfr-ac--open');
-          requestAnimationFrame(() => {
-            positionDropdownFixed();
-            requestAnimationFrame(() => positionDropdownFixed());
-          });
+          scheduleRepositionDropdown();
         } else {
           box.classList.remove('keiyaku-mfr-ac--open');
           clearDropdownViewportStyles();
@@ -3804,13 +3834,32 @@
       const obs = new MutationObserver(sync);
       obs.observe(dropdown, { attributes: true, attributeFilter: ['style'] });
 
+      const obsChildren = new MutationObserver(() => {
+        if (dropdown.style.display === 'block') scheduleRepositionDropdown();
+      });
+      obsChildren.observe(dropdown, { childList: true, subtree: true });
+
       function onScrollOrResize() {
         if (dropdown.style.display === 'block') positionDropdownFixed();
       }
 
       window.addEventListener('resize', onScrollOrResize);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', onScrollOrResize);
+        window.visualViewport.addEventListener('scroll', onScrollOrResize);
+      }
       if (modalBody) modalBody.addEventListener('scroll', onScrollOrResize, { passive: true });
       if (contentBox) contentBox.addEventListener('scroll', onScrollOrResize, { passive: true });
+
+      input.addEventListener('focus', () => {
+        if (!isKeiyakuModalManufacturerNarrow()) return;
+        requestAnimationFrame(() => {
+          try {
+            input.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          } catch (e) { /* noop */ }
+        });
+        scheduleRepositionDropdown();
+      });
 
       sync();
     }
