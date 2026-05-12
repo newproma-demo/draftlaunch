@@ -816,6 +816,19 @@
         min-width: 0;
         width: 100%;
         max-width: 100%;
+        /* iOS Safari: 16px 未満のフォーカスでビューポートが自動拡大するのを防ぐ */
+        font-size: 16px;
+        touch-action: manipulation;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete-dropdown {
+        touch-action: pan-y;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete-dropdown div {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       }
 
       /* メーカー候補（absolute）がモーダルで切れないようにする */
@@ -3853,11 +3866,6 @@
 
       input.addEventListener('focus', () => {
         if (!isKeiyakuModalManufacturerNarrow()) return;
-        requestAnimationFrame(() => {
-          try {
-            input.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-          } catch (e) { /* noop */ }
-        });
         scheduleRepositionDropdown();
       });
 
