@@ -639,6 +639,32 @@
     /* メーカー候補は JS で fixed 配置（画面全体の高さは変えず、リストだけ下方向に広げる） */
     #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete.keiyaku-mfr-ac--open .autocomplete-dropdown {
       box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+      z-index: 50;
+    }
+
+    /* メーカー候補オープン時: リストがモーダル枠外へはみ出しても、フッターより手前でタップを受け取る */
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-box {
+      overflow: visible;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-header {
+      position: relative;
+      z-index: 30;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-body {
+      position: relative;
+      z-index: 20;
+      overflow: visible;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-footer {
+      position: relative;
+      z-index: 10;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .keiyaku-sofukai-form .content-box {
+      overflow: visible;
     }
 
     #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-row {
@@ -675,6 +701,10 @@
       flex: 1;
       min-width: 0;
       position: relative;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .keiyaku-modal-manufacturer-select {
+      display: none;
     }
 
     #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete-input {
@@ -803,39 +833,27 @@
 
       #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions {
         width: 100%;
-        max-width: min(220px, 72vw);
+        max-width: min(280px, 92vw);
         flex: 0 0 auto;
       }
 
+      /* スマホ: OS のネイティブ選択 UI でメーカー選択（はみ出しタップ問題を避ける） */
       #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions .autocomplete {
-        flex: 0 1 auto;
-        max-width: 100%;
+        display: none;
       }
 
-      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form #keiyakuModalManufacturerInput {
-        min-width: 0;
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .keiyaku-modal-manufacturer-select {
+        display: block;
         width: 100%;
         max-width: 100%;
-        /* iOS Safari: 16px 未満のフォーカスでビューポートが自動拡大するのを防ぐ */
+        box-sizing: border-box;
         font-size: 16px;
-        touch-action: manipulation;
-      }
-
-      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete-dropdown {
-        touch-action: pan-y;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete-dropdown div {
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      /* メーカー候補（absolute）がモーダルで切れないようにする */
-      #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-box,
-      #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-body,
-      #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .keiyaku-sofukai-form .content-box {
-        overflow: visible;
+        padding: 10px 12px;
+        border: 1px solid var(--color-border, #d7e0d9);
+        border-radius: var(--radius-sm);
+        background: #fff;
+        color: inherit;
+        font-family: inherit;
       }
     }
 
@@ -2426,12 +2444,15 @@
                   </div>
                   <div class="filter-row">
                     <div class="filter-item manufacturer-item">
-                      <label class="filter-label manufacturer-label" for="keiyakuModalManufacturerInput">メーカー：</label>
+                      <span class="filter-label manufacturer-label" id="keiyakuModalManufacturerFieldLabel">メーカー：</span>
                       <div class="manufacturer-row input-actions">
                         <div class="autocomplete">
-                          <input type="text" class="autocomplete-input" id="keiyakuModalManufacturerInput" data-list="supplier" placeholder="メーカー検索" autocomplete="off">
+                          <input type="text" class="autocomplete-input" id="keiyakuModalManufacturerInput" data-list="supplier" placeholder="メーカー検索" autocomplete="off" aria-labelledby="keiyakuModalManufacturerFieldLabel">
                           <div class="autocomplete-dropdown"></div>
                         </div>
+                        <select id="keiyakuModalManufacturerSelect" class="keiyaku-modal-manufacturer-select" aria-labelledby="keiyakuModalManufacturerFieldLabel">
+                          <option value="">メーカーを選択</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -3775,6 +3796,62 @@
       if (forceHideDropdown) dropdown.style.display = 'none';
     }
 
+    /** スマホ: メーカーはネイティブ select（supplier 一覧）で選び、値は同一の #keiyakuModalManufacturerInput に同期 */
+    function initKeiyakuModalManufacturerMobileSelect() {
+      const input = document.getElementById('keiyakuModalManufacturerInput');
+      const sel = document.getElementById('keiyakuModalManufacturerSelect');
+      if (!input || !sel) return;
+
+      function rebuildSelectOptions() {
+        const lists = window.AUTOCOMPLETE_LISTS;
+        const data = lists && Array.isArray(lists.supplier) ? lists.supplier : null;
+        if (!data || !data.length) return;
+        while (sel.options.length > 1) {
+          sel.remove(1);
+        }
+        data.forEach((t) => {
+          const s = String(t);
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          sel.appendChild(opt);
+        });
+      }
+
+      function syncSelectFromInput() {
+        const v = String(input.value || '').trim();
+        if (v && Array.from(sel.options).some((o) => o.value === v)) {
+          sel.value = v;
+        } else {
+          sel.value = '';
+        }
+      }
+
+      function refreshKeiyakuModalManufacturerSelect() {
+        rebuildSelectOptions();
+        syncSelectFromInput();
+      }
+
+      sel.addEventListener('change', () => {
+        input.value = sel.value;
+      });
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', refreshKeiyakuModalManufacturerSelect);
+      } else {
+        refreshKeiyakuModalManufacturerSelect();
+      }
+      window.addEventListener('load', refreshKeiyakuModalManufacturerSelect, { once: true });
+
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(refreshKeiyakuModalManufacturerSelect, 150);
+      });
+
+      window.refreshKeiyakuModalManufacturerSelect = refreshKeiyakuModalManufacturerSelect;
+    }
+
     /** メーカー autocomplete: 狭い画面は absolute（入力直下）、それ以外は fixed。候補の再配置とクリップ対策あり */
     function initKeiyakuModalManufacturerPanelExpand() {
       const modal = document.getElementById('keiyakushoIraiEmbedModal');
@@ -3881,6 +3958,9 @@
 
       function openModal() {
         resetKeiyakuManufacturerDropdownLayout(false);
+        if (typeof window.refreshKeiyakuModalManufacturerSelect === 'function') {
+          window.refreshKeiyakuModalManufacturerSelect();
+        }
         modal.classList.add('show');
         modal.setAttribute('aria-hidden', 'false');
         if (closeFooter) closeFooter.focus();
@@ -3956,6 +4036,7 @@
     initAiDataUpload();
     initDeadlineArea3HatchuFilePick();
     initKeiyakushoIraiEmbedModal();
+    initKeiyakuModalManufacturerMobileSelect();
     initKeiyakuModalManufacturerPanelExpand();
     initPreviewModal();
     syncDeadlineArea2Ui();
