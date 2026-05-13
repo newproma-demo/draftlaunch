@@ -20,12 +20,28 @@
       display: none;
     }
 
+    /* body を縦方向の flex にし、ヘッダー + main-wrapper を viewport 内にぴったり収める */
+    /* （ヘッダーの border-bottom 等で 1px ずれてもページ全体の縦スクロールが出ないように） */
+    html, body {
+      overflow-x: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      overflow-y: hidden;
+    }
+    .header {
+      flex: 0 0 auto;
+    }
+
     /* #region ヘッダー下のメニューとメインコンテンツ */
     .main-wrapper {
       display: flex;
-      flex: 1;
       margin-top: 0;
-      min-height: calc(100vh - 25px);
+      /* body(100dvh) の残り高さを flex で正確に占有し、ページ全体の縦スクロールバーを防ぐ */
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
     }
 
     /* #endregion */
@@ -52,11 +68,14 @@
       grid-template-columns: 1fr 1fr;
       grid-template-rows: auto 1fr 1fr;
       gap: 10px;
-      height: 97vh;
+      /* main-wrapper にぴったり追従し、ページ全体での縦スクロールを防ぐ */
+      height: 100%;
+      min-height: 0;
       /* 登録ボタン（fixed bottom）の上まで確保 */
       padding-bottom: 56px;
       box-sizing: border-box;
-      /* 必要なら画面いっぱいに */
+      /* grid セル内にコンテンツを収め、画面全体に縦スクロールバーが出ないようにする */
+      overflow: hidden;
     }
 
     .content h1 {
@@ -69,15 +88,23 @@
       grid-column: 1;
       grid-row: 2;
       width: 100%;
+      /* grid セル内に収め、明細が多いときはこの領域内で縦スクロール */
+      min-height: 0;
+      min-width: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overflow-anchor: none;
+      -webkit-overflow-scrolling: touch;
     }
 
     .content-area-2 {
       grid-column: 2;
       /* タイトル下の2段分をまたぎ、縦いっぱいに画像エリア */
       grid-row: 2 / 4;
-      min-height: 600px;
-      max-height: calc(100vh - 170px);
-      overflow: visible;
+      /* grid セル内に収まるよう最小高さの強制を解除 */
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -88,6 +115,11 @@
       grid-row: 3;
       width: 100%;
       box-sizing: border-box;
+      /* grid セル内に収め、はみ出さないように */
+      min-height: 0;
+      min-width: 0;
+      overflow: auto;
+      overflow-anchor: none;
     }
 
     .content-area-2 .image-panel-stage {
@@ -558,9 +590,11 @@
       box-sizing: border-box;
       background: #fff;
       width: 100%;
-      height: min(860px, calc(100vh - 220px));
-      max-height: calc(100vh - 220px);
+      /* 親（image-panel-stage）の高さに追従し、ページからはみ出さない */
+      height: 100%;
+      max-height: 100%;
       min-height: 0;
+      flex: 1 1 auto;
       overflow: hidden;
     }
 
