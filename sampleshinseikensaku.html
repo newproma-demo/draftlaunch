@@ -296,23 +296,14 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* deadline-panel：左エリア1・右カラム（エリア2〜4）。エリア1と右列の幅は均等 */
+    /* deadline-panel：エリア1・2・3を横並び（均等幅） */
     .deadline-panel .panel-body.deadline-panel-body {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       grid-template-rows: minmax(0, 1fr);
       gap: 10px;
       align-content: stretch;
       overflow: hidden;
-    }
-
-    .deadline-panel-body .deadline-right-column {
-      display: grid;
-      /* エリア2（帳票）を可変行にし、エリア4は下段 auto。エリア3未使用時は2行構成 */
-      grid-template-rows: minmax(0, 1fr) auto;
-      gap: 0;
-      min-width: 0;
-      min-height: 0;
     }
 
     .deadline-panel-body .deadline-area {
@@ -378,7 +369,8 @@
     }
 
     .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-1,
-    .deadline-panel-body.deadline-panel-body--no-spec .deadline-right-column {
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-2,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-3 {
       display: none !important;
     }
 
@@ -539,8 +531,66 @@
       flex-direction: column;
       gap: 8px;
       min-height: 0;
+      height: 100%;
+      overflow: auto;
       font-weight: 400;
       color: #173425;
+    }
+
+    .deadline-panel-body .deadline-area-3 .result-select-block {
+      padding: 8px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .deadline-panel-body .deadline-area-3 .result-select-block .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .deadline-panel-body .deadline-area-3 #resultSelect {
+      width: 100%;
+      max-width: 100%;
+      min-height: 44px;
+      font-size: 16px;
+      line-height: 1.4;
+      padding: 10px 12px;
+      box-sizing: border-box;
+    }
+
+    .deadline-panel-body .deadline-area-3 .result-reason-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .deadline-panel-body .deadline-area-3 .result-reason-wrap.is-visible {
+      display: flex;
+    }
+
+    .deadline-panel-body .deadline-area-3 #resultReason {
+      width: 100%;
+      max-width: 100%;
+      min-height: 6rem;
+      font-size: 16px;
+      line-height: 1.4;
+      padding: 10px 12px;
+      box-sizing: border-box;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .deadline-panel-body .deadline-area-3 #resultReason::placeholder {
+      font-size: 16px;
+      line-height: 1.4;
     }
 
     .deadline-panel-body .deadline-area-3 #deadlineArea3Content {
@@ -1292,14 +1342,13 @@
       .deadline-panel .panel-body.deadline-panel-body {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(100px, auto) minmax(200px, auto);
+        grid-template-rows: minmax(100px, auto) minmax(100px, auto) minmax(160px, auto);
         gap: 10px;
         overflow: hidden;
       }
 
-      .deadline-panel-body .deadline-right-column {
-        grid-template-rows: minmax(120px, 1fr) auto;
-        min-height: 180px;
+      .deadline-panel-body .deadline-area-3 {
+        min-height: 140px;
       }
 
       .spec-panel .spec-list {
@@ -1374,13 +1423,12 @@
       }
 
       .deadline-panel .panel-body.deadline-panel-body {
-        grid-template-rows: minmax(88px, auto) minmax(160px, auto);
+        grid-template-rows: minmax(88px, auto) minmax(88px, auto) minmax(140px, auto);
         gap: 8px;
       }
 
-      .deadline-panel-body .deadline-right-column {
-        min-height: 140px;
-        gap: 8px;
+      .deadline-panel-body .deadline-area-3 {
+        min-height: 120px;
       }
 
       .content-footer {
@@ -1963,26 +2011,35 @@
           <div class="panel-body deadline-panel-body deadline-panel-body--no-spec">
             <div class="deadline-area deadline-area-1" aria-label="エリア1" aria-hidden="true">
               <div class="deadline-area-1-img-wrap">
-                <img class="deadline-area-1-img" src="images/evidence.png"
+                <img class="deadline-area-1-img" src="images/zuan001.png"
                   alt="エビデンス" decoding="async" loading="lazy">
               </div>
             </div>
-            <div class="deadline-right-column" aria-hidden="true">
-              <div class="deadline-area deadline-area-2" aria-label="エリア2">
-                <div class="deadline-area-1-img-wrap">
-                  <img class="deadline-area-1-img" src="images/zuan001.png"
-                    alt="サンプル" decoding="async" loading="lazy">
-                </div>
+            <div class="deadline-area deadline-area-2" aria-label="エリア2" aria-hidden="true">
+              <div class="deadline-area-1-img-wrap">
+                <img class="deadline-area-1-img" src="images/evidence.png"
+                  alt="サンプル" decoding="async" loading="lazy">
               </div>
-<!--
-              <div class="deadline-area deadline-area-3" aria-label="エリア3">
-                <div id="deadlineArea3Content">
-                </div>
-              </div>
-              <div class="deadline-area deadline-area-4" aria-label="エリア4">
-              </div>
--->
             </div>
+            <div class="deadline-area deadline-area-3" aria-label="エリア3" aria-hidden="true">
+              <div class="result-select-block">
+                <div class="filter-item">
+                  <select id="resultSelect" name="result">
+                    <option value="" selected disabled>選定結果を選択してください</option>
+                    <option value="approved">承認</option>
+                    <option value="rejected">差し戻し</option>
+                    <option value="cancelled">取消</option>
+                  </select>
+                </div>
+                <div id="resultReasonWrap" class="result-reason-wrap" aria-hidden="true">
+                  <textarea id="resultReason" name="resultReason" rows="4" placeholder="理由を入力してください"></textarea>
+                </div>
+              </div>
+            </div>
+<!--
+            <div class="deadline-area deadline-area-4" aria-label="エリア4">
+            </div>
+-->
           </div>
         </section>
         <section class="panel progress-panel">
@@ -1994,10 +2051,7 @@
       </div>
 
       <div class="content-footer">
-        <!-- <button type="button" class="btn-secondary" id="previewBtn" data-preview-open="1" aria-label="承認待ちをプレビュー">承認待ちをプレビュー</button> -->
-        <button type="button" class="btn-secondary">取消</button>
-        <button type="button" class="btn-secondary">差し戻し</button>
-        <button type="button" class="btn-fab-new" id="shoninBtn">承認</button>
+        <button type="button" class="btn-fab-new" id="tourokuBtn">登録</button>
       </div>
     </div>
   </div>
@@ -2079,10 +2133,10 @@
 
     const DEADLINE_AREA1_IMAGE_FILENAMES = {
       通常: {
-        '1st': 'evidence.png',
-        '2nd': 'evidence.png',
-        '最終': 'evidence.png',
-        'サンプル': 'zuan001.png'
+        '1st': 'zuan003.png',
+        '2nd': 'zuan003.png',
+        '最終': 'zuan001.png',
+        'サンプル': 'evidence.png'
       }
     };
 
@@ -2443,16 +2497,16 @@
         const body = document.querySelector('.deadline-panel .deadline-panel-body');
         if (!body) return;
         body.classList.toggle('deadline-panel-body--no-spec', !hasSpec);
-        const area1 = body.querySelector('.deadline-area-1');
-        const right = body.querySelector('.deadline-right-column');
-        if (area1) {
-          if (hasSpec) area1.removeAttribute('aria-hidden');
-          else area1.setAttribute('aria-hidden', 'true');
-        }
-        if (right) {
-          if (hasSpec) right.removeAttribute('aria-hidden');
-          else right.setAttribute('aria-hidden', 'true');
-        }
+        const areas = [
+          body.querySelector('.deadline-area-1'),
+          body.querySelector('.deadline-area-2'),
+          body.querySelector('.deadline-area-3')
+        ];
+        areas.forEach((el) => {
+          if (!el) return;
+          if (hasSpec) el.removeAttribute('aria-hidden');
+          else el.setAttribute('aria-hidden', 'true');
+        });
       }
 
       function selectItem(item) {
@@ -2962,6 +3016,30 @@
         if (event.key === 'Escape' && !modal.hidden) closeModal();
       });
     }
+
+    // 結果 select：差し戻し・取消のときのみ理由入力欄を表示（sampleshoninkekkatoroku.html と同様）
+    (function () {
+      const sel = document.getElementById('resultSelect');
+      const wrap = document.getElementById('resultReasonWrap');
+      const reason = document.getElementById('resultReason');
+      if (!sel || !wrap) return;
+
+      function toggleReason() {
+        const v = sel.value;
+        const needReason = v === 'rejected' || v === 'cancelled';
+        if (needReason) {
+          wrap.classList.add('is-visible');
+          wrap.setAttribute('aria-hidden', 'false');
+        } else {
+          wrap.classList.remove('is-visible');
+          wrap.setAttribute('aria-hidden', 'true');
+          if (reason) reason.value = '';
+        }
+      }
+
+      sel.addEventListener('change', toggleReason);
+      toggleReason();
+    })();
 
     loadSharedSidebar();
     initAccountMenu();
