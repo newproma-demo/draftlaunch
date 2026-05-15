@@ -134,12 +134,25 @@
       align-items: start;
     }
 
-    .search-condition-clear-row {
+    .search-condition-reason-clear-row {
       display: flex;
-      justify-content: flex-end;
-      grid-column: 1 / -1;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 10px;
       width: 100%;
-      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    .search-condition-reason-clear-row .exhibit-bs-multiselect {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: min(100%, 28rem);
+    }
+
+    /* 貸出理由＋クリア行を検索条件グリッド全幅にし、クリアをパネル内の右端へ */
+    .search-condition-panel .field.field--reason-with-clear {
+      grid-column: 1 / -1;
+      min-width: 0;
     }
 
     /* 仕様書一覧・締切パネル：ヘッダー帯の高さを子ボタンに引き伸ばされないように固定 */
@@ -425,6 +438,37 @@
       object-fit: contain;
       border-radius: 6px;
       background: #fff;
+    }
+
+    #searchConditionClearBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: stretch;
+      flex-shrink: 0;
+      margin-left: auto;
+      min-height: 38px;
+      padding: 6px 14px;
+      font-size: var(--fs-xs);
+      background: var(--color-clearbutton-background);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      font-family: inherit;
+      white-space: nowrap;
+      box-shadow: none;
+      box-sizing: border-box;
+    }
+
+    #searchConditionClearBtn:hover {
+      background:var(--color-clearbutton-background-hover);
+      color: var(--color-text);
+      border: 1px solid var(--color-clearbutton-border);
+      transform: none;
+      box-shadow: none;
     }
 
     /* 申請ヘッダ情報モーダル */
@@ -1929,63 +1973,63 @@
                 <span class="field-label">商品名</span>
                 <input id="searchHinmei" type="text" placeholder="商品名を入力" aria-label="商品名"></input>
             </label> 
-            <div class="field">
+            <div class="field field--reason-with-clear">
               <span class="field-label" id="searchConditionSampleFieldLabel">貸出理由</span>
-              <div class="exhibit-bs-multiselect" id="searchConditionStatusMs">
-                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionStatusToggle"
-                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionStatusPopover"
-                  aria-labelledby="searchConditionStatusFieldLabel">
-                  <span class="exhibit-bs-multiselect-label" id="searchConditionStatusToggleLabel">すべて</span>
-                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
-                </button>
-                <div class="exhibit-bs-multiselect-popover" id="searchConditionStatusPopover" hidden>
-                  <input type="text" id="searchConditionStatusFilter" class="exhibit-bs-multiselect-filter"
-                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="貸出理由リストの絞り込み"
-                    aria-controls="searchConditionStatusMenu">
-                  <div class="exhibit-bs-multiselect-menu" id="searchConditionStatusMenu" role="listbox"
-                    aria-multiselectable="true">
-                    <div class="exhibit-bs-multiselect-inner">
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="商談用">
-                        <input type="checkbox" name="searchConditionStatus" value="商談用">
-                        <span class="exhibit-bs-multiselect-item-text">商談用</span>
-                      </label>
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="展示用">
-                        <input type="checkbox" name="searchConditionStatus" value="展示用">
-                        <span class="exhibit-bs-multiselect-item-text">展示用</span>
-                      </label>
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="カタログ掲載用">
-                        <input type="checkbox" name="searchConditionStatus" value="カタログ掲載用">
-                        <span class="exhibit-bs-multiselect-item-text">カタログ掲載用</span>
-                      </label>
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="撮影用">
-                        <input type="checkbox" name="searchConditionStatus" value="撮影用">
-                        <span class="exhibit-bs-multiselect-item-text">撮影用</span>
-                      </label>
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="その他">
-                        <input type="checkbox" name="searchConditionStatus" value="その他">
-                        <span class="exhibit-bs-multiselect-item-text">その他</span>
-                      </label>
+              <div class="search-condition-reason-clear-row">
+                <div class="exhibit-bs-multiselect" id="searchConditionStatusMs">
+                  <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionStatusToggle"
+                    aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionStatusPopover"
+                    aria-labelledby="searchConditionStatusFieldLabel">
+                    <span class="exhibit-bs-multiselect-label" id="searchConditionStatusToggleLabel">すべて</span>
+                    <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="exhibit-bs-multiselect-popover" id="searchConditionStatusPopover" hidden>
+                    <input type="text" id="searchConditionStatusFilter" class="exhibit-bs-multiselect-filter"
+                      placeholder="キーワードで絞り込み" autocomplete="off" aria-label="貸出理由リストの絞り込み"
+                      aria-controls="searchConditionStatusMenu">
+                    <div class="exhibit-bs-multiselect-menu" id="searchConditionStatusMenu" role="listbox"
+                      aria-multiselectable="true">
+                      <div class="exhibit-bs-multiselect-inner">
+                        <label class="exhibit-bs-multiselect-item" role="option"
+                          data-ms-search="商談用">
+                          <input type="checkbox" name="searchConditionStatus" value="商談用">
+                          <span class="exhibit-bs-multiselect-item-text">商談用</span>
+                        </label>
+                        <label class="exhibit-bs-multiselect-item" role="option"
+                          data-ms-search="展示用">
+                          <input type="checkbox" name="searchConditionStatus" value="展示用">
+                          <span class="exhibit-bs-multiselect-item-text">展示用</span>
+                        </label>
+                        <label class="exhibit-bs-multiselect-item" role="option"
+                          data-ms-search="カタログ掲載用">
+                          <input type="checkbox" name="searchConditionStatus" value="カタログ掲載用">
+                          <span class="exhibit-bs-multiselect-item-text">カタログ掲載用</span>
+                        </label>
+                        <label class="exhibit-bs-multiselect-item" role="option"
+                          data-ms-search="撮影用">
+                          <input type="checkbox" name="searchConditionStatus" value="撮影用">
+                          <span class="exhibit-bs-multiselect-item-text">撮影用</span>
+                        </label>
+                        <label class="exhibit-bs-multiselect-item" role="option"
+                          data-ms-search="その他">
+                          <input type="checkbox" name="searchConditionStatus" value="その他">
+                          <span class="exhibit-bs-multiselect-item-text">その他</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
+                  <select id="searchConditionExhibit" name="searchConditionExhibit" multiple tabindex="-1"
+                    aria-label="サンプル区分" aria-hidden="true"
+                    style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)">
+                    <option value="商談用">商談用</option>
+                    <option value="展示用">展示用</option>
+                    <option value="カタログ掲載用">カタログ掲載用</option>
+                    <option value="撮影用">撮影用</option>
+                    <option value="その他">その他</option>
+                  </select>
                 </div>
-                <select id="searchConditionExhibit" name="searchConditionExhibit" multiple tabindex="-1"
-                  aria-label="サンプル区分" aria-hidden="true"
-                  style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)">
-                  <option value="商談用">商談用</option>
-                  <option value="展示用">展示用</option>
-                  <option value="カタログ掲載用">カタログ掲載用</option>
-                  <option value="撮影用">撮影用</option>
-                  <option value="その他">その他</option>
-                </select>
-              </div>
-            </div>     
-            <div class="search-condition-clear-row">
                 <button type="button" class="btn-secondary" id="searchConditionClearBtn">クリア</button>
+              </div>
             </div>
           </div>
         </div>
