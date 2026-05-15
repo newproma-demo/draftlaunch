@@ -12,411 +12,1807 @@
     href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <style>
-    .pc-only {
-      display: block;
-    }
-
-    .sp-only {
-      display: none;
-    }
-
     body {
       display: flex;
       flex-direction: column;
-    }
-
-    /* #region ヘッダー */
-    .header {
-      position: relative;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 48px;
-
-      background: var(--color-card);
-      color: var(--color-text);
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      box-shadow: var(--shadow-sm);
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    .header a {
-      text-decoration: none;
-      color: inherit;
-      letter-spacing: 0.02em;
-    }
-
-    .header a:hover {
-      color: var(--color-primary);
-    }
-
-    .hamburger {
-      display: none;
-    }
-
-    .header-title {
-      margin: 0;
-      font-size: var(--fs-xl);
-      font-weight: 700;
-    }
-
-    .header-user {
-      position: absolute;
-      right: 70px;
-      padding: 0;
-      font-size: var(--fs-sm);
-      font-weight: 500;
-      color: var(--color-text-muted);
-    }
-
-    .account-wrapper {
-      position: absolute;
-      right: 24px;
-    }
-
-    .account-menu {
-      position: absolute;
-      right: 0;
-      top: 40px;
-      min-height: 41px;
-      background: var(--color-card);
-      color: var(--color-text);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      display: none;
-      min-width: 120px;
-      box-shadow: var(--shadow-lg);
+      min-height: 100dvh;
       overflow: hidden;
     }
 
-    .account-menu .menu-item {
-      padding: 12px 16px;
-      font-weight: 500;
-      transition: background 0.2s ease;
+    body>.header {
+      flex-shrink: 0;
     }
 
-    .account-menu .menu-item:hover {
-      background: var(--color-primary);
-      color: #fff;
-    }
-
-    .header-account_circle {
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      cursor: pointer;
-      transition: opacity 0.2s ease;
-    }
-
-    .header-account_circle:hover {
-      opacity: 0.85;
-    }
-
-    /* #endregion */
-
-    /* #region ヘッダー下のメニューとメインコンテンツ */
-    /* ヘッダーの下に全体レイアウトを配置 */
     .main-wrapper {
       display: flex;
       flex: 1;
-      margin-top: 0;
       min-height: 0;
+      margin-top: 0;
     }
 
-    /* #endregion */
-
-    /* #region メニュー */
-    .overlay {
-      display: none;
-    }
-
-    .overlay.show {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.35);
-      z-index: 1500;
-      backdrop-filter: blur(2px);
-    }
-
-    .menu-item {
-      margin: 2px 8px;
-      position: relative;
-      border-radius: var(--radius-sm);
-    }
-
-    .menu-title {
-      position: relative;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      padding: 0 12px;
-      border-radius: var(--radius-sm);
-      transition: background 0.2s ease;
-    }
-
-    .menu-title img {
-      margin-right: 10px;
-      opacity: 0.9;
-    }
-
-    .menu-item:hover>.submenu {
-      display: block;
-    }
-
-    .menu-item:hover .menu-title {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .arrow {
-      transition: transform 0.2s ease;
-      margin-left: auto;
-      opacity: 0.8;
-    }
-
-    /* サブメニュー */
-    .submenu {
-      display: none;
-      position: absolute;
-      /* 右側に出すために絶対配置 */
-      top: -13px;
-      left: 105%;
-      background: #008632;
-      padding: 0px 0px 0px 0px;
-      border-radius: 3px;
-      display: none;
-      min-width: 330px;
-      list-style: none;
-    }
-
-    /* 隙間を埋める透明のホバー領域 */
-    .submenu::before {
-      content: "";
-      display: flex;
-      position: absolute;
-      top: 0;
-      left: -5%;
-      width: 5%;
-      height: 100%;
-      background: transparent;
-      display: block;
-    }
-
-    .submenu li {
-      padding: 8px 10px;
-      height: auto;
-      /* ←折り返し対応 */
-    }
-
-    .submenu li:hover {
-      background: #006C29;
-      /* 好きな色に変更 */
-      border-radius: 4px;
-      /* 角丸にしたい場合 */
-    }
-
-    .submenu li a {
-      display: block;
-      /* 折り返しを効かせる */
-      white-space: normal;
-      /* 折り返しOK */
-      word-break: break-word;
-      /* 日本語も途中で折れる */
-      line-height: 1.1;
-      /* 行間を少し広めに */
-    }
-
-    .submenu a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* #endregion */
-
-    /* #region メインコンテンツ */
     .content {
       background: var(--color-surface);
       flex: 1;
       min-height: 0;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      padding: 24px 24px 56px 24px;
-      overflow-y: hidden;
-      transition: margin-left 0.3s ease, padding-left 0.3s ease;
-    }
-
-    .content:not(.expanded) {
-      padding-left: 32px;
+      padding: 12px 0 0 32px;
+      overflow: hidden;
+      transition: margin-left 0.3s ease;
     }
 
     .content.expanded {
       margin-left: -220px;
-      padding-left: 32px;
+      padding-left: 33px;
     }
 
-    .content h1 {
-      margin-top: 0;
-    }
-
-    /* 1つのボックス内に画面タイトル・検索条件・一覧を表示 */
-    .content-box {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      /* background: var(--color-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      padding: 24px; */
-      overflow: hidden;
-    }
-    
-    /* content-box内のpage-titleはdashboardのview-layout-titleと同じ見た目に合わせる */
-    .content-box .page-title {
+    .page-title {
       font-size: 18px;
       font-weight: 700;
       color: var(--color-primary);
-      margin: 0 0 8px;
+      margin: 0 0 16px;
       padding-bottom: 8px;
       border-bottom: 2px solid var(--color-primary);
       flex-shrink: 0;
     }
 
-    .content-box .search-box {
-      flex-shrink: 0;
-    }
-
-    .search-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .screen-body {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
       width: 100%;
-      padding: 10px 16px;
-      font-family: inherit;
-      font-weight: 500;
-      color: var(--color-text);
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      text-align: left;
+      display: grid;
+      /* PC: 仕様書一覧 20% / 締切パネル 65% / 履歴 15% */
+      grid-template-columns: minmax(0, 20fr) minmax(0, 65fr) minmax(0, 15fr);
+      gap: 16px;
+      padding-right: 20px;
       box-sizing: border-box;
     }
 
-    /* ボックス内のpc-onlyとsp-onlyは崩さない（sp-onlyはPCでは非表示のためdisplayは触らない） */
-    .content-box .pc-only {
+    .search-condition-panel {
+      margin: 0 20px 12px 0;
+      flex-shrink: 0;
+    }
+
+    .search-condition-body {
+      padding: 12px 14px;
+    }
+
+    .search-condition-panel .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+    }
+
+    .search-toggle-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      min-width: 28px;
+      height: 24px;
+      line-height: 1;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .search-toggle-btn:hover {
+      background: #edf8f0;
+    }
+
+    .search-condition-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px 12px;
+      align-items: start;
+    }
+
+    .search-condition-clear-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* クリアのみ右列へ。デザイナーはグリッド自動配置のまま（品名の右隣のセル） */
+    .search-condition-panel .search-condition-grid > .field--designer-only {
+      min-width: 0;
+    }
+
+    .search-condition-panel .search-condition-grid > .search-condition-clear-cell {
+      justify-self: end;
+      align-self: start;
+      margin-top: calc(12px * 1.25 + 2px);
+      min-width: 0;
+    }
+
+    /* 到着日＋クリア：スマホは縦並び。768px以上は1行で下揃え（入力行と同じ高さ付近にクリア） */
+    .search-condition-arrival-clear-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      grid-column: 1 / -1;
+    }
+
+    @media (min-width: 768px) {
+      .search-condition-arrival-clear-row {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .search-condition-arrival-clear-row .field--arrival-date {
+        flex: 0 1 min(33.333%, 420px);
+        min-width: 0;
+      }
+
+      .search-condition-arrival-clear-row .search-condition-clear-row {
+        flex-shrink: 0;
+      }
+    }
+
+    .search-type-toggle {
+      display: inline-flex;
+      gap: 0;
+      background: transparent;
+      isolation: isolate;
+      flex-shrink: 0;
+    }
+
+    .search-type-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: 0;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      line-height: 1.2;
+      width: auto;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .search-type-btn:first-child {
+      border-radius: 999px 0 0 999px;
+    }
+
+    .search-type-btn:last-child {
+      border-radius: 0 999px 999px 0;
+    }
+
+    .search-type-btn.is-active {
+      position: relative;
+      z-index: 1;
+      background: #edf8f0;
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* 展示会移動：サイクルは隙間を空けて個別の角丸にし、z-index で隣と重ならないようにする */
+    .cycle-toggle {
+      gap: 6px;
+      flex-wrap: nowrap;
+      min-width: 0;
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      justify-content: flex-start;
+    }
+
+    .cycle-toggle .search-type-btn,
+    .cycle-toggle .search-type-btn:first-child,
+    .cycle-toggle .search-type-btn:last-child {
+      border-radius: 999px;
+    }
+
+    .cycle-toggle .search-type-btn.is-active {
+      z-index: 0;
+    }
+
+    /* 仕様書一覧・展示会移動：ヘッダー帯の高さを子ボタンに引き伸ばされないように固定 */
+    .panel-header.spec-list-panel-header,
+    .deadline-panel > .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+      box-sizing: border-box;
+      height: 46px;
+      min-height: 46px;
+      max-height: 46px;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+
+    .panel-header.spec-list-panel-header {
+      justify-content: space-between;
+    }
+
+    .deadline-panel > .panel-header {
+      justify-content: flex-start;
+    }
+
+    .panel-header.spec-list-panel-header .spec-list-panel-title,
+    .deadline-panel > .panel-header > span {
+      min-width: 0;
+      line-height: 1.25;
+    }
+
+    .panel-header.spec-list-panel-header .btn-fab-new,
+    .deadline-panel > .panel-header .search-type-toggle {
+      flex-shrink: 0;
+    }
+
+    /* 検索条件：ドロップダウンが .panel の overflow や下段グリッドに隠れないようにする */
+    .panel.search-condition-panel {
+      position: relative;
+      z-index: 30;
+      overflow: visible;
+    }
+
+    .search-condition-panel .search-condition-body {
+      overflow: visible;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-md);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #dfe7e1;
+      background: #f6faf7;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f3e2e;
+      flex-shrink: 0;
+    }
+
+    .panel-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .deadline-panel,
+    .summary-panel {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .deadline-panel .panel-body,
+    .summary-panel .panel-body {
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* deadline-panel：エリア1・エリア2を横並び */
+    .deadline-panel .panel-body.deadline-panel-body {
+      display: grid;
+      grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      gap: 10px;
+      align-content: stretch;
+      overflow: hidden;
+    }
+
+    .deadline-panel-body .deadline-area {
+      box-sizing: border-box;
+      min-width: 0;
+      min-height: 0;
+      border: 1px dashed #b9cbbf;
+      border-radius: var(--radius-sm);
+      background: #fcfefc;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #66786f;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .deadline-panel-body .deadline-area-1,
+    .deadline-panel-body .deadline-area-2 {
+      border-style: solid;
+      border-color: #d7e0d9;
+    }
+
+    .deadline-panel-body .deadline-area-1 {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 6px;
+    }
+
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-1,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-2 {
+      display: none !important;
+    }
+
+    .deadline-panel-body .deadline-area-2 {
+      min-height: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: stretch;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      padding: 6px;
+    }
+
+    /* content-area-2 相当（hinshitsukensagokakushotoroku.html）: 商品プレビュー＋アップロード */
+    .deadline-panel-body .deadline-area-2 .product-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border: 1px solid var(--color-border, #d7e0d9);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin: 0;
+      box-sizing: border-box;
+      background: #fff;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-image-wrapper {
+      flex: 1 1 0;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px dashed var(--color-border, #c7d4cb);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      background-color: #fafafa;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-image-wrapper.dragover,
+    .deadline-panel-body .deadline-area-2 .product-card.dragover .product-image-wrapper {
+      border-color: var(--color-primary);
+      background-color: #f0f8ff;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-card.dragover {
+      outline: 2px dashed var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-card img.product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-pdf-canvas-wrap {
+      display: none;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      align-items: center;
+      justify-content: center;
+      background: #e8e8e8;
+      box-sizing: border-box;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-image-wrapper.is-pdf .product-pdf-canvas-wrap {
+      display: flex;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-image-wrapper.is-pdf img.product-image {
+      display: none;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-pdf-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-pdf-fallback {
+      display: none;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #173425;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-image-wrapper.is-pdf-fallback .product-pdf-fallback {
+      display: block;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-image-wrapper.is-pdf-fallback .product-pdf-canvas-wrap {
+      display: none;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-pdf-fallback a {
+      color: var(--color-primary, #008632);
+      word-break: break-all;
+    }
+
+    .deadline-area-2-pagination-nav {
+      margin-right: auto;
+      flex-shrink: 0;
+      min-width: 0;
+    }
+
+    .deadline-pagination {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .deadline-pagination-item {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .deadline-pagination-item + .deadline-pagination-item {
+      margin-left: -1px;
+    }
+
+    .deadline-pagination-link {
+      position: relative;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 25px;
+      min-height: 25px;
+      height: 25px;
+      padding: 0 6px;
+      font-size: 12px;
+      line-height: 1.2;
+      font-family: inherit;
+      text-align: center;
+      color: var(--color-primary, #008632);
+      background: #fff;
+      border: 1px solid #dee2e6;
+      cursor: pointer;
+      transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+      border-radius: 0;
+    }
+
+    .deadline-pagination-link.deadline-pagination-link--icon {
+      flex: 0 0 auto;
+      padding: 0 4px;
+      min-width: 25px;
+    }
+
+    .deadline-pagination-link.deadline-pagination-link--icon svg {
+      display: block;
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+
+    .deadline-pagination-link:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      color: rgba(32, 67, 49, 0.55);
+      background: #f8faf9;
+    }
+
+    .deadline-pagination-item:first-child .deadline-pagination-link {
+      border-top-left-radius: var(--radius-sm, 0.375rem);
+      border-bottom-left-radius: var(--radius-sm, 0.375rem);
+    }
+
+    .deadline-pagination-item:last-child .deadline-pagination-link {
+      border-top-right-radius: var(--radius-sm, 0.375rem);
+      border-bottom-right-radius: var(--radius-sm, 0.375rem);
+    }
+
+    .deadline-pagination-item.is-active .deadline-pagination-link {
+      z-index: 2;
+      color: var(--color-primary, #008632);
+      background-color: #edf8f0;
+      border-color: var(--color-primary, #008632);
+    }
+
+    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):hover {
+      color: var(--color-primary-dark, #006b28);
+      background: #edf8f0;
+      border-color: var(--color-primary, #008632);
+    }
+
+    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):focus-visible {
+      z-index: 3;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.2);
+    }
+
+    .image-preview-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .image-preview-modal[hidden] {
+      display: none;
+    }
+
+    .image-preview-modal__dialog {
+      position: relative;
+      max-width: min(96vw, 1400px);
+      max-height: 92vh;
+      width: auto;
+    }
+
+    .image-preview-modal__image {
+      display: block;
+      max-width: 100%;
+      max-height: 92vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .summary-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .summary-panel .summary-table-wrap {
+      width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+    }
+
+    .summary-panel table.summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-weight: 600;
+      color: #204331;
+      background: #fff;
+    }
+
+    .summary-panel table.summary-table th,
+    .summary-panel table.summary-table td {
+      padding: 8px 10px;
+      border: 1px solid #d7e0d9;
+      vertical-align: middle;
+      box-sizing: border-box;
+    }
+
+    .summary-panel table.summary-table thead th {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .summary-panel table.summary-table tbody th {
+      width: 48%;
+      text-align: left;
+      font-weight: 600;
+      background: #f6faf7;
+      font-size: 12px;
+    }
+
+    .summary-panel table.summary-table tbody td {
+      text-align: right;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .summary-panel table.summary-table tbody tr:nth-child(even) td,
+    .summary-panel table.summary-table tbody tr:nth-child(even) th {
+      background: #fbfcfb;
+    }
+
+    #specHistoryCommentMount {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .spec-select {
+      display: none;
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #204331;
+    }
+
+    .spec-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 0;
+    }
+
+    .spec-panel .spec-list {
       flex: 1;
       min-height: 0;
+      overflow-y: auto;
+    }
+
+    .spec-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .spec-item {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .spec-item.is-active {
+      border-color: var(--color-primary);
+      background: #edf8f0;
+    }
+
+    .spec-list > .spec-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    /* 柄共通の親／子で同一のボーダー・左アクセント（丸角は .spec-item 既定値） */
+    .spec-item.spec-item-kara-parent,
+    .spec-item.spec-item-kara-child {
+      margin: 0;
+      padding-left: 13px;
+      border: 1px solid rgba(215, 224, 217, 0.95);
+      border-left-width: 3px;
+      border-left-color: rgba(0, 134, 50, 0.42);
+      box-shadow:
+        inset 10px 0 14px rgba(0, 134, 50, 0.04),
+        0 1px 6px rgba(23, 52, 37, 0.04);
+      transition:
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+    }
+
+    .spec-item.spec-item-kara-parent:hover,
+    .spec-item.spec-item-kara-child:hover {
+      border-left-color: rgba(0, 134, 50, 0.58);
+      box-shadow:
+        inset 11px 0 18px rgba(0, 134, 50, 0.05),
+        0 4px 16px rgba(23, 52, 37, 0.08);
+    }
+
+    .spec-item.spec-item-kara-parent.is-active,
+    .spec-item.spec-item-kara-child.is-active {
+      border-color: var(--color-primary);
+      border-left-width: 3px;
+      border-left-color: var(--color-primary);
+      box-shadow:
+        inset 12px 0 20px rgba(0, 134, 50, 0.06),
+        0 2px 12px rgba(0, 134, 50, 0.12);
+    }
+
+    .spec-sublist {
+      margin: 0;
+      padding: 0;
+      padding-left: 10px;
+      margin-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* 柄共通グループ内・子リストの外にある通常の仕様書行 */
+    .spec-group-after {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .spec-group-after .spec-item {
+      margin: 0;
+    }
+
+    .spec-list-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spec-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .spec-row.spec-zuan-row {
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 10px;
+    }
+
+    .spec-zuan-thumb {
+      flex-shrink: 0;
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      background: #fcfefc;
+      box-sizing: border-box;
+    }
+
+    .spec-zuan-row .spec-line-val.spec-zuan {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .spec-line-val {
+      font-size: 13px;
+      color: #173425;
+      word-break: break-word;
+      line-height: 1.45;
+    }
+
+    .spec-line-val.spec-status {
+      font-size: 14px;
+      font-weight: 600;
+      color: #173425;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: #446354;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      padding: 8px 9px;
+      font-size: 13px;
+      color: #173425;
+      background: #fff;
+      font-family: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field input:hover,
+    .field select:hover,
+    .field textarea:hover {
+      border-color: var(--color-primary);
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .field textarea::placeholder {
+      color: rgba(23, 52, 37, 0.42);
+      opacity: 1;
+    }
+
+    /* 検索条件「到着日」：グリッド列いっぱいに yyyymmdd 入力を広げる */
+    .search-condition-panel .field--arrival-date .period-range-row--from-only {
+      max-width: none;
+      width: 45%;
+    }
+
+    .search-condition-panel .field--arrival-date .period-range-field {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .search-condition-panel .field--arrival-date .period-range-field .period-range-input.period-range-yyyymmdd {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    /* カレンダーボタン廃止：ブラウザ標準の date ピッカー（カレンダーアイコン）を表示 */
+    body.native-period-range-picker .search-condition-panel .field--arrival-date .period-range-field {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    body.native-period-range-picker .search-condition-panel .field--arrival-date .period-range-field .period-range-input.period-range-yyyymmdd {
+      flex: 1 1 auto;
+      min-width: 8ch;
+      max-width: none;
+      width: auto;
+    }
+
+    body.native-period-range-picker .period-range-field .period-range-picker {
+      position: static;
+      width: auto;
+      min-width: 10.5rem;
+      height: auto;
+      min-height: 38px;
+      padding: 6px 8px;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      opacity: 1;
+      pointer-events: auto;
+      white-space: normal;
+      border: 1px solid var(--color-border, #c7d4cb);
+      border-radius: var(--radius-sm);
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 13px;
+      flex-shrink: 0;
+      background: #fff;
+      color: #173425;
+    }
+
+    /* Bootstrap multiselect 風（ドロップダウン＋チェックボックス） */
+    .exhibit-bs-multiselect {
+      position: relative;
+      width: 100%;
+    }
+
+    .exhibit-bs-multiselect-toggle {
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 38px;
+      padding: 6px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 400;
+      color: #173425;
+      line-height: 1.35;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .exhibit-bs-multiselect-toggle:hover {
+      border-color: var(--color-primary);
+    }
+
+    .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-toggle {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .exhibit-bs-multiselect-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .exhibit-bs-multiselect-caret {
+      flex-shrink: 0;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid #446354;
+      margin-top: 2px;
+    }
+
+    .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-caret {
+      border-top: 0;
+      border-bottom: 6px solid #446354;
+      margin-top: 0;
+    }
+
+    .exhibit-bs-multiselect-popover {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 2px);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+      transition: opacity 0.15s ease, max-height 0.2s ease;
+    }
+
+    .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-popover {
+      max-height: 280px;
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .exhibit-bs-multiselect-filter {
+      flex-shrink: 0;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0 0 8px;
+      padding: 8px 10px;
+      border: none;
+      border-bottom: 1px solid #dee8e2;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      font-family: inherit;
+      font-size: 13px;
+      color: #173425;
+      background: #fff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .exhibit-bs-multiselect-filter::placeholder {
+      color: #8a9a92;
+    }
+
+    .exhibit-bs-multiselect-filter:hover {
+      background: #fcfefc;
+    }
+
+    .exhibit-bs-multiselect-filter:focus {
+      outline: none;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px var(--color-primary);
+    }
+
+    .exhibit-bs-multiselect-menu {
+      flex: 1;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      background: #fff;
+      border: none;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      box-shadow: none;
       display: flex;
       flex-direction: column;
     }
 
-    .content-box .sp-only {
+    .exhibit-bs-multiselect-inner {
       flex: 1;
       min-height: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 6px 0;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .content-box .content-section {
-      flex: 1;
-      min-height: 0;
-    }
-
-    .modal-window {
+    .exhibit-bs-multiselect-item.is-filtered-out {
       display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--color-card);
-      padding: 28px;
-      width: 85%;
-      max-width: 900px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--color-border);
-      z-index: 2001;
     }
 
-    #tenjikaiSelect:hover,
-    .dashboard-box select:hover {
-      border-color: var(--color-primary);
-    }
-
-    #tenjikaiSelect:focus,
-    .dashboard-box select:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
-    }
-
-    /* ========== イメージ案：3つとも一括表示 ========== */
-    .view-layout {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-    }
-
-    .view-layout-1-group,
-    .view-layout-3 {
-      width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-    }
-
-    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
-    h1.view-layout-title {
-      margin: 4px 0 8px 12px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
-    .view-layout-1 {
-      padding: 0;
-    }
-
-    .filter-row {
+    .exhibit-bs-multiselect-item {
       display: flex;
-      align-items: center;
-      gap: 16px 12px;
-      margin-bottom: 2px;
-      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 0;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #173425;
+      line-height: 1.35;
+      cursor: pointer;
+      user-select: none;
     }
 
-    .filter-item {
+    .exhibit-bs-multiselect-item:hover {
+      background: #f8f9fa;
+    }
+
+    .exhibit-bs-multiselect-item input[type="checkbox"] {
+      margin-top: 2px;
+      flex-shrink: 0;
+      width: 1em;
+      height: 1em;
+      accent-color: var(--color-primary, #008632);
+      cursor: pointer;
+    }
+
+    .exhibit-bs-multiselect-item .exhibit-bs-multiselect-item-text {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .content-footer {
+      flex-shrink: 0;
+      margin-top: 8px;
+      border-top: 1px solid #cfdad2;
+      min-height: 46px;
+      padding: 6px 10px 6px 20px;
+      box-sizing: border-box;
       display: flex;
+      justify-content: flex-end;
       align-items: center;
-      gap: 4px;
-      flex-wrap: nowrap;
+      gap: 8px;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      z-index: 5;
     }
 
-    .filter-row .filter-label {
-      margin-right: 4px;
-    }
-
-    .filter-row input[type="text"],
-    .filter-row select {
-      padding: 8px 12px;
-      border: 1px solid var(--color-border);
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
       border-radius: var(--radius-sm);
-      min-width: 160px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
     }
 
-    .search-cancel-wrapper {
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* btn-fab-new のコンパクト版（柄共通追加・一時保存など） */
+    .btn-fab-new.btn-kara-kyotsu-add,
+    .btn-fab-new.btn-quality-check,
+    .btn-fab-new.btn-temp-save,
+    .btn-fab-new.btn-ai-data-upload {
+      padding: 3px 6px;
+    }
+
+    /* [hidden] より詳細度の高い .btn-fab-new に負けないよう、帳票別制御時は class で消す */
+    #aiDataUploadBtn.deadline-area2-ai-upload--suppressed {
+      display: none !important;
+    }
+
+    /* AI アップロード非表示リストの帳票でのみ表示。AI アップロード表示帳票では非表示 */
+    #deadlineArea2AddPageBtn.deadline-area2-add-page--suppressed {
+      display: none !important;
+    }
+
+    #deadlineArea2DeletePageBtn.deadline-area2-delete-page--suppressed {
+      display: none !important;
+    }
+
+    #qualityCheckBtn.quality-check--suppressed {
+      display: none !important;
+    }
+
+    .btn-secondary.btn-area2-page-delete {
+      padding: 3px 6px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .btn-kara-kyotsu-add,
+    .btn-temp-save,
+    .btn-ai-data-upload {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .btn-secondary {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* ---------- Responsive（幅の広い順 → 狭い順） ---------- */
+
+    /* 768px–1024px: タブレット（仕様書 30% / 締切 70%、下段は履歴フル幅） */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .spec-select {
+        display: block;
+      }
+
+      .spec-list > .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-list > .spec-group:not(:has(.spec-item.is-active)) {
+        display: none !important;
+      }
+
+      .spec-group .spec-item-kara-parent:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group:has(.spec-item-kara-child.is-active) .spec-item-kara-parent {
+        display: block !important;
+      }
+
+      .spec-group .spec-item-kara-child:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group .spec-group-after .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .content {
+        padding: 12px 10px 0 10px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen-body {
+        flex: none;
+        min-height: auto;
+        grid-template-columns: minmax(0, 30fr) minmax(0, 70fr);
+        grid-template-rows: 500px auto;
+        grid-template-areas:
+          "spec deadline"
+          "progress progress";
+        gap: 12px;
+        padding-right: 0;
+      }
+
+      .search-condition-panel {
+        margin-right: 0;
+      }
+
+      .search-condition-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .spec-panel {
+        grid-area: spec;
+        height: 500px;
+        min-height: 500px;
+        max-height: 500px;
+        overflow: hidden;
+      }
+
+      .spec-panel > .panel-body {
+        min-height: 0;
+        overflow: auto;
+      }
+
+      .deadline-panel {
+        grid-area: deadline;
+        height: 500px;
+        min-height: 500px;
+        max-height: 500px;
+        overflow: hidden;
+      }
+
+      .summary-panel {
+        grid-area: progress;
+        min-height: 0;
+      }
+
+      .deadline-panel .panel-body,
+      .summary-panel .panel-body {
+        overflow: auto;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body {
+        overflow: auto;
+        min-height: 0;
+      }
+
+    }
+
+    /* ≤1024px: タブレット・モバイルでサイクル切替のスクロールバーを非表示 */
+    @media (max-width: 1024px) {
+      .search-type-toggle.cycle-toggle {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .search-type-toggle.cycle-toggle::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    /* ≤767px: モバイル（縦積み・ハンバーガー等） */
+    @media (max-width: 767px) {
+      .header-title {
+        margin: 5px 0 0 35px;
+        font-size: var(--fs-xl);
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        position: fixed;
+        margin: 6px 10px 0 0;
+        cursor: pointer;
+        z-index: 3000;
+      }
+
+      .hamburger img {
+        width: 30px;
+      }
+
+      .content {
+        padding: 20px 20px 0;
+        margin-left: -220px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen-body {
+        flex: none;
+        min-height: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        grid-template-areas: none;
+        gap: 12px;
+        padding-right: 0;
+        padding-bottom: 10px;
+      }
+
+      .search-condition-panel {
+        margin: 0 0 12px;
+      }
+
+      .search-condition-body {
+        padding: 10px 12px;
+      }
+
+      .search-condition-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-condition-panel .search-condition-grid > .search-condition-clear-cell {
+        justify-self: end;
+        margin-top: 8px;
+      }
+
+      /* 日付（type=date） */
+      body.native-period-range-picker .search-condition-panel .field--arrival-date .period-range-field {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      body.native-period-range-picker .search-condition-panel .field--arrival-date .period-range-field .period-range-input.period-range-yyyymmdd {
+        width: 100%;
+        max-width: 100%;
+        text-align: left;
+      }
+
+      body.native-period-range-picker .period-range-field .period-range-picker {
+        width: 92%;
+        max-width: 92%;
+        min-width: 0;
+        align-self: flex-start;
+        text-align: left;
+      }
+
+      body.native-period-range-picker .period-range-field .period-range-picker::-webkit-datetime-edit,
+      body.native-period-range-picker .period-range-field .period-range-picker::-webkit-datetime-edit-fields-wrapper {
+        text-align: left;
+      }
+
+      body.native-period-range-picker .period-range-field .period-range-picker::-webkit-date-and-time-value {
+        text-align: left;
+      }
+
+      .spec-panel,
+      .deadline-panel,
+      .summary-panel {
+        grid-area: unset;
+        width: 100%;
+      }
+
+      .panel {
+        overflow: hidden;
+        min-height: auto;
+        height: auto;
+      }
+
+      .panel > .panel-header {
+        border-top-left-radius: var(--radius-md);
+        border-top-right-radius: var(--radius-md);
+      }
+
+      .panel-header {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .panel-header.spec-list-panel-header,
+      .deadline-panel > .panel-header {
+        height: 44px;
+        min-height: 44px;
+        max-height: 44px;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .panel-body {
+        flex: none;
+        min-height: 0;
+        height: auto;
+        max-height: none;
+        padding: 10px 12px;
+        overflow: visible;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(100px, auto) minmax(260px, auto);
+        gap: 10px;
+        overflow: hidden;
+      }
+
+      .spec-panel .spec-list {
+        flex: none;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      .spec-select {
+        display: block;
+      }
+
+      .spec-list > .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-list > .spec-group:not(:has(.spec-item.is-active)) {
+        display: none !important;
+      }
+
+      .spec-group .spec-item-kara-parent:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group:has(.spec-item-kara-child.is-active) .spec-item-kara-parent {
+        display: block !important;
+      }
+
+      .spec-group .spec-item-kara-child:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group .spec-group-after .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .content-footer {
+        position: static;
+        padding: 6px 8px 4px;
+      }
+    }
+
+    /* ≤430px: 小画面モバイル（余白・締めの調整） */
+    @media (max-width: 430px) {
+      .content {
+        padding: 14px 16px 0;
+      }
+
+      .page-title {
+        margin-bottom: 12px;
+        font-size: 17px;
+      }
+
+      .panel-header {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .panel-header.spec-list-panel-header,
+      .deadline-panel > .panel-header {
+        height: 42px;
+        min-height: 42px;
+        max-height: 42px;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .panel-body {
+        padding: 8px 10px;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body {
+        grid-template-rows: minmax(88px, auto) minmax(240px, auto);
+        gap: 8px;
+      }
+
+      .content-footer {
+        padding: 6px 4px 4px;
+      }
+
+      .content-footer .btn-fab-new {
+        min-width: 60px;
+      }
+    }
+
+    /* ---------- エリア1: 商品を選択 ---------- */
+    .deadline-panel-body .deadline-area-1 .deadline-area-1-product-toolbar {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .btn-sel-product {
+      flex-shrink: 0;
+      align-self: flex-start;
+      min-width: 120px;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-sel-product:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    .deadline-panel-body .deadline-area-1 .deadline-area-1-detail-table-wrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-table tr+tr td {
+      border-top: 1px solid var(--color-border, #d7e0d9);
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-table td {
+      padding: 6px 8px;
+      vertical-align: top;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-delete-cell {
+      width: 32px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-delete-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border, #d7e0d9);
+      background: #fff;
+      color: #173425;
+      cursor: pointer;
+      line-height: 1;
+      font-weight: 700;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-delete-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-table td.detail-image-cell {
+      width: 120px;
+      max-width: 140px;
+      padding: 6px;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #173425;
+      word-break: break-word;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-meta {
+      font-size: 12px;
+      color: #66786f;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-image-wrapper {
+      flex: 1 1 0;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px dashed var(--color-border, #c7d4cb);
+      border-radius: var(--radius-md);
+      cursor: default;
+      background-color: #fafafa;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-image-wrapper.dragover,
+    .deadline-panel-body .deadline-area-1 .detail-row-upload.dragover {
+      border-color: var(--color-primary);
+      background-color: #f0f8ff;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-row-upload.dragover {
+      outline: 2px dashed var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .deadline-panel-body .deadline-area-1 img.product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      max-height: 100px;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-pdf-canvas-wrap {
+      display: none;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      align-items: center;
+      justify-content: center;
+      background: #e8e8e8;
+      box-sizing: border-box;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-image-wrapper.is-pdf .product-pdf-canvas-wrap {
+      display: flex;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-image-wrapper.is-pdf img.product-image {
+      display: none;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-pdf-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-pdf-fallback {
+      display: none;
+      padding: 8px;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-image-wrapper.is-pdf-fallback .product-pdf-fallback {
+      display: block;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-image-wrapper.is-pdf-fallback .product-pdf-canvas-wrap {
+      display: none;
+    }
+
+    .deadline-panel-body .deadline-area-1 .product-pdf-fallback a {
+      color: var(--color-primary, #008632);
+      word-break: break-all;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-row-upload {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--color-border, #d7e0d9);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-row-upload .product-image-wrapper {
+      flex: none;
+      height: 88px;
+      min-height: 72px;
+    }
+
+    .deadline-panel-body .deadline-area-1 .detail-row-upload .product-pdf-fallback p {
+      margin: 0 0 4px;
+    }
+
+    #productSelectModalDialog .modal-result-table img {
+      max-width: 48px;
+      max-height: 48px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
       margin-left: auto;
+      margin-right: auto;
+    }
+
+    #productSelectModalDialog .modal-result-table td:has(> img) {
+      width: 56px;
+      max-width: 64px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 4px;
+    }
+
+    .modal-product-image-lightbox {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 12px;
+    }
+
+    .modal-product-image-lightbox.is-open {
+      display: flex;
+    }
+
+    .modal-product-image-lightbox__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      cursor: pointer;
+    }
+
+    .modal-product-image-lightbox__close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 22;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--color-text, #1a1a1a);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-product-image-lightbox__close:hover {
+      background: #fff;
+    }
+
+    .modal-product-image-lightbox__frame {
+      position: relative;
+      z-index: 21;
+      max-width: 100%;
+      max-height: 100%;
       display: flex;
       align-items: center;
+      justify-content: center;
+      pointer-events: none;
     }
 
-    .btn-search-cancel {
+    .modal-product-image-lightbox__img {
+      max-width: min(92vw, 900px);
+      max-height: min(78vh, 720px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: var(--radius-sm, 6px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      background: #fff;
+    }
+
+    #searchConditionClearBtn {
       display: inline-block;
       padding: 6px 14px;
       font-size: var(--fs-xs);
@@ -432,1027 +1828,564 @@
       box-shadow: none;
     }
 
-    .btn-search-cancel:hover {
-      background: var(--color-clearbutton-background-hover);
+    #searchConditionClearBtn:hover {
+      background:var(--color-clearbutton-background-hover);
       color: var(--color-text);
       border: 1px solid var(--color-clearbutton-border);
       transform: none;
       box-shadow: none;
     }
 
-    /* 承認通知／検索結果・ボックス共通 */
-    /* .content-box {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    } */
-
-    /* 検索条件と検索結果一覧の間の余白（5px） */
-    .view-layout-1-group>.content-box:first-of-type {
-      margin-bottom: 5px;
-    }
-
-    .content-box h3 {
-      margin: 0 0 12px;
-      border-bottom: 2px solid var(--color-primary);
-      padding-bottom: 8px;
-    }
-
-    /* 検索結果一覧テーブル（スクロール対応） */
-    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
-    #approvalListArea {
-      width: 100%;
-      max-height: 70vh;
-      /* overflow-x: auto;
-      overflow-y: auto; */
-      overflow-y:hidden
-    }
-
-    .result-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      table-layout: fixed;
-    }
-
-    .result-table th,
-    .result-table td {
-      padding: 8px 10px;
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-      border-left: none;
-      border-right: none;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .result-table th {
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      font-weight: 600;
-      border-top: none;
-    }
-
-    .result-table tr:nth-child(even) {
-      background: var(--color-surface);
-    }
-
-    .result-table tr:hover {
-      background: rgba(0, 134, 50, 0.06);
-    }
-
-    /* 図案管理番号リンク */
-    .result-table a {
-      color: #0066cc;
-      font-weight: 600;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .result-table a:hover {
-      opacity: 0.9;
-    }
-
-    /* 画面右下固定 新規登録ボタン（承認通知の詳細ボタンと同じ見た目） */
-    .btn-fab-new {
-      display: inline-block;
-      text-decoration: none;
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 2001;
-      min-width: 140px;
-      padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .btn-fab-new:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-    }
-
-    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
-    .view-layout-2 {
-      padding: 0;
-    }
-
-    .view-layout-2 .status-buttons {
-      margin-bottom: 20px;
-    }
-
-    .view-layout-2 .list-section-title {
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    /* 提出図案一覧（画像20個を折り返し表示） */
-    .zuan-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 12px;
-      padding: 8px 0 0;
-    }
-
-    .zuan-grid-item {
-      display: block;
-      background: var(--color-card);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border);
-      padding: 4px;
-      box-shadow: var(--shadow-sm);
-      text-align: center;
-      cursor: pointer;
-      transition: box-shadow 0.2s ease, transform 0.1s ease;
-    }
-
-    .zuan-grid-item:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-1px);
-    }
-
-    .zuan-grid-item img {
-      width: 100%;
-      height: 100px;
-      object-fit: cover;
-      border-radius: calc(var(--radius-sm) - 2px);
-      display: block;
-    }
-
-    /* #region レスポンシブ対応 */
-    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
-    @media (min-width: 769px) {
-      .search-toggle-sp {
-        display: none;
+    @media (max-width: 768px) {
+      .modal-product-select-page .filter-row .filter-item {
+        display: grid;
+        grid-template-columns: minmax(8.75rem, 10rem) minmax(0, 1fr);
+        align-items: center;
+        column-gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
       }
 
-      /* 検索条件は固定、図案サムネ一覧だけが残り高さでスクロール */
-      .view-layout.view-layout-1-group {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        min-height: 0;
+      .modal-product-select-page .filter-row .filter-item .filter-label,
+      .modal-product-select-page .filter-row .filter-item label {
+        margin: 0;
+        min-width: 0;
+        max-width: 100%;
+        padding-right: 2px;
+        white-space: normal;
+        word-break: keep-all;
+        line-height: 1.35;
+        align-self: center;
       }
 
-      .view-layout.view-layout-1-group > .content-area:first-of-type {
-        flex-shrink: 0;
+      .modal-product-select-page .filter-row .filter-item select,
+      .modal-product-select-page .filter-row .filter-item input[type="text"] {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        justify-self: stretch;
       }
 
-      #approvalNoticeArea {
-        flex: 1;
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-
-      #approvalNoticeArea .view-layout-2 {
-        flex: 1;
-        min-height: 0;
-        overflow-x: hidden;
-        overflow-y: auto;
+      .modal-product-select-page .modal-result-table-wrap {
+        overflow-x: auto;
+        overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
       }
-    }
 
-    /* 画面の幅が650px以下ならスマホ*/
-    @media (max-width: 768px) {
-      .pc-only {
-        display: none;
+      .modal-product-select-page .modal-result-table {
+        width: max-content;
+        min-width: 100%;
+        table-layout: auto;
       }
 
-      .content-box .pc-only {
-        display: none;
-      }
-
-      .sp-only {
-        display: block;
-      }
-
-      .content-box .sp-only {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .header-title {
-        margin: 5px 0px 0px 35px;
-        font-size: var(--fs-xl);
-      }
-
-      .header-user {
-        display: none;
-      }
-
-      /* ハンバーガーボタン */
-      .hamburger {
-        display: block;
-        position: fixed;
-        margin: 6px 10px 0px 0px;
-        cursor: pointer;
-        z-index: 3000;
-      }
-
-      .hamburger img {
-        width: 30px;
-      }
-
-      /* スマホではサイドバー列をフレックス幅に含めない（PCでサイドバー開閉後に幅を縮めても本文が右にずれない） */
-      .main-wrapper {
-        position: relative;
-      }
-
-      #sidebarMount {
-        flex: 0 0 0;
-        width: 0;
-        min-width: 0;
-        overflow: visible;
-      }
-
-      /* 共通 style.css 非変更: マウント幅0でもドロワー幅220pxとメニューラベルを維持 */
-      #sidebarMount > .sidebar {
-        min-width: 220px;
-        width: 220px;
-        flex-shrink: 0;
-      }
-
-      #sidebarMount .menu-title {
-        min-width: 0;
-      }
-
-      #sidebarMount .menu-title > span {
+      .modal-product-select-page .modal-result-table th,
+      .modal-product-select-page .modal-result-table td {
         white-space: nowrap;
       }
-
-      .content,
-      .content.expanded {
-        background: var(--color-surface);
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        min-height: 0;
-        margin-left: 0;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        padding: 12px 12px 56px 12px;
-        overflow-y: auto;
-        overflow-x: hidden;
-      }
-
-      .content:not(.expanded) {
-        padding-left: 12px;
-      }
-
-      .content-box {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 8px;
-        flex: none;
-        min-height: 0;
-        overflow-y: auto;
-      }
-
-      /* イメージ案①: スマホ用 */
-      .filter-row {
-        flex-wrap: wrap;
-      }
-
-      .filter-item {
-        flex: 1 1 100%;
-      }
-
-      /* スマホ: 検索条件は折りたたみ式 */
-      .search-toggle-sp {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: 14px 16px;
-        font-family: inherit;
-        font-weight: 500;
-        color: var(--color-text);
-        background: var(--color-card);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        text-align: left;
-        box-sizing: border-box;
-      }
-
-      .search-toggle-sp-label {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .search-toggle-sp-icon {
-        margin-right: 8px;
-        flex-shrink: 0;
-        vertical-align: middle;
-      }
-
-      .search-toggle-sp::after {
-        content: "＋";
-        color: var(--color-text-muted);
-      }
-
-      .search-box {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        padding: 6px;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-      }
-
-      .search-box-inner {
-        display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px 16px;
-        padding: 12px 0px 0px 0px;
-      }
-
-      .search-box.is-open .search-box-inner {
-        display: grid;
-      }
-
-      .search-box.is-open .search-toggle-sp::after {
-        content: "ー";
-      }
-
-      /* 検索条件エリア：参照画面と同じ余白・レイアウト */
-      .view-layout-1-group>.content-box:first-of-type {
-        padding: 8px;
-      }
-
-      .view-layout-1-group>.content-box:first-of-type .view-layout-title {
-        margin: 0 0 12px;
-        padding: 0 0 8px;
-      }
-
-      .search-box-inner .filter-row {
-        display: contents;
-      }
-
-      .search-box-inner .filter-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-        min-width: 0;
-      }
-
-      .search-box-inner .filter-item .filter-label {
-        margin-right: 0;
-      }
-
-      .search-box-inner .filter-item select,
-      .search-box-inner .filter-item input[type="text"] {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      .search-cancel-wrapper {
-        grid-column: 1 / -1;
-        justify-content: flex-end;
-        margin-left: 0;
-      }
-
-      /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
-      #approvalListArea {
-        overflow-x: visible;
-        max-height: none;
-      }
-
-      #approvalListArea .result-table {
-        min-width: 0;
-      }
-
-      #approvalListArea .result-table thead {
-        display: none;
-      }
-
-      #approvalListArea .result-table tbody tr {
-        display: block;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        padding: 12px 14px;
-        margin-bottom: 12px;
-        background: var(--color-card);
-      }
-
-      #approvalListArea .result-table tbody tr::before {
-
-        display: block;
-        color: var(--color-primary);
-        padding-bottom: 8px;
-        margin-bottom: 8px;
-        border-bottom: 1px solid var(--color-border);
-      }
-
-      #approvalListArea .result-table tbody td {
-        display: block;
-        border: none;
-        padding: 4px 0;
-        white-space: normal;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(1)::before {
-        content: "図案管理番号：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "販売区分：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "展示会：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "カテゴリー：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(5)::before {
-        content: "名称：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "アイテム数：";
-        font-weight: 600;
-      }
-
-      /* 2段目は販売区分・展示会・商品分類を横並びで表示 */
-      #approvalListArea .result-table tbody td:nth-child(2),
-      #approvalListArea .result-table tbody td:nth-child(3),
-      #approvalListArea .result-table tbody td:nth-child(4) {
-        display: inline-block;
-        width: auto;
-        margin-right: 12px;
-      }
-
-      /* イメージ案②: スマホ用 */
-      .view-layout-2 .status-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      /* ガントチャート */
-      .timeline-wrapper {
-        width: 100%;
-        max-width: 400px;
-      }
-
-      .timeline-line {
-        left: 20px;
-        right: 20px;
-      }
-    
     }
-
-
-
   </style>
 </head>
 
-<body>
-
+<body class="native-period-range-picker">
   <div class="overlay" onclick="closeSidebar()"></div>
 
-  <!--#region ヘッダー  -->
   <div class="header">
     <div class="hamburger" onclick="toggleSidebar()">
-      <img src="images/menu_50dp_008632.svg" />
+      <img src="images/menu_50dp_008632.svg" alt="menu">
     </div>
     <div class="header-title"><a href="dashboard.html">Proma</a></div>
     <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
     <div class="account-wrapper">
-      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg" alt="account">
       <div class="account-menu">
         <div class="menu-item">ログアウト</div>
       </div>
     </div>
   </div>
-  <!-- #endregion -->
 
-  <!-- ヘッダー下のレイアウト -->
   <div class="main-wrapper">
-
-    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
     <div id="sidebarMount"></div>
-    <!-- #endregion -->
 
-    <!--#region メインコンテンツ  -->
     <div class="content">
-      <div class="content-box">
-        <h2 class="page-title">図案検索</h2>
+      <h2 class="page-title">品質検査合格書登録</h2>
 
-        <!-- ========== 検索条件・検索結果一覧 ========== -->
-        <div class="view-layout view-layout-1-group">
-          <!-- 検索条件ボックス -->
-          <div class="content-area">
-            <div class="search-box" id="searchBox">
-              <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false"
-                aria-controls="searchRowsPanel">
-                <span class="search-toggle-sp-label">
-                  <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
-                  <span class="search-toggle-sp-text">検索条件を開く</span>
-                </span>
-              </button>
-              <div class="search-box-inner" id="searchRowsPanel">
-                <div class="filter-row">
-                  <div class="filter-item">
-                    <span class="filter-label">販売区分</span>
-                    <select id="searchHanbaiKubun">
-                      <option value="">すべて</option>
-                      <option value="teiban">定番</option>
-                      <option value="teibankako">定番加工</option>
-                      <option value="betchu">別注</option>
-                      <option value="oem">OEM</option>
-                    </select>
+      <div class="panel search-condition-panel" aria-label="検索条件">
+        <div class="panel-header">
+          <span>検索条件</span>
+          <button id="searchConditionToggleBtn" class="search-toggle-btn" type="button" aria-expanded="true"
+            aria-controls="searchConditionBody">-</button>
+        </div>
+        <div id="searchConditionBody" class="panel-body search-condition-body">
+          <div class="search-condition-grid">
+            <div class="field">
+              <span class="field-label" id="searchConditionSalesFieldLabel">販売区分</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionSalesMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionSalesToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionSalesPopover"
+                  aria-labelledby="searchConditionSalesFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionSalesToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionSalesPopover" hidden>
+                  <input type="text" id="searchConditionSalesFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="販売区分リストの絞り込み"
+                    aria-controls="searchConditionSalesMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionSalesMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchConditionSalesInner"></div>
                   </div>
-                  <div class="filter-item" id="tenjikaiFilterItem">
-                    <span class="filter-label">展示会</span>
-                    <select id="tenjikaiSelect">
-                      <option value="">すべて</option>
-                      <option value="2026.06">2026.06 展示会</option>
-                      <option value="2026.03">2026.03 展示会</option>
-                      <option value="2026.01">2026.01 展示会</option>
-                    </select>
+                </div>
+                <select id="searchConditionSales" name="searchConditionSales" multiple tabindex="-1"
+                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="searchConditionExhibitFieldLabel">展示会</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionExhibitMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionExhibitToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionExhibitPopover"
+                  aria-labelledby="searchConditionExhibitFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionExhibitToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionExhibitPopover" hidden>
+                  <input type="text" id="searchConditionExhibitFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="展示会リストの絞り込み"
+                    aria-controls="searchConditionExhibitMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionExhibitMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner">
+                      <label class="exhibit-bs-multiselect-item" role="option"
+                        data-ms-search="2026年4月 東京インターナショナルギフトショー 4月 ギフト">
+                        <input type="checkbox" name="searchConditionExhibit" value="4月展">
+                        <span class="exhibit-bs-multiselect-item-text">2026年4月 / 東京インターナショナルギフトショー</span>
+                      </label>
+                      <label class="exhibit-bs-multiselect-item" role="option"
+                        data-ms-search="2026年7月 東京インターナショナルギフトショー 7月 ギフト">
+                        <input type="checkbox" name="searchConditionExhibit" value="7月展">
+                        <span class="exhibit-bs-multiselect-item-text">2026年7月 / 東京インターナショナルギフトショー</span>
+                      </label>
+                      <label class="exhibit-bs-multiselect-item" role="option"
+                        data-ms-search="2026年10月 東京インターナショナルギフトショー 10月 ギフト">
+                        <input type="checkbox" name="searchConditionExhibit" value="10月展">
+                        <span class="exhibit-bs-multiselect-item-text">2026年10月 / 東京インターナショナルギフトショー</span>
+                      </label>
+                      <label class="exhibit-bs-multiselect-item" role="option"
+                        data-ms-search="2027年1月 東京インターナショナルギフトショー 1月 ギフト">
+                        <input type="checkbox" name="searchConditionExhibit" value="1月展">
+                        <span class="exhibit-bs-multiselect-item-text">2027年1月 / 東京インターナショナルギフトショー</span>
+                      </label>
+                    </div>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">カテゴリー</span>
-                    <select id="searchCategory">
-                      <option value="">すべて</option>
-                      <option value="tanpin">単品タオル</option>
-                      <option value="kikaku">企画物タオル</option>
-                    </select>
+                </div>
+                <select id="searchConditionExhibit" name="searchConditionExhibit" multiple tabindex="-1"
+                  aria-label="展示会" aria-hidden="true"
+                  style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)">
+                  <option value="4月展">2026年4月 / 東京インターナショナルギフトショー</option>
+                  <option value="7月展">2026年7月 / 東京インターナショナルギフトショー</option>
+                  <option value="10月展">2026年10月 / 東京インターナショナルギフトショー</option>
+                  <option value="1月展">2027年1月 / 東京インターナショナルギフトショー</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="searchConditionCategoryFieldLabel">カテゴリー</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionCategoryMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionCategoryToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionCategoryPopover"
+                  aria-labelledby="searchConditionCategoryFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionCategoryToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionCategoryPopover" hidden>
+                  <input type="text" id="searchConditionCategoryFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="カテゴリーリストの絞り込み"
+                    aria-controls="searchConditionCategoryMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionCategoryMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchConditionCategoryInner"></div>
                   </div>
-                  <div class="filter-item">
-                    <label class="filter-label">商品コード</label>
-                    <select id="productCodeSelect">
-                      <option value="">選択してください</option>
-                      <option value="1" data-product-name="商品名1">999991</option>
-                      <option value="2" data-product-name="商品名2">999992</option>
-                      <option value="3" data-product-name="商品名3">999993</option>
-                    </select>
+                </div>
+                <select id="searchConditionCategory" name="searchConditionCategory" multiple tabindex="-1"
+                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="searchConditionBrandCharaFieldLabel">ブランド・キャラ</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionBrandCharaMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionBrandCharaToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionBrandCharaPopover"
+                  aria-labelledby="searchConditionBrandCharaFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionBrandCharaToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionBrandCharaPopover" hidden>
+                  <input type="text" id="searchConditionBrandCharaFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="ブランド・キャラリストの絞り込み"
+                    aria-controls="searchConditionBrandCharaMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionBrandCharaMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchConditionBrandCharaInner"></div>
                   </div>
-                  <div class="filter-item">
-                    <label>品名</label>
-                    <input type="text" placeholder="品名を入力">
+                </div>
+                <select id="searchConditionBrandChara" name="searchConditionBrandChara" multiple tabindex="-1"
+                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="searchConditionItemFieldLabel">アイテム</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionItemMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionItemToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionItemPopover"
+                  aria-labelledby="searchConditionItemFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionItemToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionItemPopover" hidden>
+                  <input type="text" id="searchConditionItemFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="アイテムリストの絞り込み"
+                    aria-controls="searchConditionItemMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionItemMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchConditionItemInner"></div>
                   </div>
-                  <div class="filter-item" id="tenjikaiFilterItem">
-                    <span class="filter-label">アイテム</span>
-                    <select id="tenjikaiSelect">
-                      <option value="">すべて</option>
-                      <option>ミニタオル</option>
-                      <option>ウォッシュタオル</option>
-                      <option>フェイスタオル</option>
-                      <option>バスタオル</option>
-                      <option>マフラータオル</option>
-                      <option>お出かけタオル</option>
-                      <option>ビックバスタオル</option>
-                      <option>ループタオル</option>
-                      <option>ポケット2P</option>
-                      <option>ミニタオル３Ｐ</option>
-                      <option>ファスナー付き</option>
-                      <option>ポケット付き</option>
-                      <option>ドレスタオル</option>
-                      <option>タオルバスマット</option>
-                      <option>ヘアーバンド</option>
-                      <option>3色ミニハンカチ</option>
-                      <option>ガーゼハンカチ</option>
-                      <option>タオル枕カバー</option>
-                      <option>手ぬぐい</option>
-                      <option>マキタオル６０</option>
-                      <option>マキタオル８０</option>
-                      <option>マキタオル１００</option>
-                      <option>その他マキタオル</option>
-                      <option>バスローブ</option>
-                      <option>Dビーチタオル</option>
-                      <option>ビーチスティック</option>
-                      <option>フード付きタオル</option>
-                      <option>フード付きポンチョ</option>
-                      <option>タオルケープ</option>
-                      <option>レジャーバスタオル</option>
-                      <option>スポーツタオル</option>
-                      <option>ジュニアバスタオル</option>
-                      <option>お昼寝ケット</option>
-                      <option>タオルケット</option>
-                      <option>ラウンドビーチ</option>
-                      <option>キャップタオル</option>
-                      <option>ビーチバック</option>
-                      <option>ひざ掛け</option>
-                      <option>ハーフ毛布</option>
-                      <option>毛布</option>
-                      <option>敷きパット</option>
-                      <option>ラップ毛布</option>
-                      <option>ジュニア毛布</option>
-                      <option>着る毛布</option>
-                      <option>ケープ</option>
-                      <option>スリーパー</option>
-                      <option>お昼寝セット</option>
-                      <option>ジュニア枕</option>
-                      <option>ラウンド毛布</option>
-                      <option>ネックウォーマー</option>
-                      <option>ポーチ</option>
-                      <option>バック</option>
-                      <option>巾着</option>
-                      <option>口金ポーチ</option>
-                      <option>ランチョンマット</option>
-                      <option>ストール</option>
-                      <option>ハンカチーフ</option>
-                      <option>ランチーフ</option>
-                      <option>キッチンタオル</option>
-                      <option>マルチクロス</option>
-                      <option>キッチンミトン</option>
-                      <option>鍋敷き</option>
-                      <option>お風呂タオル</option>
-                      <option>エプロン</option>
-                      <option>作務衣・甚平・はんてん</option>
-                      <option>ポンチョ</option>
-                      <option>クッションカバー</option>
-                      <option>クッション（綿入り）</option>
-                      <option>スクールクッション</option>
-                      <option>シートクッション</option>
-                      <option>トイレタリー</option>
-                      <option>ペーパーホルダー</option>
-                      <option>バスマット</option>
-                      <option>キッチンマット</option>
-                      <option>ティッシュＢＯＸカバー</option>
-                      <option>ラグマット</option>
-                      <option>マルチカバー</option>
-                      <option>スリッパ</option>
-                      <option>ルームシューズ</option>
-                      <option>掛けカバー</option>
-                      <option>敷きカバー</option>
-                      <option>ピロケース</option>
-                      <option>こたつ</option>
-                      <option>その他ギフト</option>
-                      <option>とじものWT1P</option>
-                      <option>とじものWT2P</option>
-                      <option>とじものWT3P</option>
-                      <option>とじものFT1P</option>
-                      <option>とじものFT2P</option>
-                      <option>とじものBT1P</option>
-                      <option>マーメイドB/K</option>
-                      <option>B/Kinポーチ</option>
-                      <option>玄関マット</option>
-                      <option>マルチケース</option>
-                      <option>ベビー雑貨</option>
-                      <option>ベビー寝装</option>
-                      <option>ベビータオル</option>
-                      <option>ベビーインテリア</option>
-                      <option>キッチン雑貨</option>
-                      <option>その他タオル</option>
-                      <option>その他サマー</option>
-                      <option>その他寝装</option>
-                      <option>その他インテリア</option>
-                      <option>その他雑貨</option>
-                      <option>その他新入学</option>
-                      <option>パックタオル</option>
-                      <option>ぞうきん</option>
-                      <option>カバーリング</option>
-                      <option>ギフト（タオル）</option>
-                      <option>ギフト（寝装）</option>
-                      <option>ギフト（インテリア）</option>
-                      <option>パーソナルギフト</option>
-                      <option>オーナメントギフト</option>
-                      <option>バンダナ・風呂敷</option>
-                      <option>チェアシート</option>
-                      <option>刺繍ブローチ</option>
-                      <option>コースター</option>
-                      <option>ランドリーバッグ</option>
-                      <option>頭巻きタオル</option>
-                      <option>新入学ミニタオル</option>
-                      <option>腹巻き</option>
-                      <option>収納ボックス</option>
-                      <option>マスコットネックピロ</option>
-                      <option>タオルエプロン</option>
-                      <option>カレンダーギフト</option>
-                      <option>ジュニアエコバック</option>
-                      <option>ナップサック</option>
-                      <option>シューズバッグ</option>
-                      <option>レッスンバッグ</option>
-                      <option>ポケットポーチ</option>
-                      <option>レジャーシート</option>
-                      <option>お出かけシート</option>
-                      <option>ピクニックマット</option>
-                      <option>新入学ハンカチーフ</option>
-                      <option>新入学ランチーフ</option>
-                      <option>背当てタオル</option>
-                      <option>湯上げタオル</option>
-                      <option>新入学リュックサック</option>
-                      <option>レジャーバッグ</option>
-                      <option>キャリータオル</option>
-                      <option>スキニータオル</option>
-                      <option>スカジャン</option>
-                      <option>エコバッグ</option>
-                      <option>腰あてクッション</option>
-                      <option>文房具</option>
-                      <option>氷のう</option>
-                      <option>ゴルフ企画</option>
-                      <option>水野商品</option>
-                      <option>スポンジ</option>
-                      <option>トラベル商品</option>
-                      <option>湯たんぽ</option>
-                      <option>タブレットケース</option>
-                      <option>スタジャン</option>
-                      <option>アロハシャツ</option>
-                      <option>Tシャツ</option>
-                      <option>ジージャン</option>
-                      <option>ジャージ</option>
-                      <option>ペットボトルカバー</option>
-                      <option>ネームタグ</option>
-                      <option>エアタグ</option>
-                      <option>靴下</option>
-                      <option>ペット商品</option>
-                      <option>カー用品</option>
-                      <option>その他</option>
-                    </select>
+                </div>
+                <select id="searchConditionItem" name="searchConditionItem" multiple tabindex="-1"
+                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+              </div>
+            </div>
+            <label class="field">
+              <span class="field-label">商品コード</span>
+              <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力" aria-label="商品コード"></textarea>
+            </label>
+            <label class="field">
+              <span class="field-label">品名</span>
+              <input id="searchHinmei" type="text" placeholder="品名を入力" aria-label="品名"></input>
+            </label>
+            <div class="field field--designer-only">
+              <span class="field-label" id="searchConditionSampleFieldLabel">デザイナー</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionDesignerMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionDesignerToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionDesignerPopover"
+                  aria-labelledby="searchConditionDesignerFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionDesignerToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionDesignerPopover" hidden>
+                  <input type="text" id="searchConditionDesignerFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="デザイナーリストの絞り込み"
+                    aria-controls="searchConditionDesignerMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionDesignerMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner">
+                      <label class="exhibit-bs-multiselect-item" role="option"
+                        data-ms-search="丸眞太郎">
+                        <input type="checkbox" name="searchConditionDesigner" value="丸眞太郎">
+                        <span class="exhibit-bs-multiselect-item-text">丸眞太郎</span>
+                      </label>
+                      <label class="exhibit-bs-multiselect-item" role="option"
+                        data-ms-search="丸眞花子">
+                        <input type="checkbox" name="searchConditionDesigner" value="丸眞花子">
+                        <span class="exhibit-bs-multiselect-item-text">丸眞花子</span>
+                      </label>
+                      <label class="exhibit-bs-multiselect-item" role="option"
+                        data-ms-search="丸眞桜子">
+                        <input type="checkbox" name="searchConditionDesigner" value="丸眞桜子">
+                        <span class="exhibit-bs-multiselect-item-text">丸眞桜子</span>
+                      </label>
+                    </div>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">ブランド・キャラ</span>
-                    <select id="searchCategory">
-                      <option value="">すべて</option>
-                      <option>ジブリ</option>
-                      <option>ムーミン</option>
-                      <option>ディズニー</option>
-                      <option>マーベル</option>
-                      <option>スターウォーズ</option>
-                      <option>サンリオ</option>
-                      <option>ミッフィー</option>
-                      <option>トーマス</option>
-                      <option>くまのがっこう</option>
-                      <option>オサムグッズ</option>
-                      <option>スタジオ地図</option>
-                      <option>スタジオポノック</option>
-                      <option>ＪＡＬ</option>
-                      <option>Wendy's</option>
-                      <option>いないいないばあ</option>
-                      <option>バービー</option>
-                      <option>ピーターラビット</option>
-                      <option>リサ＆ガスパール</option>
-                      <option>カレルチャペック</option>
-                      <option>リサ・ラーソン</option>
-                      <option>ドラえもん</option>
-                      <option>ベイビーシャーク</option>
-                      <option>クマーバ</option>
-                      <option>ユニバーサル</option>
-                      <option>ペッパピッグ</option>
-                      <option>名探偵コナン</option>
-                      <option>ウォーリーをさがせ</option>
-                      <option>ミニオンズ</option>
-                      <option>オブチアキコ</option>
-                      <option>おさるのジョージ</option>
-                      <option>もふさんど</option>
-                      <option>マイリトルポニー</option>
-                      <option>コウペンちゃん</option>
-                      <option>ポテトヘッド</option>
-                      <option>スイマー</option>
-                      <option>シンプソンズ</option>
-                      <option>エヴァンゲリオン</option>
-                      <option>星のカービィー</option>
-                      <option>バーバパパ</option>
-                      <option>ケアベア</option>
-                      <option>エルマー</option>
-                      <option>HALEIWA</option>
-                      <option>ドラゴンボール</option>
-                      <option>fantti</option>
-                      <option>100日後に死ぬワニ</option>
-                      <option>インゲラ</option>
-                      <option>フィンレイソン</option>
-                      <option>ピンクリボン</option>
-                      <option>アアリッカ</option>
-                      <option>SOUSOU</option>
-                      <option>ベネトン</option>
-                      <option>ちいかわ</option>
-                      <option>オリンピック</option>
-                      <option>ＳＵＮ　ＨＥＡＲＴ</option>
-                      <option>北斎</option>
-                      <option>鳥獣戯画</option>
-                      <option>アノラック</option>
-                      <option>チャンピオン</option>
-                      <option>アドミラル</option>
-                      <option>イーストボーイ</option>
-                      <option>しままる</option>
-                      <option>porukkapattern</option>
-                      <option>piccolino</option>
-                      <option>polku</option>
-                      <option>yup!</option>
-                      <option>キキプリ</option>
-                      <option>ガッツ</option>
-                      <option>今治タオル・ギフト</option>
-                      <option>泉州タオル・ギフト</option>
-                      <option>高級カラータオル</option>
-                      <option>輸入ギフト</option>
-                      <option>平安閣・互助会</option>
-                      <option>一般マキタオル</option>
-                      <option>一般サマー</option>
-                      <option>タオルケット</option>
-                      <option>ポルトガル</option>
-                      <option>トルコ</option>
-                      <option>その他ＥＵ</option>
-                      <option>LINEクリエイターズ</option>
-                      <option>寝装</option>
-                      <option>ぐっこすぱ</option>
-                      <option>インテリア</option>
-                      <option>わんだふるぴーす</option>
-                      <option>雑貨</option>
-                      <option>エコットン</option>
-                      <option>メニーメニー</option>
-                      <option>ベビー</option>
-                      <option>ライセンス終了</option>
-                      <option>輸入タオル別注</option>
-                      <option>国内タオル別注</option>
-                      <option>ＯＬＣ別注</option>
-                      <option>輸入タオル単品</option>
-                      <option>輸入組タオル</option>
-                      <option>輸入寝装・ｲﾝﾃﾘｱ別注</option>
-                      <option>その他キャラクター</option>
-                      <option>過去商品用</option>
-                      <option>資材（箱・雑品）</option>
-                      <option>証紙</option>
-                      <option>その他</option>
-                      <option>テスト</option>
-                      <option>リラックマ</option>
-                      <option>すみっコぐらし</option>
-                      <option>マリオ</option>
-                      <option>スプラトゥーン</option>
-                      <option>どうぶつの森</option>
-                      <option>LINE</option>
-                      <option>BT21</option>
-                      <option>TRUZ</option>
-                      <option>ハリーポッター</option>
-                      <option>トムとジェリー</option>
-                      <option>DC</option>
-                      <option>ルーニー・テューンズ</option>
-                      <option>パワーパフガールズ</option>
-                      <option>その他ワーナー</option>
-                      <option>アンパンマン</option>
-                      <option>鬼滅の刃</option>
-                      <option>呪術廻戦</option>
-                      <option>ワンピース</option>
-                      <option>セーラームーン</option>
-                      <option>ウルトラマン</option>
-                      <option>仮面ライダー</option>
-                      <option>僕のﾋｰﾛｰｱｶﾃﾞﾐｱ</option>
-                      <option>その他バンダイ</option>
-                      <option>ケロッグ</option>
-                      <option>モコモカ</option>
-                      <option>チロルチョコ</option>
-                      <option>珈琲関係</option>
-                      <option>マウントレーニア</option>
-                      <option>プリッとチャンネル</option>
-                      <option>八木春</option>
-                      <option>スパイファミリー</option>
-                      <option>ガーフィールド</option>
-                      <option>ウルポとトゥルポ</option>
-                      <option>水野(売)</option>
-                      <option>WDZY</option>
-                      <option>ねずみのアンディ</option>
-                      <option>umao</option>
-                      <option>アリス</option>
-                      <option>オリオンビール</option>
-                      <option>スパム</option>
-                      <option>助六の日常</option>
-                      <option>可愛い嘘のカワウソ</option>
-                      <option>ネパール</option>
-                      <option>SWEDY</option>
-                      <option>あにまるバス</option>
-                      <option>ﾑｰﾐﾝｱﾆﾒｰｼｮﾝ</option>
-                      <option>みいつけた</option>
-                      <option>星の王子さま</option>
-                      <option>シナぷしゅ</option>
-                      <option>to:alla</option>
-                      <option>ピクミン</option>
-                      <option>その他任天堂</option>
-                      <option>大阪万博</option>
-                      <option>パンダのおさじ</option>
-                      <option>ガチャピン</option>
-                      <option>パンどろぼう</option>
-                      <option>カンボジア</option>
-                      <option>しまじろう</option>
-                      <option>たまごっち</option>
-                      <option>なんでもいきもの</option>
-                      <option>ドナ・ウィルソン</option>
-                      <option>ｻﾝｴｯｸｽﾚｼﾞｪﾝﾄﾞｷｬﾗ</option>
-                      <option>ピンクパンサー</option>
-                      <option>ﾌｼﾞﾃﾚﾋﾞｷｬﾗｸﾀｰ</option>
-                      <option>ソニック</option>
-                      <option>水野(買)</option>
-                    </select>
+                </div>
+                <select id="searchConditionExhibit" name="searchConditionExhibit" multiple tabindex="-1"
+                  aria-label="デザイナー" aria-hidden="true"
+                  style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)">
+                  <option value="丸眞太郎">丸眞太郎</option>
+                  <option value="丸眞花子">丸眞花子</option>
+                  <option value="丸眞桜子">丸眞桜子</option>
+                </select>
+              </div>
+            </div>
+            <div class="search-condition-clear-cell">
+              <button type="button" class="btn-secondary" id="searchConditionClearBtn">クリア</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-body">
+        <section class="panel spec-panel">
+          <div class="panel-header spec-list-panel-header">
+            <span id="listPanelHeader" class="spec-list-panel-title">図案一覧</span>
+          </div>
+          <div class="panel-body">
+            <select id="specListSelect" class="spec-select" aria-label="図案を選択"></select>
+            <ul class="spec-list" id="specList">
+              <li class="spec-item"
+                data-zuan="図案1"
+                data-zuan-img="images/zuan001.png">
+                <div class="spec-list-inner">
+                  <div class="spec-row spec-zuan-row">
+                    <img class="spec-zuan-thumb" src="images/zuan001.png" alt="" decoding="async" loading="lazy">
+                    <span class="spec-line-val spec-zuan"></span>
                   </div>
-                  <div class="filter-item">
-                    <span class="filter-label">デザイナー</span>
-                    <select id="tenjikaiSelect">
-                      <option value="">すべて</option>
-                      <option value="">丸眞太郎</option>
-                      <option value="">丸眞花子</option>
-                      <option value="">丸眞桜子</option>
-                    </select>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-zuan="図案2"
+                data-zuan-img="images/zuan002.png">
+                <div class="spec-list-inner">
+                  <div class="spec-row spec-zuan-row">
+                    <img class="spec-zuan-thumb" src="images/zuan002.png" alt="" decoding="async" loading="lazy">
+                    <span class="spec-line-val spec-zuan"></span>
                   </div>
-                  <div class="search-cancel-wrapper">
-                    <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-zuan="図案3"
+                data-zuan-img="images/zuan003.png">
+                <div class="spec-list-inner">
+                  <div class="spec-row spec-zuan-row">
+                    <img class="spec-zuan-thumb" src="images/zuan003.png" alt="" decoding="async" loading="lazy">
+                    <span class="spec-line-val spec-zuan"></span>
                   </div>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-zuan="図案4"
+                data-zuan-img="images/zuan004.png">
+                <div class="spec-list-inner">
+                  <div class="spec-row spec-zuan-row">
+                    <img class="spec-zuan-thumb" src="images/zuan001.png" alt="" decoding="async" loading="lazy">
+                    <span class="spec-line-val spec-zuan"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-zuan="図案5"
+                data-zuan-img="images/evidence.png">
+                <div class="spec-list-inner">
+                  <div class="spec-row spec-zuan-row">
+                    <img class="spec-zuan-thumb" src="images/zuan005.png" alt="" decoding="async" loading="lazy">
+                    <span class="spec-line-val spec-zuan"></span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="panel deadline-panel">
+          <div class="panel-header">
+            <div class="search-type-toggle cycle-toggle" role="group" aria-label="図案を選択"></div>
+          </div>
+          <div class="panel-body deadline-panel-body">
+            <div class="deadline-area deadline-area-1" aria-label="エリア1" aria-hidden="true">
+              <div class="deadline-area-1-product-toolbar">
+                <button type="button" class="btn-sel-product" id="btnSelProduct">商品を選択</button>
+                <div class="deadline-area-1-detail-table-wrap">
+                  <table class="detail-table" id="detailTableProductList">
+                    <tbody id="detailTableProductListBody"></tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- 検索結果一覧エリア -->
-          <div class="content-area" id="approvalNoticeArea">
-            <div class="view-layout view-layout-2">
-              <!-- 画像一覧（提出図案サムネイル） -->
-              <div class="zuan-grid">
-                <!-- 20個のサンプル画像を折り返し表示 -->
-                <!-- 実際にはサーバー側からループ生成する想定 -->
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案1">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案2">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案3">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案4">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案5">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案6">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案7">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案8">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案9">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案10">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案11">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案12">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案13">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案14">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案15">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案16">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案17">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案18">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan001.png" alt="提出図案19">
-                </a>
-                <a href="hinshitsukensagokakushotoroku.html" class="zuan-grid-item">
-                  <img src="images/zuan002.png" alt="提出図案20">
-                </a>
+            <div class="deadline-area deadline-area-2" aria-label="エリア2" aria-hidden="true">
+              <div class="product-card is-active">
+                <div class="product-image-wrapper">
+                  <img id="mainProductPreviewImage" class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
+                  <div class="product-pdf-canvas-wrap" aria-hidden="true">
+                    <canvas class="product-pdf-canvas"></canvas>
+                  </div>
+                  <div class="product-pdf-fallback">
+                    <p>この環境では埋め込み表示できません。</p>
+                    <p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">PDF / AI を新しいタブで開く</a></p>
+                  </div>
+                </div>
+                <input type="file" id="productImageInput" accept="image/*,application/pdf,.pdf,.ai"
+                  class="product-image-input" style="display: none;">
               </div>
             </div>
           </div>
-          <!-- #endregion -->
+        </section>
+        <section class="panel summary-panel">
+          <div class="panel-header" id="progressPanelSummaryHeader">明細サマリー</div>
+          <div class="panel-body">
+            <div class="summary-table-wrap">
+              <table class="summary-table" id="progressPanelSummaryTable" aria-label="明細サマリー">
+                <tbody>
+                  <tr>
+                    <th scope="row">未登録商品数</th>
+                    <td id="progressPanelSummaryDetailCount">2</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="content-footer">
+        <button type="button" class="btn-fab-new" id="draftSaveBtn">下書き保存</button>
+        <button type="button" class="btn-fab-new" id="tourokuBtn">登録</button>
+      </div>
+    </div>
+  </div>
+  <div class="image-preview-modal" id="imagePreviewModal" role="dialog" aria-modal="true" aria-label="画像プレビュー" hidden>
+    <div class="image-preview-modal__dialog">
+      <img class="image-preview-modal__image" id="imagePreviewModalImage" alt="仕様書プレビュー">
+    </div>
+  </div>
+
+  <!-- 商品選択モーダル -->
+  <div id="productSelectModalOverlay" class="product-select-modal-overlay" aria-hidden="true"></div>
+  <div id="productSelectModalDialog" class="product-select-modal-dialog" role="dialog"
+    aria-labelledby="productSelectModalTitle" aria-modal="true">
+    <div class="product-select-modal-header">
+      <span id="productSelectModalTitle">商品選択</span>
+    </div>
+    <div class="product-select-modal-body">
+      <div class="modal-product-select-page product-select-modal-body-inner">
+        <div class="view-layout view-layout-1">
+          <div class="filter-row">
+            <div class="filter-item">
+              <span class="filter-label">販売区分</span>
+              <select id="modalSearchHanbaiKubun">
+                <option value="" selected disabled>選択してください</option>
+                <option value="teiban">定番</option>
+                <option value="teibankako">定番加工</option>
+                <option value="betchu">別注</option>
+                <option value="oem">OEM</option>
+              </select>
+            </div>
+            <div class="filter-item" id="modalCommonTenjikaiField">
+              <span class="filter-label">展示会</span>
+              <select id="modalSearchTenjikai">
+                <option value="" selected disabled>選択してください</option>
+                <option>2026.06 展示会</option>
+                <option>2026.03 展示会</option>
+                <option>2026.01 展示会</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">カテゴリー</span>
+              <select id="modalSearchCategory">
+                <option value="" selected disabled>選択してください</option>
+                <option>単品タオル</option>
+                <option>企画物タオル</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>品名</label>
+              <input type="text" id="modalSearchHinmei" placeholder="品名を入力">
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">アイテム</span>
+              <select id="modalSearchItem">
+                <option value="" selected disabled>選択してください</option>
+                <option>ミニタオル</option>
+                <option>フェイスタオル</option>
+                <option>バスタオル</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">ブランド・キャラ</span>
+              <select id="modalSearchBrand">
+                <option value="" selected disabled>選択してください</option>
+                <option>ディズニー</option>
+                <option>ジブリ</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">デザイナー</span>
+              <select id="modalSearchDesigner">
+                <option value="" selected disabled>選択してください</option>
+                <option>丸眞太郎</option>
+                <option>丸眞花子</option>
+                <option>丸眞桜子</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-result-table-wrap">
+          <table class="modal-result-table">
+            <thead>
+              <tr>
+                <th class="modal-result-col-check">
+                  <input type="checkbox" id="modalResultSelectAll" class="modal-result-check-all" title="すべて選択"
+                    aria-label="すべて選択">
+                </th>
+                <th>品名</th>
+                <th>販売区分</th>
+                <th>カテゴリー</th>
+                <th>アイテム</th>
+                <th>ブランド・キャラ</th>
+                <th>デザイナー</th>
+                <th>商品画像</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="modal-result-col-check">
+                  <input type="checkbox" class="modal-result-row-check" name="modalResultRow" value="1"
+                    aria-label="行を選択">
+                </td>
+                <td>品名サンプル１</td>
+                <td>定番（2026.01展示会）</td>
+                <td>単品タオル</td>
+                <td>ミニタオル</td>
+                <td>ミッキー</td>
+                <td>丸眞太郎</td>
+                <td><img src="images/zuan001.png" class="modal-result-product-thumb" alt="商品画像サムネイル"></td>
+              </tr>
+              <tr>
+                <td class="modal-result-col-check">
+                  <input type="checkbox" class="modal-result-row-check" name="modalResultRow" value="2"
+                    aria-label="行を選択">
+                </td>
+                <td>品名サンプル２</td>
+                <td>別注</td>
+                <td>単品タオル</td>
+                <td>フェイスタオル</td>
+                <td>ミッキー</td>
+                <td>丸眞太郎</td>
+                <td><img src="images/zuan002.png" class="modal-result-product-thumb" alt="商品画像サムネイル"></td>
+              </tr>
+              <tr>
+                <td class="modal-result-col-check">
+                  <input type="checkbox" class="modal-result-row-check" name="modalResultRow" value="3"
+                    aria-label="行を選択">
+                </td>
+                <td>品名サンプル３</td>
+                <td>OEM</td>
+                <td>単品タオル</td>
+                <td>ウオッシュタオル</td>
+                <td>ミッキー</td>
+                <td>丸眞太郎</td>
+                <td><img src="images/zuan003.png" class="modal-result-product-thumb" alt="商品画像サムネイル"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-
+    <div class="product-select-modal-footer">
+      <div class="product-select-modal-footer-actions">
+        <button type="button" class="product-select-modal-add" id="productSelectModalAdd">追加</button>
+        <button type="button" class="product-select-modal-close" id="productSelectModalClose">閉じる</button>
+      </div>
+    </div>
+    <div id="modalProductImageLightbox" class="modal-product-image-lightbox" aria-hidden="true">
+      <div class="modal-product-image-lightbox__backdrop" role="presentation"></div>
+      <button type="button" class="modal-product-image-lightbox__close" id="modalProductImageLightboxClose"
+        aria-label="拡大表示を閉じる">×</button>
+      <div class="modal-product-image-lightbox__frame">
+        <img id="modalProductImageLightboxImg" class="modal-product-image-lightbox__img" src="" alt="">
+      </div>
+    </div>
   </div>
-  <!-- #endregion -->
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="js/autocomplete.js"></script>
   <script src="js/sidebar.js"></script>
   <script>
     function loadSharedSidebar() {
@@ -1495,12 +2428,7 @@
       if (!sidebar || !overlay) return;
 
       sidebar.classList.toggle('active');
-
-      if (sidebar.classList.contains('active')) {
-        overlay.classList.add('show');
-      } else {
-        overlay.classList.remove('show');
-      }
+      overlay.classList.toggle('show', sidebar.classList.contains('active'));
     }
 
     function closeSidebar() {
@@ -1512,121 +2440,1164 @@
       overlay.classList.remove('show');
     }
 
-    /** 狭い幅では PC 用の collapsed / expanded を外し、本文の margin・padding の食い違いを防ぐ */
-    function syncSidebarLayoutForBreakpoint() {
-      const sidebar = document.querySelector('.sidebar');
-      const content = document.querySelector('.content');
-      const toggle = document.querySelector('.sidebar-toggle');
-      if (!sidebar || !content) return;
-      if (!window.matchMedia('(max-width: 768px)').matches) return;
-      sidebar.classList.remove('closed');
-      content.classList.remove('expanded');
-      const toggleImg = toggle && toggle.querySelector('img');
-      if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
+    function initAccountMenu() {
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+      if (!icon || !menu) return;
+
+      icon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', () => {
+        menu.style.display = 'none';
+      });
+    }
+
+    function getDeadlinePanelCycleToggle() {
+      const panel = document.querySelector('.deadline-panel');
+      return panel ? panel.querySelector('.cycle-toggle') : null;
+    }
+
+    function normalizeDeadlineDocLabel(raw) {
+      return String(raw || '').trim().normalize('NFC');
+    }
+
+    function applyDeadlineArea1Image(item) {
+      /* エリア1は「商品を選択」＋明細のみ。従来の帳票プレビュー画像は使用しない */
+    }
+
+    /** 仕様書No. に応じたサンプル段階タブ（図案のみの行は specNo なし → タブなし） */
+    const SAMPLE_PHASE_TABS_BY_SPEC_NO = {
+      'SP-2026-001': ['1st'],
+      'SP-2026-002': ['1st'],
+      'SP-2026-003': ['1st', '2nd', '最終'],
+      'SP-2026-004': ['1st', '2nd', '最終']
+    };
+    const SAMPLE_PHASE_TABS_DEFAULT = ['1st', '2nd', '最終'];
+
+    function getSamplePhaseTabsForItem(item) {
+      if (!item || !item.dataset) return [];
+      const specNo = String(item.dataset.specNo || '').trim();
+      if (!specNo) return [];
+      if (Object.prototype.hasOwnProperty.call(SAMPLE_PHASE_TABS_BY_SPEC_NO, specNo)) {
+        return SAMPLE_PHASE_TABS_BY_SPEC_NO[specNo].slice();
+      }
+      return SAMPLE_PHASE_TABS_DEFAULT.slice();
+    }
+
+    let deadlineArea2PageCount = 0;
+    let deadlineArea2ActivePage = 1;
+
+    /** Material Symbols(keyboard_double_arrow_*) と chevron（images/material_symbols_*.svg と同一） */
+    const MS_PAGINATION_PATH_FIRST = 'M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z';
+    const MS_PAGINATION_PATH_PREV = 'M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z';
+    const MS_PAGINATION_PATH_NEXT = 'M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z';
+    const MS_PAGINATION_PATH_LAST = 'M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z';
+
+    /** ページ番号ボタンは同時に表示する最大数（先頭・末尾ボタン＋ページネーション矢印とは別） */
+
+    function deadlinePaginationMsIcon(pathD) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 -960 960 960');
+      svg.setAttribute('width', '15');
+      svg.setAttribute('height', '15');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', pathD);
+      p.setAttribute('fill', 'currentColor');
+      svg.appendChild(p);
+      return svg;
+    }
+
+    function renderDeadlineArea2Pagination() {
+      const ul = document.getElementById('deadlineArea2PaginationList');
+      const nav = document.getElementById('deadlineArea2PaginationNav');
+      if (!ul || !nav) return;
+      ul.replaceChildren();
+      if (deadlineArea2PageCount < 1) {
+        nav.hidden = true;
+        return;
+      }
+      nav.hidden = false;
+
+      function appendNavControl(label, pathD, disabled, onActivate) {
+        const li = document.createElement('li');
+        li.className = 'deadline-pagination-item';
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'deadline-pagination-link deadline-pagination-link--icon';
+        b.setAttribute('aria-label', label);
+        b.disabled = !!disabled;
+        b.appendChild(deadlinePaginationMsIcon(pathD));
+        b.addEventListener('click', () => {
+          if (b.disabled) return;
+          onActivate();
+          renderDeadlineArea2Pagination();
+        });
+        li.appendChild(b);
+        ul.appendChild(li);
+      }
+
+      const atFirst = deadlineArea2ActivePage <= 1;
+      const atLast = deadlineArea2ActivePage >= deadlineArea2PageCount;
+
+      appendNavControl('先頭のページへ', MS_PAGINATION_PATH_FIRST, atFirst, () => {
+        deadlineArea2ActivePage = 1;
+      });
+      appendNavControl('前のページへ', MS_PAGINATION_PATH_PREV, atFirst, () => {
+        deadlineArea2ActivePage = Math.max(1, deadlineArea2ActivePage - 1);
+      });
+
+      const total = deadlineArea2PageCount;
+      const maxVis = 5;
+      let rangeStart = 1;
+      let rangeEnd = total;
+      if (total > maxVis) {
+        rangeStart = Math.max(1, Math.min(deadlineArea2ActivePage - 2, total - maxVis + 1));
+        rangeEnd = rangeStart + maxVis - 1;
+      }
+      for (let i = rangeStart; i <= rangeEnd; i++) {
+        const li = document.createElement('li');
+        li.className = 'deadline-pagination-item';
+        if (i === deadlineArea2ActivePage) li.classList.add('is-active');
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'deadline-pagination-link';
+        b.textContent = String(i);
+        b.setAttribute('aria-label', 'ページ ' + i);
+        if (i === deadlineArea2ActivePage) {
+          b.setAttribute('aria-current', 'page');
+        }
+        b.addEventListener('click', () => {
+          deadlineArea2ActivePage = i;
+          renderDeadlineArea2Pagination();
+        });
+        li.appendChild(b);
+        ul.appendChild(li);
+      }
+
+      appendNavControl('次のページへ', MS_PAGINATION_PATH_NEXT, atLast, () => {
+        deadlineArea2ActivePage = Math.min(deadlineArea2PageCount, deadlineArea2ActivePage + 1);
+      });
+      appendNavControl('末尾のページへ', MS_PAGINATION_PATH_LAST, atLast, () => {
+        deadlineArea2ActivePage = deadlineArea2PageCount;
+      });
+    }
+
+    function syncDeadlineArea2Ui() {
+      const nav = document.getElementById('deadlineArea2PaginationNav');
+      const aiBtn = document.getElementById('aiDataUploadBtn');
+      const deleteBtn = document.getElementById('deadlineArea2DeletePageBtn');
+      const addBtn = document.getElementById('deadlineArea2AddPageBtn');
+      const qualityCheckBtn = document.getElementById('qualityCheckBtn');
+      const fileInput = document.getElementById('aiDataUploadInput');
+      if (!nav || !deleteBtn || !addBtn) return;
+
+      if (qualityCheckBtn) {
+        qualityCheckBtn.hidden = true;
+        qualityCheckBtn.classList.add('quality-check--suppressed');
+        qualityCheckBtn.setAttribute('aria-hidden', 'true');
+      }
+
+      function setAddPageBtnVisible(show) {
+        addBtn.hidden = !show;
+        addBtn.classList.toggle('deadline-area2-add-page--suppressed', !show);
+        addBtn.toggleAttribute('aria-hidden', !show);
+      }
+
+      function setDeletePageBtnVisible(show) {
+        const visible = !!show && deadlineArea2PageCount >= 1;
+        deleteBtn.hidden = !visible;
+        deleteBtn.classList.toggle('deadline-area2-delete-page--suppressed', !visible);
+        deleteBtn.toggleAttribute('aria-hidden', !visible);
+        deleteBtn.disabled = !visible;
+      }
+
+      function setAiUploadSuppressed(on) {
+        if (aiBtn) {
+          aiBtn.hidden = !!on;
+          aiBtn.classList.toggle('deadline-area2-ai-upload--suppressed', !!on);
+          aiBtn.toggleAttribute('aria-hidden', !!on);
+        }
+        if (fileInput) {
+          fileInput.hidden = true;
+          fileInput.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      setDeletePageBtnVisible(false);
+      setAddPageBtnVisible(false);
+      nav.hidden = true;
+      deadlineArea2PageCount = 0;
+      deadlineArea2ActivePage = 1;
+      setAiUploadSuppressed(false);
+    }
+
+    function initDeadlineArea2Paging() {
+      const deleteBtn = document.getElementById('deadlineArea2DeletePageBtn');
+      const addBtn = document.getElementById('deadlineArea2AddPageBtn');
+      if (!deleteBtn || !addBtn || addBtn.dataset.bound === '1') return;
+      function refreshDeleteButtonInPagingMode() {
+        const visible = deadlineArea2PageCount >= 1;
+        deleteBtn.hidden = !visible;
+        deleteBtn.classList.toggle('deadline-area2-delete-page--suppressed', !visible);
+        deleteBtn.toggleAttribute('aria-hidden', !visible);
+        deleteBtn.disabled = !visible;
+      }
+      addBtn.dataset.bound = '1';
+      deleteBtn.dataset.bound = '1';
+      addBtn.addEventListener('click', () => {
+        deadlineArea2PageCount += 1;
+        deadlineArea2ActivePage = deadlineArea2PageCount;
+        renderDeadlineArea2Pagination();
+        refreshDeleteButtonInPagingMode();
+      });
+      deleteBtn.addEventListener('click', () => {
+        if (deadlineArea2PageCount <= 0) return;
+        deadlineArea2PageCount -= 1;
+        if (deadlineArea2ActivePage > deadlineArea2PageCount) {
+          deadlineArea2ActivePage = deadlineArea2PageCount > 0 ? deadlineArea2PageCount : 1;
+        }
+        renderDeadlineArea2Pagination();
+        refreshDeleteButtonInPagingMode();
+      });
+    }
+
+    function applyInitialSamplePhaseTabForItem(group, item) {
+      if (!group || !item) return;
+      const buttons = Array.from(group.querySelectorAll('button.search-type-btn'));
+      if (!buttons.length) return;
+      const raw = String(item.dataset.sampleKubun || '').trim();
+      const wantNorm = normalizeDeadlineDocLabel(raw);
+      const tabNorms = buttons.map((b) => normalizeDeadlineDocLabel(b.dataset.docLabel));
+      const idx = tabNorms.indexOf(wantNorm);
+      const useIdx = idx >= 0 ? idx : 0;
+      buttons.forEach((b, i) => {
+        const on = i === useIdx;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+
+    function syncCycleToggleButtons(item) {
+      const group = getDeadlinePanelCycleToggle();
+      if (!group) return;
+      group.replaceChildren();
+      const labels = getSamplePhaseTabsForItem(item);
+      if (!labels.length) {
+        group.setAttribute('aria-label', '図案を選択');
+        applyDeadlineArea1Image(null);
+        syncDeadlineArea2Ui();
+        return;
+      }
+      group.setAttribute('aria-label', 'サンプル区分を選択');
+      labels.forEach((label, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'search-type-btn' + (i === 0 ? ' is-active' : '');
+        btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+        btn.dataset.docLabel = label;
+        btn.textContent = label;
+        group.appendChild(btn);
+      });
+      applyInitialSamplePhaseTabForItem(group, item);
+      applyDeadlineArea1Image(item);
+      syncDeadlineArea2Ui();
+    }
+
+    function initCycleToggle() {
+      const group = getDeadlinePanelCycleToggle();
+      if (!group || group.dataset.cycleToggleBound === '1') return;
+      group.dataset.cycleToggleBound = '1';
+      group.addEventListener('click', (e) => {
+        const btn = e.target.closest('button.search-type-btn');
+        if (!btn || !group.contains(btn)) return;
+        group.querySelectorAll('button.search-type-btn').forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        applyDeadlineArea1Image();
+        syncDeadlineArea2Ui();
+      });
+    }
+
+    function initSpecSearch() {
+      const specList = document.getElementById('specList');
+      const specListSelect = document.getElementById('specListSelect');
+      if (!specList) return;
+      let items = Array.from(specList.querySelectorAll('.spec-item'));
+
+      function specOptionLabel(item) {
+        const zuan = item.dataset.zuan || '';
+        const line = [zuan].filter((part) => String(part || '').trim()).join(' / ');
+        return line || '（未設定）';
+      }
+
+      function rebuildSpecSelectOptions() {
+        if (!specListSelect) return;
+        const active = getActiveItem();
+        specListSelect.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '図案を選択';
+        specListSelect.appendChild(placeholder);
+        items.forEach((item, index) => {
+          const opt = document.createElement('option');
+          opt.value = String(index);
+          opt.textContent = specOptionLabel(item);
+          specListSelect.appendChild(opt);
+        });
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) specListSelect.value = String(idx);
+        else specListSelect.value = '';
+      }
+
+      function syncSpecSelectValue() {
+        if (!specListSelect) return;
+        const expected = items.length + 1;
+        if (specListSelect.options.length !== expected) rebuildSpecSelectOptions();
+        const active = getActiveItem();
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) specListSelect.value = String(idx);
+        else specListSelect.value = '';
+      }
+
+      function getActiveItem() {
+        return items.find((item) => item.classList.contains('is-active')) || null;
+      }
+
+      function syncDeadlinePanelBodyVisibility(hasSpec) {
+        const body = document.querySelector('.deadline-panel .deadline-panel-body');
+        if (!body) return;
+        body.classList.toggle('deadline-panel-body--no-spec', !hasSpec);
+        const areas = [
+          body.querySelector('.deadline-area-1'),
+          body.querySelector('.deadline-area-2')
+        ];
+        areas.forEach((el) => {
+          if (!el) return;
+          if (hasSpec) el.removeAttribute('aria-hidden');
+          else el.setAttribute('aria-hidden', 'true');
+        });
+      }
+
+      function selectItem(item) {
+        items.forEach((candidate) => candidate.classList.remove('is-active'));
+        item.classList.add('is-active');
+        syncDeadlinePanelBodyVisibility(true);
+        syncFormFromItem(item);
+        syncSpecSelectValue();
+      }
+
+      function bindItem(item) {
+        item.addEventListener('click', () => {
+          selectItem(item);
+        });
+      }
+
+      function renderSpecMeta(item) {
+        const zuanEl = item.querySelector('.spec-zuan');
+        if (zuanEl) {
+          const zuan = (item.dataset.zuan || '').trim();
+          zuanEl.textContent = zuan || '—';
+        }
+      }
+
+      function syncFormFromItem(item) {
+        syncCycleToggleButtons(item);
+        const specNo = item ? (item.dataset.specNo || '').trim() : '';
+        const historyMount = document.getElementById('specHistoryCommentMount');
+        if (historyMount) {
+          historyMount.replaceChildren();
+          const historyBySpecNo = {
+            'SP-2026-001': [
+              {
+                label: '2025/06/01 09:00 丸眞 花子',
+                text: 'サンプル申請を差戻しました。'
+              }
+            ],
+            'SP-2026-002': [
+              {
+                label: '2025/06/01 09:00 丸眞 花子',
+                text: '1st サンプル申請を承認しました。'
+              }
+              ],
+            'SP-2026-003': [
+              {
+                label: '2025/06/01 09:00 丸眞 花子',
+                text: '1st サンプル申請を承認しました。'
+              },
+              {
+                label: '2025/06/02 09:00 丸眞 花子',
+                text: '2nd サンプル申請を承認しました。'
+              },
+              {
+                label: '2025/06/03 09:00 丸眞 花子',
+                text: '最終 サンプル申請を差し戻しました。'
+              }
+            ],'SP-2026-004': [
+            {
+                label: '2025/06/01 09:00 丸眞 花子',
+                text: '1st サンプル申請を承認しました。'
+              },
+              {
+                label: '2025/06/02 09:00 丸眞 花子',
+                text: '2nd サンプル申請を承認しました。'
+              },
+              {
+                label: '2025/06/03 09:00 丸眞 花子',
+                text: '最終 サンプル申請を承認しました。'
+              }
+            ]
+          };
+          const histories = historyBySpecNo[specNo];
+          if (histories && histories.length) {
+            histories.forEach((history) => {
+              const wrap = document.createElement('label');
+              wrap.className = 'field';
+              const labelSpan = document.createElement('span');
+              labelSpan.className = 'field-label';
+              labelSpan.textContent = history.label;
+              const ta = document.createElement('textarea');
+              ta.rows = 2;
+              ta.readOnly = true;
+              ta.textContent = history.text;
+              wrap.appendChild(labelSpan);
+              wrap.appendChild(ta);
+              historyMount.appendChild(wrap);
+            });
+            historyMount.hidden = false;
+          } else {
+            historyMount.hidden = true;
+          }
+        }
+      }
+
+      function clearSpecSelection() {
+        items.forEach((candidate) => candidate.classList.remove('is-active'));
+        rebuildSpecSelectOptions();
+        syncDeadlinePanelBodyVisibility(true);
+        syncFormFromItem(null);
+      }
+
+      if (specListSelect) {
+        specListSelect.addEventListener('change', () => {
+          const raw = specListSelect.value;
+          if (raw === '') {
+            clearSpecSelection();
+            return;
+          }
+          const idx = parseInt(raw, 10);
+          if (!Number.isFinite(idx) || !items[idx]) return;
+          selectItem(items[idx]);
+        });
+      }
+
+      items.forEach((item) => {
+        renderSpecMeta(item);
+        bindItem(item);
+      });
+
+      clearSpecSelection();
+    }
+
+    function initSearchConditionClear() {
+      const btn = document.getElementById('searchConditionClearBtn');
+      if (!btn) return;
+
+      btn.addEventListener('click', () => {
+        window.location.reload();
+      });
+    }
+
+    function initSearchConditionToggle() {
+      const toggleButton = document.getElementById('searchConditionToggleBtn');
+      const panelBody = document.getElementById('searchConditionBody');
+      if (!toggleButton || !panelBody) return;
+
+      toggleButton.addEventListener('click', () => {
+        const willExpand = panelBody.hasAttribute('hidden');
+        if (willExpand) {
+          panelBody.removeAttribute('hidden');
+          toggleButton.textContent = '-';
+          toggleButton.setAttribute('aria-expanded', 'true');
+        } else {
+          panelBody.setAttribute('hidden', '');
+          toggleButton.textContent = '+';
+          toggleButton.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    function fillSearchConditionBsMultiselect(innerId, selectId, checkboxName, listKey) {
+      const data = typeof window.AUTOCOMPLETE_LISTS === 'object' && window.AUTOCOMPLETE_LISTS
+        ? window.AUTOCOMPLETE_LISTS
+        : null;
+      const inner = document.getElementById(innerId);
+      const hiddenSelect = document.getElementById(selectId);
+      if (!inner || !hiddenSelect || !data) return;
+      const arr = data[listKey];
+      if (!Array.isArray(arr)) return;
+      inner.innerHTML = '';
+      hiddenSelect.innerHTML = '';
+      arr.forEach((text) => {
+        const t = String(text);
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        hiddenSelect.appendChild(opt);
+        const lab = document.createElement('label');
+        lab.className = 'exhibit-bs-multiselect-item';
+        lab.setAttribute('role', 'option');
+        lab.dataset.msSearch = t.toLowerCase();
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.name = checkboxName;
+        cb.value = t;
+        const span = document.createElement('span');
+        span.className = 'exhibit-bs-multiselect-item-text';
+        span.textContent = t;
+        lab.appendChild(cb);
+        lab.appendChild(span);
+        inner.appendChild(lab);
+      });
+    }
+
+    function initExhibitBsMultiselect(root) {
+      if (!root || root.dataset.msBound === '1') return;
+      const btn = root.querySelector('.exhibit-bs-multiselect-toggle');
+      const popover = root.querySelector('.exhibit-bs-multiselect-popover');
+      const filterInput = root.querySelector('.exhibit-bs-multiselect-filter');
+      const menu = root.querySelector('.exhibit-bs-multiselect-menu');
+      const labelEl = root.querySelector('.exhibit-bs-multiselect-label');
+      const hiddenSelect = root.querySelector('select[multiple]');
+      if (!btn || !popover || !filterInput || !menu || !labelEl || !hiddenSelect) return;
+
+      root.dataset.msBound = '1';
+
+      function getCheckboxes() {
+        return Array.from(root.querySelectorAll('input[type="checkbox"]'));
+      }
+
+      function getOptions() {
+        return Array.from(hiddenSelect.options);
+      }
+
+      function getFilterRows() {
+        return Array.from(menu.querySelectorAll('.exhibit-bs-multiselect-item'));
+      }
+
+      function syncHiddenSelect() {
+        const checkboxes = getCheckboxes();
+        const options = getOptions();
+        checkboxes.forEach((cb) => {
+          const opt = options.find((o) => o.value === cb.value);
+          if (opt) opt.selected = cb.checked;
+        });
+      }
+
+      function refreshButtonLabel() {
+        const checkboxes = getCheckboxes();
+        const checked = checkboxes.filter((cb) => cb.checked);
+        if (checked.length === 0) {
+          labelEl.textContent = 'すべて';
+          return;
+        }
+        if (checked.length === 1) {
+          const t = checked[0].closest('label')?.querySelector('.exhibit-bs-multiselect-item-text');
+          labelEl.textContent = t ? t.textContent.trim() : checked[0].value;
+          return;
+        }
+        labelEl.textContent = checked.length + '件を選択';
+      }
+
+      function applyMsFilter() {
+        const filterRows = getFilterRows();
+        const raw = String(filterInput.value || '').trim().toLowerCase();
+        const tokens = raw.split(/\s+/).filter(Boolean);
+        filterRows.forEach((row) => {
+          const hay = String(row.dataset.msSearch || row.dataset.exhibitSearch || row.textContent || '').toLowerCase();
+          const match = tokens.length === 0 || tokens.every((t) => hay.includes(t));
+          row.classList.toggle('is-filtered-out', !match);
+        });
+      }
+
+      function setOpen(open) {
+        root.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          popover.removeAttribute('hidden');
+          requestAnimationFrame(() => {
+            filterInput.focus();
+          });
+        } else {
+          popover.setAttribute('hidden', '');
+          filterInput.value = '';
+          applyMsFilter();
+        }
+      }
+
+      function toggleOpen() {
+        setOpen(!root.classList.contains('is-open'));
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleOpen();
+      });
+
+      popover.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      filterInput.addEventListener('input', applyMsFilter);
+      filterInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          setOpen(false);
+        }
+      });
+
+      root.addEventListener('change', (e) => {
+        if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
+          syncHiddenSelect();
+          refreshButtonLabel();
+        }
+      });
+
+      document.addEventListener('click', () => {
+        setOpen(false);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && root.classList.contains('is-open')) {
+          setOpen(false);
+        }
+      });
+
+      syncHiddenSelect();
+      refreshButtonLabel();
+      applyMsFilter();
+    }
+
+    function initSearchConditionMultiselectRoots() {
+      const body = document.getElementById('searchConditionBody');
+      if (!body) return;
+      body.querySelectorAll('.exhibit-bs-multiselect').forEach((root) => {
+        initExhibitBsMultiselect(root);
+      });
+    }
+
+    function initSearchConditionSelects() {
+      fillSearchConditionBsMultiselect('searchConditionSalesInner', 'searchConditionSales', 'searchConditionSales', 'hanbaiKubun');
+      fillSearchConditionBsMultiselect('searchConditionCategoryInner', 'searchConditionCategory', 'searchConditionCategory', 'category2');
+      fillSearchConditionBsMultiselect('searchConditionBrandCharaInner', 'searchConditionBrandChara', 'searchConditionBrandChara', 'brandChara');
+      fillSearchConditionBsMultiselect('searchConditionItemInner', 'searchConditionItem', 'searchConditionItem', 'item');
+      fillSearchConditionBsMultiselect('searchConditionDesignerInner', 'searchConditionDesigner', 'searchConditionDesigner', 'tanto');
+    }
+
+    function initPreviewModal() {
+      const previewBtns = document.querySelectorAll('[data-preview-open="1"]');
+      const sourceImg = document.querySelector('.deadline-area-1 .deadline-area-1-img');
+      const modal = document.getElementById('imagePreviewModal');
+      const modalImg = document.getElementById('imagePreviewModalImage');
+      if (!previewBtns.length || !sourceImg || !modal || !modalImg) return;
+
+      function closeModal() {
+        modal.hidden = true;
+        modalImg.removeAttribute('src');
+      }
+
+      previewBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const src = sourceImg.getAttribute('src');
+          if (!src) return;
+          modalImg.src = src;
+          modalImg.alt = sourceImg.alt || '仕様書プレビュー';
+          modal.hidden = false;
+        });
+      });
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.hidden) closeModal();
+      });
     }
 
     loadSharedSidebar();
-    syncSidebarLayoutForBreakpoint();
-    window.matchMedia('(max-width: 768px)').addEventListener('change', syncSidebarLayoutForBreakpoint);
-    
-    const icon = document.querySelector('.header-account_circle');
-    const menu = document.querySelector('.account-menu');
+    initAccountMenu();
+    initSearchConditionSelects();
+    initSearchConditionMultiselectRoots();
+    initSearchConditionToggle();
+    initSearchConditionClear();
+    initCycleToggle();
+    initDeadlineArea2Paging();
+    initSpecSearch();
+    initPreviewModal();
 
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation(); // クリックが外側に伝播しないように
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // 初期表示（承認待ち）※ updateLayout1 が定義されている場合のみ実行
+    // 明細行の画像／PDF アップロード ----------
     (function () {
-      var sel = document.getElementById("tenjikaiSelect");
-      if (!sel || typeof updateLayout1 !== "function") return;
+      if (typeof pdfjsLib !== 'undefined' && pdfjsLib.GlobalWorkerOptions) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
 
-      sel.value = "";
-      updateLayout1("2026.03");
+      function getFilesFromDataTransfer(dt) {
+        if (!dt) return null;
+        if (dt.files && dt.files.length) return dt.files;
+        if (dt.items && dt.items.length) {
+          var arr = [];
+          for (var i = 0; i < dt.items.length; i++) {
+            if (dt.items[i].kind === 'file') {
+              var f = dt.items[i].getAsFile();
+              if (f) arr.push(f);
+            }
+          }
+          if (arr.length) return arr;
+        }
+        return null;
+      }
 
-      sel.addEventListener("change", function () {
-        updateLayout1(this.value);
+      function bindImageUploader(container) {
+        if (!container) return;
+        var wrapper = container.querySelector('.product-image-wrapper');
+        var img = container.querySelector('.product-image');
+        var pdfCanvas = container.querySelector('.product-pdf-canvas');
+        var pdfOpenTab = container.querySelector('.product-pdf-open-tab');
+        var fileInput = container.querySelector('.product-image-input');
+        if (!wrapper || !img || !fileInput) return;
+
+        var isMainRightPanelCard = fileInput.id === 'productImageInput';
+
+        var pdfObjectUrl = null;
+
+        function revokePdfUrl() {
+          if (pdfObjectUrl) {
+            URL.revokeObjectURL(pdfObjectUrl);
+            pdfObjectUrl = null;
+          }
+        }
+
+        function showImagePreview(dataUrl) {
+          revokePdfUrl();
+          wrapper.classList.remove('is-pdf', 'is-pdf-fallback');
+          if (pdfOpenTab) pdfOpenTab.href = '#';
+          img.src = dataUrl;
+        }
+
+        function showPdfFallback(file) {
+          revokePdfUrl();
+          pdfObjectUrl = URL.createObjectURL(file);
+          wrapper.classList.add('is-pdf', 'is-pdf-fallback');
+          if (pdfOpenTab) pdfOpenTab.href = pdfObjectUrl;
+        }
+
+        function showPdfPreview(file) {
+          wrapper.classList.remove('is-pdf-fallback');
+          if (typeof pdfjsLib === 'undefined' || !pdfCanvas) {
+            showPdfFallback(file);
+            return;
+          }
+          revokePdfUrl();
+          pdfObjectUrl = URL.createObjectURL(file);
+          if (pdfOpenTab) pdfOpenTab.href = pdfObjectUrl;
+
+          var reader = new FileReader();
+          reader.onerror = function () { showPdfFallback(file); };
+          reader.onload = function (e) {
+            var arrayBuffer = e.target.result;
+            var loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+            loadingTask.promise.then(function (pdf) { return pdf.getPage(1); })
+              .then(function (page) {
+                var baseViewport = page.getViewport({ scale: 1 });
+                var w = wrapper.clientWidth || 400;
+                var h = wrapper.clientHeight || 300;
+                var scale = Math.min(w / baseViewport.width, h / baseViewport.height, 2);
+                var viewport = page.getViewport({ scale: scale });
+                pdfCanvas.width = viewport.width;
+                pdfCanvas.height = viewport.height;
+                var ctx = pdfCanvas.getContext('2d');
+                return page.render({ canvasContext: ctx, viewport: viewport }).promise;
+              })
+              .then(function () { wrapper.classList.add('is-pdf'); })
+              .catch(function () { showPdfFallback(file); });
+          };
+          reader.readAsArrayBuffer(file);
+        }
+
+        function handleFiles(files) {
+          if (!files || !files.length) return;
+          var file = files[0];
+          var isPdfLike = file.type === 'application/pdf' ||
+            /\.pdf$/i.test(file.name) || /\.ai$/i.test(file.name);
+          var isImage = file.type && file.type.indexOf('image/') === 0;
+          if (isPdfLike) {
+            showPdfPreview(file);
+            return;
+          }
+          if (!isImage) return;
+          var r = new FileReader();
+          r.onload = function (e) { showImagePreview(e.target.result); };
+          r.readAsDataURL(file);
+        }
+
+        wrapper.addEventListener('click', function (e) {
+          if (e.target && e.target.closest && e.target.closest('.product-pdf-open-tab')) {
+            return;
+          }
+          if (!isMainRightPanelCard) {
+            return;
+          }
+          if (wrapper.classList.contains('is-pdf') || wrapper.classList.contains('is-pdf-fallback')) {
+            fileInput.click();
+            return;
+          }
+          fileInput.click();
+        });
+        fileInput.addEventListener('change', function (e) { handleFiles(e.target.files); });
+
+        var dropZone = container.classList.contains('product-card') ? container :
+          (container.classList.contains('detail-row-upload') ? container : wrapper);
+
+        function setDragOver(active) {
+          wrapper.classList.toggle('dragover', active);
+          dropZone.classList.toggle('dragover', active);
+        }
+
+        function isOutsideDropZone(target) {
+          if (!target || !dropZone.contains) return true;
+          return !dropZone.contains(target);
+        }
+
+        dropZone.addEventListener('dragenter', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          setDragOver(true);
+        }, true);
+        dropZone.addEventListener('dragover', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          try { e.dataTransfer.dropEffect = 'copy'; } catch (err) {}
+          setDragOver(true);
+        }, true);
+        dropZone.addEventListener('dragleave', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (isOutsideDropZone(e.relatedTarget)) setDragOver(false);
+        }, true);
+        dropZone.addEventListener('drop', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          setDragOver(false);
+          var fileList = getFilesFromDataTransfer(e.dataTransfer);
+          if (fileList && fileList.length) handleFiles(fileList);
+        }, true);
+        dropZone.addEventListener('dragend', function () { setDragOver(false); }, true);
+
+        if (pdfOpenTab) {
+          pdfOpenTab.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (pdfOpenTab.getAttribute('href') === '#') e.preventDefault();
+          });
+        }
+      }
+
+      document.querySelectorAll('.deadline-area-1 .detail-row-upload').forEach(function (el) {
+        bindImageUploader(el);
+      });
+
+      var mainInput = document.getElementById('productImageInput');
+      if (mainInput) {
+        bindImageUploader(mainInput.closest('.product-card'));
+      }
+
+      window.bindDetailRowImageUploader = function (root) {
+        if (root) {
+          root.querySelectorAll('.detail-row-upload').forEach(bindImageUploader);
+        }
+      };
+    })();
+
+    // メイン商品プレビュー初期表示（content-area-2 相当）
+    (function initMainProductPreviewImage() {
+      var mainImg = document.getElementById('mainProductPreviewImage');
+      var card = document.querySelector('.deadline-area-2 .product-card');
+      if (!mainImg || !card) return;
+      var wrapper = card.querySelector('.product-image-wrapper');
+      var pdfOpenTab = card.querySelector('.product-pdf-open-tab');
+      mainImg.src = 'images/noimage.png';
+      if (wrapper) {
+        wrapper.classList.remove('is-pdf', 'is-pdf-fallback');
+      }
+      if (pdfOpenTab) {
+        pdfOpenTab.href = '#';
+      }
+    })();
+
+    // 商品を選択モーダル（閉じる／追加で閉じる）
+    (function () {
+      var overlay = document.getElementById('productSelectModalOverlay');
+      var dialog = document.getElementById('productSelectModalDialog');
+      var btnOpen = document.getElementById('btnSelProduct');
+      var btnClose = document.getElementById('productSelectModalClose');
+      var btnAdd = document.getElementById('productSelectModalAdd');
+      var imageLightbox = document.getElementById('modalProductImageLightbox');
+      var imageLightboxImg = document.getElementById('modalProductImageLightboxImg');
+      var imageLightboxCloseBtn = document.getElementById('modalProductImageLightboxClose');
+      var imageLightboxBackdrop = imageLightbox ? imageLightbox.querySelector('.modal-product-image-lightbox__backdrop') : null;
+      if (!overlay || !dialog || !btnOpen || !btnClose) return;
+
+      function closeImageLightbox() {
+        if (!imageLightbox) return;
+        imageLightbox.classList.remove('is-open');
+        imageLightbox.setAttribute('aria-hidden', 'true');
+        if (imageLightboxImg) {
+          imageLightboxImg.removeAttribute('src');
+          imageLightboxImg.alt = '';
+        }
+      }
+
+      function openImageLightbox(src, alt) {
+        if (!imageLightbox || !imageLightboxImg || !src) return;
+        imageLightboxImg.src = src;
+        imageLightboxImg.alt = alt || '商品画像（拡大）';
+        imageLightbox.classList.add('is-open');
+        imageLightbox.setAttribute('aria-hidden', 'false');
+      }
+
+      dialog.addEventListener('click', function (e) {
+        var thumb = e.target && e.target.closest && e.target.closest('img.modal-result-product-thumb');
+        if (!thumb || !dialog.contains(thumb)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var src = (thumb.getAttribute('src') || thumb.src || '').trim();
+        if (!src) return;
+        openImageLightbox(src, thumb.getAttribute('alt') || '');
+      });
+
+      if (imageLightboxCloseBtn) {
+        imageLightboxCloseBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          closeImageLightbox();
+        });
+      }
+      if (imageLightboxBackdrop) {
+        imageLightboxBackdrop.addEventListener('click', function () {
+          closeImageLightbox();
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if (!imageLightbox || !imageLightbox.classList.contains('is-open')) return;
+        e.preventDefault();
+        closeImageLightbox();
+      });
+
+      function openModal() {
+        overlay.classList.add('is-open');
+        dialog.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(function () {
+          overlay.classList.add('is-open');
+          dialog.classList.add('is-open');
+        });
+      }
+
+      function closeModal() {
+        closeImageLightbox();
+        overlay.classList.remove('is-open');
+        dialog.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      btnOpen.addEventListener('click', function (e) {
+        e.preventDefault();
+        openModal();
+      });
+
+      btnClose.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeModal();
+      });
+
+      if (btnAdd) {
+        btnAdd.addEventListener('click', function (e) {
+          e.preventDefault();
+          var detailTbody = document.getElementById('detailTableProductListBody');
+          var dialogEl = document.getElementById('productSelectModalDialog');
+          if (!detailTbody || !dialogEl) {
+            closeModal();
+            return;
+          }
+          var checks = dialogEl.querySelectorAll('.modal-result-row-check:checked');
+          if (!checks.length) {
+            alert('追加する商品を選択してください。');
+            return;
+          }
+
+          checks.forEach(function (cb) {
+            var tr = cb.closest('tr');
+            if (!tr) return;
+            var tds = tr.querySelectorAll('td');
+            if (tds.length < 8) return;
+            var hinmei = (tds[1].textContent || '').trim();
+            var hanbai = (tds[2].textContent || '').trim();
+            var category = (tds[3].textContent || '').trim();
+            var item = (tds[4].textContent || '').trim();
+            var brand = (tds[5].textContent || '').trim();
+            var designer = (tds[6].textContent || '').trim();
+            var imgCell = tds[7];
+            var modalThumb = imgCell ? imgCell.querySelector('img') : null;
+            var imgSrc = '';
+            if (modalThumb) {
+              imgSrc = (modalThumb.getAttribute('src') || modalThumb.src || '').trim();
+            }
+            if (!imgSrc) {
+              imgSrc = 'images/noimage.png';
+            }
+            var meta = [hanbai, category, item, brand, designer].filter(function (s) { return s; }).join('｜');
+            var uploadHtml =
+              '<td class="detail-image-cell">' +
+              '<div class="detail-row-upload">' +
+              '<div class="product-image-wrapper">' +
+              '<img class="product-image" src="images/noimage.png" alt="プレビュー">' +
+              '<div class="product-pdf-canvas-wrap" aria-hidden="true"><canvas class="product-pdf-canvas"></canvas></div>' +
+              '<div class="product-pdf-fallback"><p>埋め込み不可</p><p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">開く</a></p></div>' +
+              '</div>' +
+              '<input type="file" accept="image/*,application/pdf,.pdf,.ai" class="product-image-input" style="display: none;">' +
+              '</div></td>';
+            var newTr = document.createElement('tr');
+            newTr.innerHTML =
+              '<td class="detail-delete-cell">' +
+              '<button type="button" class="detail-delete-btn">×</button>' +
+              '</td>' +
+              '<td>' +
+              '<div class="detail-name"></div>' +
+              '<div class="detail-meta"></div>' +
+              '</td>' +
+              uploadHtml;
+            newTr.querySelector('.detail-name').textContent = hinmei;
+            newTr.querySelector('.detail-meta').textContent = meta || '—';
+            var rowWrapper = newTr.querySelector('.detail-row-upload .product-image-wrapper');
+            var rowImg = newTr.querySelector('.detail-row-upload .product-image');
+            if (rowWrapper) {
+              rowWrapper.classList.remove('is-pdf', 'is-pdf-fallback');
+            }
+            if (rowImg) {
+              rowImg.src = imgSrc;
+              rowImg.alt = hinmei ? hinmei + 'のプレビュー' : 'プレビュー';
+            }
+            detailTbody.appendChild(newTr);
+            var uploadRoot = newTr.querySelector('.detail-row-upload');
+            if (uploadRoot && typeof window.bindDetailRowImageUploader === 'function') {
+              window.bindDetailRowImageUploader(newTr);
+            }
+          });
+          closeModal();
+        });
+      }
+    })();
+
+    // モーダル内 販売区分に応じた展示会フィールド表示
+    (function () {
+      var s = document.getElementById('modalSearchHanbaiKubun');
+      var f = document.getElementById('modalCommonTenjikaiField');
+      var t = document.getElementById('modalSearchTenjikai');
+      if (!s || !f) return;
+      function u() {
+        if (s.value === 'teiban') f.style.display = '';
+        else {
+          f.style.display = 'none';
+          if (t) t.value = '';
+        }
+      }
+      u();
+      s.addEventListener('change', u);
+    })();
+
+    // モーダル検索結果 チェックボックス 全選択／全選択解除
+    (function () {
+      var dialog = document.getElementById('productSelectModalDialog');
+      if (!dialog) return;
+      var selectAllCb = document.getElementById('modalResultSelectAll');
+      var btnAll = document.getElementById('modalResultSelectAllBtn');
+      var btnNone = document.getElementById('modalResultDeselectAllBtn');
+
+      function getRowChecks() {
+        return dialog.querySelectorAll('.modal-result-row-check');
+      }
+
+      function setAll(checked) {
+        getRowChecks().forEach(function (cb) {
+          cb.checked = checked;
+        });
+        if (selectAllCb) selectAllCb.checked = checked;
+      }
+
+      function syncHeaderCheckbox() {
+        if (!selectAllCb) return;
+        var checks = getRowChecks();
+        if (!checks.length) {
+          selectAllCb.checked = false;
+          selectAllCb.indeterminate = false;
+          return;
+        }
+        var n = 0;
+        checks.forEach(function (cb) {
+          if (cb.checked) n++;
+        });
+        selectAllCb.checked = n === checks.length;
+        selectAllCb.indeterminate = n > 0 && n < checks.length;
+      }
+
+      if (btnAll) {
+        btnAll.addEventListener('click', function () {
+          setAll(true);
+        });
+      }
+      if (btnNone) {
+        btnNone.addEventListener('click', function () {
+          setAll(false);
+        });
+      }
+      if (selectAllCb) {
+        selectAllCb.addEventListener('change', function () {
+          setAll(selectAllCb.checked);
+        });
+      }
+      getRowChecks().forEach(function (cb) {
+        cb.addEventListener('change', syncHeaderCheckbox);
+      });
+      syncHeaderCheckbox();
+    })();
+
+    // 明細行の削除（×ボタン）
+    (function () {
+      var table = document.getElementById('detailTableProductList');
+      if (!table) return;
+
+      table.addEventListener('click', function (e) {
+        var btn = e.target.closest('.detail-delete-btn');
+        if (!btn) return;
+
+        var row = btn.closest('tr');
+        if (row) {
+          row.remove();
+        }
       });
     })();
 
-    // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
-    (function () {
-      var selHanbai = document.getElementById("searchHanbaiKubun");
-      var selTenjikai = document.getElementById("tenjikaiSelect");
-      var selCategory = document.getElementById("searchCategory");
-      var cancelAllBtn = document.getElementById("searchCancelAllBtn");
-      if (cancelAllBtn) {
-        cancelAllBtn.addEventListener("click", function () {
-          window.location.reload();
-        });
-      }
-      var tbody = document.querySelector("#approvalListArea .result-table tbody");
-      if (!tbody) return;
-
-      function mapHanbai(value) {
-        return {
-          teiban: "定番",
-          teibankako: "定番加工",
-          betchu: "別注",
-          oem: "OEM"
-        }[value] || "";
-      }
-
-      function mapCategory(value) {
-        return {
-          tanpin: "単品タオル",
-          kikaku: "企画物タオル"
-        }[value] || "";
-      }
-
-      function applyFilter() {
-        var condHanbai = selHanbai ? selHanbai.value : "";
-        var condTenjikai = selTenjikai ? selTenjikai.value : "";
-        var condCategory = selCategory ? selCategory.value : "";
-        var hanbaiLabel = mapHanbai(condHanbai);
-        var categoryLabel = mapCategory(condCategory);
-
-        Array.prototype.forEach.call(tbody.rows, function (row) {
-          var cellHanbai = row.cells[1] ? row.cells[1].textContent.trim() : "";
-          var cellTenjikai = row.cells[2] ? row.cells[2].textContent.trim() : "";
-          var cellCategory = row.cells[4] ? row.cells[4].textContent.trim() : "";
-          var match = true;
-
-          if (condHanbai === "teiban_else") {
-            if (cellHanbai === "定番") match = false;
-          } else if (condHanbai && cellHanbai !== hanbaiLabel) {
-            match = false;
-          }
-
-          if (condTenjikai) {
-            if (!cellTenjikai || cellTenjikai.indexOf(condTenjikai) !== 0) match = false;
-          }
-          if (condCategory && cellCategory !== categoryLabel) match = false;
-
-          row.style.display = match ? "" : "none";
-        });
-      }
-
-      [selHanbai, selTenjikai, selCategory].forEach(function (el) {
-        if (el) el.addEventListener("change", applyFilter);
-      });
-      applyFilter();
-    })();
-
-    // スマホ: 検索条件の折りたたみ開閉
-    (function () {
-      var btn = document.getElementById("searchToggleSp");
-      var box = document.getElementById("searchBox");
-      if (btn && box) {
-        btn.addEventListener("click", function () {
-          var isOpen = box.classList.toggle("is-open");
-          btn.setAttribute("aria-expanded", isOpen);
-          var textEl = btn.querySelector(".search-toggle-sp-text");
-          if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-        });
-      }
-    })();
+    syncDeadlineArea2Ui();
   </script>
 </body>
 
