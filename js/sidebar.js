@@ -26,7 +26,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="zuankensaku.html">図案情報登録</a></li>
+      <li><a href="zuanjohotoroku.html">図案情報登録</a></li>
       <li><a href="zuanfuriwake.html">図案振分け</a></li>
     </ul>
   </div>
