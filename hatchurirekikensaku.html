@@ -11,71 +11,42 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
     rel="stylesheet">
-  <script src="js/autocomplete.js"></script>
   <style>
-    .pc-only {
-      display: block;
-    }
-
-    .sp-only {
-      display: none;
-    }
-
-    /* サイドバー・ヘッダー・レイアウトは css/style.css を参照 */
-    html {
-      overflow-x: hidden;
-      max-width: 100%;
-    }
-
     body {
-      margin: 0;
-      height: 100vh;
       display: flex;
       flex-direction: column;
-      background: var(--color-surface);
-      color: var(--color-text);
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      max-width: 100vw;
-      box-sizing: border-box;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    body>.header {
+      flex-shrink: 0;
     }
 
     .main-wrapper {
       display: flex;
       flex: 1;
+      min-height: 0;
       margin-top: 0;
-      min-height: calc(100vh - 48px);
-      min-width: 0;
-      max-width: 100%;
-      overflow-x: hidden;
     }
 
     .content {
+      background: var(--color-surface);
       flex: 1;
-      min-width: 0;
       min-height: 0;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      padding: 24px;
-      padding-right: max(24px, env(safe-area-inset-right, 0px));
-      box-sizing: border-box;
-      overflow-y: auto;
-      overflow-x: hidden;
-      background: var(--color-surface);
-      transition: margin-left 0.3s ease, padding-left 0.3s ease;
-    }
-
-    /* サイドバー表示時はトグルボタンに被らないよう左余白を確保 */
-    .content:not(.expanded) {
-      padding-left: 32px;
+      padding: 12px 0 0 32px;
+      overflow: hidden;
+      transition: margin-left 0.3s ease;
     }
 
     .content.expanded {
       margin-left: -220px;
-      padding-left: 32px;
+      padding-left: 33px;
     }
 
-    /* #region メインコンテンツ（hatchujohoMsysemrenkei 専用） */
     .page-title {
       font-size: 18px;
       font-weight: 700;
@@ -86,213 +57,1429 @@
       flex-shrink: 0;
     }
 
-    .content-box {
-      display: flex;
-      flex-direction: column;
+    .screen-body {
+      position: relative;
+      z-index: 1;
       flex: 1;
-      /* overflow: hidden; */
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      display: grid;
+      /* PC: 仕様書一覧 20% / 締切パネル 80% / 履歴 0% */
+      grid-template-columns: minmax(0, 20fr) minmax(0, 80fr) minmax(0, 0fr);
+      gap: 16px;
+      padding-right: 20px;
+      box-sizing: border-box;
     }
 
-    .content-box .search-box,
-    .content .search-box {
+    .search-condition-panel {
+      margin: 0 20px 12px 0;
       flex-shrink: 0;
     }
 
-    .content-box .pc-only,
-    .content .pc-only {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
+    .search-condition-body {
+      padding: 12px 14px;
     }
 
-    .content-box .sp-only,
-    .content .sp-only {
-      flex: 1;
-      min-height: 0;
-    }
-
-    .content-box .content-section,
-    .content .content-section {
-      flex: 1;
-      min-height: 0;
-    }
-    .search-box {
+    .search-condition-panel .panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 100%;
-      padding: 14px 16px;
-      margin-bottom: 18px;
-      font-family: inherit;
-      font-weight: 500;
-      color: var(--color-text);
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
+      gap: 10px;
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+    }
+
+    .search-toggle-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      min-width: 28px;
+      height: 24px;
+      line-height: 1;
+      font-size: 16px;
+      font-weight: 700;
       cursor: pointer;
-      text-align: left;
-      box-sizing: border-box;
-    }
-
-    .content>.view-layout-1-group {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ========== イメージ案：3つとも一括表示 ========== */
-    .view-layout {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-    }
-
-    .view-layout-1-group,
-    .view-layout-3 {
-      width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-    }
-
-    /* 図案情報検索（ページタイトル）専用の余白・線調整 */
-    h1.view-layout-title {
-      margin: 4px 0 8px 12px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    /* ========== 案①: 半円グラフ・承認通知・全体・課別 ========== */
-    .view-layout-1 {
       padding: 0;
     }
 
-    .filter-row {
+    .search-toggle-btn:hover {
+      background: #edf8f0;
+    }
+
+    .search-condition-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px 12px;
+      align-items: start;
+    }
+
+    /* クリア：商品コードの右隣セル。ラベル分下げて入力行と同じ高さに揃える */
+    .search-condition-panel .search-condition-grid > .search-condition-clear-cell {
+      justify-self: end;
+      align-self: start;
+      margin-top: calc(12px * 1.25 + 2px);
+      min-width: 0;
+    }
+
+    .search-condition-panel .search-condition-grid > .search-condition-clear-cell #searchConditionClearBtn {
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      height: 38px;
+      padding: 0 14px;
+      /* font-size: 13px; */
+      line-height: 1.2;
+    }
+
+    .search-type-toggle {
+      display: inline-flex;
+      gap: 0;
+      background: transparent;
+      isolation: isolate;
+      flex-shrink: 0;
+    }
+
+    .search-type-btn {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: 0;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      line-height: 1.2;
+      width: auto;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .search-type-btn:first-child {
+      border-radius: 999px 0 0 999px;
+    }
+
+    .search-type-btn:last-child {
+      border-radius: 0 999px 999px 0;
+    }
+
+    .search-type-btn.is-active {
+      position: relative;
+      z-index: 1;
+      background: #edf8f0;
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* 展示会移動：サイクルは隙間を空けて個別の角丸にし、z-index で隣と重ならないようにする */
+    .cycle-toggle {
+      gap: 6px;
+      flex-wrap: nowrap;
+      min-width: 0;
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      justify-content: flex-start;
+    }
+
+    .cycle-toggle .search-type-btn,
+    .cycle-toggle .search-type-btn:first-child,
+    .cycle-toggle .search-type-btn:last-child {
+      border-radius: 999px;
+    }
+
+    .cycle-toggle .search-type-btn.is-active {
+      z-index: 0;
+    }
+
+    /* 展示会移動：ヘッダー帯の高さを子ボタンに引き伸ばされないように固定 */
+    .panel-header.spec-list-panel-header,
+    .deadline-panel > .panel-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: nowrap;
+      box-sizing: border-box;
+      height: 46px;
+      min-height: 46px;
+      max-height: 46px;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+
+    .panel-header.spec-list-panel-header {
+      justify-content: space-between;
+    }
+
+    .deadline-panel > .panel-header {
+      justify-content: flex-start;
+    }
+
+    .panel-header.spec-list-panel-header .spec-list-panel-title,
+    .deadline-panel > .panel-header > span {
+      min-width: 0;
+      line-height: 1.25;
+    }
+
+    .panel-header.spec-list-panel-header .btn-fab-new,
+    .deadline-panel > .panel-header .search-type-toggle {
+      flex-shrink: 0;
+    }
+
+    /* 検索条件：ドロップダウンが .panel の overflow や下段グリッドに隠れないようにする */
+    .panel.search-condition-panel {
+      position: relative;
+      z-index: 30;
+      overflow: visible;
+    }
+
+    .search-condition-panel .search-condition-body {
+      overflow: visible;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-md);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #dfe7e1;
+      background: #f6faf7;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f3e2e;
+      flex-shrink: 0;
+    }
+
+    .panel-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .deadline-panel,
+    .progress-panel {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .deadline-panel .panel-body,
+    .progress-panel .panel-body {
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* deadline-panel：左約50％にエリア1、右約50％にエリア2・3・4（上・中央伸長・下） */
+    .deadline-panel .panel-body.deadline-panel-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      gap: 10px;
+      align-content: stretch;
+      overflow: hidden;
+    }
+
+    .deadline-panel-body .deadline-right-column {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 0;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .deadline-panel-body .deadline-area {
+      box-sizing: border-box;
+      min-width: 0;
+      min-height: 0;
+      border: 1px dashed #b9cbbf;
+      border-radius: var(--radius-sm);
+      background: #fcfefc;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #66786f;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .deadline-panel-body .deadline-area-1,
+    .deadline-panel-body .deadline-area-3 {
+      border-style: solid;
+      border-color: #d7e0d9;
+    }
+
+    .deadline-panel-body .deadline-area-2,
+    .deadline-panel-body .deadline-area-4 {
+      border: none;
+      background: transparent;
+    }
+
+    .deadline-panel-body .deadline-area-1 {
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .deadline-panel-body .deadline-area-1 .deadline-area-1-img-wrap {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .deadline-panel-body .deadline-area-1 .deadline-area-1-img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      /* vertical-align: top; */
+    }
+
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-1,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-right-column {
+      display: none !important;
+    }
+
+    .deadline-panel-body .deadline-area-2 {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
-    .filter-item {
+    #deadlineCartonMarkFormatWrap[hidden] {
+      display: none !important;
+    }
+
+    #deadlineCartonMarkFormatWrap:not([hidden]) {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      flex: 1 1 100%;
+      width: 100%;
+      margin-right: auto;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .deadline-carton-format-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #66786f;
+    }
+
+    #deadlineCartonMarkFormatSelect {
+      min-width: min(100%, 380px);
+      max-width: 100%;
+      font: inherit;
+      box-sizing: border-box;
+    }
+
+    .deadline-carton-format-hint {
+      font-size: 11px;
+      font-weight: 400;
+      color: #66786f;
+      margin: 0;
+    }
+
+    .deadline-area-2-pagination-nav {
+      margin-right: auto;
+      flex-shrink: 0;
+      min-width: 0;
+    }
+
+    .deadline-pagination {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .deadline-pagination-item {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .deadline-pagination-item + .deadline-pagination-item {
+      margin-left: -1px;
+    }
+
+    .deadline-pagination-link {
+      position: relative;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 25px;
+      min-height: 25px;
+      height: 25px;
+      padding: 0 6px;
+      font-size: 12px;
+      line-height: 1.2;
+      font-family: inherit;
+      text-align: center;
+      color: var(--color-primary, #008632);
+      background: #fff;
+      border: 1px solid #dee2e6;
+      cursor: pointer;
+      transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+      border-radius: 0;
+    }
+
+    .deadline-pagination-link.deadline-pagination-link--icon {
+      flex: 0 0 auto;
+      padding: 0 4px;
+      min-width: 25px;
+    }
+
+    .deadline-pagination-link.deadline-pagination-link--icon svg {
+      display: block;
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+
+    .deadline-pagination-link:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      color: rgba(32, 67, 49, 0.55);
+      background: #f8faf9;
+    }
+
+    .deadline-pagination-item:first-child .deadline-pagination-link {
+      border-top-left-radius: var(--radius-sm, 0.375rem);
+      border-bottom-left-radius: var(--radius-sm, 0.375rem);
+    }
+
+    .deadline-pagination-item:last-child .deadline-pagination-link {
+      border-top-right-radius: var(--radius-sm, 0.375rem);
+      border-bottom-right-radius: var(--radius-sm, 0.375rem);
+    }
+
+    .deadline-pagination-item.is-active .deadline-pagination-link {
+      z-index: 2;
+      color: var(--color-primary, #008632);
+      background-color: #edf8f0;
+      border-color: var(--color-primary, #008632);
+    }
+
+    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):hover {
+      color: var(--color-primary-dark, #006b28);
+      background: #edf8f0;
+      border-color: var(--color-primary, #008632);
+    }
+
+    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):focus-visible {
+      z-index: 3;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.2);
+    }
+
+    .deadline-panel-body .deadline-area-4 {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* 帳票にかかわらず「登録」「契約書依頼」のボックス高を統一 */
+    .deadline-panel-body .deadline-area-4 > .btn-fab-new.btn-temp-save {
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      line-height: 1.2;
+    }
+
+    .image-preview-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .image-preview-modal[hidden] {
+      display: none;
+    }
+
+    .image-preview-modal__dialog {
+      position: relative;
+      max-width: min(96vw, 1400px);
+      max-height: 92vh;
+      width: auto;
+    }
+
+    .image-preview-modal__image {
+      display: block;
+      max-width: 100%;
+      max-height: 92vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    /* 契約書送付依頼モーダル */
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #keiyakushoIraiEmbedModal.modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 9999;
+      box-sizing: border-box;
+    }
+
+    #keiyakushoIraiEmbedModal.modal-overlay.show {
+      display: flex;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-box {
+      width: 100%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      max-height: min(90vh, 800px);
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      background: #e8f5ef;
+      border-bottom: 1px solid #c5e6d9;
+      flex-shrink: 0;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #1d3557;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-close-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 50%;
+      background: #fff;
+      color: #1d3557;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-close-btn:hover {
+      background: #d4ede2;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-body {
+      padding: 20px 22px 4px;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .view-layout-1-group {
+      padding: 0;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .content-box {
+      background: var(--color-card, #fff);
+      /*border: 1px solid var(--color-border, #d7e0d9);*/
+      /*border-radius: var(--radius-lg, 12px);*/
+      padding: 0px 0px 0px;
+      margin-bottom: 0;
+      box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08));
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:last-child {
+      margin-bottom: 0px;
+    }
+
+    /* メーカー候補は JS で fixed 配置（画面全体の高さは変えず、リストだけ下方向に広げる） */
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete.keiyaku-mfr-ac--open .autocomplete-dropdown {
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+      z-index: 50;
+    }
+
+    /* メーカー候補オープン時: リストがモーダル枠外へはみ出しても、フッターより手前でタップを受け取る */
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-box {
+      overflow: visible;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-header {
+      position: relative;
+      z-index: 30;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-body {
+      position: relative;
+      z-index: 20;
+      overflow: visible;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .modal-footer {
+      position: relative;
+      z-index: 10;
+    }
+
+    #keiyakushoIraiEmbedModal:has(.keiyaku-mfr-ac--open) .keiyaku-sofukai-form .content-box {
+      overflow: visible;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-item {
       display: flex;
       align-items: center;
       gap: 4px;
       flex-wrap: nowrap;
     }
 
-    .filter-row .filter-label {
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-row .filter-label {
       margin-right: 4px;
     }
 
-    .filter-row input[type="text"],
-    .filter-row select {
-      padding: 8px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      min-width: 160px;
-    }
-
-    .renkei-filter-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: nowrap;
-    }
-
-    .renkei-toggle-group {
-      display: inline-flex;
-      border: 1px solid var(--color-border);
-      border-radius: 999px;
-      overflow: hidden;
-      background: var(--color-card);
-    }
-
-    .renkei-toggle {
-      padding: 6px 10px;
-      border: none;
-      background: transparent;
-      color: var(--color-text-muted);
-      font-size: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      user-select: none;
-      line-height: 1.2;
-    }
-
-    .renkei-toggle.is-active {
-      background: var(--color-primary);
-      color: #fff;
-    }
-
-    /* 検索条件：カテゴリー（オートコンプリート用 .search-row） */
-    .search-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .search-row label {
-      margin: 0;
-      font-size: var(--fs-xs);
-      font-weight: 500;
-      color: var(--color-text-muted);
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-label.manufacturer-label {
       white-space: nowrap;
     }
 
-    /* カテゴリー：入力候補リストのフォントをラベルと同じにする */
-    .search-row select,
-    .search-row input:not([type="checkbox"]) {
-      font-size: var(--fs-xs);
-      min-width: 160px;
-      padding: 3px 12px;
-      font-family: inherit;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      background: var(--color-card);
-      color: var(--color-text);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .search-row .autocomplete {
-      min-width: 160px;
-      width: 160px;
-    }
-
-    .search-row .autocomplete .autocomplete-input {
-      min-width: 0;
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       width: 100%;
     }
 
-    .search-row option {
-      font-size: var(--fs-xs);
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions .autocomplete {
+      flex: 1;
+      min-width: 0;
+      position: relative;
     }
 
-    .search-row select:hover,
-    .search-row input:not([type="checkbox"]):hover {
-      border-color: #b0bdb5;
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .keiyaku-modal-manufacturer-select {
+      display: none;
     }
 
-    .search-row select:focus,
-    .search-row input:not([type="checkbox"]):focus {
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .autocomplete-input {
+      padding: 6px 10px;
+      border: 1px solid var(--color-border, #d7e0d9);
+      border-radius: var(--radius-sm);
+      min-width: 160px;
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .btn-panel-register {
+      display: inline-block;
+      text-decoration: none;
+      position: absolute;
+      right: 24px;
+      bottom: 12px;
+      z-index: 1;
+      min-width: 100px;
+      width: clamp(80px, 5vw, 120px);
+      padding: 6px 14px;
+      background: var(--color-primary, #008632);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-family: inherit;
+      font-weight: 600;
+    }
+
+    #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .btn-panel-register:hover {
+      background: var(--color-primary-dark, #006b28);
+      color: #fff;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer {
+      margin-top: 0;
+      padding: 4px 22px 14px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-primary {
+      background: var(--color-primary, #008632);
+      color: #fff;
+      border: 1px solid var(--color-primary, #008632);
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-primary:hover {
+      background: var(--color-primary-dark, #006b28);
+      color: #fff;
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-secondary {
+      background: #fff;
+      color: var(--color-primary, #008632);
+      border: 1px solid var(--color-primary, #008632);
+    }
+
+    #keiyakushoIraiEmbedModal .modal-footer .btn.btn-secondary:hover {
+      background: #eef5ff;
+    }
+
+    @media (max-width: 767px) {
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:first-child .filter-item {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        column-gap: 10px;
+        row-gap: 8px;
+        align-items: center;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:first-child .filter-item > .filter-label {
+        grid-column: 1;
+        grid-row: 1;
+        margin-right: 0;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:first-child .filter-item > label {
+        grid-column: 2;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:first-child .filter-item > label:nth-child(2) {
+        grid-row: 1;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:first-child .filter-item > label:nth-child(3) {
+        grid-row: 2;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:first-child .filter-item > label:nth-child(4) {
+        grid-row: 3;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .search-box-inner > .filter-row:first-child .filter-item > label:nth-child(5) {
+        grid-row: 4;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .filter-item.manufacturer-item {
+        flex-wrap: wrap;
+        row-gap: 6px;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions {
+        width: 100%;
+        max-width: min(280px, 92vw);
+        flex: 0 0 auto;
+      }
+
+      /* スマホ: OS のネイティブ選択 UI でメーカー選択（はみ出しタップ問題を避ける） */
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .manufacturer-row.input-actions .autocomplete {
+        display: none;
+      }
+
+      #keiyakushoIraiEmbedModal .keiyaku-sofukai-form .keiyaku-modal-manufacturer-select {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+        padding: 10px 12px;
+        border: 1px solid var(--color-border, #d7e0d9);
+        border-radius: var(--radius-sm);
+        background: #fff;
+        color: inherit;
+        font-family: inherit;
+      }
+    }
+
+    .deadline-panel-body .deadline-area-3 {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+      font-weight: 400;
+      color: #173425;
+    }
+
+    .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-doc {
+      /* display:none は grid から要素が抜けエリア4の縦位置が変わるため使わない（発注書と揃える） */
+      visibility: hidden;
+      pointer-events: none;
+      user-select: none;
+      overflow: hidden !important;
+    }
+
+    .deadline-panel-body .deadline-area-3 #deadlineArea3Mount,
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-mount {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-preview-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-ai-head {
+      font-size: 12px;
+      line-height: 1.45;
+      flex-shrink: 0;
+    }
+
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-ai-name {
+      font-weight: 700;
+      word-break: break-all;
+    }
+
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-ai-preview {
+      flex: 1 1 auto;
+      min-height: 200px;
+      min-width: 0;
+      width: 100%;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      background: #fff;
+    }
+
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-hatchu-iframe {
+      flex: 1 1 auto;
+      min-height: 200px;
+      min-width: 0;
+      width: 100%;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: #fff;
+    }
+
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-hatchu-img-wrap {
+      flex: 1 1 0;
+      align-self: stretch;
+      min-height: 200px;
+      min-width: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      background: #fff;
+    }
+
+    .deadline-panel-body .deadline-area-3 .deadline-area-3-hatchu-img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    #previewBtnArea3 {
+      padding: 3px 6px;
+    }
+
+    .progress-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #specHistoryCommentMount {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .spec-select {
+      display: none;
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #204331;
+    }
+
+    .spec-panel .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 0;
+    }
+
+    .spec-panel .spec-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .spec-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .spec-item {
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .spec-item.is-active {
+      border-color: var(--color-primary);
+      background: #edf8f0;
+    }
+
+    .spec-list > .spec-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    /* 柄共通の親／子で同一のボーダー・左アクセント（丸角は .spec-item 既定値） */
+    .spec-item.spec-item-kara-parent,
+    .spec-item.spec-item-kara-child {
+      margin: 0;
+      padding-left: 13px;
+      border: 1px solid rgba(215, 224, 217, 0.95);
+      border-left-width: 3px;
+      border-left-color: rgba(0, 134, 50, 0.42);
+      box-shadow:
+        inset 10px 0 14px rgba(0, 134, 50, 0.04),
+        0 1px 6px rgba(23, 52, 37, 0.04);
+      transition:
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+    }
+
+    .spec-item.spec-item-kara-parent:hover,
+    .spec-item.spec-item-kara-child:hover {
+      border-left-color: rgba(0, 134, 50, 0.58);
+      box-shadow:
+        inset 11px 0 18px rgba(0, 134, 50, 0.05),
+        0 4px 16px rgba(23, 52, 37, 0.08);
+    }
+
+    .spec-item.spec-item-kara-parent.is-active,
+    .spec-item.spec-item-kara-child.is-active {
+      border-color: var(--color-primary);
+      border-left-width: 3px;
+      border-left-color: var(--color-primary);
+      box-shadow:
+        inset 12px 0 20px rgba(0, 134, 50, 0.06),
+        0 2px 12px rgba(0, 134, 50, 0.12);
+    }
+
+    .spec-sublist {
+      margin: 0;
+      padding: 0;
+      padding-left: 10px;
+      margin-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* 柄共通グループ内・子リストの外にある通常の仕様書行 */
+    .spec-group-after {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .spec-group-after .spec-item {
+      margin: 0;
+    }
+
+    .spec-list-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spec-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .spec-line-val {
+      font-size: 13px;
+      color: #173425;
+      word-break: break-word;
+      line-height: 1.45;
+    }
+
+    .spec-line-val.spec-hatchu-no {
+      font-size: 14px;
+      font-weight: 600;
+      color: #173425;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .spec-line-val.spec-kubun-shinki {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #66CC66;
+      color: #ffffff;
+      border-radius: 999px;
+      font-weight: 600;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .spec-line-val.spec-kubun-tsuika {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #99CCCC;
+      color: #ffffff;
+      border-radius: 999px;
+      font-weight: 600;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .spec-line-val.spec-kubun-hatchu {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #00CC99;
+      color: #ffffff;
+      border-radius: 999px;
+      font-weight: 600;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* 発注履歴一覧・発注区分：旧 hatchurirekikensaku と同じピル表示 */
+    .spec-row:has(.spec-hatchu-kbn) {
+      align-items: center;
+    }
+
+    .spec-list .hatchu-kubun-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      color: #ffffff;
+      border-radius: 999px;
+      font-weight: 600;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .spec-list .hatchu-kubun-pill.teiban {
+      background: #00cc99;
+    }
+
+    .spec-list .hatchu-kubun-pill.betchu {
+      background: #ff9933;
+    }
+
+    .spec-list .hatchu-kubun-pill.teiban-kako {
+      background: #6699ff;
+    }
+
+    .spec-list .hatchu-kubun-pill.hatchu-kubun-pill--unknown {
+      background: #889896;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: #446354;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      padding: 8px 9px;
+      font-size: 13px;
+      color: #173425;
+      background: #fff;
+      font-family: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field input:hover,
+    .field select:hover,
+    .field textarea:hover {
+      border-color: var(--color-primary);
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
     }
 
-    .search-row input::placeholder {
-      color: #9ca89f;
+    .field textarea::placeholder {
+      color: rgba(23, 52, 37, 0.42);
+      opacity: 1;
     }
 
-    /* 検索条件エリア右端：クリアボタン（登録ボタンと同スタイル） */
-    .search-cancel-wrapper {
-      margin-left: auto;
+    /* Bootstrap multiselect 風（ドロップダウン＋チェックボックス） */
+    .exhibit-bs-multiselect {
+      position: relative;
+      width: 100%;
+    }
+
+    .exhibit-bs-multiselect-toggle {
+      width: 100%;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 38px;
+      padding: 6px 10px;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 400;
+      color: #173425;
+      line-height: 1.35;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .exhibit-bs-multiselect-toggle:hover {
+      border-color: var(--color-primary);
+    }
+
+    .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-toggle {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .exhibit-bs-multiselect-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .exhibit-bs-multiselect-caret {
+      flex-shrink: 0;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid #446354;
+      margin-top: 2px;
+    }
+
+    .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-caret {
+      border-top: 0;
+      border-bottom: 6px solid #446354;
+      margin-top: 0;
+    }
+
+    .exhibit-bs-multiselect-popover {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 2px);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+      transition: opacity 0.15s ease, max-height 0.2s ease;
+    }
+
+    .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-popover {
+      max-height: 280px;
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .exhibit-bs-multiselect-filter {
+      flex-shrink: 0;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0 0 8px;
+      padding: 8px 10px;
+      border: none;
+      border-bottom: 1px solid #dee8e2;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      font-family: inherit;
+      font-size: 13px;
+      color: #173425;
+      background: #fff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .exhibit-bs-multiselect-filter::placeholder {
+      color: #8a9a92;
+    }
+
+    .exhibit-bs-multiselect-filter:hover {
+      background: #fcfefc;
+    }
+
+    .exhibit-bs-multiselect-filter:focus {
+      outline: none;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px var(--color-primary);
+    }
+
+    .exhibit-bs-multiselect-menu {
+      flex: 1;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      background: #fff;
+      border: none;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .exhibit-bs-multiselect-inner {
+      flex: 1;
+      min-height: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 6px 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .exhibit-bs-multiselect-item.is-filtered-out {
+      display: none;
+    }
+
+    .exhibit-bs-multiselect-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 0;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #173425;
+      line-height: 1.35;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .exhibit-bs-multiselect-item:hover {
+      background: #f8f9fa;
+    }
+
+    .exhibit-bs-multiselect-item input[type="checkbox"] {
+      margin-top: 2px;
+      flex-shrink: 0;
+      width: 1em;
+      height: 1em;
+      accent-color: var(--color-primary, #008632);
+      cursor: pointer;
+    }
+
+    .exhibit-bs-multiselect-item .exhibit-bs-multiselect-item-text {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .content-footer {
+      flex-shrink: 0;
+      margin-top: 8px;
+      border-top: 1px solid #cfdad2;
+      min-height: 46px;
+      padding: 6px 10px 6px 20px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      z-index: 5;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .btn-fab-new:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+
+    /* btn-fab-new のコンパクト版（追加・一時保存など） */
+    .btn-fab-new.btn-kara-kyotsu-add,
+    .btn-fab-new.btn-temp-save,
+    .btn-fab-new.btn-ai-data-upload {
+      padding: 3px 6px;
+    }
+
+    /* [hidden] より詳細度の高い .btn-fab-new に負けないよう、帳票別制御時は class で消す */
+    #aiDataUploadBtn.deadline-area2-ai-upload--suppressed {
+      display: none !important;
+    }
+
+    /* .btn-fab-new の display が [hidden] より強いため、非表示を確実にする（証紙依頼書・カートンマーク等） */
+    #keiyakushoIraiBtn[hidden] {
+      display: none !important;
+    }
+
+    .btn-secondary.btn-area2-page-delete {
+      padding: 3px 6px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .btn-kara-kyotsu-add,
+    .btn-temp-save,
+    .btn-ai-data-upload {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .btn-secondary {
+      border: 1px solid #c5d4ca;
+      background: #fff;
+      color: #204331;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: 600;
     }
 
     .btn-search-cancel {
@@ -319,389 +1506,117 @@
       transform: none;
       box-shadow: none;
     }
+    /* ---------- Responsive（幅の広い順 → 狭い順） ---------- */
 
-    /* 検索条件と検索結果一覧の間の余白（5px） */
-    .view-layout-1-group>.content-area:first-of-type {
-      margin-bottom: 5px;
+    /* 768px–1024px: タブレット（仕様書 30% / 締切 70%、下段は履歴フル幅） */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .spec-select {
+        display: block;
+      }
+
+      .spec-list > .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-list > .spec-group:not(:has(.spec-item.is-active)) {
+        display: none !important;
+      }
+
+      .spec-group .spec-item-kara-parent:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group:has(.spec-item-kara-child.is-active) .spec-item-kara-parent {
+        display: block !important;
+      }
+
+      .spec-group .spec-item-kara-child:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group .spec-group-after .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .content {
+        padding: 12px 10px 0 10px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen-body {
+        flex: none;
+        min-height: auto;
+        grid-template-columns: minmax(0, 30fr) minmax(0, 70fr);
+        grid-template-rows: 500px auto;
+        grid-template-areas:
+          "spec deadline"
+          "progress progress";
+        gap: 12px;
+        padding-right: 0;
+      }
+
+      .search-condition-panel {
+        margin-right: 0;
+      }
+
+      .search-condition-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .spec-panel {
+        grid-area: spec;
+        height: 500px;
+        min-height: 500px;
+        max-height: 500px;
+        overflow: hidden;
+      }
+
+      .spec-panel > .panel-body {
+        min-height: 0;
+        overflow: auto;
+      }
+
+      .deadline-panel {
+        grid-area: deadline;
+        height: 500px;
+        min-height: 500px;
+        max-height: 500px;
+        overflow: hidden;
+      }
+
+      .progress-panel {
+        grid-area: progress;
+        min-height: 0;
+      }
+
+      .deadline-panel .panel-body,
+      .progress-panel .panel-body {
+        overflow: auto;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body {
+        overflow: auto;
+        min-height: 0;
+      }
+
     }
 
-    /* 検索結果一覧テーブル（スクロール対応） */
-    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
-    #approvalListArea {
-      --result-header-height: 44px;
-      --result-row-height: 56px;
-      width: 100%;
-      max-height: calc(var(--result-header-height) + (var(--result-row-height) * 10));
-      overflow-x: auto;
-      overflow-y: auto;
-    }
+    /* ≤1024px: タブレット・モバイルでサイクル切替のスクロールバーを非表示 */
+    @media (max-width: 1024px) {
+      .search-type-toggle.cycle-toggle {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
 
-    .result-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      table-layout: fixed;
-    }
-
-    .result-table th,
-    .result-table td {
-      padding: 16px 10px;
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-      border-left: none;
-      border-right: none;
-      text-align: left;
-      white-space: normal;
-      word-wrap: break-word;
-    }
-
-    #approvalListArea .result-table tbody tr {
-      height: var(--result-row-height);
-    }
-
-    #approvalListArea .result-table tbody td:nth-child(3) .tsuika-pill {
-      display: inline-block;
-      padding: 4px 12px;
-      background: #99CCCC;
-      color: #ffffff;
-      border-radius: 999px;
-      font-weight: 600;
-      white-space: nowrap;
-      vertical-align: middle;
-    }
-
-    /* 担当者（5列目）：全角8文字+半角1文字程度の幅 */
-    #approvalListArea .result-table thead th:nth-child(5),
-    #approvalListArea .result-table tbody td:nth-child(5) {
-      width: 17ch;
-      min-width: 17ch;
-      max-width: 17ch;
-    }
-
-    #approvalListArea .result-table tbody td:nth-child(5) {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* 発注区分（6列目）を角丸のタグ風に表示 */
-    /* 発注区分列：行の高さに対して上下中央＋ラベルは角丸タグ・左詰め */
-    #approvalListArea .result-table tbody td:nth-child(6) {
-      vertical-align: middle;
-    }
-
-    #approvalListArea .result-table tbody td:nth-child(6) .hatchu-kubun-pill {
-      display: inline-block;
-      padding: 4px 12px;
-      color: #ffffff;
-      border-radius: 999px;
-      font-weight: 600;
-      white-space: nowrap;
-      vertical-align: middle;
-    }
-
-    #approvalListArea .result-table tbody td:nth-child(6) .hatchu-kubun-pill.teiban {
-      background: #00cc99;
-    }
-
-    #approvalListArea .result-table tbody td:nth-child(6) .hatchu-kubun-pill.betchu {
-      background: #ff9933;
-    }
-
-    #approvalListArea .result-table tbody td:nth-child(6) .hatchu-kubun-pill.teiban-kako {
-      background: #6699ff;
-    }
-
-    .result-table th {
-      padding: 8px 10px;
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      font-weight: 600;
-      border-top: none;
-    }
-
-    #approvalListArea .result-table thead th {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-
-    #approvalListArea .result-table thead th:nth-child(8) {
-      text-align: center;
-    }
-
-    .result-table tr:nth-child(even) {
-      background: var(--color-surface);
-    }
-
-    .result-table tr:hover {
-      background: rgba(0, 134, 50, 0.06);
-    }
-
-    /* 図案管理番号リンク */
-    .result-table a {
-      color: #0066cc;
-      font-weight: 600;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .result-table a:hover {
-      opacity: 0.9;
-    }
-
-    /* 画面右下固定 登録ボタン（承認通知の詳細ボタンと同じ見た目） */
-    .btn-fab-new {
-      display: inline-block;
-      text-decoration: none;
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 2001;
-      min-width: 140px;
-      padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .btn-fab-new:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-    }
-
-    /* Mシステム連携モーダル */
-    .modal-window {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 3000;
-      padding: 16px;
-      box-sizing: border-box;
-    }
-
-    .modal-window.is-open {
-      display: flex;
-    }
-
-    .modal-dialog {
-      width: min(520px, 100%);
-      background: #fff;
-      border-radius: var(--radius-md);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-    }
-
-    .modal-dialog-header {
-      padding: 14px 18px;
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    .modal-dialog-body {
-      padding: 20px 18px 14px;
-      line-height: 1.7;
-      color: var(--color-text);
-    }
-
-    .modal-dialog-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      padding: 0 18px 18px;
-    }
-
-    .modal-btn {
-      min-width: 100px;
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border);
-      cursor: pointer;
-      font-weight: 600;
-      font-family: inherit;
-    }
-
-    .modal-btn-cancel {
-      background: #fff;
-      color: var(--color-text);
-    }
-
-    .modal-btn-primary {
-      background: var(--color-primary);
-      color: #fff;
-      border-color: var(--color-primary);
-    }
-
-    .modal-btn-primary:hover {
-      background: var(--color-primary-dark);
-      border-color: var(--color-primary-dark);
-    }
-
-    .modal-status {
-      text-align: center;
-      padding: 8px 0 2px;
-    }
-
-    .modal-spinner {
-      width: 52px;
-      height: 52px;
-      margin: 0 auto 14px;
-      border-radius: 50%;
-      border: 4px solid #dcecdf;
-      border-top-color: var(--color-primary);
-      animation: spin 0.9s linear infinite;
-    }
-
-    .modal-status-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #1f2937;
-    }
-
-    .modal-status-text {
-      color: #5f6b66;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .modal-processing-target {
-      margin: 8px 0 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #374151;
-      letter-spacing: 0.02em;
-    }
-
-    .modal-processing-tables {
-      margin: 8px auto 12px;
-      width: min(420px, 100%);
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      overflow: hidden;
-      background: #f9fafb;
-      text-align: left;
-    }
-
-    .modal-processing-table-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 9px 12px;
-      border-bottom: 1px solid #e5e7eb;
-      font-size: 13px;
-    }
-
-    .modal-processing-table-row:last-child {
-      border-bottom: none;
-    }
-
-    .modal-processing-table-name {
-      color: #1f2937;
-      font-weight: 600;
-    }
-
-    .modal-processing-status {
-      min-width: 74px;
-      text-align: center;
-      border-radius: 999px;
-      padding: 2px 10px;
-      font-weight: 700;
-      border: 1px solid #d1d5db;
-      background: #fff;
-      color: #6b7280;
-    }
-
-    .modal-processing-status.is-running {
-      color: #0f766e;
-      border-color: #99f6e4;
-      background: #f0fdfa;
-    }
-
-    .modal-processing-status.is-done {
-      color: #2e7d32;
-      border-color: #a5d6a7;
-      background: #e8f5e9;
-    }
-
-    .modal-processing-status.is-failed {
-      color: #c62828;
-      border-color: #ef9a9a;
-      background: #ffebee;
-    }
-
-    .modal-state-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      margin: 0 auto 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 700;
-    }
-
-    .modal-state-icon.success {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-
-    .modal-state-icon.error {
-      background: #ffebee;
-      color: #c62828;
-    }
-
-    .modal-btn-danger {
-      background: #c62828;
-      border-color: #c62828;
-      color: #fff;
-    }
-
-    .modal-btn-danger:hover {
-      background: #b71c1c;
-      border-color: #b71c1c;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+      .search-type-toggle.cycle-toggle::-webkit-scrollbar {
+        display: none;
       }
     }
 
-    /* ========== 案②: ステータスボタン・①～⑨一覧・詳細ボタン ========== */
-    .view-layout-2 {
-      padding: 0;
-    }
-
-    .view-layout-2 .status-buttons {
-      margin-bottom: 20px;
-    }
-
-    .view-layout-2 .list-section-title {
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    /* #region レスポンシブ対応 */
-    /* 画面の幅が650px以下ならスマホ（ヘッダー・.content ベースは style.css） */
-    @media (max-width: 768px) {
-
-      .content:not(.expanded),
-      .content.expanded {
-        margin-left: -220px;
-        padding-left: 20px;
-      }
-
+    /* ≤767px: モバイル（縦積み・ハンバーガー等） */
+    @media (max-width: 767px) {
       .header-title {
         margin: 5px 0 0 35px;
         font-size: var(--fs-xl);
@@ -711,19 +1626,10 @@
         display: none;
       }
 
-      /* スクロールは .content に閉じ、ヘッダー/ハンバーガーを固定 */
-      .main-wrapper {
-        flex: 1;
-        min-height: 0;
-        overflow: visible;
-      }
-
       .hamburger {
         display: block;
         position: fixed;
-        top: 6px;
-        left: 10px;
-        margin: 0;
+        margin: 6px 10px 0 0;
         cursor: pointer;
         z-index: 3000;
       }
@@ -733,528 +1639,557 @@
       }
 
       .content {
-        background: var(--color-surface);
+        padding: 20px 20px 0;
+        margin-left: -220px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen-body {
+        flex: none;
+        min-height: auto;
+        height: auto;
+        display: flex;
         flex-direction: column;
-        flex: 1;
-        min-width: 0;
-        min-height: 0;
-        max-width: 100%;
-        padding: 20px;
-        padding-right: max(20px, env(safe-area-inset-right, 0px));
+        grid-template-columns: 1fr;
+        grid-template-areas: none;
+        gap: 12px;
+        padding-right: 0;
+        padding-bottom: 10px;
+      }
+
+      .search-condition-panel {
+        margin: 0 0 12px;
+      }
+
+      .search-condition-body {
+        padding: 10px 12px;
+      }
+
+      .search-condition-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-condition-panel .search-condition-grid > .search-condition-clear-cell {
+        justify-self: end;
+        margin-top: 8px;
+      }
+
+      .spec-panel,
+      .deadline-panel,
+      .progress-panel {
+        grid-area: unset;
         width: 100%;
-        box-sizing: border-box;
+      }
+
+      .panel {
+        overflow: hidden;
+        min-height: auto;
+        height: auto;
+      }
+
+      .panel > .panel-header {
+        border-top-left-radius: var(--radius-md);
+        border-top-right-radius: var(--radius-md);
+      }
+
+      .panel-header {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .panel-header.spec-list-panel-header,
+      .deadline-panel > .panel-header {
+        height: 44px;
+        min-height: 44px;
+        max-height: 44px;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .panel-body {
+        flex: none;
+        min-height: 0;
+        height: auto;
+        max-height: none;
+        padding: 10px 12px;
+        overflow: visible;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(140px, auto) minmax(200px, auto);
+        gap: 10px;
+        overflow: hidden;
+      }
+
+      /* エリア3非表示帳票: 右ブロックに min 200px が効き「＋ページ〜登録」の間が空くため外側第2行の最小高を外す */
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
+        grid-template-rows: minmax(140px, auto) minmax(0, auto);
+      }
+
+      .deadline-panel-body .deadline-right-column {
+        grid-template-rows: auto minmax(120px, 1fr) auto;
+        min-height: 180px;
+      }
+
+      /* 証紙依頼書・カートンマーク等: エリア3はレイアウト維持のため visibility のみ非表示。中央行の 1fr が余白になるためスマホでは行高を潰す */
+      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
+        grid-template-rows: auto minmax(0, 0) auto;
+        min-height: 0;
+        align-content: start;
+      }
+
+      .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-doc {
+        min-height: 0 !important;
+        max-height: 0;
+        padding: 0 !important;
+        border-width: 0 !important;
+        margin: 0;
+        overflow: hidden !important;
+      }
+
+      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-area-2 {
+        min-height: 0;
+        padding-top: 4px;
+        padding-bottom: 4px;
+      }
+
+      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-area-4 {
+        min-height: 44px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+      }
+
+      .spec-panel .spec-list {
+        flex: none;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      .spec-select {
+        display: block;
+      }
+
+      .spec-list > .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-list > .spec-group:not(:has(.spec-item.is-active)) {
+        display: none !important;
+      }
+
+      .spec-group .spec-item-kara-parent:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group:has(.spec-item-kara-child.is-active) .spec-item-kara-parent {
+        display: block !important;
+      }
+
+      .spec-group .spec-item-kara-child:not(.is-active) {
+        display: none !important;
+      }
+
+      .spec-group .spec-group-after .spec-item:not(.is-active) {
+        display: none !important;
+      }
+
+      .content-footer {
+        position: static;
+        padding: 6px 8px 4px;
+      }
+    }
+
+    /* ≤430px: 小画面モバイル（余白・締めの調整） */
+    @media (max-width: 430px) {
+      .content {
+        padding: 14px 16px 0;
       }
 
       .page-title {
-        margin: 0 0 10px;
+        margin-bottom: 12px;
+        font-size: 17px;
       }
 
-      /* イメージ案①: スマホ用 */
-      .filter-row {
-        flex-wrap: wrap;
+      .panel-header {
+        padding: 9px 10px;
+        font-size: 12px;
       }
 
-      .filter-item {
-        flex: 1 1 100%;
+      .panel-header.spec-list-panel-header,
+      .deadline-panel > .panel-header {
+        height: 42px;
+        min-height: 42px;
+        max-height: 42px;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 10px;
+        padding-right: 10px;
       }
 
-      /* スマホ: 検索条件は折りたたみ式 */
-      .search-toggle-sp {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: 14px 16px;
-        font-family: inherit;
-        font-weight: 500;
-        color: var(--color-text);
-        background: var(--color-card);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        text-align: left;
-        box-sizing: border-box;
+      .panel-body {
+        padding: 8px 10px;
       }
 
-      .search-toggle-sp-label {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .search-toggle-sp-icon {
-        margin-right: 8px;
-        flex-shrink: 0;
-        vertical-align: middle;
-      }
-
-      .search-toggle-sp::after {
-        content: "＋";
-        color: var(--color-text-muted);
-      }
-
-      .search-box {
-        display: flex;
-        flex-direction: column;
-        /* 共通 .search-box の align-items: center が列方向だと横方向の中央寄せになるため上書き */
-        align-items: stretch;
-        gap: 0;
-        padding: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-      }
-
-      .search-box-inner {
-        display: none;
-        width: 100%;
-        box-sizing: border-box;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px 16px;
-        padding: 12px 0 0;
-      }
-
-      .search-box.is-open .search-box-inner {
-        display: grid;
-      }
-      #searchBox.is-open #searchRowsPanel {
-        display: grid !important;
-      }
-
-      .search-box.is-open .search-toggle-sp::after {
-        content: "ー";
-      }
-
-      .search-box-inner .filter-row {
-        display: contents;
-      }
-
-      .search-box-inner .filter-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-        min-width: 0;
-      }
-
-      .search-box-inner .filter-item .filter-label {
-        margin-right: 0;
-      }
-
-      .search-box-inner .filter-item select,
-      .search-box-inner .filter-item input[type="text"] {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      .search-box-inner .search-row {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0px;
-        min-width: 0;
-      }
-
-      .search-box-inner .search-row label {
-        font-size: var(--fs-xs);
-        flex-shrink: 0;
-        width: 100%;
-        text-align: left;
-      }
-
-      .search-box-inner .search-row select,
-      .search-box-inner .search-row input {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      #searchRowsPanel .search-row:has(#searchsohincd) > :not(label),
-      #searchRowsPanel .search-row:has(#searchsohincd) textarea {
-        width: 100%;
-        min-width: 0;
-        margin: 0;
-        box-sizing: border-box;
-        align-self: stretch;
-      }
-
-      .search-cancel-wrapper {
-        grid-column: 2;
-        width: auto;
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-end;
-        align-self: end;
-        margin-left: 0;
-      }
-      .btn-search-cancel {
-        padding: 4px 8px;
-      }
-
-      /* 検索結果一覧：スマホ時はカード形式 */
-      #approvalListArea {
-        overflow-x: visible;
-        overflow-y: visible;
-        max-height: none;
-        margin-bottom: 30px;
-        --result-row-height: 270px;
-      }
-
-      #approvalListArea .result-table {
-        min-width: 0;
-      }
-
-      #approvalListArea .result-table thead {
-        display: none;
-      }
-
-      #approvalListArea .result-table tbody tr {
-        display: block;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        padding: 6px 10px;
-        margin-bottom: 6px;
-        background: var(--color-card);
-      }
-
-      #approvalListArea .result-table tbody tr::before {
-
-        display: block;
-        color: var(--color-primary);
-        padding-bottom: 8px;
-        margin-bottom: 8px;
-        border-bottom: 1px solid var(--color-border);
-      }
-
-      #approvalListArea .result-table tbody td {
-        display: block;
-        border: none;
-        padding: 8px 0;
-        white-space: normal;
-      }
-
-      /* 先頭列はチェックボックスのため、2列目以降にラベルを付与 */
-      #approvalListArea .result-table tbody td:nth-child(2)::before {
-        content: "発注日：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(3)::before {
-        content: "発注先：";
-        font-weight: 600;
-        
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(4)::before {
-        content: "得意先：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(5)::before {
-        content: "担当者：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(6)::before {
-        content: "発注区分：";
-        font-weight: 600;
-      }
-
-      #approvalListArea .result-table tbody td:nth-child(7)::before {
-        content: "発注金額合計：";
-        font-weight: 600;
-      }
-
-      /* イメージ案②: スマホ用 */
-      .view-layout-2 .status-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+      .deadline-panel .panel-body.deadline-panel-body {
+        grid-template-rows: minmax(120px, auto) minmax(160px, auto);
         gap: 8px;
       }
 
-      /* ガントチャート */
-      .timeline-wrapper {
-        width: 100%;
-        max-width: 400px;
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
+        grid-template-rows: minmax(120px, auto) minmax(0, auto);
       }
 
-      .timeline-line {
-        left: 20px;
-        right: 20px;
+      .deadline-panel-body .deadline-right-column {
+        min-height: 140px;
+        gap: 8px;
       }
-    }
 
-    /* PCでは検索条件開閉ボタンを非表示（スマホは別メディアクエリで表示） */
-    @media (min-width: 769px) {
-      .search-toggle-sp {
-        display: none;
+      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
+        min-height: 0;
+        gap: 0;
+        align-content: start;
       }
-      .search-box {
-        flex-direction: row;
-      }
-      .search-box-inner {
-        display: block !important;
-        width: 100%;
-      }
-      .search-row {
-        flex: 0 0 auto;
-      }
-      .search-box .search-box-inner .filter-row {
-        display: flex;
-        flex-wrap: wrap;
-        width: 100%;
-        margin-bottom: 0;
-        align-items: flex-end;
-      }
-      .search-cancel-wrapper {
-        margin-left: auto;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        flex: 0 0 auto;
-      }
-    }
 
-    /* スマホ最終上書き: 明細は内部スクロールせず、全体1本スクロール */
-    @media (max-width: 768px) {
-      #approvalListArea {
-        max-height: none;
-        overflow-x: visible;
-        overflow-y: visible;
+      .content-footer {
+        padding: 6px 4px 4px;
+      }
+
+      .content-footer .btn-fab-new {
+        min-width: 60px;
       }
     }
   </style>
 </head>
 
 <body>
-
   <div class="overlay" onclick="closeSidebar()"></div>
 
-  <!--#region ヘッダー  -->
   <div class="header">
     <div class="hamburger" onclick="toggleSidebar()">
-      <img src="images/menu_50dp_008632.svg" />
+      <img src="images/menu_50dp_008632.svg" alt="menu">
     </div>
     <div class="header-title"><a href="dashboard.html">Proma</a></div>
     <div class="header-user">デジタルマネジメントストラテジー事業部　丸眞 太郎</div>
     <div class="account-wrapper">
-      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg">
+      <img class="header-account_circle" src="images/account_circle_16dp_008632.svg" alt="account">
       <div class="account-menu">
         <div class="menu-item">ログアウト</div>
       </div>
     </div>
   </div>
-  <!-- #endregion -->
 
-  <!-- ヘッダー下のレイアウト -->
   <div class="main-wrapper">
-
-    <!--#region メニュー（js/sidebar.js の SHARED_SIDEBAR_HTML） -->
     <div id="sidebarMount"></div>
-    <!-- #endregion -->
 
-    <!-- #endregion -->
-
-    <!--#region メインコンテンツ  -->
     <div class="content">
-      <h2 class="page-title">発注履歴検索</h2>
+      <h2 class="page-title">発注履歴照会</h2>
 
-      <!-- ========== 検索条件・検索結果一覧 ========== -->
-      <div class="view-layout view-layout-1-group">
-        <!-- 検索条件ボックス -->
-        <div class="content-area">
-
-          <div class="search-box" id="searchBox">
-            <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false"
-              aria-controls="searchRowsPanel">
-              <span class="search-toggle-sp-label">
-                <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
-                <span class="search-toggle-sp-text">検索条件を開く</span>
-              </span>
-            </button>
-            <div class="search-box-inner" id="searchRowsPanel">
-              <div class="filter-row">
-                <div class="search-row">
-                  <label>発注No.</label>
-                  <div class="autocomplete">
-                    <input type="text" class="autocomplete-input" data-list="orderNo" placeholder="発注No.検索"
-                      id="searchOrderNo">
-                    <div class="autocomplete-dropdown"></div>
+      <div class="panel search-condition-panel" aria-label="検索条件">
+        <div class="panel-header">
+          <span>検索条件</span>
+          <button id="searchConditionToggleBtn" class="search-toggle-btn" type="button" aria-expanded="true"
+            aria-controls="searchConditionBody">-</button>
+        </div>
+        <div id="searchConditionBody" class="panel-body search-condition-body">
+          <div class="search-condition-grid">
+            <label class="field">
+              <span class="field-label">発注No.</span>
+              <input id="searchHatchuNo" type="text" placeholder="発注No.を入力" aria-label="発注No.">
+            </label>
+            <div class="field">
+              <span class="field-label" id="searchHatchuMakerFieldLabel">発注先</span>
+              <div class="exhibit-bs-multiselect" id="searchHatchuMakerMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchHatchuMakerToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchMakerPopover"
+                  aria-labelledby="searchHatchuMakerFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchHatchuMakerToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchHatchuMakerPopover" hidden>
+                  <input type="text" id="searchHatchuMakerFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="発注先リストの絞り込み"
+                    aria-controls="searchHatchuMakerMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchHatchuMakerMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchHatchuMakerInner"></div>
                   </div>
                 </div>
-                <div class="search-row">
-                  <label>発注先</label>
-                  <div class="autocomplete">
-                    <input type="text" class="autocomplete-input" data-list="supplier" placeholder="発注先検索"
-                      id="searchMaker">
-                    <div class="autocomplete-dropdown"></div>
-                  </div>
-                </div>
-                <div class="search-row">
-                  <label>得意先</label>
-                  <div class="autocomplete">
-                    <input type="text" class="autocomplete-input" data-list="customer" placeholder="得意先検索"
-                      id="searchCategory">
-                    <div class="autocomplete-dropdown"></div>
-                  </div>
-                </div>
-                <div class="search-row">
-                  <label for="searchHanbaiKubun">販売区分</label>
-                  <select id="searchHanbaiKubun">
-                    <option value="">すべて</option>
-                    <option value="teiban">定番</option>
-                    <option value="teibankako">定番加工</option>
-                    <option value="betchu">別注</option>
-                    <option value="oem">OEM</option>
-                  </select>
-                </div>
-                <div class="search-row">
-                  <label for="searchsohincd">商品コード</label>
-                  <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力"></textarea>
-                </div>
-                <div class="search-cancel-wrapper">
-                  <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
-                </div>
+                <select id="searchHatchuMaker" name="searchHatchuMaker" multiple tabindex="-1"
+                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
               </div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="searchTokuisakiFieldLabel">得意先</span>
+              <div class="exhibit-bs-multiselect" id="searchTokuisakiMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchTokuisakiToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchTokuisakiPopover"
+                  aria-labelledby="searchTokuisakiFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchTokuisakiToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchTokuisakiPopover" hidden>
+                  <input type="text" id="searchTokuisakiFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="得意先リストの絞り込み"
+                    aria-controls="searchTokuisakiMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchTokuisakiMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchTokuisakiInner"></div>
+                  </div>
+                </div>
+                <select id="searchTokuisaki" name="searchTokuisaki" multiple tabindex="-1"
+                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="searchConditionSalesFieldLabel">販売区分</span>
+              <div class="exhibit-bs-multiselect" id="searchConditionSalesMs">
+                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionSalesToggle"
+                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionSalesPopover"
+                  aria-labelledby="searchConditionSalesFieldLabel">
+                  <span class="exhibit-bs-multiselect-label" id="searchConditionSalesToggleLabel">すべて</span>
+                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                </button>
+                <div class="exhibit-bs-multiselect-popover" id="searchConditionSalesPopover" hidden>
+                  <input type="text" id="searchConditionSalesFilter" class="exhibit-bs-multiselect-filter"
+                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="販売区分リストの絞り込み"
+                    aria-controls="searchConditionSalesMenu">
+                  <div class="exhibit-bs-multiselect-menu" id="searchConditionSalesMenu" role="listbox"
+                    aria-multiselectable="true">
+                    <div class="exhibit-bs-multiselect-inner" id="searchConditionSalesInner"></div>
+                  </div>
+                </div>
+                <select id="searchConditionSales" name="searchConditionSales" multiple tabindex="-1"
+                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+              </div>
+            </div>
+            <label class="field">
+              <span class="field-label">商品コード</span>
+              <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力" aria-label="商品コード"></textarea>
+            </label>
+            <div class="search-condition-clear-cell">
+              <button type="button" class="btn-search-cancel" id="searchConditionClearBtn">クリア</button>
             </div>
           </div>
         </div>
+      </div>
+      <div class="screen-body">
+        <section class="panel spec-panel">
+          <div class="panel-header spec-list-panel-header">
+            <span id="listPanelHeader" class="spec-list-panel-title">発注履歴一覧</span>
+          </div>
+          <div class="panel-body">
+            <select id="specListSelect" class="spec-select" aria-label="発注履歴を選択"></select>
+            <ul class="spec-list" id="specList">
+              <li class="spec-item" 
+                data-hatchuno="CT-2026-0001" 
+                data-hatchu-date="2026/03/01"
+                data-hatchusaki="今治ソフトパイル株式会社"
+                data-tokuisaki="得意先名１"
+                data-tanto="担当者名１"
+                data-hatchu-kbn="定番" 
+                data-hatchu-gokeikin="￥13,567,000" >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-date"></span>               
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchusaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-kbn"></span>  
+                    <span class="spec-line-val spec-hatchu-gokeikin"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item" 
+                data-hatchuno="CT-2026-0002" 
+                data-hatchu-date="2026/03/10"
+                data-hatchusaki="南通華東紡績（Nantong Huadong）"
+                data-tokuisaki="得意先名２"
+                data-tanto="担当者名２"
+                data-hatchu-kbn="別注" 
+                data-hatchu-gokeikin="￥15,000,000" >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-date"></span>               
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchusaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-kbn"></span>  
+                    <span class="spec-line-val spec-hatchu-gokeikin"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item" 
+                data-hatchuno="CT-2026-0003" 
+                data-hatchu-date="2026/03/15"
+                data-hatchusaki="泉州ガーゼ織物"
+                data-tokuisaki="得意先名３"
+                data-tanto="担当者名３"
+                data-hatchu-kbn="定番加工" 
+                data-hatchu-gokeikin="￥1,250,000" >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-date"></span>               
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchusaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-kbn"></span>  
+                    <span class="spec-line-val spec-hatchu-gokeikin"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item" 
+                data-hatchuno="CT-2026-0004" 
+                data-hatchu-date="2026/04/01"
+                data-hatchusaki="株式会社コットンロード"
+                data-tokuisaki="得意先名４"
+                data-tanto="担当者名４"
+                data-hatchu-kbn="定番" 
+                data-hatchu-gokeikin="￥890,000" >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-date"></span>               
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchusaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-kbn"></span>  
+                    <span class="spec-line-val spec-hatchu-gokeikin"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item" 
+                data-hatchuno="CT-2026-0005" 
+                data-hatchu-date="2026/04/05"
+                data-hatchusaki="オーガニック・ループ製織"
+                data-tokuisaki="得意先名５"
+                data-tanto="担当者名５"
+                data-hatchu-kbn="定番加工" 
+                data-hatchu-gokeikin="￥20,000,000" >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-no"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-date"></span>               
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchusaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hatchu-kbn"></span>  
+                    <span class="spec-line-val spec-hatchu-gokeikin"></span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
 
+        <section class="panel deadline-panel">
+          <div class="panel-header">
+            <div class="search-type-toggle cycle-toggle" role="group" aria-label="仕様書を選択"></div>
+          </div>
+          <div class="panel-body deadline-panel-body deadline-panel-body--no-spec">
+            <div class="deadline-area deadline-area-1" aria-label="エリア1" aria-hidden="true">
+              <div class="deadline-area-1-img-wrap">
+                <img class="deadline-area-1-img" src="images/帳票/発注書/定番商品発注書.png"
+                  alt="発注書" decoding="async" loading="lazy">
+              </div>
+            </div>
+            <div class="deadline-right-column" aria-hidden="true">
+              <div class="deadline-area deadline-area-2" aria-label="エリア2">
+                <nav class="deadline-area-2-pagination-nav" id="deadlineArea2PaginationNav" aria-label="ページ"
+                  hidden>
+                  <ul class="deadline-pagination" id="deadlineArea2PaginationList" role="list"></ul>
+                </nav>
+              </div>
+              <div class="deadline-area deadline-area-3" aria-label="エリア3">
+                <div id="deadlineArea3Mount" class="deadline-area-3-mount"></div>
+              </div>
+              <div class="deadline-area deadline-area-4" aria-label="エリア4">
+                <!--ボタンなし -->
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- 履歴なし -->
+      </div>
 
-        <!-- 検索結果一覧エリア -->
-        <div class="content-area" id="approvalListArea">
-
-          <table class="result-table">
-            <thead>
-              <tr>
-                <th style="width: 10%;">発注No.</th>
-                <th style="width: 9%;">発注日</th>
-                <th style="width: 17%;">発注先</th>
-                <th style="width: 16%;">得意先</th>
-                <th style="width: 12%;">担当者</th>
-                <th style="width: 9%;">発注区分</th>
-                <th style="width: 14%;">発注金額合計</th>
-              </tr>
-            </thead>
-            <tbody>
-
-              <tr><!-- 1行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0001</a></td>
-                <td>2026/02/28</td>
-                <td>今治ソフトパイル株式会社</td>
-                <td>得意先１</td>
-                <td>担当者①</td>
-                <td><span class="hatchu-kubun-pill teiban">定番</span></td>
-                <td>￥13,567,000</td>
-              </tr>
-              <tr><!-- 2行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0002</a></td>
-                <td>2026/03/01</td>
-                <td>南通華東紡績（Nantong Huadong）</td>
-                <td>得意先２</td>
-                <td>担当者②</td>
-                <td><span class="hatchu-kubun-pill betchu">別注</span></td>
-                <td>￥15,000,000</td>
-              </tr>
-              <tr><!-- 3行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0003</a></td>
-                <td>2026/03/02</td>
-                <td>泉州ガーゼ織物</td>
-                <td>得意先３</td>
-                <td>担当者③</td>
-                <td><span class="hatchu-kubun-pill teiban-kako">定番加工</span></td>
-                <td>￥1,250,000</td>
-              </tr>
-              <tr><!-- 4行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0004</a></td>
-                <td>2026/03/03</td>
-                <td>株式会社コットンロード</td>
-                <td>得意先４</td>
-                <td>担当者④</td>
-                <td><span class="hatchu-kubun-pill teiban">定番</span></td>
-                <td>￥890,000</td>
-              </tr>
-              <tr><!-- 5行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0005</a></td>
-                <td>2026/03/04</td>
-                <td>青島恒泰繊維有限公司</td>
-                <td>得意先５</td>
-                <td>担当者⑤</td>
-                <td><span class="hatchu-kubun-pill betchu">別注</span></td>
-                <td>￥1,250,000</td>
-              </tr>
-              <tr><!-- 6行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0006</a></td>
-                <td>2026/03/05</td>
-                <td>オーガニック・ループ製織</td>
-                <td>得意先６</td>
-                <td>担当者⑥</td>
-                <td><span class="hatchu-kubun-pill teiban-kako">定番加工</span></td>
-                <td>￥20,000,000</td>
-              </tr>
-              <tr><!-- 7行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0007</a></td>
-                <td>2026/03/06</td>
-                <td>彩り染タオル製作所</td>
-                <td>得意先７</td>
-                <td>担当者⑦</td>
-                <td><span class="hatchu-kubun-pill teiban">定番</span></td>
-                <td>￥16,000,000</td>
-              </tr>
-              <tr><!-- 8行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0008</a></td>
-                <td>2026/03/07</td>
-                <td>広州美雅実業</td>
-                <td>得意先８</td>
-                <td>担当者⑧</td>
-                <td><span class="hatchu-kubun-pill betchu">別注</span></td>
-                <td>￥17,000,000</td>
-              </tr>
-              <tr><!-- 9行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0009</a></td>
-                <td>2026/03/08</td>
-                <td>愛媛テキスタイル工房</td>
-                <td>得意先９</td>
-                <td>担当者⑨</td>
-                <td><span class="hatchu-kubun-pill teiban-kako">定番加工</span></td>
-                <td>￥18,000,000</td>
-              </tr>
-              <tr><!-- 10行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0010</a></td>
-                <td>2026/03/09</td>
-                <td>上海ジャガード・インダストリー</td>
-                <td>得意先１０</td>
-                <td>担当者⑩</td>
-                <td><span class="hatchu-kubun-pill teiban">定番</span></td>
-                <td>￥19,000,000</td>
-              </tr>
-              <tr><!-- 11行目サンプルデータ -->
-                <td><a href="chumonshorirekishokai_teiban.html">CT-2026-0011</a></td>
-                <td>2026/03/09</td>
-                <td>株式会社ふわふわ繊維</td>
-                <td>得意先１１</td>
-                <td>担当者⑪</td>
-                <td><span class="hatchu-kubun-pill betchu">別注</span></td>
-                <td>￥20,000,000</td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-        <!-- #endregion -->
+      <div class="content-footer">
+        <!--ボタンなし -->
       </div>
     </div>
   </div>
+  <div class="image-preview-modal" id="imagePreviewModal" role="dialog" aria-modal="true" aria-label="画像プレビュー" hidden>
+    <div class="image-preview-modal__dialog">
+      <img class="image-preview-modal__image" id="imagePreviewModalImage" alt="仕様書プレビュー">
+    </div>
+  </div>
 
-
+  <script src="js/autocomplete.js"></script>
   <script src="js/sidebar.js"></script>
   <script>
     function loadSharedSidebar() {
-      const mount = document.getElementById("sidebarMount");
+      const mount = document.getElementById('sidebarMount');
       if (!mount) return;
 
-      if (typeof window.SHARED_SIDEBAR_HTML !== "string" || !window.SHARED_SIDEBAR_HTML.trim()) {
-        console.error("Sidebar include error: SHARED_SIDEBAR_HTML is not available.");
+      if (typeof window.SHARED_SIDEBAR_HTML !== 'string' || !window.SHARED_SIDEBAR_HTML.trim()) {
+        console.error('Sidebar include error: SHARED_SIDEBAR_HTML is not available.');
         return;
       }
 
@@ -1263,270 +2198,1433 @@
     }
 
     function initSidebarCollapseToggle() {
-      const sidebar = document.querySelector(".sidebar");
-      const toggle = document.querySelector(".sidebar-toggle");
-      const content = document.querySelector(".content");
-      if (!toggle || !sidebar || !content || toggle.dataset.bound === "1") return;
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      const content = document.querySelector('.content');
+      if (!toggle || !sidebar || !content || toggle.dataset.bound === '1') return;
 
-      const toggleImg = toggle.querySelector("img");
-      toggle.addEventListener("click", () => {
-        sidebar.classList.toggle("closed");
-        content.classList.toggle("expanded");
+      const toggleImg = toggle.querySelector('img');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        content.classList.toggle('expanded');
 
-        if (sidebar.classList.contains("closed")) {
-          if (toggleImg) toggleImg.src = "images/chevron_right_20dp_FFFFF.svg";
+        if (sidebar.classList.contains('closed')) {
+          if (toggleImg) toggleImg.src = 'images/chevron_right_20dp_FFFFF.svg';
         } else {
-          if (toggleImg) toggleImg.src = "images/chevron_left_20dp_FFFFF.svg";
+          if (toggleImg) toggleImg.src = 'images/chevron_left_20dp_FFFFF.svg';
         }
       });
 
-      toggle.dataset.bound = "1";
+      toggle.dataset.bound = '1';
     }
 
     function toggleSidebar() {
-      const sidebar = document.querySelector(".sidebar");
-      const overlay = document.querySelector(".overlay");
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
       if (!sidebar || !overlay) return;
 
-      sidebar.classList.toggle("active");
-      if (sidebar.classList.contains("active")) {
-        overlay.classList.add("show");
-      } else {
-        overlay.classList.remove("show");
-      }
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('show', sidebar.classList.contains('active'));
     }
 
     function closeSidebar() {
-      const sidebar = document.querySelector(".sidebar");
-      const overlay = document.querySelector(".overlay");
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
       if (!sidebar || !overlay) return;
 
-      sidebar.classList.remove("active");
-      overlay.classList.remove("show");
+      sidebar.classList.remove('active');
+      overlay.classList.remove('show');
+    }
+
+    function initAccountMenu() {
+      const icon = document.querySelector('.header-account_circle');
+      const menu = document.querySelector('.account-menu');
+      if (!icon || !menu) return;
+
+      icon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', () => {
+        menu.style.display = 'none';
+      });
+    }
+
+    const DEADLINE_AREA1_IMAGE_ROOT = 'images/帳票/発注書/';
+    const DEADLINE_AREA1_IMAGE_FILENAMES = {
+      通常: {
+        '発注書': '定番商品発注書.png',
+        '証紙依頼書': '証紙発注依頼書.png',
+        'カートンマーク': 'カートンマーク_その他メーカーフォーマット_定番フォーマット.png',
+      },
+    };
+
+    /** 契約依頼一覧の行に販売区分が無い場合は発注帳票（通常）として扱う */
+    function getDeadlineHanbaiKubun(item) {
+      if (!item) return '';
+      const raw = (item.dataset && item.dataset.hanbaiKubun || '').trim();
+      return raw || '通常';
+    }
+
+    function getDeadlinePanelCycleToggle() {
+      const panel = document.querySelector('.deadline-panel');
+      return panel ? panel.querySelector('.cycle-toggle') : null;
+    }
+
+    function normalizeDeadlineDocLabel(raw) {
+      return String(raw || '').trim().normalize('NFC');
+    }
+
+    function buildDeadlineArea1ImageSrc(hanbaiKubun, docLabel) {
+      const kubun = String(hanbaiKubun || '').trim();
+      const label = String(docLabel || '').trim();
+      if (!kubun || !label) return '';
+      const byKubun = DEADLINE_AREA1_IMAGE_FILENAMES[kubun];
+      const file = byKubun && byKubun[label];
+      if (!file) return '';
+      return DEADLINE_AREA1_IMAGE_ROOT + file;
+    }
+
+    /** chumonshosakusei_teiban.html の carton-mark-format と同一の既定プレビュー */
+    const DEFAULT_CARTON_MARK_FORMAT_SRC =
+      'images/帳票/発注書/カートンマーク_その他メーカーフォーマット_定番フォーマット.png';
+
+    const deadlineCartonFormatSelectionBySpecItem = new WeakMap();
+
+    function restoreDeadlineCartonFormatSelect(specItem) {
+      const sel = document.getElementById('deadlineCartonMarkFormatSelect');
+      if (!sel) return;
+      const saved = specItem ? deadlineCartonFormatSelectionBySpecItem.get(specItem) : undefined;
+      if (Array.isArray(saved) && saved.length) {
+        const set = new Set(saved);
+        Array.from(sel.options).forEach((opt) => {
+          opt.selected = set.has(opt.value);
+        });
+      } else {
+        Array.from(sel.options).forEach((opt) => {
+          opt.selected = opt.value === DEFAULT_CARTON_MARK_FORMAT_SRC;
+        });
+      }
+    }
+
+    function persistDeadlineCartonFormatSelection(specItemOpt) {
+      const sel = document.getElementById('deadlineCartonMarkFormatSelect');
+      if (!sel) return;
+      const item =
+        specItemOpt !== undefined && specItemOpt !== null
+          ? specItemOpt
+          : document.querySelector('#specList .spec-item.is-active');
+      if (!item) return;
+      deadlineCartonFormatSelectionBySpecItem.set(item, Array.from(sel.selectedOptions).map((o) => o.value));
+    }
+
+    function applyDeadlineArea1Image(item) {
+      const wrap = document.querySelector('.deadline-area-1-img-wrap');
+      if (!wrap) return;
+      const specItem = item || document.querySelector('#specList .spec-item.is-active');
+      const kubun = getDeadlineHanbaiKubun(specItem);
+      const cycleGroup = getDeadlinePanelCycleToggle();
+      const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
+      const docLabel = normalizeDeadlineDocLabel(activeBtn && activeBtn.dataset.docLabel);
+
+      if (docLabel === normalizeDeadlineDocLabel('カートンマーク')) {
+        const sel = document.getElementById('deadlineCartonMarkFormatSelect');
+        wrap.replaceChildren();
+        let urls = [];
+        if (sel && sel.selectedOptions && sel.selectedOptions.length) {
+          urls = Array.from(sel.selectedOptions)
+            .map((o) => String(o.value || '').trim())
+            .filter(Boolean);
+        }
+        if (!urls.length) {
+          const fb = buildDeadlineArea1ImageSrc(kubun, docLabel);
+          if (fb) urls = [fb];
+          else if (DEFAULT_CARTON_MARK_FORMAT_SRC) urls = [DEFAULT_CARTON_MARK_FORMAT_SRC];
+        }
+        urls.forEach((src, i) => {
+          const im = document.createElement('img');
+          im.className = 'deadline-area-1-img';
+          im.decoding = 'async';
+          im.loading = 'lazy';
+          im.src = src;
+          im.alt =
+            urls.length > 1
+              ? 'カートンマーク (' + (i + 1) + '/' + urls.length + ')'
+              : 'カートンマーク';
+          wrap.appendChild(im);
+        });
+        return;
+      }
+
+      wrap.replaceChildren();
+      const img = document.createElement('img');
+      img.className = 'deadline-area-1-img';
+      img.decoding = 'async';
+      img.loading = 'lazy';
+      const src = buildDeadlineArea1ImageSrc(kubun, docLabel);
+      if (src) {
+        img.src = src;
+        img.alt = docLabel || '帳票プレビュー';
+      } else {
+        img.removeAttribute('src');
+        img.alt = '';
+      }
+      wrap.appendChild(img);
+    }
+
+    /** 選択中の帳票ラベルが含まれるとき AI アップロードを非表示にし、ページ選択ボタン群を表示する（NFC 正規化済み） */
+    const DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS = new Set(
+      [
+        '発注書',
+        '証紙依頼書',
+        'カートンマーク'
+      ].map((s) => normalizeDeadlineDocLabel(s))
+    );
+    /** AI非表示帳票のうち、ページネーション/UIを表示しない帳票 */
+    const DEADLINE_AREA2_HIDE_PAGING_LABELS = new Set();
+    let deadlineArea2PageCount = 0;
+    let deadlineArea2ActivePage = 1;
+    let deadlineArea2PagingBoundDocLabel = '';
+    let deadlineArea2PagingBoundSpecItem = null;
+    const deadlineArea2PagingStateBySpecItem = new WeakMap();
+
+    function getDeadlineArea2PagingStateMapForItem(item) {
+      if (!item) return null;
+      let m = deadlineArea2PagingStateBySpecItem.get(item);
+      if (!m) {
+        m = Object.create(null);
+        deadlineArea2PagingStateBySpecItem.set(item, m);
+      }
+      return m;
+    }
+
+    function saveDeadlineArea2PagingStateForDoc(item, docLabelKey, pageCount, activePage) {
+      if (!item || !docLabelKey) return;
+      const pc = Math.max(0, Number(pageCount) || 0);
+      const ap = pc < 1 ? 1 : Math.min(Math.max(1, Number(activePage) || 1), pc);
+      const map = getDeadlineArea2PagingStateMapForItem(item);
+      if (!map) return;
+      map[docLabelKey] = { pageCount: pc, activePage: ap };
+    }
+
+    function loadDeadlineArea2PagingStateForDoc(item, docLabelKey) {
+      if (!item || !docLabelKey) return null;
+      const map = deadlineArea2PagingStateBySpecItem.get(item);
+      if (!map || !map[docLabelKey]) return null;
+      return map[docLabelKey];
+    }
+
+    /** 発注書・証紙依頼書・カートンマーク：エリア2のページ選択は初期2ページ */
+    function defaultDeadlineArea2PageCountForDoc(docLabel) {
+      const dl = normalizeDeadlineDocLabel(docLabel);
+      if (!DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(dl)) return 0;
+      if (DEADLINE_AREA2_HIDE_PAGING_LABELS.has(dl)) return 0;
+      return 2;
+    }
+
+    function persistDeadlineArea2PagingState() {
+      const item = document.querySelector('#specList .spec-item.is-active');
+      const g = getDeadlinePanelCycleToggle();
+      const b = g && g.querySelector('button.search-type-btn.is-active');
+      const dl = normalizeDeadlineDocLabel(b && b.dataset.docLabel);
+      if (!item || !dl || !DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(dl)) return;
+      saveDeadlineArea2PagingStateForDoc(item, dl, deadlineArea2PageCount, deadlineArea2ActivePage);
+    }
+
+    /** Material Symbols(keyboard_double_arrow_*) と chevron（images/material_symbols_*.svg と同一） */
+    const MS_PAGINATION_PATH_FIRST = 'M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z';
+    const MS_PAGINATION_PATH_PREV = 'M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z';
+    const MS_PAGINATION_PATH_NEXT = 'M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z';
+    const MS_PAGINATION_PATH_LAST = 'M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z';
+
+    /** ページ番号ボタンは同時に表示する最大数（先頭・末尾ボタン＋ページネーション矢印とは別） */
+    const DEADLINE_PAGINATION_VISIBLE_PAGE_COUNT = 5;
+
+    function deadlinePaginationMsIcon(pathD) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 -960 960 960');
+      svg.setAttribute('width', '15');
+      svg.setAttribute('height', '15');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', pathD);
+      p.setAttribute('fill', 'currentColor');
+      svg.appendChild(p);
+      return svg;
+    }
+
+    function renderDeadlineArea2Pagination() {
+      const ul = document.getElementById('deadlineArea2PaginationList');
+      const nav = document.getElementById('deadlineArea2PaginationNav');
+      if (!ul || !nav) return;
+      ul.replaceChildren();
+      if (deadlineArea2PageCount < 1) {
+        nav.hidden = true;
+        persistDeadlineArea2PagingState();
+        return;
+      }
+      nav.hidden = false;
+
+      function appendNavControl(label, pathD, disabled, onActivate) {
+        const li = document.createElement('li');
+        li.className = 'deadline-pagination-item';
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'deadline-pagination-link deadline-pagination-link--icon';
+        b.setAttribute('aria-label', label);
+        b.disabled = !!disabled;
+        b.appendChild(deadlinePaginationMsIcon(pathD));
+        b.addEventListener('click', () => {
+          if (b.disabled) return;
+          onActivate();
+          renderDeadlineArea2Pagination();
+        });
+        li.appendChild(b);
+        ul.appendChild(li);
+      }
+
+      const atFirst = deadlineArea2ActivePage <= 1;
+      const atLast = deadlineArea2ActivePage >= deadlineArea2PageCount;
+
+      appendNavControl('先頭のページへ', MS_PAGINATION_PATH_FIRST, atFirst, () => {
+        deadlineArea2ActivePage = 1;
+      });
+      appendNavControl('前のページへ', MS_PAGINATION_PATH_PREV, atFirst, () => {
+        deadlineArea2ActivePage = Math.max(1, deadlineArea2ActivePage - 1);
+      });
+
+      const total = deadlineArea2PageCount;
+      const maxVis = DEADLINE_PAGINATION_VISIBLE_PAGE_COUNT;
+      let rangeStart = 1;
+      let rangeEnd = total;
+      if (total > maxVis) {
+        rangeStart = Math.max(1, Math.min(deadlineArea2ActivePage - 2, total - maxVis + 1));
+        rangeEnd = rangeStart + maxVis - 1;
+      }
+      for (let i = rangeStart; i <= rangeEnd; i++) {
+        const li = document.createElement('li');
+        li.className = 'deadline-pagination-item';
+        if (i === deadlineArea2ActivePage) li.classList.add('is-active');
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'deadline-pagination-link';
+        b.textContent = String(i);
+        b.setAttribute('aria-label', 'ページ ' + i);
+        if (i === deadlineArea2ActivePage) {
+          b.setAttribute('aria-current', 'page');
+        }
+        b.addEventListener('click', () => {
+          deadlineArea2ActivePage = i;
+          renderDeadlineArea2Pagination();
+        });
+        li.appendChild(b);
+        ul.appendChild(li);
+      }
+
+      appendNavControl('次のページへ', MS_PAGINATION_PATH_NEXT, atLast, () => {
+        deadlineArea2ActivePage = Math.min(deadlineArea2PageCount, deadlineArea2ActivePage + 1);
+      });
+      appendNavControl('末尾のページへ', MS_PAGINATION_PATH_LAST, atLast, () => {
+        deadlineArea2ActivePage = deadlineArea2PageCount;
+      });
+      persistDeadlineArea2PagingState();
+    }
+
+    const DEADLINE_AREA3_HATCHUSHO_IMAGE_SRC =
+      'images/帳票/発注書/製造委託契約書.png';
+
+    function renderHatchuDefaultMount(mount) {
+      mount.replaceChildren();
+      const wrap = document.createElement('div');
+      wrap.className = 'deadline-area-3-hatchu-img-wrap';
+      const img = document.createElement('img');
+      img.className = 'deadline-area-3-hatchu-img';
+      img.src = DEADLINE_AREA3_HATCHUSHO_IMAGE_SRC;
+      img.alt = '製造委託契約書';
+      img.decoding = 'async';
+      wrap.appendChild(img);
+      mount.appendChild(wrap);
+    }
+
+    function isDeadlineArea3HatchuDocActive() {
+      const cycleGroup = getDeadlinePanelCycleToggle();
+      const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
+      const d = normalizeDeadlineDocLabel(activeBtn && activeBtn.dataset.docLabel);
+      return d === normalizeDeadlineDocLabel('発注書') && DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(d);
+    }
+
+    function syncDeadlineArea3HatchushoPreview(docLabel, hideAiUpload, hidePagingUi) {
+      const area3 = document.querySelector('.deadline-area-3');
+      const mount = document.getElementById('deadlineArea3Mount');
+      if (!area3 || !mount) return;
+      const inPaging = hideAiUpload && !hidePagingUi;
+      const normalized = normalizeDeadlineDocLabel(docLabel);
+      const hideArea3 =
+        inPaging &&
+        (normalized === normalizeDeadlineDocLabel('証紙依頼書') ||
+          normalized === normalizeDeadlineDocLabel('カートンマーク'));
+      const showHatchu =
+        inPaging && normalized === normalizeDeadlineDocLabel('発注書');
+
+      if (hideArea3) {
+        area3.classList.add('deadline-area-3--hidden-by-doc');
+        area3.setAttribute('aria-hidden', 'true');
+        mount.replaceChildren();
+        return;
+      }
+
+      area3.classList.remove('deadline-area-3--hidden-by-doc');
+      area3.removeAttribute('aria-hidden');
+
+      if (!showHatchu) {
+        if (!hideArea3) {
+          mount.replaceChildren();
+        }
+        return;
+      }
+
+      renderHatchuDefaultMount(mount);
+    }
+
+    /** エリア4「登録」ボタン */
+    function syncDeadlineArea4TorokuBtnOffset(docLabel) {
+      const btn = document.getElementById('torokuBtn');
+      if (!btn) return;
+      const n = normalizeDeadlineDocLabel(docLabel);
+      const shift =
+        n === normalizeDeadlineDocLabel('証紙依頼書') ||
+        n === normalizeDeadlineDocLabel('カートンマーク');
+      btn.classList.toggle('deadline-toroku-btn--doc-shift', shift);
+    }
+
+    /** 「契約書依頼」は「発注書」のみ表示（「証紙依頼書」「カートンマーク」・その他・未選択は非表示） */
+    function syncKeiyakushoIraiButtonVisibility(docLabel) {
+      const el = document.getElementById('keiyakushoIraiBtn');
+      if (!el) return;
+      const n = normalizeDeadlineDocLabel(docLabel);
+      const on = n === normalizeDeadlineDocLabel('発注書');
+      el.hidden = !on;
+      el.toggleAttribute('aria-hidden', !on);
+    }
+
+    function syncDeadlineArea2Ui() {
+      const cycleGroup = getDeadlinePanelCycleToggle();
+      const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
+      const docLabel = normalizeDeadlineDocLabel(activeBtn && activeBtn.dataset.docLabel);
+      syncKeiyakushoIraiButtonVisibility(docLabel);
+      syncDeadlineArea4TorokuBtnOffset(docLabel);
+      const hideAiUpload = DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(docLabel);
+      const hidePagingUi = DEADLINE_AREA2_HIDE_PAGING_LABELS.has(docLabel);
+      const activeSpecItem = document.querySelector('#specList .spec-item.is-active');
+      const cartonWrap = document.getElementById('deadlineCartonMarkFormatWrap');
+      if (cartonWrap) {
+        const isCarton = docLabel === normalizeDeadlineDocLabel('カートンマーク');
+        cartonWrap.hidden = !isCarton;
+        if (isCarton) {
+          restoreDeadlineCartonFormatSelect(activeSpecItem);
+        }
+      }
+      const nav = document.getElementById('deadlineArea2PaginationNav');
+      const aiBtn = document.getElementById('aiDataUploadBtn');
+      if (!nav) {
+        syncDeadlineArea3HatchushoPreview(docLabel, hideAiUpload, hidePagingUi);
+        return;
+      }
+
+      function setAiUploadSuppressed(on) {
+        if (aiBtn) {
+          aiBtn.hidden = !!on;
+          aiBtn.classList.toggle('deadline-area2-ai-upload--suppressed', !!on);
+          aiBtn.toggleAttribute('aria-hidden', !!on);
+        }
+      }
+
+      if (hideAiUpload && !hidePagingUi) {
+        const prevItem = deadlineArea2PagingBoundSpecItem;
+        const prevLabel = deadlineArea2PagingBoundDocLabel;
+
+        if (activeSpecItem !== prevItem) {
+          if (prevItem && prevLabel) {
+            saveDeadlineArea2PagingStateForDoc(prevItem, prevLabel, deadlineArea2PageCount, deadlineArea2ActivePage);
+          }
+          deadlineArea2PagingBoundSpecItem = activeSpecItem;
+          deadlineArea2PagingBoundDocLabel = '';
+        }
+
+        if (deadlineArea2PagingBoundDocLabel !== docLabel) {
+          const sameRowDocSwitch =
+            prevLabel &&
+            activeSpecItem &&
+            activeSpecItem === deadlineArea2PagingBoundSpecItem &&
+            prevItem === activeSpecItem;
+          if (deadlineArea2PagingBoundSpecItem && sameRowDocSwitch) {
+            saveDeadlineArea2PagingStateForDoc(deadlineArea2PagingBoundSpecItem, prevLabel, deadlineArea2PageCount, deadlineArea2ActivePage);
+          }
+          deadlineArea2PagingBoundDocLabel = docLabel;
+          const saved = activeSpecItem ? loadDeadlineArea2PagingStateForDoc(activeSpecItem, docLabel) : null;
+          if (saved && typeof saved.pageCount === 'number' && saved.pageCount >= 1) {
+            deadlineArea2PageCount = saved.pageCount;
+            const pc = deadlineArea2PageCount;
+            deadlineArea2ActivePage = Math.min(Math.max(1, saved.activePage || 1), pc);
+          } else {
+            deadlineArea2PageCount = defaultDeadlineArea2PageCountForDoc(docLabel);
+            deadlineArea2ActivePage = 1;
+          }
+        } else if (deadlineArea2PageCount < 0) {
+          deadlineArea2PageCount = defaultDeadlineArea2PageCountForDoc(docLabel);
+          deadlineArea2ActivePage = 1;
+        }
+        setAiUploadSuppressed(true);
+        renderDeadlineArea2Pagination();
+      } else if (hideAiUpload && hidePagingUi) {
+        deadlineArea2PagingBoundDocLabel = '';
+        nav.hidden = true;
+        deadlineArea2PageCount = 0;
+        deadlineArea2ActivePage = 1;
+        setAiUploadSuppressed(true);
+      } else {
+        deadlineArea2PagingBoundDocLabel = '';
+        nav.hidden = true;
+        deadlineArea2PageCount = 0;
+        deadlineArea2ActivePage = 1;
+        setAiUploadSuppressed(false);
+      }
+
+      syncDeadlineArea3HatchushoPreview(docLabel, hideAiUpload, hidePagingUi);
+    }
+
+    const SPEC_DOC_LISTS_BY_HANBAI_KUBUN = {
+      通常: ['発注書', '証紙依頼書', 'カートンマーク'],
+    };
+
+    function syncCycleToggleButtons(item) {
+      const group = getDeadlinePanelCycleToggle();
+      if (!group) return;
+      const kubun = getDeadlineHanbaiKubun(item);
+      const labels = SPEC_DOC_LISTS_BY_HANBAI_KUBUN[kubun] || [];
+      group.replaceChildren();
+      if (!labels.length) {
+        group.setAttribute('aria-label', '販売区分に対応する仕様書がありません');
+        syncDeadlineArea2Ui();
+        applyDeadlineArea1Image(item);
+        return;
+      }
+      group.setAttribute('aria-label', '仕様書を選択');
+      labels.forEach((label, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'search-type-btn' + (i === 0 ? ' is-active' : '');
+        btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+        btn.dataset.docLabel = label;
+        btn.textContent = label;
+        group.appendChild(btn);
+      });
+      syncDeadlineArea2Ui();
+      applyDeadlineArea1Image(item);
+    }
+
+    function initDeadlineCartonMarkSelect() {
+      const sel = document.getElementById('deadlineCartonMarkFormatSelect');
+      if (!sel || sel.dataset.bound === '1') return;
+      sel.dataset.bound = '1';
+      sel.addEventListener('change', () => {
+        persistDeadlineCartonFormatSelection();
+        applyDeadlineArea1Image();
+      });
+    }
+
+    function initCycleToggle() {
+      const group = getDeadlinePanelCycleToggle();
+      if (!group || group.dataset.cycleToggleBound === '1') return;
+      group.dataset.cycleToggleBound = '1';
+      group.addEventListener('click', (e) => {
+        const btn = e.target.closest('button.search-type-btn');
+        if (!btn || !group.contains(btn)) return;
+        group.querySelectorAll('button.search-type-btn').forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        syncDeadlineArea2Ui();
+        applyDeadlineArea1Image();
+      });
+    }
+
+    function initSpecSearch() {
+      const specList = document.getElementById('specList');
+      const specListSelect = document.getElementById('specListSelect');
+      if (!specList) return;
+      let items = Array.from(specList.querySelectorAll('.spec-item'));
+
+      function specOptionLabel(item) {
+        const no = item.dataset.hatchuno || '';
+        const hatchusaki = item.dataset.hatchusaki || '';
+        const line = [no, hatchusaki].filter((part) => String(part || '').trim()).join(' / ');
+        return (line || '（未設定）');
+      }
+
+      function rebuildSpecSelectOptions() {
+        if (!specListSelect) return;
+        const active = getActiveItem();
+        specListSelect.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '発注書を選択';
+        specListSelect.appendChild(placeholder);
+        items.forEach((item, index) => {
+          const opt = document.createElement('option');
+          opt.value = String(index);
+          opt.textContent = specOptionLabel(item);
+          specListSelect.appendChild(opt);
+        });
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) specListSelect.value = String(idx);
+        else specListSelect.value = '';
+      }
+
+      function syncSpecSelectValue() {
+        if (!specListSelect) return;
+        const expected = items.length + 1;
+        if (specListSelect.options.length !== expected) rebuildSpecSelectOptions();
+        const active = getActiveItem();
+        const idx = active ? items.indexOf(active) : -1;
+        if (idx >= 0) specListSelect.value = String(idx);
+        else specListSelect.value = '';
+      }
+
+      function getActiveItem() {
+        return items.find((item) => item.classList.contains('is-active')) || null;
+      }
+
+      function syncDeadlinePanelBodyVisibility(hasSpec) {
+        const body = document.querySelector('.deadline-panel .deadline-panel-body');
+        if (!body) return;
+        body.classList.toggle('deadline-panel-body--no-spec', !hasSpec);
+        const area1 = body.querySelector('.deadline-area-1');
+        const right = body.querySelector('.deadline-right-column');
+        if (area1) {
+          if (hasSpec) area1.removeAttribute('aria-hidden');
+          else area1.setAttribute('aria-hidden', 'true');
+        }
+        if (right) {
+          if (hasSpec) right.removeAttribute('aria-hidden');
+          else right.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      function selectItem(item) {
+        const prev = items.find((c) => c.classList.contains('is-active'));
+        persistDeadlineCartonFormatSelection(prev);
+        items.forEach((candidate) => candidate.classList.remove('is-active'));
+        item.classList.add('is-active');
+        syncDeadlinePanelBodyVisibility(true);
+        syncFormFromItem(item);
+        syncSpecSelectValue();
+      }
+
+      function bindItem(item) {
+        item.addEventListener('click', () => {
+          selectItem(item);
+        });
+      }
+
+      function hatchuKbnDisplayLabel(raw) {
+        const s = String(raw || '').trim();
+        if (!s) return '';
+        const codeMap = {
+          teiban: '定番',
+          teibankako: '定番加工',
+          betchu: '別注',
+        };
+        const lower = s.toLowerCase();
+        if (codeMap[lower]) return codeMap[lower];
+        return s;
+      }
+
+      function hatchuKbnPillModifierClass(displayLabel) {
+        const norm = String(displayLabel || '').trim();
+        if (norm === '定番') return 'teiban';
+        if (norm === '別注') return 'betchu';
+        if (norm === '定番加工') return 'teiban-kako';
+        return '';
+      }
+
+      function renderHatchuKbnPill(container, raw) {
+        if (!container) return;
+        const rawTrim = String(raw || '').trim();
+        container.replaceChildren();
+        if (!rawTrim) {
+          container.textContent = '—';
+          return;
+        }
+        const label = hatchuKbnDisplayLabel(rawTrim);
+        const pill = document.createElement('span');
+        pill.className = 'hatchu-kubun-pill';
+        const mod = hatchuKbnPillModifierClass(label);
+        if (mod) pill.classList.add(mod);
+        else pill.classList.add('hatchu-kubun-pill--unknown');
+        pill.textContent = label;
+        container.appendChild(pill);
+      }
+
+      function renderSpecMeta(item) {
+        const hatchuNoEl = item.querySelector('.spec-hatchu-no');
+        const hatchuDateEl = item.querySelector('.spec-hatchu-date');
+        const hatchusakiEl = item.querySelector('.spec-hatchusaki');
+        const tokuisakiEl = item.querySelector('.spec-tokuisaki');
+        const tantoEl = item.querySelector('.spec-tanto');
+        const hatchuKbnEl = item.querySelector('.spec-hatchu-kbn');
+        const hatchuGokeikinEl = item.querySelector('.spec-hatchu-gokeikin');
+
+        if (hatchuNoEl) {
+          const hatchuNo = (item.dataset.hatchuno || '').trim();          
+          hatchuNoEl.textContent = hatchuNo ? '発注No.  ' + hatchuNo : '—';
+        }
+        if (hatchuDateEl) {
+          const hatchuDate = (item.dataset.hatchuDate || '').trim();
+          hatchuDateEl.textContent = hatchuDate ? hatchuDate : '—';
+        }
+        if (hatchuKbnEl) {
+          const hatchuKbn = (item.dataset.hatchuKbn || '').trim();
+          renderHatchuKbnPill(hatchuKbnEl, hatchuKbn);
+        }
+        if (hatchusakiEl) {
+          const hatchusaki = (item.dataset.hatchusaki || '').trim();
+          hatchusakiEl.textContent = hatchusaki ? hatchusaki : '—';
+        }
+        if (tokuisakiEl) {
+          const tokuisaki = (item.dataset.tokuisaki || '').trim();
+          tokuisakiEl.textContent = tokuisaki ? tokuisaki : '—';
+        }
+        if (tantoEl) {
+          const tanto = (item.dataset.tanto || '').trim();
+          tantoEl.textContent = tanto ? tanto : '—';
+        }
+        if (hatchuGokeikinEl) {
+          const hatchuGokeikin = (item.dataset.hatchuGokeikin || '').trim();
+          hatchuGokeikinEl.textContent = hatchuGokeikin ? hatchuGokeikin : '—';
+        }
+      }
+
+      function syncFormFromItem(item) {
+        syncCycleToggleButtons(item);
+        const iraino = item ? String(item.dataset.iraino || '').trim() : '';
+        const historyMount = document.getElementById('specHistoryCommentMount');
+        if (historyMount) {
+          historyMount.replaceChildren();
+          const historyByIraiNo = {
+            'AC-0001': [
+              { label: '2025/06/01 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2025/06/01 10:00 丸眞 花子', text: '証紙依頼書を登録しました。' },
+              { label: '2025/06/01 11:00 丸眞 桜子', text: 'カートンマークを登録しました。' },
+            ],
+            'AC-0002': [
+              { label: '2025/06/02 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2025/06/02 10:15 丸眞 花子', text: '証紙依頼書を登録しました。' },
+              { label: '2025/06/02 11:00 丸眞 桜子', text: 'カートンマークを登録しました。' },
+            ],
+            'AC-0003': [
+              { label: '2025/06/03 09:00 丸眞 太郎', text: '発注書を登録しました。' },
+              { label: '2025/06/03 14:00 丸眞 太郎', text: '証紙依頼書を登録しました。' }
+            ],
+            'AC-0004': [
+              { label: '2025/06/04 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2025/06/04 13:30 丸眞 桜子', text: 'カートンマークを登録しました。' }
+            ],
+            'AC-0005': [
+              { label: '2025/06/05 09:00 丸眞 一郎', text: '発注書を登録しました。' },
+            ],
+            'AC-0006': [
+              { label: '2025/06/06 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2025/06/06 10:00 丸眞 花子', text: '証紙依頼書を登録しました。' }
+            ],
+            'AC-0007': [
+              { label: '2025/06/07 09:00 丸眞 太郎', text: '発注書を登録しました。' },
+            ],
+            'AC-0008': [
+              { label: '2025/06/08 09:00 丸眞 桜子', text: '発注書を登録しました。' },
+              { label: '2025/06/08 11:00 丸眞 桜子', text: '証紙依頼書を登録しました。' }
+            ],
+            'AC-0009': [
+              { label: '2025/06/09 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2025/06/09 12:00 丸眞 桜子', text: 'カートンマークを登録しました。' }
+            ],
+            'AC-0010': [
+              { label: '2025/06/10 09:00 丸眞 一郎', text: '発注書を登録しました。' },
+            ]
+          };
+          const histories = historyByIraiNo[iraino];
+          if (histories && histories.length) {
+            histories.forEach((history) => {
+              const wrap = document.createElement('label');
+              wrap.className = 'field';
+              const labelSpan = document.createElement('span');
+              labelSpan.className = 'field-label';
+              labelSpan.textContent = history.label;
+              const ta = document.createElement('textarea');
+              ta.rows = 2;
+              ta.readOnly = true;
+              ta.textContent = history.text;
+              wrap.appendChild(labelSpan);
+              wrap.appendChild(ta);
+              historyMount.appendChild(wrap);
+            });
+            historyMount.hidden = false;
+          } else {
+            historyMount.hidden = true;
+          }
+        }
+      }
+
+      function clearSpecSelection() {
+        const prev = items.find((c) => c.classList.contains('is-active'));
+        persistDeadlineCartonFormatSelection(prev);
+        items.forEach((candidate) => candidate.classList.remove('is-active'));
+        rebuildSpecSelectOptions();
+        syncDeadlinePanelBodyVisibility(false);
+        syncFormFromItem(null);
+      }
+
+      if (specListSelect) {
+        specListSelect.addEventListener('change', () => {
+          const raw = specListSelect.value;
+          if (raw === '') {
+            clearSpecSelection();
+            return;
+          }
+          const idx = parseInt(raw, 10);
+          if (!Number.isFinite(idx) || !items[idx]) return;
+          selectItem(items[idx]);
+        });
+      }
+
+      items.forEach((item) => {
+        renderSpecMeta(item);
+        bindItem(item);
+      });
+
+      clearSpecSelection();
+
+      window.appendSpecListFromKeiyakuIraiModal = function appendSpecListFromKeiyakuIraiModal() {
+        const orderEl = document.querySelector('#keiyakushoIraiEmbedModal input[name="keiyakuModalOrderType"]:checked');
+        const regEl = document.querySelector('#keiyakushoIraiEmbedModal input[name="keiyakuModalRegType"]:checked');
+        const mfrInput = document.getElementById('keiyakuModalManufacturerInput');
+        const orderVal = orderEl ? orderEl.value : 'standard';
+        const regVal = regEl ? regEl.value : 'new';
+        const maker = mfrInput ? String(mfrInput.value || '').trim() : '';
+
+        function hatchuLabel(v) {
+          const map = { standard: '定番', custom: '別注', processing: '定番加工', material: '資材' };
+          return map[v] || '定番';
+        }
+        function shinkiLabel(v) {
+          return v === 'add' ? '追加' : '新規';
+        }
+
+        let maxAc = 0;
+        let maxCt = 0;
+        items.forEach((li) => {
+          const ac = String(li.dataset.iraino || '').match(/^AC-(\d+)$/i);
+          if (ac) maxAc = Math.max(maxAc, parseInt(ac[1], 10));
+          const ct = String(li.dataset.keiyakusyoNo || '').match(/^CT-2026-(\d+)$/i);
+          if (ct) maxCt = Math.max(maxCt, parseInt(ct[1], 10));
+        });
+        const iraino = 'AC-' + String(maxAc + 1).padStart(4, '0');
+        /*const keiyakusyoNo = 'CT-2026-' + String(maxCt + 1).padStart(4, '0');*/
+
+        const li = document.createElement('li');
+        li.className = 'spec-item';
+        li.dataset.iraino = iraino;
+        li.dataset.shinki = shinkiLabel(regVal);
+        li.dataset.hatchu = hatchuLabel(orderVal);
+        li.dataset.maker = maker;
+        li.dataset.supplier = 'ー';
+        li.dataset.totalPrice = 'ー';
+        li.dataset.keiyakusyoNo = 'ー';
+
+        li.innerHTML =
+          '<div class="spec-list-inner">' +
+          '<div class="spec-row"><span class="spec-line-val spec-irai-no"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-kubun-shinki-tsuika"></span>' +
+          '<span class="spec-line-val spec-kubun-hatchu"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-maker"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-supplier"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-total-price"></span></div>' +
+          '<div class="spec-row"><span class="spec-line-val spec-keiyakusyo-no"></span></div>' +
+          '</div>';
+
+        specList.appendChild(li);
+        items = Array.from(specList.querySelectorAll('.spec-item'));
+        renderSpecMeta(li);
+        bindItem(li);
+        selectItem(li);
+      };
+    }
+
+    function initSearchConditionClear() {
+      const btn = document.getElementById('searchConditionClearBtn');
+      const body = document.getElementById('searchConditionBody');
+      if (!btn || !body) return;
+
+      btn.addEventListener('click', () => {
+        body.querySelectorAll('.exhibit-bs-multiselect').forEach((msRoot) => {
+          msRoot.classList.remove('is-open');
+          const pop = msRoot.querySelector('.exhibit-bs-multiselect-popover');
+          const filter = msRoot.querySelector('.exhibit-bs-multiselect-filter');
+          const toggle = msRoot.querySelector('.exhibit-bs-multiselect-toggle');
+          if (pop) pop.setAttribute('hidden', '');
+          if (filter) filter.value = '';
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+          msRoot.querySelectorAll('.exhibit-bs-multiselect-item.is-filtered-out').forEach((row) => {
+            row.classList.remove('is-filtered-out');
+          });
+          msRoot.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+            cb.checked = false;
+          });
+          const hidden = msRoot.querySelector('select[multiple]');
+          if (hidden) {
+            Array.from(hidden.options).forEach((o) => {
+              o.selected = false;
+            });
+          }
+          const labelEl = msRoot.querySelector('.exhibit-bs-multiselect-label');
+          if (labelEl) labelEl.textContent = 'すべて';
+        });
+
+        body.querySelectorAll('.search-condition-grid .field input[type="text"]').forEach((el) => {
+          el.value = '';
+        });
+      });
+    }
+
+    function initSearchConditionToggle() {
+      const toggleButton = document.getElementById('searchConditionToggleBtn');
+      const panelBody = document.getElementById('searchConditionBody');
+      if (!toggleButton || !panelBody) return;
+
+      toggleButton.addEventListener('click', () => {
+        const willExpand = panelBody.hasAttribute('hidden');
+        if (willExpand) {
+          panelBody.removeAttribute('hidden');
+          toggleButton.textContent = '-';
+          toggleButton.setAttribute('aria-expanded', 'true');
+        } else {
+          panelBody.setAttribute('hidden', '');
+          toggleButton.textContent = '+';
+          toggleButton.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    function fillSearchConditionBsMultiselect(innerId, selectId, checkboxName, listKey) {
+      const data = typeof window.AUTOCOMPLETE_LISTS === 'object' && window.AUTOCOMPLETE_LISTS
+        ? window.AUTOCOMPLETE_LISTS
+        : null;
+      const inner = document.getElementById(innerId);
+      const hiddenSelect = document.getElementById(selectId);
+      if (!inner || !hiddenSelect || !data) return;
+      const arr = data[listKey];
+      if (!Array.isArray(arr)) return;
+      inner.innerHTML = '';
+      hiddenSelect.innerHTML = '';
+      arr.forEach((text) => {
+        const t = String(text);
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        hiddenSelect.appendChild(opt);
+        const lab = document.createElement('label');
+        lab.className = 'exhibit-bs-multiselect-item';
+        lab.setAttribute('role', 'option');
+        lab.dataset.msSearch = t.toLowerCase();
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.name = checkboxName;
+        cb.value = t;
+        const span = document.createElement('span');
+        span.className = 'exhibit-bs-multiselect-item-text';
+        span.textContent = t;
+        lab.appendChild(cb);
+        lab.appendChild(span);
+        inner.appendChild(lab);
+      });
+    }
+
+    function initExhibitBsMultiselect(root) {
+      if (!root || root.dataset.msBound === '1') return;
+      const btn = root.querySelector('.exhibit-bs-multiselect-toggle');
+      const popover = root.querySelector('.exhibit-bs-multiselect-popover');
+      const filterInput = root.querySelector('.exhibit-bs-multiselect-filter');
+      const menu = root.querySelector('.exhibit-bs-multiselect-menu');
+      const labelEl = root.querySelector('.exhibit-bs-multiselect-label');
+      const hiddenSelect = root.querySelector('select[multiple]');
+      if (!btn || !popover || !filterInput || !menu || !labelEl || !hiddenSelect) return;
+
+      root.dataset.msBound = '1';
+
+      function getCheckboxes() {
+        return Array.from(root.querySelectorAll('input[type="checkbox"]'));
+      }
+
+      function getOptions() {
+        return Array.from(hiddenSelect.options);
+      }
+
+      function getFilterRows() {
+        return Array.from(menu.querySelectorAll('.exhibit-bs-multiselect-item'));
+      }
+
+      function syncHiddenSelect() {
+        const checkboxes = getCheckboxes();
+        const options = getOptions();
+        checkboxes.forEach((cb) => {
+          const opt = options.find((o) => o.value === cb.value);
+          if (opt) opt.selected = cb.checked;
+        });
+      }
+
+      function refreshButtonLabel() {
+        const checkboxes = getCheckboxes();
+        const checked = checkboxes.filter((cb) => cb.checked);
+        if (checked.length === 0) {
+          labelEl.textContent = 'すべて';
+          return;
+        }
+        if (checked.length === 1) {
+          const t = checked[0].closest('label')?.querySelector('.exhibit-bs-multiselect-item-text');
+          labelEl.textContent = t ? t.textContent.trim() : checked[0].value;
+          return;
+        }
+        labelEl.textContent = checked.length + '件を選択';
+      }
+
+      function applyMsFilter() {
+        const filterRows = getFilterRows();
+        const raw = String(filterInput.value || '').trim().toLowerCase();
+        const tokens = raw.split(/\s+/).filter(Boolean);
+        filterRows.forEach((row) => {
+          const hay = String(row.dataset.msSearch || row.dataset.exhibitSearch || row.textContent || '').toLowerCase();
+          const match = tokens.length === 0 || tokens.every((t) => hay.includes(t));
+          row.classList.toggle('is-filtered-out', !match);
+        });
+      }
+
+      function setOpen(open) {
+        root.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          popover.removeAttribute('hidden');
+          requestAnimationFrame(() => {
+            filterInput.focus();
+          });
+        } else {
+          popover.setAttribute('hidden', '');
+          filterInput.value = '';
+          applyMsFilter();
+        }
+      }
+
+      function toggleOpen() {
+        setOpen(!root.classList.contains('is-open'));
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleOpen();
+      });
+
+      popover.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      filterInput.addEventListener('input', applyMsFilter);
+      filterInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          setOpen(false);
+        }
+      });
+
+      root.addEventListener('change', (e) => {
+        if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
+          syncHiddenSelect();
+          refreshButtonLabel();
+        }
+      });
+
+      document.addEventListener('click', () => {
+        setOpen(false);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && root.classList.contains('is-open')) {
+          setOpen(false);
+        }
+      });
+
+      syncHiddenSelect();
+      refreshButtonLabel();
+      applyMsFilter();
+    }
+
+    function initSearchConditionMultiselectRoots() {
+      const body = document.getElementById('searchConditionBody');
+      if (!body) return;
+      body.querySelectorAll('.exhibit-bs-multiselect').forEach((root) => {
+        initExhibitBsMultiselect(root);
+      });
+    }
+
+    function initSearchConditionSelects() {
+      fillSearchConditionBsMultiselect('searchHatchuMakerInner', 'searchHatchuMaker', 'searchHatchuMaker', 'supplier');
+      fillSearchConditionBsMultiselect('searchTokuisakiInner', 'searchTokuisaki', 'searchTokuisaki', 'customer');   
+      fillSearchConditionBsMultiselect('searchConditionSalesInner', 'searchConditionSales', 'searchConditionSales', 'hanbaiKubun');
+    }
+
+    let lastAiDataPreviewUrl = null;
+
+    function formatFileBytes(n) {
+      const v = Number(n) || 0;
+      if (v < 1024) return v + ' B';
+      if (v < 1024 * 1024) return (v / 1024).toFixed(1) + ' KB';
+      return (v / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function initAiDataUpload() {
+      const btn = document.getElementById('aiDataUploadBtn');
+      const input = document.getElementById('aiDataUploadInput');
+      const area3 = document.querySelector('.deadline-area-3');
+      const area3Content = document.getElementById('deadlineArea3Mount');
+      if (!input || !area3 || !area3Content) return;
+
+      function openAiUploadPicker() {
+        input.value = '';
+        input.click();
+      }
+
+      if (btn) {
+        btn.addEventListener('click', openAiUploadPicker);
+      }
+
+      function renderAiFilePreview(file) {
+        if (!file) return;
+
+        const lower = file.name.toLowerCase();
+        if (!lower.endsWith('.ai')) {
+          if (lastAiDataPreviewUrl) {
+            URL.revokeObjectURL(lastAiDataPreviewUrl);
+            lastAiDataPreviewUrl = null;
+          }
+          area3Content.replaceChildren();
+          const p = document.createElement('p');
+          p.className = 'deadline-area-3-ai-head';
+          p.textContent = '拡張子 .ai のファイルを選択してください。';
+          area3Content.appendChild(p);
+          return;
+        }
+
+        if (lastAiDataPreviewUrl) {
+          URL.revokeObjectURL(lastAiDataPreviewUrl);
+          lastAiDataPreviewUrl = null;
+        }
+
+        area3Content.replaceChildren();
+        const headEl = document.createElement('div');
+        headEl.className = 'deadline-area-3-ai-head';
+        const nameEl = document.createElement('div');
+        nameEl.className = 'deadline-area-3-ai-name';
+        nameEl.textContent = file.name;
+        const metaEl = document.createElement('div');
+        metaEl.textContent = 'サイズ: ' + formatFileBytes(file.size);
+        headEl.appendChild(nameEl);
+        headEl.appendChild(metaEl);
+        area3Content.appendChild(headEl);
+
+        const pdfFile = new File([file], file.name, { type: 'application/pdf' });
+        lastAiDataPreviewUrl = URL.createObjectURL(pdfFile);
+        const iframe = document.createElement('iframe');
+        iframe.className = 'deadline-area-3-ai-preview';
+        iframe.title = file.name + ' のプレビュー';
+        iframe.setAttribute('referrerpolicy', 'no-referrer');
+        iframe.src = lastAiDataPreviewUrl;
+        area3Content.appendChild(iframe);
+      }
+
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        renderAiFilePreview(file);
+      });
+
+      area3.addEventListener('dragover', (event) => {
+        if (isDeadlineArea3HatchuDocActive()) return;
+        event.preventDefault();
+      });
+
+      area3.addEventListener('drop', (event) => {
+        if (isDeadlineArea3HatchuDocActive()) return;
+        event.preventDefault();
+        const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+        renderAiFilePreview(file);
+      });
+    }
+
+    function resetKeiyakuManufacturerDropdownLayout(forceHideDropdown) {
+      const input = document.getElementById('keiyakuModalManufacturerInput');
+      if (!input) return;
+      const box = input.closest('.autocomplete');
+      const dropdown = box && box.querySelector('.autocomplete-dropdown');
+      if (box) box.classList.remove('keiyaku-mfr-ac--open');
+      if (!dropdown) return;
+      ['position', 'top', 'left', 'width', 'maxHeight', 'zIndex', 'boxSizing'].forEach((prop) => {
+        dropdown.style[prop] = '';
+      });
+      if (forceHideDropdown) dropdown.style.display = 'none';
+    }
+
+    /** スマホ: メーカーはネイティブ select（supplier 一覧）で選び、値は同一の #keiyakuModalManufacturerInput に同期 */
+    function initKeiyakuModalManufacturerMobileSelect() {
+      const input = document.getElementById('keiyakuModalManufacturerInput');
+      const sel = document.getElementById('keiyakuModalManufacturerSelect');
+      if (!input || !sel) return;
+
+      function rebuildSelectOptions() {
+        const lists = window.AUTOCOMPLETE_LISTS;
+        const data = lists && Array.isArray(lists.supplier) ? lists.supplier : null;
+        if (!data || !data.length) return;
+        while (sel.options.length > 1) {
+          sel.remove(1);
+        }
+        data.forEach((t) => {
+          const s = String(t);
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          sel.appendChild(opt);
+        });
+      }
+
+      function syncSelectFromInput() {
+        const v = String(input.value || '').trim();
+        if (v && Array.from(sel.options).some((o) => o.value === v)) {
+          sel.value = v;
+        } else {
+          sel.value = '';
+        }
+      }
+
+      function refreshKeiyakuModalManufacturerSelect() {
+        rebuildSelectOptions();
+        syncSelectFromInput();
+      }
+
+      sel.addEventListener('change', () => {
+        input.value = sel.value;
+      });
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', refreshKeiyakuModalManufacturerSelect);
+      } else {
+        refreshKeiyakuModalManufacturerSelect();
+      }
+      window.addEventListener('load', refreshKeiyakuModalManufacturerSelect, { once: true });
+
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(refreshKeiyakuModalManufacturerSelect, 150);
+      });
+
+      window.refreshKeiyakuModalManufacturerSelect = refreshKeiyakuModalManufacturerSelect;
+    }
+
+    /** メーカー autocomplete: 狭い画面は absolute（入力直下）、それ以外は fixed。候補の再配置とクリップ対策あり */
+    function initKeiyakuModalManufacturerPanelExpand() {
+      const modal = document.getElementById('keiyakushoIraiEmbedModal');
+      const input = document.getElementById('keiyakuModalManufacturerInput');
+      if (!modal || !input) return;
+      const box = input.closest('.autocomplete');
+      const dropdown = box && box.querySelector('.autocomplete-dropdown');
+      if (!box || !dropdown) return;
+      const modalBody = modal.querySelector('.modal-body');
+      const contentBox = document.getElementById('keiyakuModalSearchBox');
+
+      function clearDropdownViewportStyles() {
+        ['position', 'top', 'left', 'width', 'maxHeight', 'zIndex', 'boxSizing'].forEach((prop) => {
+          dropdown.style[prop] = '';
+        });
+      }
+
+      function isKeiyakuModalManufacturerNarrow() {
+        return window.matchMedia('(max-width: 767px)').matches;
+      }
+
+      function layoutViewportBottom() {
+        const vv = window.visualViewport;
+        if (vv) return vv.offsetTop + vv.height;
+        return window.innerHeight;
+      }
+
+      function positionDropdownFixed() {
+        if (dropdown.style.display !== 'block') return;
+        if (isKeiyakuModalManufacturerNarrow()) {
+          clearDropdownViewportStyles();
+          dropdown.style.zIndex = '10002';
+          dropdown.style.boxSizing = 'border-box';
+          return;
+        }
+        const r = input.getBoundingClientRect();
+        const margin = 8;
+        const spaceBelow = Math.max(0, layoutViewportBottom() - r.bottom - margin);
+        const maxH = Math.min(Math.max(spaceBelow, 1), 200);
+        dropdown.style.position = 'fixed';
+        dropdown.style.left = r.left + 'px';
+        dropdown.style.top = r.bottom + 2 + 'px';
+        dropdown.style.width = r.width + 'px';
+        dropdown.style.maxHeight = maxH + 'px';
+        dropdown.style.zIndex = '10002';
+        dropdown.style.boxSizing = 'border-box';
+      }
+
+      function scheduleRepositionDropdown() {
+        if (dropdown.style.display !== 'block') return;
+        requestAnimationFrame(() => positionDropdownFixed());
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => positionDropdownFixed());
+        });
+        setTimeout(() => positionDropdownFixed(), 120);
+        setTimeout(() => positionDropdownFixed(), 350);
+      }
+
+      function sync() {
+        const open = dropdown.style.display === 'block';
+        if (open) {
+          box.classList.add('keiyaku-mfr-ac--open');
+          scheduleRepositionDropdown();
+        } else {
+          box.classList.remove('keiyaku-mfr-ac--open');
+          clearDropdownViewportStyles();
+        }
+      }
+
+      const obs = new MutationObserver(sync);
+      obs.observe(dropdown, { attributes: true, attributeFilter: ['style'] });
+
+      const obsChildren = new MutationObserver(() => {
+        if (dropdown.style.display === 'block') scheduleRepositionDropdown();
+      });
+      obsChildren.observe(dropdown, { childList: true, subtree: true });
+
+      function onScrollOrResize() {
+        if (dropdown.style.display === 'block') positionDropdownFixed();
+      }
+
+      window.addEventListener('resize', onScrollOrResize);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', onScrollOrResize);
+        window.visualViewport.addEventListener('scroll', onScrollOrResize);
+      }
+      if (modalBody) modalBody.addEventListener('scroll', onScrollOrResize, { passive: true });
+      if (contentBox) contentBox.addEventListener('scroll', onScrollOrResize, { passive: true });
+
+      input.addEventListener('focus', () => {
+        if (!isKeiyakuModalManufacturerNarrow()) return;
+        scheduleRepositionDropdown();
+      });
+
+      sync();
+    }
+
+    function initKeiyakushoIraiEmbedModal() {
+      const openBtn = document.getElementById('searchAddBtn');
+      const modal = document.getElementById('keiyakushoIraiEmbedModal');
+      const closeX = document.getElementById('keiyakushoIraiEmbedCloseX');
+      const closeFooter = document.getElementById('keiyakushoIraiEmbedClose');
+      if (!openBtn || !modal) return;
+
+      function openModal() {
+        resetKeiyakuManufacturerDropdownLayout(false);
+        if (typeof window.refreshKeiyakuModalManufacturerSelect === 'function') {
+          window.refreshKeiyakuModalManufacturerSelect();
+        }
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        if (closeFooter) closeFooter.focus();
+      }
+
+      function closeModal() {
+        resetKeiyakuManufacturerDropdownLayout(true);
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      openBtn.addEventListener('click', openModal);
+      if (closeX) closeX.addEventListener('click', closeModal);
+      if (closeFooter) closeFooter.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('show')) closeModal();
+      });
+
+      const registerBtn = document.getElementById('keiyakushoIraiEmbedRegister');
+      if (registerBtn) {
+        registerBtn.addEventListener('click', () => {
+          if (typeof window.appendSpecListFromKeiyakuIraiModal === 'function') {
+            window.appendSpecListFromKeiyakuIraiModal();
+          }
+          closeModal();
+        });
+      }
+    }
+
+    function initPreviewModal() {
+      const previewBtns = document.querySelectorAll('[data-preview-open="1"]');
+      const sourceImg = document.querySelector('.deadline-area-1-img-wrap .deadline-area-1-img');
+      const modal = document.getElementById('imagePreviewModal');
+      const modalImg = document.getElementById('imagePreviewModalImage');
+      if (!previewBtns.length || !sourceImg || !modal || !modalImg) return;
+
+      function closeModal() {
+        modal.hidden = true;
+        modalImg.removeAttribute('src');
+      }
+
+      previewBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const src = sourceImg.getAttribute('src');
+          if (!src) return;
+          modalImg.src = src;
+          modalImg.alt = sourceImg.alt || '仕様書プレビュー';
+          modal.hidden = false;
+        });
+      });
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.hidden) closeModal();
+      });
     }
 
     loadSharedSidebar();
-
-    const icon = document.querySelector('.header-account_circle');
-    const menu = document.querySelector('.account-menu');
-
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation(); // クリックが外側に伝播しないように
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // 検索条件による検索結果一覧の絞り込み（プルダウン変更時に自動実行）
-    (function () {
-      var txtOrderNo = document.getElementById("searchOrderNo");
-      var txtMaker = document.getElementById("searchMaker");
-      var selHanbai = document.getElementById("searchHanbaiKubun");
-      var selShohinCode = document.getElementById("searchShohinCode");
-      var selCategory = document.getElementById("searchCategory");
-      var selItem = document.getElementById("searchItem");
-      var selBrandChara = document.getElementById("searchBrandChara");
-      var btnRenkeiAll = document.getElementById("renkeiAll");
-      var btnRenkeiLinked = document.getElementById("renkeiLinked");
-      var btnRenkeiUnlinked = document.getElementById("renkeiUnlinked");
-      var tbody = document.querySelector("#approvalListArea .result-table tbody");
-      if (!tbody) return;
-      var renkeiMode = "all";
-
-      function mapHanbai(value) {
-        return {
-          teiban: "定番",
-          teibankako: "定番加工",
-          betchu: "別注",
-          oem: "OEM"
-        }[value] || "";
-      }
-
-      function mapCategory(value) {
-        return {
-          tanpin: "単品タオル",
-          kikaku: "企画物タオル"
-        }[value] || "";
-      }
-
-      function normalize(value) {
-        return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
-      }
-
-      function normalizeOrderNo(value) {
-        return String(value || "")
-          .replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
-            return String.fromCharCode(s.charCodeAt(0) - 65248);
-          })
-          .replace(/[‐‑‒–—―ー]/g, "-")
-          .replace(/\s+/g, "")
-          .toUpperCase()
-          .replace(/[^A-Z0-9]/g, "");
-      }
-
-      function applyFilter() {
-        var condOrderNo = normalize(txtOrderNo && txtOrderNo.value);
-        var condOrderNoStrict = normalizeOrderNo(txtOrderNo && txtOrderNo.value);
-        var condMaker = normalize(txtMaker && txtMaker.value);
-        var condHanbai = mapHanbai(selHanbai && selHanbai.value);
-        var condShohinCode = normalize(selShohinCode && selShohinCode.value);
-        var condCategory = normalize(mapCategory(selCategory && selCategory.value) || (selCategory && selCategory.value));
-        var condItem = normalize(selItem && selItem.value);
-        var condBrandChara = normalize(selBrandChara && selBrandChara.value);
-
-        Array.prototype.forEach.call(tbody.rows, function (row) {
-          var rowOrderNo = normalize(row.cells[2] && row.cells[2].textContent);
-          var rowOrderNoStrict = normalizeOrderNo(row.cells[2] && row.cells[2].textContent);
-          var rowMaker = normalize(row.cells[4] && row.cells[4].textContent);
-          var rowHanbai = normalize(row.cells[7] && row.cells[7].textContent);
-          var rowAllText = normalize(row.textContent);
-          var statusPill = row.querySelector("td:nth-child(2) .renkei-status-pill");
-          if (!statusPill) {
-            row.style.display = "";
-            return;
-          }
-          var isLinked = statusPill.classList.contains("linked");
-
-          var showRow =
-            renkeiMode === "all" ||
-            (renkeiMode === "linked" && isLinked) ||
-            (renkeiMode === "unlinked" && !isLinked);
-
-          if (showRow && condOrderNo) {
-            showRow = rowOrderNo.indexOf(condOrderNo) !== -1 || rowAllText.indexOf(condOrderNo) !== -1;
-          }
-          if (showRow && condOrderNoStrict) {
-            showRow = rowOrderNoStrict.indexOf(condOrderNoStrict) !== -1;
-          }
-          if (showRow && condMaker) {
-            showRow = rowMaker.indexOf(condMaker) !== -1 || rowAllText.indexOf(condMaker) !== -1;
-          }
-          if (showRow && condHanbai) showRow = rowHanbai.indexOf(normalize(condHanbai)) !== -1;
-          if (showRow && condShohinCode) showRow = rowAllText.indexOf(condShohinCode) !== -1;
-          if (showRow && condCategory) showRow = rowAllText.indexOf(condCategory) !== -1;
-          if (showRow && condItem) showRow = rowAllText.indexOf(condItem) !== -1;
-          if (showRow && condBrandChara) showRow = rowAllText.indexOf(condBrandChara) !== -1;
-
-          row.style.display = showRow ? "" : "none";
-        });
-      }
-
-      function bindLiveFilter(el) {
-        if (!el) return;
-        el.addEventListener("input", applyFilter);
-        el.addEventListener("change", applyFilter);
-        el.addEventListener("keyup", applyFilter);
-        el.addEventListener("blur", applyFilter);
-      }
-
-      function setRenkeiMode(mode) {
-        renkeiMode = mode;
-        if (btnRenkeiAll) {
-          var isAll = mode === "all";
-          btnRenkeiAll.classList.toggle("is-active", isAll);
-          btnRenkeiAll.setAttribute("aria-pressed", isAll ? "true" : "false");
-        }
-        if (btnRenkeiLinked) {
-          var isLinkedMode = mode === "linked";
-          btnRenkeiLinked.classList.toggle("is-active", isLinkedMode);
-          btnRenkeiLinked.setAttribute("aria-pressed", isLinkedMode ? "true" : "false");
-        }
-        if (btnRenkeiUnlinked) {
-          var isUnlinked = mode === "unlinked";
-          btnRenkeiUnlinked.classList.toggle("is-active", isUnlinked);
-          btnRenkeiUnlinked.setAttribute("aria-pressed", isUnlinked ? "true" : "false");
-        }
-        applyFilter();
-      }
-
-      bindLiveFilter(txtOrderNo);
-      bindLiveFilter(txtMaker);
-      if (selHanbai) selHanbai.addEventListener("change", applyFilter);
-      if (selShohinCode) selShohinCode.addEventListener("change", applyFilter);
-      if (selCategory) {
-        selCategory.addEventListener("change", applyFilter);
-        if (selCategory.tagName === "INPUT") selCategory.addEventListener("input", applyFilter);
-      }
-      if (selItem) {
-        selItem.addEventListener("change", applyFilter);
-        if (selItem.tagName === "INPUT") selItem.addEventListener("input", applyFilter);
-      }
-      if (selBrandChara) {
-        selBrandChara.addEventListener("change", applyFilter);
-        if (selBrandChara.tagName === "INPUT") selBrandChara.addEventListener("input", applyFilter);
-      }
-      if (btnRenkeiAll) btnRenkeiAll.addEventListener("click", function () { setRenkeiMode("all"); });
-      if (btnRenkeiLinked) btnRenkeiLinked.addEventListener("click", function () { setRenkeiMode("linked"); });
-      if (btnRenkeiUnlinked) btnRenkeiUnlinked.addEventListener("click", function () { setRenkeiMode("unlinked"); });
-
-      // オートコンプリート候補クリック時（inputイベントが発火しないケース）も反映
-      var searchRowsPanel = document.getElementById("searchRowsPanel");
-      if (searchRowsPanel) {
-        searchRowsPanel.addEventListener("click", function (e) {
-          if (e.target && e.target.closest(".autocomplete-dropdown div")) {
-            setTimeout(applyFilter, 0);
-          }
-        });
-        searchRowsPanel.addEventListener("change", applyFilter);
-      }
-
-      var cancelAllBtn = document.getElementById("searchCancelAllBtn");
-      if (cancelAllBtn) {
-        cancelAllBtn.addEventListener("click", function () {
-          // 初期表示へ戻す（リフレッシュ）
-          window.location.reload();
-        });
-      }
-      setRenkeiMode("all");
-    })();
-
-    // スマホ: 検索条件の折りたたみ開閉
-    (function () {
-      var btn = document.getElementById("searchToggleSp");
-      var box = document.getElementById("searchBox");
-      var panel = document.getElementById("searchRowsPanel");
-      if (!btn || !box || !panel) return;
-
-      var mobileQuery = window.matchMedia ? window.matchMedia("(max-width: 768px)") : null;
-
-      function setSearchBoxOpen(isOpen) {
-        box.classList.toggle("is-open", isOpen);
-        // CSS依存だけでなく直接表示も制御して、環境差異で開かない問題を回避
-        panel.style.setProperty("display", isOpen ? "grid" : "none", "important");
-        btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-        var textEl = btn.querySelector(".search-toggle-sp-text");
-        if (textEl) textEl.textContent = isOpen ? "検索条件を閉じる" : "検索条件を開く";
-      }
-
-      function syncSearchBoxByViewport() {
-        var isMobile = mobileQuery ? mobileQuery.matches : false;
-        if (isMobile) {
-          setSearchBoxOpen(box.classList.contains("is-open"));
-        } else {
-          // PCでは常時表示
-          box.classList.remove("is-open");
-          panel.style.setProperty("display", "grid", "important");
-          btn.setAttribute("aria-expanded", "true");
-          var textEl = btn.querySelector(".search-toggle-sp-text");
-          if (textEl) textEl.textContent = "検索条件を閉じる";
-        }
-      }
-
-      btn.addEventListener("click", function () {
-        var isMobile = mobileQuery ? mobileQuery.matches : false;
-        if (!isMobile) return;
-        setSearchBoxOpen(!box.classList.contains("is-open"));
-      });
-
-      syncSearchBoxByViewport();
-
-      if (mobileQuery) {
-        if (typeof mobileQuery.addEventListener === "function") {
-          mobileQuery.addEventListener("change", syncSearchBoxByViewport);
-        } else if (typeof mobileQuery.addListener === "function") {
-          mobileQuery.addListener(syncSearchBoxByViewport);
-        }
-      }
-    })();
-
+    initAccountMenu();
+    initSearchConditionSelects();
+    initSearchConditionMultiselectRoots();
+    initSearchConditionToggle();
+    initSearchConditionClear();
+    initDeadlineCartonMarkSelect();
+    initCycleToggle();
+    initSpecSearch();
+    initAiDataUpload();
+    initKeiyakushoIraiEmbedModal();
+    initKeiyakuModalManufacturerMobileSelect();
+    initKeiyakuModalManufacturerPanelExpand();
+    initPreviewModal();
+    syncDeadlineArea2Ui();
   </script>
 </body>
 
