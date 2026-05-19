@@ -559,6 +559,15 @@
       background: #f5f7fa;
     }
 
+    .product-table input.date-field-input--filled {
+      background-color: #f7a5a5;
+    }
+
+    .product-table input.date-field-input--filled:disabled {
+      background-color: #f7a5a5;
+      opacity: 1;
+    }
+
     .product-table input,
     .product-table textarea {
       box-sizing: border-box;
@@ -1029,16 +1038,16 @@
               <table class="product-table" id="product-table-2">
                 <tbody>
                   <tr>
-                    <th colspan="3">試作入稿日</th>
-                    <th colspan="3">サンプル到着日</th>
+                    <th colspan="3" class="date-field-label" data-date-input="sampleIn">試作入稿日</th>
+                    <th colspan="3" class="date-field-label" data-date-input="sampleOut">サンプル到着日</th>
                   </tr>
                   <tr>
                     <td colspan="3"><input type="text" name="sampleIn" class="half-field" disabled></td>
                     <td colspan="3"><input type="text" name="sampleOut" class="half-field" disabled></td>
                   </tr>
                   <tr>
-                    <th colspan="3">最終入稿日</th>
-                    <th colspan="3">発注日</th>
+                    <th colspan="3" class="date-field-label" data-date-input="lastIn">最終入稿日</th>
+                    <th colspan="3" class="date-field-label" data-date-input="lastOut">発売日</th>
                   </tr>
                   <tr>
                     <td colspan="3"><input type="text" name="lastIn" class="half-field" disabled></td>
@@ -1351,6 +1360,12 @@
         ].forEach(function (el) {
           if (el) el.value = "";
         });
+        if (isFirstProductCard(card)) {
+          if (sampleIn) sampleIn.value = DEFAULT_SAMPLE_IN_DATE;
+          if (sampleOut) sampleOut.value = DEFAULT_SAMPLE_OUT_DATE;
+          if (lastIn) lastIn.value = DEFAULT_LAST_IN_DATE;
+          if (lastOut) lastOut.value = DEFAULT_LAST_OUT_DATE;
+        }
         updateCardBarcodes(card, "");
         toggleBarcodeImages(card, !!code);
 
@@ -1380,18 +1395,47 @@
             if (janUmu) janUmu.value = sample.janUmu || "";
             if (nohinKeitai) nohinKeitai.value = sample.nohinKeitai || "";
             if (designer) designer.value = "丸眞太郎";
-            if (sampleIn) sampleIn.value = "01/" + String(code).slice(-2);
-            if (sampleOut) sampleOut.value = "02/" + String(code).slice(-2);
-            if (lastIn) lastIn.value = "03/" + String(code).slice(-2);
-            if (lastOut) lastOut.value = "04/" + String(code).slice(-2);
+            updateDateLabelHighlights(card);
             return;
           }
           if (designer) designer.value = "丸眞太郎";
-          if (sampleIn) sampleIn.value = "01/" + String(code).slice(-2);
-          if (sampleOut) sampleOut.value = "02/" + String(code).slice(-2);
-          if (lastIn) lastIn.value = "03/" + String(code).slice(-2);
-          if (lastOut) lastOut.value = "04/" + String(code).slice(-2);
         }
+        updateDateLabelHighlights(card);
+      }
+
+      var DEFAULT_SAMPLE_IN_DATE = "2026/06/01";
+      var DEFAULT_SAMPLE_OUT_DATE = "2026/06/10";
+      var DEFAULT_LAST_IN_DATE = "2026/06/30";
+      var DEFAULT_LAST_OUT_DATE = "2026/08/01";
+      var DATE_LABEL_INPUT_NAMES = ["sampleIn", "sampleOut", "lastIn", "lastOut"];
+
+      function isFirstProductCard(card) {
+        return card && card.dataset.productCardIndex === "0";
+      }
+
+      function updateDateLabelHighlights(card) {
+        if (!card) return;
+        DATE_LABEL_INPUT_NAMES.forEach(function (fieldName) {
+          var input = card.querySelector('input[name="' + fieldName + '"]');
+          if (!input) return;
+          var hasValue = String(input.value || "").trim() !== "";
+          input.classList.toggle("date-field-input--filled", hasValue);
+        });
+      }
+
+      function attachDateLabelHandlers(card) {
+        if (!card || card.dataset.dateLabelBound === "1") return;
+        DATE_LABEL_INPUT_NAMES.forEach(function (fieldName) {
+          var input = card.querySelector('input[name="' + fieldName + '"]');
+          if (!input) return;
+          input.addEventListener("input", function () {
+            updateDateLabelHighlights(card);
+          });
+          input.addEventListener("change", function () {
+            updateDateLabelHighlights(card);
+          });
+        });
+        card.dataset.dateLabelBound = "1";
       }
 
       function resetCard(card) {
@@ -1406,6 +1450,7 @@
         if (img) {
           img.src = "images/noimage.png";
         }
+        updateDateLabelHighlights(card);
       }
 
       // 各カードに商品コード選択時のイベントを設定
@@ -1562,6 +1607,7 @@
             var card = cardProto.cloneNode(true);
             resetCard(card);
             attachProductCodeHandler(card);
+            attachDateLabelHandlers(card);
             swiper.appendChild(card);
           }
           pageGroup.appendChild(swiper);
@@ -1574,6 +1620,7 @@
 
         var allCards = pagesContainer.querySelectorAll(".product-card");
         Array.prototype.forEach.call(allCards, function (card, idx) {
+          card.dataset.productCardIndex = String(idx);
           var product = filteredProducts[idx] || null;
           var select = card.querySelector('input[name="shohinCode"]');
           var code = product ? product.code : "";
