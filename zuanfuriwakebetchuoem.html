@@ -354,7 +354,9 @@
     #searchBrandCharaMenu .multi-select-option,
     #searchBrandCharaMenu .multi-select-option span,
     #searchItemMenu .multi-select-option,
-    #searchItemMenu .multi-select-option span {
+    #searchItemMenu .multi-select-option span,
+    #searchCustomerMenu .multi-select-option,
+    #searchCustomerMenu .multi-select-option span {
       color: var(--color-text-muted) !important;
     }
 
@@ -1228,6 +1230,7 @@
     <!-- 画面右下固定 振分けボタン -->
     <div class="btn-fab-bar">
       <button type="button" class="btn-fab-new" id="btnFuriwake">振分け</button>
+      <button type="button" class="btn-fab-new" id="btnRegister">登録</button>
     </div>
     <!-- #endregion -->
 
@@ -1299,6 +1302,15 @@
                     <option value="2">丸眞花子</option>
                     <option value="3">丸眞桜子</option>
                   </select>
+                </div>
+                <div class="filter-item">
+                  <label for="searchCustomer" class="search-item-label">得意先</label>
+                  <div class="multi-select" id="searchCustomer" data-list="customer">
+                    <button type="button" class="multi-select-toggle" id="searchCustomerToggle" aria-haspopup="listbox"
+                      aria-expanded="false">選択してください</button>
+                    <div class="multi-select-menu" id="searchCustomerMenu" role="listbox" aria-multiselectable="true">
+                    </div>
+                  </div>
                 </div>
                 <div class="search-cancel-wrapper">
                   <button type="button" class="btn-search-cancel" id="searchCancelAllBtn">クリア</button>
@@ -2268,6 +2280,9 @@
         var brandCharaWrap = document.getElementById("searchBrandChara");
         var brandCharaToggle = document.getElementById("searchBrandCharaToggle");
         var brandCharaMenu = document.getElementById("searchBrandCharaMenu");
+        var customerWrap = document.getElementById("searchCustomer");
+        var customerToggle = document.getElementById("searchCustomerToggle");
+        var customerMenu = document.getElementById("searchCustomerMenu");
         var inputMeisho = document.getElementById("searchMmeisho");
         var clearBtn = document.getElementById("searchCancelAllBtn");
         var countDisplay = document.getElementById("searchCountDisplay");
@@ -2303,11 +2318,13 @@
         buildMultiSelectOptionsFromDataList(itemWrap, itemMenu);
         buildMultiSelectOptionsFromDataList(categoryWrap, categoryMenu);
         buildMultiSelectOptionsFromDataList(brandCharaWrap, brandCharaMenu);
+        buildMultiSelectOptionsFromDataList(customerWrap, customerMenu);
 
         var tenjikaiChecks = tenjikaiMenu ? tenjikaiMenu.querySelectorAll('input[type="checkbox"]') : [];
         var itemChecks = itemMenu ? itemMenu.querySelectorAll('input[type="checkbox"]') : [];
         var categoryChecks = categoryMenu ? categoryMenu.querySelectorAll('input[type="checkbox"]') : [];
         var brandCharaChecks = brandCharaMenu ? brandCharaMenu.querySelectorAll('input[type="checkbox"]') : [];
+        var customerChecks = customerMenu ? customerMenu.querySelectorAll('input[type="checkbox"]') : [];
 
         function normalizeText(value) {
           return String(value || "")
@@ -2356,10 +2373,12 @@
           var condTenjikaiList = getSelectedValues(tenjikaiChecks);
           var condItemList = getSelectedValues(itemChecks);
           var condCategoryList = getSelectedValues(categoryChecks);
+          var condCustomerList = getSelectedValues(customerChecks);
           var condMeisho = inputMeisho ? normalizeText(inputMeisho.value) : "";
 
           Array.prototype.forEach.call(tbody.rows, function (row) {
             var cellTenjikai = row.cells[1] ? normalizeText(row.cells[1].textContent) : "";
+            var cellCustomer = row.cells[1] ? normalizeText(row.cells[1].textContent) : "";
             var cellItem = row.cells[5] ? normalizeText(row.cells[5].textContent) : "";
             var cellCategory = row.cells[2] ? normalizeText(row.cells[2].textContent) : "";
             var cellMeisho = row.cells[3] ? normalizeText(row.cells[3].textContent) : "";
@@ -2368,6 +2387,7 @@
             if (condTenjikaiList.length > 0 && condTenjikaiList.indexOf(cellTenjikai) === -1) match = false;
             if (condItemList.length > 0 && condItemList.indexOf(cellItem) === -1) match = false;
             if (condCategoryList.length > 0 && condCategoryList.indexOf(cellCategory) === -1) match = false;
+            if (condCustomerList.length > 0 && condCustomerList.indexOf(cellCustomer) === -1) match = false;
             if (condMeisho && cellMeisho.indexOf(condMeisho) === -1) match = false;
 
             row.style.display = match ? "" : "none";
@@ -2408,6 +2428,14 @@
           });
         }
 
+        if (customerToggle && customerWrap) {
+          customerToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = customerWrap.classList.toggle("is-open");
+            customerToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
+        }
+
         Array.prototype.forEach.call(tenjikaiChecks, function (cb) {
           cb.addEventListener("change", function () {
             updateToggleLabel(tenjikaiToggle, tenjikaiChecks);
@@ -2431,6 +2459,13 @@
         Array.prototype.forEach.call(brandCharaChecks, function (cb) {
           cb.addEventListener("change", function () {
             updateToggleLabel(brandCharaToggle, brandCharaChecks);
+            applyFilter();
+          });
+        });
+
+        Array.prototype.forEach.call(customerChecks, function (cb) {
+          cb.addEventListener("change", function () {
+            updateToggleLabel(customerToggle, customerChecks);
             applyFilter();
           });
         });
@@ -2459,6 +2494,10 @@
             brandCharaWrap.classList.remove("is-open");
             if (brandCharaToggle) brandCharaToggle.setAttribute("aria-expanded", "false");
           }
+          if (customerWrap && !customerWrap.contains(target)) {
+            customerWrap.classList.remove("is-open");
+            if (customerToggle) customerToggle.setAttribute("aria-expanded", "false");
+          }
         });
 
         if (clearBtn) {
@@ -2471,6 +2510,7 @@
         updateToggleLabel(itemToggle, itemChecks);
         updateToggleLabel(categoryToggle, categoryChecks);
         updateToggleLabel(brandCharaToggle, brandCharaChecks);
+        updateToggleLabel(customerToggle, customerChecks);
         applyFilter();
       };
 
