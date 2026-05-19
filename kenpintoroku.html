@@ -362,21 +362,27 @@
 
         .btn-search-cancel {
             display: inline-block;
+            min-width: 0;
             padding: 6px 14px;
-            background: var(--color-primary);
-            color: #fff;
-            border: none;
+            font-size: var(--fs-xs);
+            background: var(--color-clearbutton-background);
+            color: var(--color-text);
+            border: 1px solid var(--color-clearbutton-border);
             border-radius: var(--radius-sm);
             cursor: pointer;
             text-align: center;
-            font-weight: 400;
+            font-weight: 600;
             font-family: inherit;
             white-space: nowrap;
+            box-shadow: none;
         }
 
         .btn-search-cancel:hover {
-            background: var(--color-primary-dark);
-            color: #fff;
+            background: var(--color-clearbutton-background-hover);
+            color: var(--color-text);
+            border: 1px solid var(--color-clearbutton-border);
+            transform: none;
+            box-shadow: none;
         }
         /* #endregion */
         /* #region sample_inquiry.css */
@@ -1382,9 +1388,364 @@
             box-shadow: none;
         }
 
+        /* 検索条件パネル（keiyakushosofuiraikakunin.html より） */
+        .search-condition-panel {
+            margin: 0 20px 12px 0;
+            flex-shrink: 0;
+        }
+
+        .search-condition-body {
+            padding: 12px 14px;
+        }
+
+        .search-condition-panel .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border-top-left-radius: var(--radius-md);
+            border-top-right-radius: var(--radius-md);
+        }
+
+        .search-toggle-btn {
+            border: 1px solid #c5d4ca;
+            background: #fff;
+            color: #204331;
+            border-radius: var(--radius-sm);
+            min-width: 28px;
+            height: 24px;
+            line-height: 1;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .search-toggle-btn:hover {
+            background: #edf8f0;
+        }
+
+        .search-condition-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px 12px;
+            align-items: start;
+        }
+
+        .search-condition-clear-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 0;
+            align-self: start;
+            box-sizing: border-box;
+            /* .field-label + .field gap 分下げ、アイテムの select と同じ高さに */
+            padding-top: calc(12px * 1.35 + 2px);
+            min-height: calc(12px * 1.35 + 2px + 38px);
+        }
+
+        .search-condition-grid > .field {
+            min-width: 0;
+        }
+
+        #searchsohincd {
+            min-height: 38px;
+            resize: vertical;
+        }
+
+        .panel.search-condition-panel {
+            position: relative;
+            z-index: 30;
+            overflow: visible;
+        }
+
+        .search-condition-panel .search-condition-body {
+            overflow: visible;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #d7e0d9;
+            border-radius: var(--radius-md);
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 12px 14px;
+            border-bottom: 1px solid #dfe7e1;
+            background: #f6faf7;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1f3e2e;
+            flex-shrink: 0;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: 12px 14px;
+            overflow: auto;
+            min-height: 0;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .field-label {
+            font-size: 12px;
+            color: #446354;
+            font-weight: 600;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #c7d4cb;
+            border-radius: var(--radius-sm);
+            padding: 8px 9px;
+            font-size: 13px;
+            color: #173425;
+            background: #fff;
+            font-family: inherit;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .field input:hover,
+        .field select:hover,
+        .field textarea:hover {
+            border-color: var(--color-primary);
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+        }
+
+        .field textarea::placeholder {
+            color: rgba(23, 52, 37, 0.42);
+            opacity: 1;
+        }
+
+        .exhibit-bs-multiselect {
+            position: relative;
+            width: 100%;
+        }
+
+        .exhibit-bs-multiselect-toggle {
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-height: 38px;
+            padding: 6px 10px;
+            border: 1px solid #c7d4cb;
+            border-radius: var(--radius-sm);
+            background: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 400;
+            color: #173425;
+            line-height: 1.35;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .exhibit-bs-multiselect-toggle:hover {
+            border-color: var(--color-primary);
+        }
+
+        .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-toggle {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+        }
+
+        .exhibit-bs-multiselect-label {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .exhibit-bs-multiselect-caret {
+            flex-shrink: 0;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #446354;
+            margin-top: 2px;
+        }
+
+        .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-caret {
+            border-top: 0;
+            border-bottom: 6px solid #446354;
+            margin-top: 0;
+        }
+
+        .exhibit-bs-multiselect-popover {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 2px);
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+            transition: opacity 0.15s ease, max-height 0.2s ease;
+        }
+
+        .exhibit-bs-multiselect.is-open .exhibit-bs-multiselect-popover {
+            max-height: 280px;
+            overflow: hidden;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .exhibit-bs-multiselect-filter {
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 0 8px;
+            padding: 8px 10px;
+            border: none;
+            border-bottom: 1px solid #dee8e2;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            font-family: inherit;
+            font-size: 13px;
+            color: #173425;
+            background: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .exhibit-bs-multiselect-filter::placeholder {
+            color: #8a9a92;
+        }
+
+        .exhibit-bs-multiselect-filter:hover {
+            background: #fcfefc;
+        }
+
+        .exhibit-bs-multiselect-filter:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: inset 0 0 0 1px var(--color-primary);
+        }
+
+        .exhibit-bs-multiselect-menu {
+            flex: 1;
+            min-height: 0;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            background: #fff;
+            border: none;
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exhibit-bs-multiselect-inner {
+            flex: 1;
+            min-height: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 6px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .exhibit-bs-multiselect-item.is-filtered-out {
+            display: none;
+        }
+
+        .exhibit-bs-multiselect-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 0;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #173425;
+            line-height: 1.35;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .exhibit-bs-multiselect-item:hover {
+            background: #f8f9fa;
+        }
+
+        .exhibit-bs-multiselect-item input[type="checkbox"] {
+            margin-top: 2px;
+            flex-shrink: 0;
+            width: 1em;
+            height: 1em;
+            accent-color: var(--color-primary, #008632);
+            cursor: pointer;
+        }
+
+        .exhibit-bs-multiselect-item .exhibit-bs-multiselect-item-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        @media (max-width: 900px) {
+            .search-condition-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            /* 2列時：アイテム（8番目＝4行目2列目）と同じ行にクリアを配置 */
+            .search-condition-clear-row {
+                grid-column: 2;
+                grid-row: 4;
+            }
+        }
+
         @media (max-width: 768px) {
             .search-toggle-sp {
                 display: flex;
+            }
+
+            .search-condition-panel {
+                margin: 0 0 12px;
+            }
+
+            .search-condition-body {
+                padding: 10px 12px;
+            }
+
+            .search-condition-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-condition-clear-row {
+                grid-column: 1;
+                grid-row: auto;
+                margin-top: 8px;
             }
 
             /* 画面右下固定 アクションボタン */
@@ -1714,93 +2075,173 @@
         <!--#region メインコンテンツ  -->
         <div class="content">
             <div class="content-box">
-                <h2 class="page-title">サンプル照会</h2>
-                <div class="header-buttons header-buttons-wide">
-                    <a href="sample_move.html" class="btn btn-primary">サンプル移動処理へ</a>
-                    <a href="sample_delete.html" class="btn btn-primary">サンプル削除処理へ</a>
-                    <button class="btn btn-secondary">CSV出力</button>
+                <h2 class="page-title">検品登録</h2>
+
+                <div class="panel search-condition-panel" aria-label="検索条件">
+                    <div class="panel-header">
+                      <span>検索条件</span>
+                      <button id="searchConditionToggleBtn" class="search-toggle-btn" type="button" aria-expanded="true"
+                        aria-controls="searchConditionBody">-</button>
+                    </div>
+                    <div id="searchConditionBody" class="panel-body search-condition-body">
+                      <div class="search-condition-grid">
+                        <label class="field">
+                          <span class="field-label">仕様書No.</span>
+                          <input id="searchSpecNo" type="text" placeholder="仕様書No.を入力" aria-label="仕様書No.">
+                        </label>
+                        <div class="field">
+                            <span class="field-label" id="searchConditionExhibitFieldLabel">展示会</span>
+                            <div class="exhibit-bs-multiselect" id="searchConditionExhibitMs">
+                              <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionExhibitToggle"
+                                aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionExhibitPopover"
+                                aria-labelledby="searchConditionExhibitFieldLabel">
+                                <span class="exhibit-bs-multiselect-label" id="searchConditionExhibitToggleLabel">すべて</span>
+                                <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                              </button>
+                              <div class="exhibit-bs-multiselect-popover" id="searchConditionExhibitPopover" hidden>
+                                <input type="text" id="searchConditionExhibitFilter" class="exhibit-bs-multiselect-filter"
+                                  placeholder="キーワードで絞り込み" autocomplete="off" aria-label="展示会リストの絞り込み"
+                                  aria-controls="searchConditionExhibitMenu">
+                                <div class="exhibit-bs-multiselect-menu" id="searchConditionExhibitMenu" role="listbox"
+                                  aria-multiselectable="true">
+                                  <div class="exhibit-bs-multiselect-inner">
+                                    <label class="exhibit-bs-multiselect-item" role="option"
+                                      data-ms-search="2026年4月 東京インターナショナルギフトショー 4月 ギフト">
+                                      <input type="checkbox" name="searchConditionExhibit" value="4月展">
+                                      <span class="exhibit-bs-multiselect-item-text">2026年4月 / 東京インターナショナルギフトショー</span>
+                                    </label>
+                                    <label class="exhibit-bs-multiselect-item" role="option"
+                                      data-ms-search="2026年7月 東京インターナショナルギフトショー 7月 ギフト">
+                                      <input type="checkbox" name="searchConditionExhibit" value="7月展">
+                                      <span class="exhibit-bs-multiselect-item-text">2026年7月 / 東京インターナショナルギフトショー</span>
+                                    </label>
+                                    <label class="exhibit-bs-multiselect-item" role="option"
+                                      data-ms-search="2026年10月 東京インターナショナルギフトショー 10月 ギフト">
+                                      <input type="checkbox" name="searchConditionExhibit" value="10月展">
+                                      <span class="exhibit-bs-multiselect-item-text">2026年10月 / 東京インターナショナルギフトショー</span>
+                                    </label>
+                                    <label class="exhibit-bs-multiselect-item" role="option"
+                                      data-ms-search="2027年1月 東京インターナショナルギフトショー 1月 ギフト">
+                                      <input type="checkbox" name="searchConditionExhibit" value="1月展">
+                                      <span class="exhibit-bs-multiselect-item-text">2027年1月 / 東京インターナショナルギフトショー</span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                              <select id="searchConditionExhibit" name="searchConditionExhibit" multiple tabindex="-1"
+                                aria-label="展示会" aria-hidden="true"
+                                style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)">
+                                <option value="4月展">2026年4月 / 東京インターナショナルギフトショー</option>
+                                <option value="7月展">2026年7月 / 東京インターナショナルギフトショー</option>
+                                <option value="10月展">2026年10月 / 東京インターナショナルギフトショー</option>
+                                <option value="1月展">2027年1月 / 東京インターナショナルギフトショー</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="field">
+                            <span class="field-label" id="searchConditionSalesFieldLabel">販売区分</span>
+                            <div class="exhibit-bs-multiselect" id="searchConditionSalesMs">
+                              <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionSalesToggle"
+                                aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionSalesPopover"
+                                aria-labelledby="searchConditionSalesFieldLabel">
+                                <span class="exhibit-bs-multiselect-label" id="searchConditionSalesToggleLabel">すべて</span>
+                                <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                              </button>
+                              <div class="exhibit-bs-multiselect-popover" id="searchConditionSalesPopover" hidden>
+                                <input type="text" id="searchConditionSalesFilter" class="exhibit-bs-multiselect-filter"
+                                  placeholder="キーワードで絞り込み" autocomplete="off" aria-label="販売区分リストの絞り込み"
+                                  aria-controls="searchConditionSalesMenu">
+                                <div class="exhibit-bs-multiselect-menu" id="searchConditionSalesMenu" role="listbox"
+                                  aria-multiselectable="true">
+                                  <div class="exhibit-bs-multiselect-inner" id="searchConditionSalesInner"></div>
+                                </div>
+                              </div>
+                              <select id="searchConditionSales" name="searchConditionSales" multiple tabindex="-1"
+                                aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+                            </div>
+                          </div>
+                        <label class="field">
+                            <span class="field-label">商品コード</span>
+                            <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力" aria-label="商品コード"></textarea>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">品名</span>
+                          <input id="searchsohinmei" type="text" placeholder="品名を入力" aria-label="品名">
+                        </label>
+                        <div class="field">
+                          <span class="field-label" id="searchConditionCategoryFieldLabel">カテゴリー</span>
+                          <div class="exhibit-bs-multiselect" id="searchConditionCategoryMs">
+                            <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionCategoryToggle"
+                              aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionCategoryPopover"
+                              aria-labelledby="searchConditionCategoryFieldLabel">
+                              <span class="exhibit-bs-multiselect-label" id="searchConditionCategoryToggleLabel">すべて</span>
+                              <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                            </button>
+                            <div class="exhibit-bs-multiselect-popover" id="searchConditionCategoryPopover" hidden>
+                              <input type="text" id="searchConditionCategoryFilter" class="exhibit-bs-multiselect-filter"
+                                placeholder="キーワードで絞り込み" autocomplete="off" aria-label="カテゴリーリストの絞り込み"
+                                aria-controls="searchConditionCategoryMenu">
+                              <div class="exhibit-bs-multiselect-menu" id="searchConditionCategoryMenu" role="listbox"
+                                aria-multiselectable="true">
+                                <div class="exhibit-bs-multiselect-inner" id="searchConditionCategoryInner"></div>
+                              </div>
+                            </div>
+                            <select id="searchConditionCategory" name="searchConditionCategory" multiple tabindex="-1"
+                              aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+                          </div>
+                        </div>
+                        <div class="field">
+                          <span class="field-label" id="searchConditionBrandCharaFieldLabel">ブランド・キャラ</span>
+                          <div class="exhibit-bs-multiselect" id="searchConditionBrandCharaMs">
+                            <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionBrandCharaToggle"
+                              aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionBrandCharaPopover"
+                              aria-labelledby="searchConditionBrandCharaFieldLabel">
+                              <span class="exhibit-bs-multiselect-label" id="searchConditionBrandCharaToggleLabel">すべて</span>
+                              <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                            </button>
+                            <div class="exhibit-bs-multiselect-popover" id="searchConditionBrandCharaPopover" hidden>
+                              <input type="text" id="searchConditionBrandCharaFilter" class="exhibit-bs-multiselect-filter"
+                                placeholder="キーワードで絞り込み" autocomplete="off" aria-label="ブランド・キャラリストの絞り込み"
+                                aria-controls="searchConditionBrandCharaMenu">
+                              <div class="exhibit-bs-multiselect-menu" id="searchConditionBrandCharaMenu" role="listbox"
+                                aria-multiselectable="true">
+                                <div class="exhibit-bs-multiselect-inner" id="searchConditionBrandCharaInner"></div>
+                              </div>
+                            </div>
+                            <select id="searchConditionBrandChara" name="searchConditionBrandChara" multiple tabindex="-1"
+                              aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+                          </div>
+                        </div>
+                        <div class="field">
+                          <span class="field-label" id="searchConditionItemFieldLabel">アイテム</span>
+                          <div class="exhibit-bs-multiselect" id="searchConditionItemMs">
+                            <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionItemToggle"
+                              aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionItemPopover"
+                              aria-labelledby="searchConditionItemFieldLabel">
+                              <span class="exhibit-bs-multiselect-label" id="searchConditionItemToggleLabel">すべて</span>
+                              <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                            </button>
+                            <div class="exhibit-bs-multiselect-popover" id="searchConditionItemPopover" hidden>
+                              <input type="text" id="searchConditionItemFilter" class="exhibit-bs-multiselect-filter"
+                                placeholder="キーワードで絞り込み" autocomplete="off" aria-label="アイテムリストの絞り込み"
+                                aria-controls="searchConditionItemMenu">
+                              <div class="exhibit-bs-multiselect-menu" id="searchConditionItemMenu" role="listbox"
+                                aria-multiselectable="true">
+                                <div class="exhibit-bs-multiselect-inner" id="searchConditionItemInner"></div>
+                              </div>
+                            </div>
+                            <select id="searchConditionItem" name="searchConditionItem" multiple tabindex="-1"
+                              aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
+                          </div>
+                        </div>                   
+                      <div class="search-condition-clear-row">
+                        <button type="button" class="btn-search-cancel" id="searchConditionClearBtn">クリア</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="view-layout view-layout-1-group">
                     <section class="card">
-                        <h2 class="card-title">検索条件</h2>
-                        <div class="search-box inquiry-search-box" id="searchBox">
-                            <button type="button" class="search-toggle-sp" id="searchToggleSp" aria-expanded="false" aria-controls="searchRowsPanel">
-                                <span class="search-toggle-sp-label">
-                                    <img class="search-toggle-sp-icon" src="images/search_20dp_008632.svg" alt="" width="20" height="20">
-                                    <span class="search-toggle-sp-text">検索条件を開く</span>
-                                </span>
-                            </button>
-                            <div class="search-box-inner" id="searchRowsPanel">
-                                <div class="search-grid">
-                                    <div class="form-group">
-                                        <label>仕様書No</label>
-                                        <input type="text" class="form-control" placeholder="例：S-2026-00125">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>展示会</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>2026 春展示会</option>
-                                            <option>2026 夏展示会</option>
-                                            <option>2026 秋展示会</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>販売区分</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>定番</option>
-                                            <option>スポット</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>商品コード</label>
-                                        <input type="text" class="form-control" placeholder="例：A10023">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>商品名</label>
-                                        <input type="text" class="form-control" placeholder="商品名を入力">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>カテゴリー</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>トップス</option>
-                                            <option>ボトムス</option>
-                                            <option>雑貨</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>ブランド/キャラ</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>ブランドA</option>
-                                            <option>ブランドB</option>
-                                            <option>キャラクターC</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>アイテム</label>
-                                        <select class="form-control">
-                                            <option>すべて</option>
-                                            <option>Tシャツ</option>
-                                            <option>パーカー</option>
-                                            <option>バッグ</option>
-                                        </select>
-                                    </div>
-                                    <div class="search-grid-actions">
-                                        <button class="btn btn-primary" id="searchSearchBtn">検索</button>
-                                        <button type="button" class="btn btn-secondary" id="searchCancelAllBtn">クリア</button>                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="card">
-                        <h2 class="card-title">サンプル一覧</h2>
                         <div class="table-wrap">
                             <table class="table">
                                 <thead>
@@ -1816,6 +2257,7 @@
                                         <th>拠点別<br>サンプル数</th>
                                         <th>拠点別<br>最終サンプル数</th>
                                         <th>状態</th>
+                                        <th colspan="2">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1855,6 +2297,18 @@
                                             </button>
                                         </td>
                                         <td><span class="status-chip status-available">貸出可</span></td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary kenpinmodal-open-btn"
+                                                data-modal-type="final"
+                                                data-specno="S-2026-00125"
+                                                data-exhibition="2026 春展示会"
+                                                data-kubun="定番"
+                                                data-code="A10023"
+                                                data-name="ロゴプリントTシャツ">
+                                                検品履歴
+                                            </button>
                                     </tr>
 
                                     <tr>
@@ -1893,6 +2347,19 @@
                                             </button>
                                         </td>
                                         <td><span class="status-chip status-rental">一部貸出中</span></td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary kenpinmodal-open-btn"
+                                                data-modal-type="final"
+                                                data-specno="S-2026-00126"
+                                                data-exhibition="2026 春展示会"
+                                                data-kubun="スポット"
+                                                data-code="A10024"
+                                                data-name="裏毛パーカー">
+                                                検品履歴
+                                            </button>
+                                        </td>
                                     </tr>
 
                                     <tr>
@@ -1931,21 +2398,22 @@
                                             </button>
                                         </td>
                                         <td><span class="status-chip status-available">貸出可</span></td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary kenpinmodal-open-btn"
+                                                data-modal-type="final"
+                                                data-specno="S-2026-00127"
+                                                data-exhibition="2026 夏展示会"
+                                                data-kubun="定番"
+                                                data-code="B30012"
+                                                data-name="キャンバストート">
+                                                検品履歴
+                                            </button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </section>
-
-                    <section class="card">
-                        <h2 class="card-title">画面イメージ補足</h2>
-                        <div class="note-box">
-                            <h3>想定動作</h3>
-                            <ul>
-                                <li>一覧の「サンプル数」「最終サンプル数」をクリックすると、拠点別内訳をポップアップ表示します。</li>
-                                <li>内訳列は、サンプル・最終サンプルともに「在庫数 / 使用予定 / 貸出中 / 貸出可能数」で統一しています。</li>
-                                <li>実際のシステム化では、クリックした商品コードをもとにDBから拠点別情報を取得して表示できます。</li>
-                            </ul>
                         </div>
                     </section>
                 </div>
@@ -2037,6 +2505,95 @@
         </div>
     </div>
 
+    <!-- 検品履歴モーダル -->
+    <div id="kenpinModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 id="kenpinmodalTitle">検品履歴</h2>
+                <button type="button" class="modal-close-btn" id="kenpinmodalCloseBtn">×</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    <div class="modal-info-item">
+                        <span class="label">仕様書No</span>
+                        <span id="kenpinmodalSpecNo">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="label">展示会</span>
+                        <span id="kenpinmodalExhibition">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="label">販売区分</span>
+                        <span id="kenpinmodalKubun">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="label">商品コード</span>
+                        <span id="kenpinmodalCode">-</span>
+                    </div>
+                    <div class="modal-info-item full">
+                        <span class="label">商品名</span>
+                        <span id="kenpinmodalName">-</span>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="branch-list">
+                        <thead>
+                            <tr id="kenpinmodalHeadRow">
+                                <th>回</th>
+                                <th>検品日</th>
+                                <th>担当</th>
+                                <th>JANコード</th>
+                                <th>サンプルJANコード</th>
+                                <th>OK</th>
+                                <th>NG</th>
+                                <th colspan="2">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kenpinmodalTableBody">
+                            <tr>
+                                <td class="kenpinrireki-table">1st</td>
+                                <td class="kenpinrireki-table">2024/04/01</td>
+                                <td class="kenpinrireki-table">丸眞 花子</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">4500000000001<br>4500000000002<br>4500000000003</td>
+                                <td class="kenpinrireki-table">1枚</td>
+                                <td class="kenpinrireki-table">2枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
+                            </tr>
+                            <tr>
+                                <td class="kenpinrireki-table">2nd</td>
+                                <td class="kenpinrireki-table">2024/04/15</td>
+                                <td class="kenpinrireki-table">丸眞 花子</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">4500000000001<br>4500000000001<br>4500000000001</td>
+                                <td class="kenpinrireki-table">3枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
+                            </tr>
+                            <tr>
+                                <td class="kenpinrireki-table">3rd</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">&nbsp;</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table">0枚</td>
+                                <td class="kenpinrireki-table"><button class="btn btn-primary">チェック</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="kenpinmodalCloseBtn2">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="js/sidebar.js"></script>
     <script>
         // サイドバーの読み込み
@@ -2098,6 +2655,233 @@
       }
 
       loadSharedSidebar();
+
+      function initSearchConditionClear() {
+        const btn = document.getElementById('searchConditionClearBtn');
+        const body = document.getElementById('searchConditionBody');
+        if (!btn || !body) return;
+
+        btn.addEventListener('click', () => {
+          body.querySelectorAll('.exhibit-bs-multiselect').forEach((msRoot) => {
+            msRoot.classList.remove('is-open');
+            const pop = msRoot.querySelector('.exhibit-bs-multiselect-popover');
+            const filter = msRoot.querySelector('.exhibit-bs-multiselect-filter');
+            const toggle = msRoot.querySelector('.exhibit-bs-multiselect-toggle');
+            if (pop) pop.setAttribute('hidden', '');
+            if (filter) filter.value = '';
+            if (toggle) toggle.setAttribute('aria-expanded', 'false');
+            msRoot.querySelectorAll('.exhibit-bs-multiselect-item.is-filtered-out').forEach((row) => {
+              row.classList.remove('is-filtered-out');
+            });
+            msRoot.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+              cb.checked = false;
+            });
+            const hidden = msRoot.querySelector('select[multiple]');
+            if (hidden) {
+              Array.from(hidden.options).forEach((o) => {
+                o.selected = false;
+              });
+            }
+            const labelEl = msRoot.querySelector('.exhibit-bs-multiselect-label');
+            if (labelEl) labelEl.textContent = 'すべて';
+          });
+
+          body.querySelectorAll('.search-condition-grid .field input[type="text"], .search-condition-grid .field textarea').forEach((el) => {
+            el.value = '';
+          });
+        });
+      }
+
+      function initSearchConditionToggle() {
+        const toggleButton = document.getElementById('searchConditionToggleBtn');
+        const panelBody = document.getElementById('searchConditionBody');
+        if (!toggleButton || !panelBody) return;
+
+        toggleButton.addEventListener('click', () => {
+          const willExpand = panelBody.hasAttribute('hidden');
+          if (willExpand) {
+            panelBody.removeAttribute('hidden');
+            toggleButton.textContent = '-';
+            toggleButton.setAttribute('aria-expanded', 'true');
+          } else {
+            panelBody.setAttribute('hidden', '');
+            toggleButton.textContent = '+';
+            toggleButton.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      function fillSearchConditionBsMultiselect(innerId, selectId, checkboxName, listKey) {
+        const data = typeof window.AUTOCOMPLETE_LISTS === 'object' && window.AUTOCOMPLETE_LISTS
+          ? window.AUTOCOMPLETE_LISTS
+          : null;
+        const inner = document.getElementById(innerId);
+        const hiddenSelect = document.getElementById(selectId);
+        if (!inner || !hiddenSelect || !data) return;
+        const arr = data[listKey];
+        if (!Array.isArray(arr)) return;
+        inner.innerHTML = '';
+        hiddenSelect.innerHTML = '';
+        arr.forEach((text) => {
+          const t = String(text);
+          const opt = document.createElement('option');
+          opt.value = t;
+          opt.textContent = t;
+          hiddenSelect.appendChild(opt);
+          const lab = document.createElement('label');
+          lab.className = 'exhibit-bs-multiselect-item';
+          lab.setAttribute('role', 'option');
+          lab.dataset.msSearch = t.toLowerCase();
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.name = checkboxName;
+          cb.value = t;
+          const span = document.createElement('span');
+          span.className = 'exhibit-bs-multiselect-item-text';
+          span.textContent = t;
+          lab.appendChild(cb);
+          lab.appendChild(span);
+          inner.appendChild(lab);
+        });
+      }
+
+      function initExhibitBsMultiselect(root) {
+        if (!root || root.dataset.msBound === '1') return;
+        const btn = root.querySelector('.exhibit-bs-multiselect-toggle');
+        const popover = root.querySelector('.exhibit-bs-multiselect-popover');
+        const filterInput = root.querySelector('.exhibit-bs-multiselect-filter');
+        const menu = root.querySelector('.exhibit-bs-multiselect-menu');
+        const labelEl = root.querySelector('.exhibit-bs-multiselect-label');
+        const hiddenSelect = root.querySelector('select[multiple]');
+        if (!btn || !popover || !filterInput || !menu || !labelEl || !hiddenSelect) return;
+
+        root.dataset.msBound = '1';
+
+        function getCheckboxes() {
+          return Array.from(root.querySelectorAll('input[type="checkbox"]'));
+        }
+
+        function getOptions() {
+          return Array.from(hiddenSelect.options);
+        }
+
+        function getFilterRows() {
+          return Array.from(menu.querySelectorAll('.exhibit-bs-multiselect-item'));
+        }
+
+        function syncHiddenSelect() {
+          const checkboxes = getCheckboxes();
+          const options = getOptions();
+          checkboxes.forEach((cb) => {
+            const opt = options.find((o) => o.value === cb.value);
+            if (opt) opt.selected = cb.checked;
+          });
+        }
+
+        function refreshButtonLabel() {
+          const checkboxes = getCheckboxes();
+          const checked = checkboxes.filter((cb) => cb.checked);
+          if (checked.length === 0) {
+            labelEl.textContent = 'すべて';
+            return;
+          }
+          if (checked.length === 1) {
+            const t = checked[0].closest('label')?.querySelector('.exhibit-bs-multiselect-item-text');
+            labelEl.textContent = t ? t.textContent.trim() : checked[0].value;
+            return;
+          }
+          labelEl.textContent = checked.length + '件を選択';
+        }
+
+        function applyMsFilter() {
+          const filterRows = getFilterRows();
+          const raw = String(filterInput.value || '').trim().toLowerCase();
+          const tokens = raw.split(/\s+/).filter(Boolean);
+          filterRows.forEach((row) => {
+            const hay = String(row.dataset.msSearch || row.dataset.exhibitSearch || row.textContent || '').toLowerCase();
+            const match = tokens.length === 0 || tokens.every((t) => hay.includes(t));
+            row.classList.toggle('is-filtered-out', !match);
+          });
+        }
+
+        function setOpen(open) {
+          root.classList.toggle('is-open', open);
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (open) {
+            popover.removeAttribute('hidden');
+            requestAnimationFrame(() => {
+              filterInput.focus();
+            });
+          } else {
+            popover.setAttribute('hidden', '');
+            filterInput.value = '';
+            applyMsFilter();
+          }
+        }
+
+        function toggleOpen() {
+          setOpen(!root.classList.contains('is-open'));
+        }
+
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleOpen();
+        });
+
+        popover.addEventListener('click', (e) => {
+          e.stopPropagation();
+        });
+
+        filterInput.addEventListener('input', applyMsFilter);
+        filterInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            e.stopPropagation();
+            setOpen(false);
+          }
+        });
+
+        root.addEventListener('change', (e) => {
+          if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
+            syncHiddenSelect();
+            refreshButtonLabel();
+          }
+        });
+
+        document.addEventListener('click', () => {
+          setOpen(false);
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && root.classList.contains('is-open')) {
+            setOpen(false);
+          }
+        });
+
+        syncHiddenSelect();
+        refreshButtonLabel();
+        applyMsFilter();
+      }
+
+      function initSearchConditionMultiselectRoots() {
+        const body = document.getElementById('searchConditionBody');
+        if (!body) return;
+        body.querySelectorAll('.exhibit-bs-multiselect').forEach((root) => {
+          initExhibitBsMultiselect(root);
+        });
+      }
+
+      function initSearchConditionSelects() {
+        fillSearchConditionBsMultiselect('searchMakerInner', 'searchMaker', 'searchMaker', 'supplier');
+        fillSearchConditionBsMultiselect('searchConditionSalesInner', 'searchConditionSales', 'searchConditionSales', 'hanbaiKubun');
+        fillSearchConditionBsMultiselect('searchConditionCategoryInner', 'searchConditionCategory', 'searchConditionCategory', 'category2');
+        fillSearchConditionBsMultiselect('searchConditionBrandCharaInner', 'searchConditionBrandChara', 'searchConditionBrandChara', 'brandChara');
+        fillSearchConditionBsMultiselect('searchConditionItemInner', 'searchConditionItem', 'searchConditionItem', 'item');
+      }
+
+      initSearchConditionSelects();
+      initSearchConditionMultiselectRoots();
+      initSearchConditionToggle();
+      initSearchConditionClear();
 
       // スマホ: 検索条件の折りたたみ開閉
       (function () {
