@@ -312,6 +312,30 @@ body {
     grid-column: 1;
 }
 
+/* 対象年月：スマホ以外は開始・終了を横並び */
+@media (min-width: 769px) {
+    #searchConditionPanel .search-condition-month-group {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: flex-end;
+        gap: 10px 12px;
+        grid-column: span 2;
+        min-width: 0;
+    }
+
+    #searchConditionPanel .search-condition-month-group .field {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 255px;
+    }
+
+    #searchConditionPanel .search-condition-month-group .field input[type="month"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
 /* 検索条件（keiyakushosofuiraikakunin.html より） */
 #searchConditionPanel {
     position: relative;
@@ -1118,6 +1142,7 @@ tfoot td {
         text-align: left;
     }
 
+    /* スマホ: 対象年月（type=month）の表示テキストを左寄せ（UA既定を上書き） */
     #searchConditionPanel #searchConditionMonthStart,
     #searchConditionPanel #searchConditionMonthEnd {
         display: block;
@@ -1125,9 +1150,28 @@ tfoot td {
         max-width: 100%;
         margin-left: 0;
         margin-right: auto;
-        text-align: left;
+        text-align: left !important;
+        direction: ltr;
         align-self: flex-start;
         box-sizing: border-box;
+    }
+
+    #searchConditionPanel #searchConditionMonthStart::-webkit-datetime-edit,
+    #searchConditionPanel #searchConditionMonthEnd::-webkit-datetime-edit,
+    #searchConditionPanel #searchConditionMonthStart::-webkit-datetime-edit-fields-wrapper,
+    #searchConditionPanel #searchConditionMonthEnd::-webkit-datetime-edit-fields-wrapper {
+        text-align: left !important;
+    }
+
+    #searchConditionPanel #searchConditionMonthStart::-webkit-date-and-time-value,
+    #searchConditionPanel #searchConditionMonthEnd::-webkit-date-and-time-value {
+        text-align: left !important;
+    }
+
+    #searchConditionPanel #searchConditionMonthStart::-webkit-calendar-picker-indicator,
+    #searchConditionPanel #searchConditionMonthEnd::-webkit-calendar-picker-indicator {
+        margin-left: auto;
+        margin-right: 0;
     }
 
     #searchConditionPanel .search-condition-grid > .search-condition-new-row {
