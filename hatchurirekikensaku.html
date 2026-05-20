@@ -65,8 +65,8 @@
       min-width: 0;
       width: 100%;
       display: grid;
-      /* PC: 仕様書一覧 20% / 締切パネル 80% / 履歴 0% */
-      grid-template-columns: minmax(0, 20fr) minmax(0, 80fr) minmax(0, 0fr);
+      /* PC: 仕様書一覧 20% / 締切パネル 65% / 履歴 15% */
+      grid-template-columns: minmax(0, 20fr) minmax(0, 65fr) minmax(0, 15fr);
       gap: 16px;
       padding-right: 20px;
       box-sizing: border-box;
@@ -2168,7 +2168,12 @@
             </div>
           </div>
         </section>
-        <!-- 履歴なし -->
+        <section class="panel progress-panel">
+          <div class="panel-header">履歴</div>
+          <div class="panel-body">
+            <div id="specHistoryCommentMount" class="spec-history-comments" hidden></div>
+          </div>
+        </section>
       </div>
 
       <div class="content-footer">
@@ -2909,52 +2914,34 @@
 
       function syncFormFromItem(item) {
         syncCycleToggleButtons(item);
-        const iraino = item ? String(item.dataset.iraino || '').trim() : '';
+        const hatchuNo = item ? String(item.dataset.hatchuno || '').trim() : '';
         const historyMount = document.getElementById('specHistoryCommentMount');
         if (historyMount) {
           historyMount.replaceChildren();
-          const historyByIraiNo = {
-            'AC-0001': [
-              { label: '2025/06/01 09:00 丸眞 花子', text: '発注書を登録しました。' },
-              { label: '2025/06/01 10:00 丸眞 花子', text: '証紙依頼書を登録しました。' },
-              { label: '2025/06/01 11:00 丸眞 桜子', text: 'カートンマークを登録しました。' },
+          const historyByHatchuNo = {
+            'CT-2026-0001': [
+              { label: '2026/03/01 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2026/03/01 10:00 丸眞 花子', text: '証紙依頼書を登録しました。' },
+              { label: '2026/03/01 11:00 丸眞 桜子', text: 'カートンマークを登録しました。' },
             ],
-            'AC-0002': [
-              { label: '2025/06/02 09:00 丸眞 花子', text: '発注書を登録しました。' },
-              { label: '2025/06/02 10:15 丸眞 花子', text: '証紙依頼書を登録しました。' },
-              { label: '2025/06/02 11:00 丸眞 桜子', text: 'カートンマークを登録しました。' },
+            'CT-2026-0002': [
+              { label: '2026/03/10 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2026/03/10 10:15 丸眞 花子', text: '証紙依頼書を登録しました。' },
+              { label: '2026/03/10 11:00 丸眞 桜子', text: 'カートンマークを登録しました。' },
             ],
-            'AC-0003': [
-              { label: '2025/06/03 09:00 丸眞 太郎', text: '発注書を登録しました。' },
-              { label: '2025/06/03 14:00 丸眞 太郎', text: '証紙依頼書を登録しました。' }
+            'CT-2026-0003': [
+              { label: '2026/03/15 09:00 丸眞 太郎', text: '発注書を登録しました。' },
+              { label: '2026/03/15 14:00 丸眞 太郎', text: '証紙依頼書を登録しました。' },
             ],
-            'AC-0004': [
-              { label: '2025/06/04 09:00 丸眞 花子', text: '発注書を登録しました。' },
-              { label: '2025/06/04 13:30 丸眞 桜子', text: 'カートンマークを登録しました。' }
+            'CT-2026-0004': [
+              { label: '2026/04/01 09:00 丸眞 花子', text: '発注書を登録しました。' },
+              { label: '2026/04/01 13:30 丸眞 桜子', text: 'カートンマークを登録しました。' },
             ],
-            'AC-0005': [
-              { label: '2025/06/05 09:00 丸眞 一郎', text: '発注書を登録しました。' },
+            'CT-2026-0005': [
+              { label: '2026/04/05 09:00 丸眞 一郎', text: '発注書を登録しました。' },
             ],
-            'AC-0006': [
-              { label: '2025/06/06 09:00 丸眞 花子', text: '発注書を登録しました。' },
-              { label: '2025/06/06 10:00 丸眞 花子', text: '証紙依頼書を登録しました。' }
-            ],
-            'AC-0007': [
-              { label: '2025/06/07 09:00 丸眞 太郎', text: '発注書を登録しました。' },
-            ],
-            'AC-0008': [
-              { label: '2025/06/08 09:00 丸眞 桜子', text: '発注書を登録しました。' },
-              { label: '2025/06/08 11:00 丸眞 桜子', text: '証紙依頼書を登録しました。' }
-            ],
-            'AC-0009': [
-              { label: '2025/06/09 09:00 丸眞 花子', text: '発注書を登録しました。' },
-              { label: '2025/06/09 12:00 丸眞 桜子', text: 'カートンマークを登録しました。' }
-            ],
-            'AC-0010': [
-              { label: '2025/06/10 09:00 丸眞 一郎', text: '発注書を登録しました。' },
-            ]
           };
-          const histories = historyByIraiNo[iraino];
+          const histories = historyByHatchuNo[hatchuNo];
           if (histories && histories.length) {
             histories.forEach((history) => {
               const wrap = document.createElement('label');
