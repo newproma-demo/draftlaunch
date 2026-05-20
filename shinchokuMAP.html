@@ -1321,6 +1321,12 @@
         });
       }
 
+      var DEFAULT_SAMPLE_IN_DATE = "2026/06/01";
+      var DEFAULT_SAMPLE_OUT_DATE = "2026/06/10";
+      var DEFAULT_LAST_IN_DATE = "2026/06/30";
+      var DEFAULT_LAST_OUT_DATE = "2026/08/01";
+      var DATE_LABEL_INPUT_NAMES = ["sampleIn", "sampleOut", "lastIn", "lastOut"];
+
       // 商品コード選択に応じてカード内の項目と画像を設定
       function applyProductData(card, code) {
         var img = card.querySelector(".product-image");
@@ -1360,7 +1366,7 @@
         ].forEach(function (el) {
           if (el) el.value = "";
         });
-        if (isFirstProductCard(card)) {
+        if (code) {
           if (sampleIn) sampleIn.value = DEFAULT_SAMPLE_IN_DATE;
           if (sampleOut) sampleOut.value = DEFAULT_SAMPLE_OUT_DATE;
           if (lastIn) lastIn.value = DEFAULT_LAST_IN_DATE;
@@ -1394,6 +1400,8 @@
             if (shiyo) shiyo.value = sample.shiyo || "";
             if (janUmu) janUmu.value = sample.janUmu || "";
             if (nohinKeitai) nohinKeitai.value = sample.nohinKeitai || "";
+            if (sampleIn) sampleIn.value = sample.sampleIn || DEFAULT_SAMPLE_IN_DATE;
+            if (lastOut) lastOut.value = sample.lastOut || DEFAULT_LAST_OUT_DATE;
             if (designer) designer.value = "丸眞太郎";
             updateDateLabelHighlights(card);
             return;
@@ -1401,16 +1409,6 @@
           if (designer) designer.value = "丸眞太郎";
         }
         updateDateLabelHighlights(card);
-      }
-
-      var DEFAULT_SAMPLE_IN_DATE = "2026/06/01";
-      var DEFAULT_SAMPLE_OUT_DATE = "2026/06/10";
-      var DEFAULT_LAST_IN_DATE = "2026/06/30";
-      var DEFAULT_LAST_OUT_DATE = "2026/08/01";
-      var DATE_LABEL_INPUT_NAMES = ["sampleIn", "sampleOut", "lastIn", "lastOut"];
-
-      function isFirstProductCard(card) {
-        return card && card.dataset.productCardIndex === "0";
       }
 
       function updateDateLabelHighlights(card) {
@@ -1662,7 +1660,9 @@
           sosei: "綿100%",
           shiyo: (sampleNo % 2 === 0) ? "ジャカード" : "プリント",
           janUmu: "有",
-          nohinKeitai: (sampleNo % 2 === 0) ? "10枚袋" : "個包装"
+          nohinKeitai: (sampleNo % 2 === 0) ? "10枚袋" : "個包装",
+          sampleIn: "2026/06/" + String(sampleNo).padStart(2, "0"),
+          lastOut: "2026/08/" + String(sampleNo).padStart(2, "0")
         });
       }
 
