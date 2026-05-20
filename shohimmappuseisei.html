@@ -1196,6 +1196,21 @@
       opacity: 1;
     }
 
+    /* 展示会・商品コード・JANコード：メーカー（multiselect）と同じフォントサイズ */
+    .search-condition-panel #searchTenjikai,
+    .search-condition-panel #searchProductCode,
+    .search-condition-panel #searchJanCode {
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 400;
+    }
+
+    .search-condition-panel #searchTenjikai option,
+    .search-condition-panel #searchProductCode option,
+    .search-condition-panel #searchJanCode option {
+      font-size: 13px;
+    }
+
     /* 検索条件「到着日」：グリッド列いっぱいに yyyymmdd 入力を広げる */
     .search-condition-panel .field--arrival-date .period-range-row--from-only {
       max-width: none;
@@ -1514,52 +1529,18 @@
           <div class="search-condition-grid">
             <div class="field">
               <span class="field-label" id="searchConditionExhibitFieldLabel">展示会</span>
-              <div class="exhibit-bs-multiselect" id="searchConditionExhibitMs">
-                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionExhibitToggle"
-                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionExhibitPopover"
-                  aria-labelledby="searchConditionExhibitFieldLabel">
-                  <span class="exhibit-bs-multiselect-label" id="searchConditionExhibitToggleLabel">すべて</span>
-                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
-                </button>
-                <div class="exhibit-bs-multiselect-popover" id="searchConditionExhibitPopover" hidden>
-                  <input type="text" id="searchConditionExhibitFilter" class="exhibit-bs-multiselect-filter"
-                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="展示会リストの絞り込み"
-                    aria-controls="searchConditionExhibitMenu">
-                  <div class="exhibit-bs-multiselect-menu" id="searchConditionExhibitMenu" role="listbox"
-                    aria-multiselectable="true">
-                    <div class="exhibit-bs-multiselect-inner">
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="2026年4月 東京インターナショナルギフトショー 4月 ギフト">
-                        <input type="checkbox" name="searchConditionExhibit" value="4月展">
-                        <span class="exhibit-bs-multiselect-item-text">2026年4月 / 東京インターナショナルギフトショー</span>
-                      </label>
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="2026年7月 東京インターナショナルギフトショー 7月 ギフト">
-                        <input type="checkbox" name="searchConditionExhibit" value="7月展">
-                        <span class="exhibit-bs-multiselect-item-text">2026年7月 / 東京インターナショナルギフトショー</span>
-                      </label>
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="2026年10月 東京インターナショナルギフトショー 10月 ギフト">
-                        <input type="checkbox" name="searchConditionExhibit" value="10月展">
-                        <span class="exhibit-bs-multiselect-item-text">2026年10月 / 東京インターナショナルギフトショー</span>
-                      </label>
-                      <label class="exhibit-bs-multiselect-item" role="option"
-                        data-ms-search="2027年1月 東京インターナショナルギフトショー 1月 ギフト">
-                        <input type="checkbox" name="searchConditionExhibit" value="1月展">
-                        <span class="exhibit-bs-multiselect-item-text">2027年1月 / 東京インターナショナルギフトショー</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <select id="searchConditionExhibit" name="searchConditionExhibit" multiple tabindex="-1"
-                  aria-label="展示会" aria-hidden="true"
-                  style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)">
-                  <option value="4月展">2026年4月 / 東京インターナショナルギフトショー</option>
-                  <option value="7月展">2026年7月 / 東京インターナショナルギフトショー</option>
-                  <option value="10月展">2026年10月 / 東京インターナショナルギフトショー</option>
-                  <option value="1月展">2027年1月 / 東京インターナショナルギフトショー</option>
-                </select>
-              </div>
+              <select id="searchTenjikai">
+                <option value="all">すべて</option>
+                <option value="2026.01">2026.01 展示会</option>
+                <option value="2026.02">2026.02 展示会</option>
+                <option value="2026.03">2026.03 展示会</option>
+                <option value="2026.04">2026.04 展示会</option>
+                <option value="2026.05">2026.05 展示会</option>
+                <option value="2026.06">2026.06 展示会</option>
+                <option value="2026.07">2026.07 展示会</option>
+                <option value="2026.08">2026.08 展示会</option>
+                <option value="2026.09">2026.09 展示会</option>
+              </select>
             </div>
             <div class="field">
               <span class="field-label" id="searchConditionMakerFieldLabel">メーカー</span>
@@ -1605,14 +1586,78 @@
                   aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
               </div>
             </div>
-            <label class="field">
-              <span class="field-label">商品コード</span>
-              <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力" aria-label="商品コード"></textarea>
-            </label>
-            <label class="field">
-              <span class="field-label">JANコード</span>
-              <textarea id="searchjan" name="jan" rows="1" placeholder="JANコードを入力" aria-label="JANコード"></textarea>
-            </label>
+            <div class="field">
+              <span class="field-label" id="searchConditionProductCodeFieldLabel">商品コード</span>
+              <select id="searchProductCode">
+                <option value="all">すべて</option>
+                <option value="4900000001">4900000001</option>
+                <option value="4900000002">4900000002</option>
+                <option value="4900000003">4900000003</option>
+                <option value="4900000004">4900000004</option>
+                <option value="4900000005">4900000005</option>
+                <option value="4900000006">4900000006</option>
+                <option value="4900000007">4900000007</option>
+                <option value="4900000008">4900000008</option>
+                <option value="4900000009">4900000009</option>
+                <option value="4900000010">4900000010</option>
+                <option value="4900000011">4900000011</option>
+                <option value="4900000012">4900000012</option>
+                <option value="4900000013">4900000013</option>
+                <option value="4900000014">4900000014</option>
+                <option value="4900000015">4900000015</option>
+                <option value="4900000016">4900000016</option>
+                <option value="4900000017">4900000017</option>
+                <option value="4900000018">4900000018</option>
+                <option value="4900000019">4900000019</option>
+                <option value="4900000020">4900000020</option>
+                <option value="4900000021">4900000021</option>
+                <option value="4900000022">4900000022</option>
+                <option value="4900000023">4900000023</option>
+                <option value="4900000024">4900000024</option>
+                <option value="4900000025">4900000025</option>
+                <option value="4900000026">4900000026</option>
+                <option value="4900000027">4900000027</option>
+                <option value="4900000028">4900000028</option>
+                <option value="4900000029">4900000029</option>
+                <option value="4900000030">4900000030</option>
+              </select>
+            </div>
+            <div class="field">
+              <span class="field-label" id="searchConditionJanCodeFieldLabel">JANコード</span>
+              <select id="searchJanCode">
+                <option value="all">すべて</option>
+                <option value="490000000001">490000000001</option>
+                <option value="490000000002">490000000002</option>
+                <option value="490000000003">490000000003</option>
+                <option value="490000000004">490000000004</option>
+                <option value="490000000005">490000000005</option>
+                <option value="490000000006">490000000006</option>
+                <option value="490000000007">490000000007</option>
+                <option value="490000000008">490000000008</option>
+                <option value="490000000009">490000000009</option>
+                <option value="490000000010">490000000010</option>
+                <option value="490000000011">490000000011</option>
+                <option value="490000000012">490000000012</option>
+                <option value="490000000013">490000000013</option>
+                <option value="490000000014">490000000014</option>
+                <option value="490000000015">490000000015</option>
+                <option value="490000000016">490000000016</option>
+                <option value="490000000017">490000000017</option>
+                <option value="490000000018">490000000018</option>
+                <option value="490000000019">490000000019</option>
+                <option value="490000000020">490000000020</option>
+                <option value="490000000021">490000000021</option>
+                <option value="490000000022">490000000022</option>
+                <option value="490000000023">490000000023</option>
+                <option value="490000000024">490000000024</option>
+                <option value="490000000025">490000000025</option>
+                <option value="490000000026">490000000026</option>
+                <option value="490000000027">490000000027</option>
+                <option value="490000000028">490000000028</option>
+                <option value="490000000029">490000000029</option>
+                <option value="490000000020">490000000030</option>
+              </select>
+            </div>
             <label class="field">
               <span class="field-label">品名</span>
               <input id="searchHinmei" type="text" placeholder="品名を入力" aria-label="品名"></input>
@@ -1749,7 +1794,7 @@
                     <th>契約納期</th>
                     <td colspan="5">
                       <div class="product-keiyaku-noki-field period-range-field">
-                        <input type="date" name="keiyakuNoki" class="period-range-picker" aria-label="契約納期をカレンダーで選択" disabled>
+                        <span class="product-keiyaku-noki-label period-range-label"></span>
                       </div>
                     </td>
                   </tr>
@@ -2145,14 +2190,6 @@
           }
         });
 
-        var keiyakuNoki = card.querySelector('input[name="keiyakuNoki"]');
-        if (keiyakuNoki) {
-          if (useType === "maker") {
-            keiyakuNoki.removeAttribute("disabled");
-          } else {
-            keiyakuNoki.setAttribute("disabled", "disabled");
-          }
-        }
       }
 
       function applyUseTypeToAllCards(useType) {
@@ -2163,6 +2200,13 @@
 
       function normalizeJanCode(value) {
         return (value || "").toString().replace(/\D/g, "");
+      }
+
+      function formatKeiyakuNokiLabel(value) {
+        if (!value) return "";
+        var m = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (m) return m[1] + "/" + m[2] + "/" + m[3];
+        return String(value);
       }
 
       function renderJanBarcodeToField(field, janValue) {
@@ -2234,15 +2278,16 @@
         var shiyo = card.querySelector('input[name="shiyo"]');
         var janUmu = card.querySelector('input[name="janUmu"]');
         var nohinKeitai = card.querySelector('input[name="nohinKeitai"]');
-        var keiyakuNoki = card.querySelector('input[name="keiyakuNoki"]');
+        var keiyakuNokiLabel = card.querySelector(".product-keiyaku-noki-label");
 
         // まず既存値をクリア
         [tenjikai, category, productName, itemName, jan, koteiJodai, shinJodai, yoteiKadai,
           setoZaiko, tehaiKanouSuu, yoteiHatchuSuu, maker, sizeWeight, gensankoku,
-          sosei, shiyo, janUmu, nohinKeitai, keiyakuNoki
+          sosei, shiyo, janUmu, nohinKeitai
         ].forEach(function (el) {
           if (el) el.value = "";
         });
+        if (keiyakuNokiLabel) keiyakuNokiLabel.textContent = "";
         updateCardBarcodes(card, "");
         toggleBarcodeImages(card, !!code);
 
@@ -2322,7 +2367,7 @@
             if (shiyo) shiyo.value = sample.shiyo || "";
             if (janUmu) janUmu.value = sample.janUmu || "";
             if (nohinKeitai) nohinKeitai.value = sample.nohinKeitai || "";
-            if (keiyakuNoki) keiyakuNoki.value = sample.keiyakuNoki || "";
+            if (keiyakuNokiLabel) keiyakuNokiLabel.textContent = formatKeiyakuNokiLabel(sample.keiyakuNoki);
             return;
           }
         }
@@ -2578,7 +2623,7 @@
           shiyo: (sampleNo % 2 === 0) ? "ジャカード" : "プリント",
           janUmu: "有",
           nohinKeitai: (sampleNo % 2 === 0) ? "10枚袋" : "個包装",
-          keiyakuNoki: "2026-" + String((sampleNo % 12) + 1).padStart(2, "0") + "-" + String((sampleNo % 28) + 1).padStart(2, "0")
+          keiyakuNoki: sampleNo > 27 ? "2026-06-30" : ("2026-06-" + String((sampleNo % 28)).padStart(2, "0"))
         });
       }
 
