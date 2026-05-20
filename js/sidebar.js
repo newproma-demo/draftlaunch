@@ -78,7 +78,7 @@ window.SHARED_SIDEBAR_HTML = `
       <img class="arrow" src="images/chevron_right_20dp_F4F6F9.svg">
     </div>
     <ul class="submenu">
-      <li><a href="sampletoroku.html">サンプル登録・承認結果</a></li>
+      <li><a href="sampleshokai.html">サンプル登録・承認結果</a></li>
       <li><a href="kenpintoroku.html">サンプル検品</a></li>
       <li><a href="sample_inquiry.html">サンプル照会</a></li>
       <li><a href="sampleshinseikensaku.html">サンプル承認結果登録</a></li>
