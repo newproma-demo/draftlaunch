@@ -270,22 +270,78 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* deadline-panel：左約50％にエリア1、右約50％にエリア2・3・4（上・中央伸長・下） */
+    /* deadline-panel：上段100％にエリア2、中段にエリア1・エリア3（エリア3非表示時はエリア1を100％）、下段100％にエリア4 */
     .deadline-panel .panel-body.deadline-panel-body {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      grid-template-rows: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr) auto;
       gap: 10px;
       align-content: stretch;
       overflow: hidden;
     }
 
+    .deadline-panel-body .deadline-area-2 {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body .deadline-area-2.deadline-area-2--hidden-by-doc {
+      display: none !important;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) {
+      grid-template-rows: minmax(0, 1fr) auto;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-area-1 {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-right-column {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-area-4 {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .deadline-panel-body .deadline-area-1 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
     .deadline-panel-body .deadline-right-column {
+      grid-column: 2;
+      grid-row: 2;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr);
       gap: 0;
       min-width: 0;
       min-height: 0;
+    }
+
+    .deadline-panel-body .deadline-area-4 {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+
+    /* エリア3非表示（証紙依頼書・カートンマーク／ユーザー操作）: エリア1を100％に拡張 */
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc),
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-area-1,
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-1 {
+      grid-column: 1 / -1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-right-column,
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-right-column {
+      display: none !important;
     }
 
     .deadline-panel-body .deadline-area {
@@ -338,6 +394,8 @@
     }
 
     .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-1,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-2,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-4,
     .deadline-panel-body.deadline-panel-body--no-spec .deadline-right-column {
       display: none !important;
     }
@@ -357,25 +415,30 @@
 
     #deadlineCartonMarkFormatWrap:not([hidden]) {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
       flex: 1 1 100%;
       width: 100%;
+      max-width: 100%;
       margin-right: auto;
       min-width: 0;
       box-sizing: border-box;
     }
 
     .deadline-carton-format-label {
+      flex-shrink: 0;
       font-size: 12px;
       font-weight: 600;
       color: #66786f;
+      white-space: nowrap;
     }
 
     #deadlineCartonMarkFormatSelect {
-      min-width: min(100%, 380px);
-      max-width: 100%;
+      flex: 0 0 25%;
+      width: 25%;
+      max-width: 25%;
+      min-width: 0;
       font: inherit;
       box-sizing: border-box;
     }
@@ -485,11 +548,13 @@
     }
 
     .deadline-panel-body .deadline-area-4 {
-      min-height: 44px;
+      min-height: 0;
+      padding: 4px 8px;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     /* 帳票にかかわらず「登録」「契約書依頼」のボックス高を統一 */
@@ -498,7 +563,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 28px;
+      min-height: 24px;
+      padding: 2px 8px;
       line-height: 1.2;
     }
 
@@ -893,7 +959,8 @@
       color: #173425;
     }
 
-    .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-doc {
+    .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-doc,
+    .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-user {
       /* display:none は grid から要素が抜けエリア4の縦位置が変わるため使わない（発注書と揃える） */
       visibility: hidden;
       pointer-events: none;
@@ -1468,7 +1535,8 @@
     }
 
     /* .btn-fab-new の display が [hidden] より強いため、非表示を確実にする（証紙依頼書・カートンマーク等） */
-    #keiyakushoIraiBtn[hidden] {
+    #keiyakushoIraiBtn[hidden],
+    #keiyakushoIraiBtnHide[hidden] {
       display: none !important;
     }
 
@@ -1706,47 +1774,106 @@
       .deadline-panel .panel-body.deadline-panel-body {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(140px, auto) minmax(200px, auto);
+        grid-template-rows: auto minmax(140px, auto) minmax(200px, auto) auto;
         gap: 10px;
         overflow: hidden;
       }
 
-      /* エリア3非表示帳票: 右ブロックに min 200px が効き「＋ページ〜登録」の間が空くため外側第2行の最小高を外す */
-      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
-        grid-template-rows: minmax(140px, auto) minmax(0, auto);
+      .deadline-panel-body .deadline-area-2 {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .deadline-panel-body .deadline-area-1 {
+        grid-column: 1;
+        grid-row: 2;
       }
 
       .deadline-panel-body .deadline-right-column {
-        grid-template-rows: auto minmax(120px, 1fr) auto;
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .deadline-panel-body .deadline-area-4 {
+        grid-column: 1;
+        grid-row: 4;
+      }
+
+      /* 証紙依頼書: エリア2非表示のため外側は3行 */
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) {
+        grid-template-rows: minmax(140px, auto) minmax(200px, auto) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-area-1 {
+        grid-row: 1;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-right-column {
+        grid-row: 2;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-area-4 {
+        grid-row: 3;
+      }
+
+      /* エリア3非表示: エリア1を100％（右カラム非表示・3行レイアウト） */
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc):not(:has(.deadline-area-2.deadline-area-2--hidden-by-doc)),
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user):not(:has(.deadline-area-2.deadline-area-2--hidden-by-doc)) {
+        grid-template-rows: auto minmax(140px, 1fr) auto;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-doc),
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: minmax(140px, 1fr) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc):not(:has(.deadline-area-2.deadline-area-2--hidden-by-doc)) .deadline-area-4,
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user):not(:has(.deadline-area-2.deadline-area-2--hidden-by-doc)) .deadline-area-4 {
+        grid-row: 3;
+      }
+
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-right-column,
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-right-column {
+        display: none !important;
+      }
+
+      .deadline-panel-body .deadline-right-column {
+        grid-template-rows: minmax(120px, 1fr);
         min-height: 180px;
       }
 
-      /* 証紙依頼書・カートンマーク等: エリア3はレイアウト維持のため visibility のみ非表示。中央行の 1fr が余白になるためスマホでは行高を潰す */
-      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
-        grid-template-rows: auto minmax(0, 0) auto;
-        min-height: 0;
-        align-content: start;
-      }
-
-      .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-doc {
-        min-height: 0 !important;
-        max-height: 0;
-        padding: 0 !important;
-        border-width: 0 !important;
-        margin: 0;
+      .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-doc,
+      .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-user {
+        visibility: hidden;
+        pointer-events: none;
+        user-select: none;
         overflow: hidden !important;
       }
 
-      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-area-2 {
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-area-2,
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-2 {
         min-height: 0;
         padding-top: 4px;
         padding-bottom: 4px;
       }
 
-      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-area-4 {
-        min-height: 44px;
-        padding-top: 4px;
-        padding-bottom: 4px;
+      #deadlineCartonMarkFormatWrap:not([hidden]) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        flex: 1 1 100%;
+        width: 100%;
+      }
+
+      #deadlineCartonMarkFormatSelect {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .deadline-panel-body .deadline-area-4 {
+        padding: 2px 8px;
       }
 
       .spec-panel .spec-list {
@@ -1821,23 +1948,32 @@
       }
 
       .deadline-panel .panel-body.deadline-panel-body {
-        grid-template-rows: minmax(120px, auto) minmax(160px, auto);
+        grid-template-rows: auto minmax(120px, auto) minmax(160px, auto) auto;
         gap: 8px;
       }
 
-      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
-        grid-template-rows: minmax(120px, auto) minmax(0, auto);
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) {
+        grid-template-rows: minmax(120px, auto) minmax(160px, auto) auto;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-doc),
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: minmax(120px, auto) minmax(0, auto) auto;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc):not(:has(.deadline-area-2.deadline-area-2--hidden-by-doc)),
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user):not(:has(.deadline-area-2.deadline-area-2--hidden-by-doc)) {
+        grid-template-rows: auto minmax(120px, 1fr) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-right-column,
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-right-column {
+        display: none !important;
       }
 
       .deadline-panel-body .deadline-right-column {
         min-height: 140px;
         gap: 8px;
-      }
-
-      .deadline-panel-body .deadline-right-column:has(.deadline-area-3.deadline-area-3--hidden-by-doc) {
-        min-height: 0;
-        gap: 0;
-        align-content: start;
       }
 
       .content-footer {
@@ -2378,6 +2514,29 @@
             <div class="search-type-toggle cycle-toggle" role="group" aria-label="契約依頼を選択"></div>
           </div>
           <div class="panel-body deadline-panel-body deadline-panel-body--no-spec">
+            <div class="deadline-area deadline-area-2" aria-label="エリア2" aria-hidden="true">
+              <div id="deadlineCartonMarkFormatWrap" class="deadline-area2-carton-formats" hidden>
+                <label class="deadline-carton-format-label" for="deadlineCartonMarkFormatSelect">フォーマット</label>
+                <select id="deadlineCartonMarkFormatSelect"
+                  aria-label="カートンマーク帳票（複数選択可）">
+                  <option value="images/帳票/発注書/カートンマーク_高密フォーマット_定番フォーマット.png">定番（高密）</option>
+                  <option value="images/帳票/発注書/カートンマーク_高密フォーマット_サマー商品フォーマット.png">サマー商品（高密）</option>
+                  <option value="images/帳票/発注書/カートンマーク_高密フォーマット_新入学フォーマット.png">新入学（高密）</option>
+                  <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_定番フォーマット.png">定番（その他メーカー）</option>
+                  <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_サマー商品フォーマット.png">サマー商品（その他メーカー）</option>
+                  <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_秋冬商材フォーマット.png">秋冬商材（その他メーカー）</option>
+                  <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_新入学フォーマット.png">新入学（その他メーカー）</option>
+                </select>
+              </div>
+              <nav class="deadline-area-2-pagination-nav" id="deadlineArea2PaginationNav" aria-label="ページ"
+                hidden>
+                <ul class="deadline-pagination" id="deadlineArea2PaginationList" role="list"></ul>
+              </nav>
+              <button type="button" class="btn-secondary btn-area2-page-delete" id="deadlineArea2DeletePageBtn" hidden
+                aria-label="表示中のページを削除">表示中のページを削除</button>
+              <button type="button" class="btn-fab-new btn-ai-data-upload" id="deadlineArea2AddPageBtn" hidden
+                aria-label="ページを追加">+ページを追加</button>              
+            </div>
             <div class="deadline-area deadline-area-1" aria-label="エリア1" aria-hidden="true">
               <div class="deadline-area-1-img-wrap">
                 <img class="deadline-area-1-img" src="images/帳票/発注書/定番商品発注書.png"
@@ -2385,38 +2544,15 @@
               </div>
             </div>
             <div class="deadline-right-column" aria-hidden="true">
-              <div class="deadline-area deadline-area-2" aria-label="エリア2">
-                <nav class="deadline-area-2-pagination-nav" id="deadlineArea2PaginationNav" aria-label="ページ"
-                  hidden>
-                  <ul class="deadline-pagination" id="deadlineArea2PaginationList" role="list"></ul>
-                </nav>
-                <button type="button" class="btn-secondary btn-area2-page-delete" id="deadlineArea2DeletePageBtn" hidden
-                  aria-label="表示中のページを削除">表示中のページを削除</button>
-                <button type="button" class="btn-fab-new btn-ai-data-upload" id="deadlineArea2AddPageBtn" hidden
-                  aria-label="ページを追加">+ページを追加</button>
-                <input type="file" id="aiDataUploadInput" accept=".ai" hidden aria-hidden="true">
-                <div id="deadlineCartonMarkFormatWrap" class="deadline-area2-carton-formats" hidden>
-                  <label class="deadline-carton-format-label" for="deadlineCartonMarkFormatSelect">フォーマット</label>
-                  <select id="deadlineCartonMarkFormatSelect"
-                    aria-label="カートンマーク帳票（複数選択可）">
-                    <option value="images/帳票/発注書/カートンマーク_高密フォーマット_定番フォーマット.png">定番（高密）</option>
-                    <option value="images/帳票/発注書/カートンマーク_高密フォーマット_サマー商品フォーマット.png">サマー商品（高密）</option>
-                    <option value="images/帳票/発注書/カートンマーク_高密フォーマット_新入学フォーマット.png">新入学（高密）</option>
-                    <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_定番フォーマット.png">定番（その他メーカー）</option>
-                    <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_サマー商品フォーマット.png">サマー商品（その他メーカー）</option>
-                    <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_秋冬商材フォーマット.png">秋冬商材（その他メーカー）</option>
-                    <option value="images/帳票/発注書/カートンマーク_その他メーカーフォーマット_新入学フォーマット.png">新入学（その他メーカー）</option>
-                  </select>
-                </div>
-              </div>
               <div class="deadline-area deadline-area-3" aria-label="エリア3">
                 <div id="deadlineArea3Mount" class="deadline-area-3-mount"></div>
                 <input type="file" id="deadlineArea3FileInput" hidden aria-hidden="true">
               </div>
-              <div class="deadline-area deadline-area-4" aria-label="エリア4">
-                <button type="button" class="btn-fab-new btn-temp-save" id="torokuBtn" data-preview-open="1" aria-label="登録">登録</button>
-                <button type="button" class="btn-fab-new btn-temp-save" id="keiyakushoIraiBtn" aria-label="契約書依頼" hidden>契約書依頼</button>
-              </div>
+            </div>
+            <div class="deadline-area deadline-area-4" aria-label="エリア4" aria-hidden="true">
+              <button type="button" class="btn-fab-new btn-temp-save" id="keiyakushoIraiBtnHide" aria-label="契約書依頼を非表示" hidden>契約書依頼を非表示</button>
+              <button type="button" class="btn-fab-new btn-temp-save" id="torokuBtn" data-preview-open="1" aria-label="登録">登録</button>
+              <button type="button" class="btn-fab-new btn-temp-save" id="keiyakushoIraiBtn" aria-label="契約書依頼" hidden>契約書依頼</button>
             </div>
           </div>
         </section>
@@ -2701,6 +2837,9 @@
     );
     /** AI非表示帳票のうち、ページネーション/UIを表示しない帳票 */
     const DEADLINE_AREA2_HIDE_PAGING_LABELS = new Set();
+    const KEIYAKUSHO_IRAI_AREA3_HIDE_LABEL = '契約書依頼を非表示';
+    const KEIYAKUSHO_IRAI_AREA3_SHOW_LABEL = '契約依頼書を表示';
+    const deadlineArea3UserHiddenBySpecItem = new WeakMap();
     let deadlineArea2PageCount = 0;
     let deadlineArea2ActivePage = 1;
     let deadlineArea2PagingBoundDocLabel = '';
@@ -2940,6 +3079,7 @@
 
       if (hideArea3) {
         area3.classList.add('deadline-area-3--hidden-by-doc');
+        area3.classList.remove('deadline-area-3--hidden-by-user');
         area3.setAttribute('aria-hidden', 'true');
         mount.classList.remove('deadline-area-3-mount--hatchu-pickable');
         mount.replaceChildren();
@@ -2947,7 +3087,7 @@
       }
 
       area3.classList.remove('deadline-area-3--hidden-by-doc');
-      area3.removeAttribute('aria-hidden');
+      syncDeadlineArea3AriaHidden(area3);
 
       if (!showHatchu) {
         mount.classList.remove('deadline-area-3-mount--hatchu-pickable');
@@ -2963,6 +3103,74 @@
       } else {
         renderHatchuDefaultMount(mount);
       }
+    }
+
+    function getActiveSpecItemForDeadline() {
+      return document.querySelector('#specList .spec-item.is-active') || null;
+    }
+
+    function isDeadlineArea3UserHidden(specItem) {
+      if (!specItem) return false;
+      return !!deadlineArea3UserHiddenBySpecItem.get(specItem);
+    }
+
+    function setDeadlineArea3UserHidden(specItem, hidden) {
+      if (!specItem) return;
+      if (hidden) deadlineArea3UserHiddenBySpecItem.set(specItem, true);
+      else deadlineArea3UserHiddenBySpecItem.delete(specItem);
+    }
+
+    function syncDeadlineArea3AriaHidden(area3) {
+      if (!area3) return;
+      const hidden =
+        area3.classList.contains('deadline-area-3--hidden-by-doc') ||
+        area3.classList.contains('deadline-area-3--hidden-by-user');
+      if (hidden) area3.setAttribute('aria-hidden', 'true');
+      else area3.removeAttribute('aria-hidden');
+    }
+
+    function syncKeiyakushoIraiHideToggleButton(userHidden) {
+      const btn = document.getElementById('keiyakushoIraiBtnHide');
+      if (!btn || btn.hidden) return;
+      const label = userHidden ? KEIYAKUSHO_IRAI_AREA3_SHOW_LABEL : KEIYAKUSHO_IRAI_AREA3_HIDE_LABEL;
+      btn.textContent = label;
+      btn.setAttribute('aria-label', label);
+    }
+
+    function syncDeadlineArea3UserVisibility(docLabel) {
+      const area3 = document.querySelector('.deadline-area-3');
+      if (!area3) return;
+      const n = normalizeDeadlineDocLabel(docLabel);
+      const isHatchu = n === normalizeDeadlineDocLabel('発注書');
+
+      if (!isHatchu) {
+        area3.classList.remove('deadline-area-3--hidden-by-user');
+        syncDeadlineArea3AriaHidden(area3);
+        return;
+      }
+
+      const specItem = getActiveSpecItemForDeadline();
+      const userHidden = isDeadlineArea3UserHidden(specItem);
+      area3.classList.toggle('deadline-area-3--hidden-by-user', userHidden);
+      syncDeadlineArea3AriaHidden(area3);
+      syncKeiyakushoIraiHideToggleButton(userHidden);
+    }
+
+    function toggleDeadlineArea3UserHidden() {
+      const cycleGroup = getDeadlinePanelCycleToggle();
+      const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
+      const docLabel = normalizeDeadlineDocLabel(activeBtn && activeBtn.dataset.docLabel);
+      if (docLabel !== normalizeDeadlineDocLabel('発注書')) return;
+      const specItem = getActiveSpecItemForDeadline();
+      setDeadlineArea3UserHidden(specItem, !isDeadlineArea3UserHidden(specItem));
+      syncDeadlineArea3UserVisibility(docLabel);
+    }
+
+    function initKeiyakushoIraiHideToggle() {
+      const btn = document.getElementById('keiyakushoIraiBtnHide');
+      if (!btn || btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', toggleDeadlineArea3UserHidden);
     }
 
     function initDeadlineArea3HatchuFilePick() {
@@ -3008,20 +3216,44 @@
       btn.classList.toggle('deadline-toroku-btn--doc-shift', shift);
     }
 
-    /** 「契約書依頼」は「発注書」のみ表示（「証紙依頼書」「カートンマーク」・その他・未選択は非表示） */
+    /** 「契約書依頼」「契約書依頼を非表示」は「発注書」のみ表示（「証紙依頼書」「カートンマーク」・その他・未選択は非表示） */
     function syncKeiyakushoIraiButtonVisibility(docLabel) {
-      const el = document.getElementById('keiyakushoIraiBtn');
-      if (!el) return;
       const n = normalizeDeadlineDocLabel(docLabel);
       const on = n === normalizeDeadlineDocLabel('発注書');
-      el.hidden = !on;
-      el.toggleAttribute('aria-hidden', !on);
+      const specItem = getActiveSpecItemForDeadline();
+      ['keiyakushoIraiBtn', 'keiyakushoIraiBtnHide'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.hidden = !on;
+        el.toggleAttribute('aria-hidden', !on);
+      });
+      if (on) syncKeiyakushoIraiHideToggleButton(isDeadlineArea3UserHidden(specItem));
+    }
+
+    function isDeadlineArea2HiddenByDoc(docLabel) {
+      return normalizeDeadlineDocLabel(docLabel) === normalizeDeadlineDocLabel('証紙依頼書');
+    }
+
+    function syncDeadlineArea2VisibilityByDoc(docLabel) {
+      const area2 = document.querySelector('.deadline-area-2');
+      if (!area2) return;
+      const hide = isDeadlineArea2HiddenByDoc(docLabel);
+      area2.classList.toggle('deadline-area-2--hidden-by-doc', hide);
+      if (hide) {
+        area2.setAttribute('aria-hidden', 'true');
+        return;
+      }
+      const body = document.querySelector('.deadline-panel .deadline-panel-body');
+      if (body && !body.classList.contains('deadline-panel-body--no-spec')) {
+        area2.removeAttribute('aria-hidden');
+      }
     }
 
     function syncDeadlineArea2Ui() {
       const cycleGroup = getDeadlinePanelCycleToggle();
       const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
       const docLabel = normalizeDeadlineDocLabel(activeBtn && activeBtn.dataset.docLabel);
+      syncDeadlineArea2VisibilityByDoc(docLabel);
       syncKeiyakushoIraiButtonVisibility(docLabel);
       syncDeadlineArea4TorokuBtnOffset(docLabel);
       const hideAiUpload = DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(docLabel);
@@ -3042,8 +3274,10 @@
       const fileInput = document.getElementById('aiDataUploadInput');
       if (!nav || !deleteBtn || !addBtn) {
         syncDeadlineArea3HatchushoPreview(docLabel, hideAiUpload, hidePagingUi);
+        syncDeadlineArea3UserVisibility(docLabel);
         return;
       }
+
 
       function setAddPageBtnVisible(show) {
         addBtn.hidden = !show;
@@ -3129,6 +3363,7 @@
       }
 
       syncDeadlineArea3HatchushoPreview(docLabel, hideAiUpload, hidePagingUi);
+      syncDeadlineArea3UserVisibility(docLabel);
     }
 
     function initDeadlineArea2Paging() {
@@ -3269,15 +3504,26 @@
         if (!body) return;
         body.classList.toggle('deadline-panel-body--no-spec', !hasSpec);
         const area1 = body.querySelector('.deadline-area-1');
+        const area2 = body.querySelector('.deadline-area-2');
+        const area4 = body.querySelector('.deadline-area-4');
         const right = body.querySelector('.deadline-right-column');
         if (area1) {
           if (hasSpec) area1.removeAttribute('aria-hidden');
           else area1.setAttribute('aria-hidden', 'true');
         }
+        if (area2 && !hasSpec) {
+          area2.setAttribute('aria-hidden', 'true');
+          area2.classList.remove('deadline-area-2--hidden-by-doc');
+        }
+        if (area4) {
+          if (hasSpec) area4.removeAttribute('aria-hidden');
+          else area4.setAttribute('aria-hidden', 'true');
+        }
         if (right) {
           if (hasSpec) right.removeAttribute('aria-hidden');
           else right.setAttribute('aria-hidden', 'true');
         }
+        if (hasSpec) syncDeadlineArea2Ui();
       }
 
       function selectItem(item) {
@@ -4100,6 +4346,7 @@
     initSpecSearch();
     initAiDataUpload();
     initDeadlineArea3HatchuFilePick();
+    initKeiyakushoIraiHideToggle();
     initKeiyakushoIraiEmbedModal();
     initKeiyakuModalManufacturerMobileSelect();
     initKeiyakuModalManufacturerPanelExpand();
