@@ -715,21 +715,21 @@
             <select id="expoListSelect" class="expo-select" aria-label="展示会を選択"></select>
             <ul class="expo-list" id="expoList">
               <li class="expo-item is-active" data-name="東京インターナショナルギフトショー" data-start-date="2026-09-02"
-                data-end-date="2026-09-05" data-season-year="2026" data-season-month="7月展"
+                data-end-date="2026-09-05" data-season-year="2026" data-season-month="7月"
                 data-order-deadline="2026-07-31" data-has-progress="1">
                 <div class="expo-season"></div>
                 <div class="expo-name"></div>
                 <div class="expo-order"></div>
               </li>
               <li class="expo-item" data-name="関西雑貨エキスポ" data-start-date="2026-10-11" data-end-date="2026-10-13"
-                data-season-year="2026" data-season-month="10月展" data-order-deadline="2026-10-28"
+                data-season-year="2026" data-season-month="10月" data-order-deadline="2026-10-28"
                 data-has-progress="1">
                 <div class="expo-season"></div>
                 <div class="expo-name"></div>
                 <div class="expo-order"></div>
               </li>
               <li class="expo-item" data-name="冬季ライフスタイル商談会" data-start-date="2026-11-21"
-                data-end-date="2026-11-23" data-season-year="2026" data-season-month="1月展"
+                data-end-date="2026-11-23" data-season-year="2026" data-season-month="10月"
                 data-order-deadline="2026-11-15" data-has-progress="1">
                 <div class="expo-season"></div>
                 <div class="expo-name"></div>
@@ -751,10 +751,9 @@
                 <div class="season-select-row">
                   <select id="expoSeasonYearSelect"></select>
                   <select id="expoSeasonMonthSelect">
-                    <option value="4月展">4月展</option>
-                    <option value="7月展" selected>7月展</option>
-                    <option value="10月展">10月展</option>
-                    <option value="1月展">1月展</option>
+                    <option value="4月">4月</option>
+                    <option value="7月" selected>7月</option>
+                    <option value="10月">10月</option>
                   </select>
                 </div>
               </div>
@@ -800,7 +799,7 @@
                   <td class="phase-enable-cell">
                     <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
                   </td>
-                  <td>図案依頼</td>
+                  <td>図案提出</td>
                   <td>
                     <input class="phase-date-input" type="date" value="2026-06-08">
                     <div class="phase-prev-end">作業開始（図案作成）から図案選定までの期間</div>
@@ -874,6 +873,16 @@
                   <td>
                     <input class="phase-date-input" type="date" value="2026-07-27">
                     <div class="phase-prev-end">決定商品の最終仕様の最終チェックの期間</div>
+                  </td>
+                </tr>
+                <tr class="phase-row">
+                  <td class="phase-enable-cell">
+                    <label class="phase-enable-label"><input type="checkbox" checked>使用</label>
+                  </td>
+                  <td>最終仕様</td>
+                  <td>
+                    <input class="phase-date-input" type="date" value="2026-07-29">
+                    <div class="phase-prev-end">最終仕様確定の期間</div>
                   </td>
                 </tr>
                 <tr class="phase-row">
@@ -1008,11 +1017,23 @@
         !expoSeasonYearSelect || !expoSeasonMonthSelect || !progressLinksArea || !progressLinksEmpty) return;
       let items = Array.from(expoList.querySelectorAll('.expo-item'));
 
+      function buildDefaultExpoName(year, month) {
+        const y = year ?? expoSeasonYearSelect.value;
+        const m = month ?? expoSeasonMonthSelect.value;
+        if (!y || !m) return '';
+        return y + '年' + m + '展';
+      }
+
+      function resolveExpoName(rawName, year, month) {
+        const trimmed = (rawName || '').trim();
+        return trimmed || buildDefaultExpoName(year, month);
+      }
+
       function expoOptionLabel(item) {
         const sy = item.dataset.seasonYear || '';
         const sm = item.dataset.seasonMonth || '';
         const season = sy && sm ? sy + '年' + sm : '';
-        const name = item.dataset.name || '（名称未設定）';
+        const name = resolveExpoName(item.dataset.name, sy, sm) || '（名称未設定）';
         return season ? season + ' / ' + name : name;
       }
 
@@ -1083,21 +1104,34 @@
         const od = item.dataset.orderDeadline || '';
 
         if (seasonEl) seasonEl.textContent = '展示会時期: ' + season;
-        if (nameEl) nameEl.textContent = item.dataset.name || '（名称未設定）';
+        if (nameEl) {
+          nameEl.textContent = resolveExpoName(item.dataset.name, seasonYear, seasonMonth) || '（名称未設定）';
+        }
         if (orderEl) orderEl.textContent = '発注納期: ' + (od ? formatDate(od) : '未設定');
       }
 
       function syncFormFromItem(item) {
-        expoNameInput.value = item.dataset.name || '';
+        const seasonYear = item.dataset.seasonYear || expoSeasonYearSelect.value;
+        const seasonMonth = item.dataset.seasonMonth || expoSeasonMonthSelect.value;
+        expoSeasonYearSelect.value = seasonYear;
+        expoSeasonMonthSelect.value = seasonMonth;
+        const name = resolveExpoName(item.dataset.name, seasonYear, seasonMonth);
+        if (!(item.dataset.name || '').trim()) {
+          item.dataset.name = name;
+        }
+        expoNameInput.value = name;
         expoStartDateInput.value = item.dataset.startDate || '';
         expoEndDateInput.value = item.dataset.endDate || '';
-        expoSeasonYearSelect.value = item.dataset.seasonYear || expoSeasonYearSelect.value;
-        expoSeasonMonthSelect.value = item.dataset.seasonMonth || expoSeasonMonthSelect.value;
+        renderExpoMeta(item);
+        rebuildExpoSelectOptions();
       }
 
       function syncItemFromForm(item) {
-        const name = expoNameInput.value.trim();
+        const seasonYear = expoSeasonYearSelect.value;
+        const seasonMonth = expoSeasonMonthSelect.value;
+        const name = resolveExpoName(expoNameInput.value, seasonYear, seasonMonth);
         item.dataset.name = name;
+        expoNameInput.value = name;
         item.dataset.startDate = expoStartDateInput.value;
         item.dataset.endDate = expoEndDateInput.value;
         item.dataset.seasonYear = expoSeasonYearSelect.value;
@@ -1173,7 +1207,7 @@
       expoSeasonYearSelect.addEventListener('change', onSeasonChanged);
       expoSeasonMonthSelect.addEventListener('change', onSeasonChanged);
       createButton.addEventListener('click', () => {
-        const initialName = expoSeasonYearSelect.value + '年' + expoSeasonMonthSelect.value;
+        const initialName = buildDefaultExpoName();
         const newItem = document.createElement('li');
         newItem.className = 'expo-item';
         newItem.dataset.name = initialName;
