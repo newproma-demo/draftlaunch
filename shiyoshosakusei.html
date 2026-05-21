@@ -270,22 +270,74 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* deadline-panel：左約50％にエリア1、右約50％にエリア2・3・4（上・中央伸長・下） */
+    /* deadline-panel：上段100％にエリア2、中段左約50％にエリア1・右約50％にエリア3、下段100％にエリア4 */
     .deadline-panel .panel-body.deadline-panel-body {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      grid-template-rows: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr) auto;
       gap: 10px;
       align-content: stretch;
       overflow: hidden;
     }
 
+    .deadline-panel-body .deadline-area-2 {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body .deadline-area-1 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
     .deadline-panel-body .deadline-right-column {
+      grid-column: 2;
+      grid-row: 2;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr);
       gap: 0;
       min-width: 0;
       min-height: 0;
+    }
+
+    .deadline-panel-body .deadline-area-4 {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      min-height: 0;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .deadline-panel-body .deadline-area-4 > .btn-fab-new.btn-temp-save,
+    .deadline-panel-body .deadline-area-4 > .btn-secondary {
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 2px 8px;
+      line-height: 1.2;
+    }
+
+    /* エリア3非表示（ユーザー操作）: エリア1を100％・右カラム（エリア3）を非表示 */
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-1 {
+      grid-column: 1 / -1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-right-column {
+      display: none !important;
+    }
+
+    .deadline-panel-body .deadline-area-3.deadline-area-3--hidden-by-user {
+      display: none !important;
     }
 
     .deadline-panel-body .deadline-area {
@@ -335,6 +387,8 @@
     }
 
     .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-1,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-2,
+    .deadline-panel-body.deadline-panel-body--no-spec .deadline-area-4,
     .deadline-panel-body.deadline-panel-body--no-spec .deadline-right-column {
       display: none !important;
     }
@@ -443,14 +497,6 @@
       z-index: 3;
       outline: none;
       box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.2);
-    }
-
-    .deadline-panel-body .deadline-area-4 {
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
     }
 
     .image-preview-modal {
@@ -989,6 +1035,10 @@
       display: none !important;
     }
 
+    #aiDataHideBtn[hidden] {
+      display: none !important;
+    }
+
     #qualityCheckBtn.quality-check--suppressed {
       display: none !important;
     }
@@ -1227,13 +1277,45 @@
       .deadline-panel .panel-body.deadline-panel-body {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(140px, auto) minmax(200px, auto);
+        grid-template-rows: auto minmax(140px, auto) minmax(200px, auto) auto;
         gap: 10px;
         overflow: hidden;
       }
 
+      .deadline-panel-body .deadline-area-2 {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .deadline-panel-body .deadline-area-1 {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
       .deadline-panel-body .deadline-right-column {
-        grid-template-rows: auto minmax(120px, 1fr) auto;
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .deadline-panel-body .deadline-area-4 {
+        grid-column: 1;
+        grid-row: 4;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: auto minmax(140px, 1fr) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-4 {
+        grid-row: 3;
+      }
+
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-right-column {
+        display: none !important;
+      }
+
+      .deadline-panel-body .deadline-right-column {
+        grid-template-rows: minmax(120px, 1fr);
         min-height: 180px;
       }
 
@@ -1309,8 +1391,16 @@
       }
 
       .deadline-panel .panel-body.deadline-panel-body {
-        grid-template-rows: minmax(120px, auto) minmax(160px, auto);
+        grid-template-rows: auto minmax(120px, auto) minmax(160px, auto) auto;
         gap: 8px;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: auto minmax(120px, 1fr) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-right-column {
+        display: none !important;
       }
 
       .deadline-panel-body .deadline-right-column {
@@ -1710,6 +1800,17 @@
             <div class="search-type-toggle cycle-toggle" role="group" aria-label="仕様書を選択"></div>
           </div>
           <div class="panel-body deadline-panel-body deadline-panel-body--no-spec">
+            <div class="deadline-area deadline-area-2" aria-label="エリア2" aria-hidden="true">
+              <nav class="deadline-area-2-pagination-nav" id="deadlineArea2PaginationNav" aria-label="ページ"
+                hidden>
+                <ul class="deadline-pagination" id="deadlineArea2PaginationList" role="list"></ul>
+              </nav>
+              <button type="button" class="btn-secondary btn-area2-page-delete" id="deadlineArea2DeletePageBtn" hidden
+                aria-label="表示中のページを削除">表示中のページを削除</button>
+              <button type="button" class="btn-fab-new btn-ai-data-upload" id="deadlineArea2AddPageBtn" hidden
+                aria-label="ページを追加">+ページを追加</button>
+              <input type="file" id="aiDataUploadInput" accept=".ai" hidden aria-hidden="true">
+            </div>
             <div class="deadline-area deadline-area-1" aria-label="エリア1" aria-hidden="true">
               <div class="deadline-area-1-img-wrap">
                 <img class="deadline-area-1-img" src="images/帳票/仕様書/通常/定番/①試作依頼書.png"
@@ -1717,17 +1818,6 @@
               </div>
             </div>
             <div class="deadline-right-column" aria-hidden="true">
-              <div class="deadline-area deadline-area-2" aria-label="エリア2">
-                <nav class="deadline-area-2-pagination-nav" id="deadlineArea2PaginationNav" aria-label="ページ"
-                  hidden>
-                  <ul class="deadline-pagination" id="deadlineArea2PaginationList" role="list"></ul>
-                </nav>
-                <button type="button" class="btn-secondary btn-area2-page-delete" id="deadlineArea2DeletePageBtn" hidden
-                  aria-label="表示中のページを削除">表示中のページを削除</button>
-                <button type="button" class="btn-fab-new btn-ai-data-upload" id="deadlineArea2AddPageBtn" hidden
-                  aria-label="ページを追加">+ページを追加</button>
-                <input type="file" id="aiDataUploadInput" accept=".ai" hidden aria-hidden="true">
-              </div>
               <div class="deadline-area deadline-area-3" aria-label="エリア3">
                 <div id="deadlineArea3Content">
                   <div class="deadline-area-3-empty-wrap" id="deadlineArea3EmptyHint" aria-hidden="false">
@@ -1735,12 +1825,13 @@
                   </div>
                 </div>
               </div>
-              <div class="deadline-area deadline-area-4" aria-label="エリア4">
-                <button type="button" class="btn-secondary" id="previewBtnArea3" data-preview-open="1" aria-label="プレビュー">プレビュー</button>
-                <button type="button" class="btn-fab-new btn-quality-check quality-check--suppressed" id="qualityCheckBtn"
-                  aria-label="品管確認" aria-hidden="true" hidden>品管確認</button>
-                <button type="button" class="btn-fab-new btn-temp-save" id="tempSaveBtn" aria-label="一時保存">一時保存</button>
-              </div>
+            </div>
+            <div class="deadline-area deadline-area-4" aria-label="エリア4" aria-hidden="true">
+              <button type="button" class="btn-fab-new btn-temp-save" id="aiDataHideBtn" aria-label="aiデータを非表示" hidden>aiデータを非表示</button>
+              <button type="button" class="btn-secondary" id="previewBtnArea3" data-preview-open="1" aria-label="プレビュー">プレビュー</button>
+              <button type="button" class="btn-fab-new btn-quality-check quality-check--suppressed" id="qualityCheckBtn"
+                aria-label="品管確認" aria-hidden="true" hidden>品管確認</button>
+              <button type="button" class="btn-fab-new btn-temp-save" id="tempSaveBtn" aria-label="一時保存">一時保存</button>
             </div>
           </div>
         </section>
@@ -1940,6 +2031,9 @@
       ].map(([kubun, label]) => `${kubun}::${normalizeDeadlineDocLabel(label)}`)
     );
     const DEADLINE_AREA3_EMPTY_TEXT_DEFAULT = 'aiデータ(PDF互換ファイル)は未登録です。\n\nここをクリックしてファイルを選択するか、\nドラッグアンドドロップしてください。';
+    const AI_DATA_AREA3_HIDE_LABEL = 'aiデータを非表示';
+    const AI_DATA_AREA3_SHOW_LABEL = 'aiデータを表示';
+    const deadlineArea3UserHiddenBySpecItem = new WeakMap();
     let deadlineArea2PageCount = 0;
     let deadlineArea2ActivePage = 1;
     let deadlineArea2PagingBoundDocLabel = '';
@@ -2139,6 +2233,82 @@
         setAiUploadSuppressed(false);
         setArea3EmptyTextSuppressed(false);
       }
+
+      syncDeadlineArea3UserVisibility();
+    }
+
+    function getActiveSpecItemForDeadline() {
+      return document.querySelector('#specList .spec-item.is-active') || null;
+    }
+
+    function isDeadlineArea3UserHidden(specItem) {
+      if (!specItem) return false;
+      return !!deadlineArea3UserHiddenBySpecItem.get(specItem);
+    }
+
+    function setDeadlineArea3UserHidden(specItem, hidden) {
+      if (!specItem) return;
+      if (hidden) deadlineArea3UserHiddenBySpecItem.set(specItem, true);
+      else deadlineArea3UserHiddenBySpecItem.delete(specItem);
+    }
+
+    function syncDeadlineArea3AriaHidden(area3) {
+      if (!area3) return;
+      if (area3.classList.contains('deadline-area-3--hidden-by-user')) {
+        area3.setAttribute('aria-hidden', 'true');
+      } else {
+        area3.removeAttribute('aria-hidden');
+      }
+    }
+
+    function syncAiDataHideToggleButton(userHidden) {
+      const btn = document.getElementById('aiDataHideBtn');
+      if (!btn || btn.hidden) return;
+      const label = userHidden ? AI_DATA_AREA3_SHOW_LABEL : AI_DATA_AREA3_HIDE_LABEL;
+      btn.textContent = label;
+      btn.setAttribute('aria-label', label);
+    }
+
+    function syncAiDataHideButtonVisibility(hasSpec) {
+      const btn = document.getElementById('aiDataHideBtn');
+      if (!btn) return;
+      btn.hidden = !hasSpec;
+      btn.toggleAttribute('aria-hidden', !hasSpec);
+      if (hasSpec) {
+        syncAiDataHideToggleButton(isDeadlineArea3UserHidden(getActiveSpecItemForDeadline()));
+      }
+    }
+
+    function syncDeadlineArea3UserVisibility() {
+      const body = document.querySelector('.deadline-panel .deadline-panel-body');
+      const area3 = document.querySelector('.deadline-area-3');
+      if (!area3) return;
+      const hasSpec = body && !body.classList.contains('deadline-panel-body--no-spec');
+      if (!hasSpec) {
+        area3.classList.remove('deadline-area-3--hidden-by-user');
+        syncDeadlineArea3AriaHidden(area3);
+        syncAiDataHideButtonVisibility(false);
+        return;
+      }
+      const specItem = getActiveSpecItemForDeadline();
+      const userHidden = isDeadlineArea3UserHidden(specItem);
+      area3.classList.toggle('deadline-area-3--hidden-by-user', userHidden);
+      syncDeadlineArea3AriaHidden(area3);
+      syncAiDataHideButtonVisibility(true);
+    }
+
+    function toggleDeadlineArea3UserHidden() {
+      const specItem = getActiveSpecItemForDeadline();
+      if (!specItem) return;
+      setDeadlineArea3UserHidden(specItem, !isDeadlineArea3UserHidden(specItem));
+      syncDeadlineArea3UserVisibility();
+    }
+
+    function initAiDataHideToggle() {
+      const btn = document.getElementById('aiDataHideBtn');
+      if (!btn || btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', toggleDeadlineArea3UserHidden);
     }
 
     function initDeadlineArea2Paging() {
@@ -2292,15 +2462,26 @@
         if (!body) return;
         body.classList.toggle('deadline-panel-body--no-spec', !hasSpec);
         const area1 = body.querySelector('.deadline-area-1');
+        const area2 = body.querySelector('.deadline-area-2');
+        const area4 = body.querySelector('.deadline-area-4');
         const right = body.querySelector('.deadline-right-column');
         if (area1) {
           if (hasSpec) area1.removeAttribute('aria-hidden');
           else area1.setAttribute('aria-hidden', 'true');
         }
+        if (area2) {
+          if (hasSpec) area2.removeAttribute('aria-hidden');
+          else area2.setAttribute('aria-hidden', 'true');
+        }
+        if (area4) {
+          if (hasSpec) area4.removeAttribute('aria-hidden');
+          else area4.setAttribute('aria-hidden', 'true');
+        }
         if (right) {
           if (hasSpec) right.removeAttribute('aria-hidden');
           else right.setAttribute('aria-hidden', 'true');
         }
+        syncDeadlineArea3UserVisibility();
       }
 
       function selectItem(item) {
@@ -2851,6 +3032,7 @@
     initDeadlineArea2Paging();
     initSpecSearch();
     initAiDataUpload();
+    initAiDataHideToggle();
     initPreviewModal();
     syncDeadlineArea2Ui();
   </script>
