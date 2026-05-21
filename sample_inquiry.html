@@ -561,6 +561,21 @@
             line-height: 1;
         }
 
+        .sample-list-table-top {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin: -8px 0 8px;
+        }
+
+        .sample-extract-count {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: #4a5a6a;
+            white-space: nowrap;
+        }
+
         .table-wrap {
             overflow-x: auto;
         }
@@ -1790,6 +1805,15 @@
                                             <option>バッグ</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label>ステータス</label>
+                                        <select class="form-control">
+                                            <option>すべて</option>
+                                            <option>検品完了</option>
+                                            <option>未検品</option>
+                                            <option>NG</option>
+                                        </select>
+                                    </div>
                                     <div class="search-grid-actions">
                                         <button class="btn btn-primary" id="searchSearchBtn">検索</button>
                                         <button type="button" class="btn btn-secondary" id="searchCancelAllBtn">クリア</button>                                        
@@ -1801,8 +1825,11 @@
 
                     <section class="card">
                         <h2 class="card-title">サンプル一覧</h2>
+                        <div class="sample-list-table-top">
+                            <p class="sample-extract-count" id="sampleExtractCount" aria-live="polite">0件</p>
+                        </div>
                         <div class="table-wrap">
-                            <table class="table">
+                            <table class="table" id="sampleListTable">
                                 <thead>
                                     <tr>
                                         <th>仕様書No</th>
@@ -2098,6 +2125,24 @@
       }
 
       loadSharedSidebar();
+
+      function updateSampleExtractCount() {
+        const table = document.getElementById('sampleListTable');
+        const el = document.getElementById('sampleExtractCount');
+        if (!table || !el) return;
+        const tbody = table.tBodies[0];
+        const count = tbody ? tbody.rows.length : 0;
+        el.textContent = count + '件　';
+      }
+
+      updateSampleExtractCount();
+
+      var searchBtn = document.getElementById('searchSearchBtn');
+      if (searchBtn) {
+        searchBtn.addEventListener('click', function () {
+          updateSampleExtractCount();
+        });
+      }
 
       // スマホ: 検索条件の折りたたみ開閉
       (function () {

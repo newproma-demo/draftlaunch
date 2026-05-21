@@ -1438,15 +1438,14 @@
         }
 
         .search-condition-clear-row {
+            grid-column: 1 / -1;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            margin-top: 0;
-            align-self: start;
+            margin-top: 8px;
             box-sizing: border-box;
-            /* .field-label + .field gap 分下げ、アイテムの select と同じ高さに */
-            padding-top: calc(12px * 1.35 + 2px);
-            min-height: calc(12px * 1.35 + 2px + 38px);
+            padding-top: 0;
+            min-height: 0;
         }
 
         .search-condition-grid > .field {
@@ -1723,10 +1722,8 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
-            /* 2列時：アイテム（8番目＝4行目2列目）と同じ行にクリアを配置 */
             .search-condition-clear-row {
-                grid-column: 2;
-                grid-row: 4;
+                grid-column: 1 / -1;
             }
         }
 
@@ -1748,8 +1745,7 @@
             }
 
             .search-condition-clear-row {
-                grid-column: 1;
-                grid-row: auto;
+                grid-column: 1 / -1;
                 margin-top: 8px;
             }
 
@@ -2142,8 +2138,8 @@
                                 <option value="1月展">2027年1月 / 東京インターナショナルギフトショー</option>
                               </select>
                             </div>
-                          </div>
-                          <div class="field">
+                        </div>
+                        <div class="field">
                             <span class="field-label" id="searchConditionSalesFieldLabel">販売区分</span>
                             <div class="exhibit-bs-multiselect" id="searchConditionSalesMs">
                               <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionSalesToggle"
@@ -2164,7 +2160,7 @@
                               <select id="searchConditionSales" name="searchConditionSales" multiple tabindex="-1"
                                 aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
                             </div>
-                          </div>
+                        </div>
                         <label class="field">
                             <span class="field-label">商品コード</span>
                             <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力" aria-label="商品コード"></textarea>
@@ -2238,7 +2234,50 @@
                             <select id="searchConditionItem" name="searchConditionItem" multiple tabindex="-1"
                               aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
                           </div>
-                        </div>                   
+                        </div>
+                        <div class="field">
+                            <span class="field-label" id="searchConditionStatusFieldLabel">ステータス</span>
+                            <div class="exhibit-bs-multiselect" id="searchConditionExhibitMs">
+                              <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionStatusToggle"
+                                aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionStatusPopover"
+                                aria-labelledby="searchConditionStatusFieldLabel">
+                                <span class="exhibit-bs-multiselect-label" id="searchConditionExhibitToggleLabel">すべて</span>
+                                <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                              </button>
+                              <div class="exhibit-bs-multiselect-popover" id="searchConditionExhibitPopover" hidden>
+                                <input type="text" id="searchConditionExhibitFilter" class="exhibit-bs-multiselect-filter"
+                                  placeholder="キーワードで絞り込み" autocomplete="off" aria-label="展示会リストの絞り込み"
+                                  aria-controls="searchConditionExhibitMenu">
+                                <div class="exhibit-bs-multiselect-menu" id="searchConditionExhibitMenu" role="listbox"
+                                  aria-multiselectable="true">
+                                  <div class="exhibit-bs-multiselect-inner">
+                                    <label class="exhibit-bs-multiselect-item" role="option"
+                                      data-ms-search="検品完了">
+                                      <input type="checkbox" name="searchConditionExhibit" value="1">
+                                      <span class="exhibit-bs-multiselect-item-text">検品完了</span>
+                                    </label>
+                                    <label class="exhibit-bs-multiselect-item" role="option"
+                                      data-ms-search="未検品">
+                                      <input type="checkbox" name="searchConditionExhibit" value="2">
+                                      <span class="exhibit-bs-multiselect-item-text">未検品</span>
+                                    </label>
+                                    <label class="exhibit-bs-multiselect-item" role="option"
+                                      data-ms-search="NG">
+                                      <input type="checkbox" name="searchConditionExhibit" value="3">
+                                      <span class="exhibit-bs-multiselect-item-text">NG</span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                              <select id="searchConditionExhibit" name="searchConditionExhibit" multiple tabindex="-1"
+                                aria-label="展示会" aria-hidden="true"
+                                style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)">
+                                <option value="1">検品完了</option>
+                                <option value="2">未検品</option>
+                                <option value="3">NG</option>
+                              </select>
+                            </div>
+                        </div>                
                       <div class="search-condition-clear-row">
                         <button type="button" class="btn-search-cancel" id="searchConditionClearBtn">クリア</button>
                       </div>
@@ -3096,16 +3135,16 @@
                                 <td class="kenpinrireki-table">2024/04/01</td>
                                 <td class="kenpinrireki-table">丸眞 花子</td>
                                 <td class="kenpinrireki-table">4500000000001</td>
-                                <td class="kenpinrireki-table">4500000000001<br>4500000000002<br>4500000000003</td>
+                                <td class="kenpinrireki-table">4500000000002</td>
+                                <td class="kenpinrireki-table">0枚</td>
                                 <td class="kenpinrireki-table">1枚</td>
-                                <td class="kenpinrireki-table">2枚</td>
                             </tr>
                             <tr>
                                 <td class="kenpinrireki-table">2024/04/15</td>
                                 <td class="kenpinrireki-table">丸眞 花子</td>
                                 <td class="kenpinrireki-table">4500000000001</td>
-                                <td class="kenpinrireki-table">4500000000001<br>4500000000001<br>4500000000001</td>
-                                <td class="kenpinrireki-table">3枚</td>
+                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">1枚</td>
                                 <td class="kenpinrireki-table">0枚</td>
                             </tr>
                             <tr>
@@ -3119,37 +3158,33 @@
                         `;
                     } else if (code === 'A10024') {
                         kenpinmodalTableBody.innerHTML = `
-                            <td>1st</td>
+                            <tr>
                                 <td class="kenpinrireki-table">2024/04/01</td>
                                 <td class="kenpinrireki-table">丸眞 花子</td>
                                 <td class="kenpinrireki-table">4500000000010</td>
-                                <td class="kenpinrireki-table">4500000000001<br>4500000000002</td>
+                                <td class="kenpinrireki-table">4500000000002</td>
+                                <td class="kenpinrireki-table">0枚</td>
                                 <td class="kenpinrireki-table">1枚</td>
-                                <td class="kenpinrireki-table">1枚</td>
-                                <td class="kenpinrireki-table"><button class="btn btn-primary">再チェック</button></td>
                             </tr>
                             <tr>
-                                <td class="kenpinrireki-table">2nd</td>
                                 <td class="kenpinrireki-table">&nbsp;</td>
                                 <td class="kenpinrireki-table">&nbsp;</td>
-                                <td class="kenpinrireki-table">4500000000001</td>
+                                <td class="kenpinrireki-table">4500000000010</td>
                                 <td class="kenpinrireki-table">&nbsp;</td>
                                 <td class="kenpinrireki-table">0枚</td>
                                 <td class="kenpinrireki-table">0枚</td>
-                                <td class="kenpinrireki-table"><button class="btn btn-primary">チェック</button></td>
                             </tr>
                         `;
                     } else {
                         kenpinmodalTableBody.innerHTML = `
-                            <td>1st</td>
+                            <tr>
                                 <td class="kenpinrireki-table">&nbsp;</td>
                                 <td class="kenpinrireki-table">&nbsp;</td>
                                 <td class="kenpinrireki-table">4500000000020</td>
                                 <td class="kenpinrireki-table">&nbsp;</td>
                                 <td class="kenpinrireki-table">0枚</td>
                                 <td class="kenpinrireki-table">0枚</td>
-                                <td class="kenpinrireki-table"><button class="btn btn-primary">チェック</button></td>
-                            </td>
+                            </tr>
                         `;
                     }
 
