@@ -285,6 +285,37 @@
       grid-row: 1;
     }
 
+    .deadline-panel-body .deadline-area-2.deadline-area-2--hidden-by-ui {
+      display: none !important;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) {
+      grid-template-rows: minmax(0, 1fr) auto;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-1 {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-right-column {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-4 {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-1 {
+      grid-column: 1 / -1;
+    }
+
     .deadline-panel-body .deadline-area-1 {
       grid-column: 1;
       grid-row: 2;
@@ -1287,6 +1318,22 @@
         grid-row: 1;
       }
 
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) {
+        grid-template-rows: minmax(140px, auto) minmax(200px, auto) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-1 {
+        grid-row: 1;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-right-column {
+        grid-row: 2;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-4 {
+        grid-row: 3;
+      }
+
       .deadline-panel-body .deadline-area-1 {
         grid-column: 1;
         grid-row: 2;
@@ -1302,11 +1349,15 @@
         grid-row: 4;
       }
 
-      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user):not(:has(.deadline-area-2.deadline-area-2--hidden-by-ui)) {
         grid-template-rows: auto minmax(140px, 1fr) auto;
       }
 
-      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-4 {
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: minmax(140px, 1fr) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user):not(:has(.deadline-area-2.deadline-area-2--hidden-by-ui)) .deadline-area-4 {
         grid-row: 3;
       }
 
@@ -2136,6 +2187,20 @@
       });
     }
 
+    function syncDeadlineArea2ShellVisibility(showArea2) {
+      const area2 = document.querySelector('.deadline-area-2');
+      if (!area2) return;
+      area2.classList.toggle('deadline-area-2--hidden-by-ui', !showArea2);
+      if (!showArea2) {
+        area2.setAttribute('aria-hidden', 'true');
+        return;
+      }
+      const body = document.querySelector('.deadline-panel .deadline-panel-body');
+      if (body && !body.classList.contains('deadline-panel-body--no-spec')) {
+        area2.removeAttribute('aria-hidden');
+      }
+    }
+
     function syncDeadlineArea2Ui() {
       const cycleGroup = getDeadlinePanelCycleToggle();
       const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
@@ -2154,6 +2219,7 @@
 
       const hideAiUpload = DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(docLabel);
       const hidePagingUi = DEADLINE_AREA2_HIDE_PAGING_LABELS.has(docLabel);
+      const showArea2Toolbar = hideAiUpload && !hidePagingUi;
       const showQualityCheck = DEADLINE_QUALITY_CHECK_TARGETS.has(`${kubun}::${docLabel}`);
 
       if (qualityCheckBtn) {
@@ -2234,6 +2300,7 @@
         setArea3EmptyTextSuppressed(false);
       }
 
+      syncDeadlineArea2ShellVisibility(showArea2Toolbar);
       syncDeadlineArea3UserVisibility();
     }
 
@@ -2470,8 +2537,10 @@
           else area1.setAttribute('aria-hidden', 'true');
         }
         if (area2) {
-          if (hasSpec) area2.removeAttribute('aria-hidden');
-          else area2.setAttribute('aria-hidden', 'true');
+          if (!hasSpec) {
+            area2.setAttribute('aria-hidden', 'true');
+            area2.classList.remove('deadline-area-2--hidden-by-ui');
+          }
         }
         if (area4) {
           if (hasSpec) area4.removeAttribute('aria-hidden');
@@ -2482,6 +2551,7 @@
           else right.setAttribute('aria-hidden', 'true');
         }
         syncDeadlineArea3UserVisibility();
+        if (hasSpec) syncDeadlineArea2Ui();
       }
 
       function selectItem(item) {
