@@ -1939,7 +1939,10 @@
       const termInfo = termDataMap[currentBasis][frameInfo.selectedTerm];
 
       const rowsHtml = termInfo.rows.map(row => {
-        const total = row.values.reduce((sum, value) => sum + value, 0);
+        const showTotal = row.label === "売上" || row.label === "仕入";
+        const total = showTotal
+          ? row.values.reduce((sum, value) => sum + value, 0)
+          : null;
 
         const valueCells = row.values.map((value, index) => {
           const month = months[index];
@@ -1965,7 +1968,7 @@
         <tr>
           <th class="item-col row-name">${row.label}</th>
           ${valueCells}
-          <td class="total-cell">${formatNumber(total)}</td>
+          <td class="total-cell">${total !== null ? formatNumber(total) : ""}</td>
         </tr>
       `;
       }).join("");
