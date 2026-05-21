@@ -1318,30 +1318,60 @@
         grid-row: 1;
       }
 
+      /* +ページを追加なし: エリア2を完全非表示（空行44pxを確保しない） */
+      .deadline-panel-body .deadline-area-2.deadline-area-2--hidden-by-ui {
+        display: none !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+      }
+
       .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) {
+        grid-template-columns: 1fr;
         grid-template-rows: minmax(140px, auto) minmax(200px, auto) auto;
       }
 
       .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-1 {
+        grid-column: 1;
         grid-row: 1;
+        width: 100%;
+        min-width: 0;
+        min-height: 140px;
+        align-self: stretch;
       }
 
       .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-right-column {
+        grid-column: 1;
         grid-row: 2;
+        width: 100%;
+        min-width: 0;
       }
 
       .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-4 {
+        grid-column: 1;
         grid-row: 3;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-1 {
+        grid-column: 1;
+        grid-row: 1;
       }
 
       .deadline-panel-body .deadline-area-1 {
         grid-column: 1;
         grid-row: 2;
+        width: 100%;
+        min-width: 0;
+        min-height: 140px;
+        align-self: stretch;
       }
 
       .deadline-panel-body .deadline-right-column {
         grid-column: 1;
         grid-row: 3;
+        width: 100%;
+        min-width: 0;
       }
 
       .deadline-panel-body .deadline-area-4 {
@@ -1354,7 +1384,11 @@
       }
 
       .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
-        grid-template-rows: minmax(140px, 1fr) auto;
+        grid-template-rows: minmax(140px, auto) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-4 {
+        grid-row: 2;
       }
 
       .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user):not(:has(.deadline-area-2.deadline-area-2--hidden-by-ui)) .deadline-area-4 {
@@ -1444,6 +1478,44 @@
       .deadline-panel .panel-body.deadline-panel-body {
         grid-template-rows: auto minmax(120px, auto) minmax(160px, auto) auto;
         gap: 8px;
+      }
+
+      .deadline-panel-body .deadline-area-1 {
+        min-height: 120px;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(120px, auto) minmax(160px, auto) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-1 {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 120px;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-right-column {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui) .deadline-area-4 {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-1 {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: minmax(120px, auto) auto;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-ui):has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-4 {
+        grid-row: 2;
       }
 
       .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) {
@@ -2219,7 +2291,8 @@
 
       const hideAiUpload = DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(docLabel);
       const hidePagingUi = DEADLINE_AREA2_HIDE_PAGING_LABELS.has(docLabel);
-      const showArea2Toolbar = hideAiUpload && !hidePagingUi;
+      /** 「+ページを追加」を表示する帳票のみエリア2を表示 */
+      const showArea2 = hideAiUpload && !hidePagingUi;
       const showQualityCheck = DEADLINE_QUALITY_CHECK_TARGETS.has(`${kubun}::${docLabel}`);
 
       if (qualityCheckBtn) {
@@ -2300,7 +2373,7 @@
         setArea3EmptyTextSuppressed(false);
       }
 
-      syncDeadlineArea2ShellVisibility(showArea2Toolbar);
+      syncDeadlineArea2ShellVisibility(showArea2 && !addBtn.hidden);
       syncDeadlineArea3UserVisibility();
     }
 
