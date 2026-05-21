@@ -299,6 +299,34 @@
       grid-row: 1;
     }
 
+    .deadline-panel-body .deadline-area-2.deadline-area-2--hidden-by-doc {
+      display: none !important;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) {
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-area-1 {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-right-column {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-doc),
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-area-1,
+    .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-user) .deadline-area-1 {
+      grid-column: 1 / -1;
+    }
+
     .deadline-panel-body .deadline-area-1 {
       grid-column: 1;
       grid-row: 2;
@@ -1763,6 +1791,18 @@
         grid-row: 1;
       }
 
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) {
+        grid-template-rows: minmax(140px, auto) minmax(200px, auto);
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-area-1 {
+        grid-row: 1;
+      }
+
+      .deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) .deadline-right-column {
+        grid-row: 2;
+      }
+
       .deadline-panel-body .deadline-area-1 {
         grid-column: 1;
         grid-row: 2;
@@ -1777,6 +1817,12 @@
       .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc),
       .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-user) {
         grid-template-rows: auto minmax(140px, 1fr);
+      }
+
+      /* 証紙依頼書: エリア2非表示のため外側は2行 */
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-doc),
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: minmax(140px, 1fr);
       }
 
       .deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc) .deadline-right-column,
@@ -1877,6 +1923,15 @@
       .deadline-panel .panel-body.deadline-panel-body {
         grid-template-rows: auto minmax(120px, auto) minmax(160px, auto);
         gap: 8px;
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc) {
+        grid-template-rows: minmax(120px, auto) minmax(160px, auto);
+      }
+
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-doc),
+      .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-2.deadline-area-2--hidden-by-doc):has(.deadline-area-3.deadline-area-3--hidden-by-user) {
+        grid-template-rows: minmax(120px, 1fr);
       }
 
       .deadline-panel .panel-body.deadline-panel-body:has(.deadline-area-3.deadline-area-3--hidden-by-doc),
@@ -2729,12 +2784,40 @@
       if (on) syncKeiyakushoIraiHideToggleButton(isDeadlineArea3UserHidden(specItem));
     }
 
+    function isDeadlineArea2HiddenByDoc(docLabel) {
+      return normalizeDeadlineDocLabel(docLabel) === normalizeDeadlineDocLabel('証紙依頼書');
+    }
+
+    function syncDeadlineArea2VisibilityByDoc(docLabel) {
+      const area2 = document.querySelector('.deadline-area-2');
+      if (!area2) return;
+      const hide = isDeadlineArea2HiddenByDoc(docLabel);
+      area2.classList.toggle('deadline-area-2--hidden-by-doc', hide);
+      if (hide) {
+        area2.setAttribute('aria-hidden', 'true');
+        return;
+      }
+      const body = document.querySelector('.deadline-panel .deadline-panel-body');
+      if (body && !body.classList.contains('deadline-panel-body--no-spec')) {
+        area2.removeAttribute('aria-hidden');
+      }
+    }
+
     function syncDeadlineArea2Ui() {
       const cycleGroup = getDeadlinePanelCycleToggle();
       const activeBtn = cycleGroup && cycleGroup.querySelector('button.search-type-btn.is-active');
       const docLabel = normalizeDeadlineDocLabel(activeBtn && activeBtn.dataset.docLabel);
+      syncDeadlineArea2VisibilityByDoc(docLabel);
       syncKeiyakushoIraiButtonVisibility(docLabel);
       syncDeadlineArea4TorokuBtnOffset(docLabel);
+      if (isDeadlineArea2HiddenByDoc(docLabel)) {
+        const navEarly = document.getElementById('deadlineArea2PaginationNav');
+        if (navEarly) navEarly.hidden = true;
+        syncDeadlineArea3HatchushoPreview(docLabel, true, true);
+        syncDeadlineArea3UserVisibility(docLabel);
+        return;
+      }
+
       const hideAiUpload = DEADLINE_AREA2_HIDE_AI_UPLOAD_LABELS.has(docLabel);
       const hidePagingUi = DEADLINE_AREA2_HIDE_PAGING_LABELS.has(docLabel);
       const activeSpecItem = document.querySelector('#specList .spec-item.is-active');
@@ -2932,8 +3015,10 @@
           else area1.setAttribute('aria-hidden', 'true');
         }
         if (area2) {
-          if (hasSpec) area2.removeAttribute('aria-hidden');
-          else area2.setAttribute('aria-hidden', 'true');
+          if (!hasSpec) {
+            area2.setAttribute('aria-hidden', 'true');
+            area2.classList.remove('deadline-area-2--hidden-by-doc');
+          }
         }
         if (right) {
           if (hasSpec) right.removeAttribute('aria-hidden');
@@ -2943,6 +3028,7 @@
           const area3 = body.querySelector('.deadline-area-3');
           if (area3) area3.classList.remove('deadline-area-3--hidden-by-user');
         }
+        if (hasSpec) syncDeadlineArea2Ui();
       }
 
       function selectItem(item) {
