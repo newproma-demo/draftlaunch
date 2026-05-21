@@ -527,16 +527,147 @@
       background: var(--color-primary-dark);
     }
 
-    #licensorSelect:hover,
-    .dashboard-box select:hover {
-      border-color: var(--color-primary);
+    .itemcategory-edit-modal {
+      max-width: 600px;
     }
 
-    #licensorSelect:focus,
-    .dashboard-box select:focus {
+    /* 大分類モーダル：遷移元画面の検索条件と同様の枠 */
+    .itemcategory-edit-modal .itemcategory-edit-search-box {
+      display: block;
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--color-text);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-sizing: border-box;
+      cursor: default;
+    }
+
+    .itemcategory-edit-modal .itemcategory-edit-search-box-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 12px 16px;
+      width: 100%;
+    }
+
+    .itemcategory-edit-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin: 0;
+    }
+
+    .itemcategory-edit-toolbar-label {
+      flex: 0 0 auto;
+      margin: 0;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .itemcategory-edit-select {
+      flex: 1 1 10rem;
+      min-width: 0;
+      min-height: 36px;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-card);
+      font-family: inherit;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .itemcategory-edit-select:focus {
       outline: none;
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.15);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
+    }
+
+    .btn-itemcategory-modal-action {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      background: var(--color-primary);
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-itemcategory-modal-action:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .btn-itemcategory-modal-action-delete {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border: 1px solid var(--color-clearbutton-border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: var(--color-text);
+      border-color: var(--color-border);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-itemcategory-modal-action-delete:hover {
+      background: #f6f8f7;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .itemcategory-edit-fields {
+      margin-bottom: 4px;
+    }
+
+    /* ラベル折り返し防止・入力欄幅調整 */
+    .itemcategory-edit-modal .itemcategory-edit-fields.modal-form-grid {
+      grid-template-columns: max-content minmax(10rem, 1fr);
+      column-gap: 16px;
+      row-gap: 10px;
+      align-items: center;
+    }
+
+    .itemcategory-edit-modal .itemcategory-edit-fields.modal-form-grid label {
+      white-space: nowrap;
+    }
+
+    .itemcategory-edit-field-input {
+      width: 100%;
+      min-height: 36px;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    .itemcategory-edit-modal .itemcategory-edit-fields .itemcategory-edit-field-input {
+      margin-bottom: 0;
+      max-width: 100%;
+    }
+
+    .itemcategory-edit-field-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
     }
 
     /* ========== イメージ案：3つとも一括表示 ========== */
@@ -665,14 +796,20 @@
       opacity: 0.9;
     }
 
-    /* 画面右下固定 新規登録ボタン　*/
-    .btn-fab-new {
-      display: inline-block;
-      text-decoration: none;
+    /* 画面右下固定アクションボタン群 */
+    .fab-actions {
       position: fixed;
       right: 24px;
       bottom: 24px;
       z-index: 2001;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-fab-new {
+      display: inline-block;
+      text-decoration: none;
       padding: 6px 14px;
       background: var(--color-primary);
       color: #fff;
@@ -680,6 +817,9 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-align: center;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 600;
     }
 
     .btn-fab-new:hover {
@@ -810,10 +950,12 @@
         margin: 0 0 10px;
       }
 
-      /* 画面右下固定 新規登録ボタン　*/
-      .btn-fab-new {
+      .fab-actions {
         right: 12px;
         bottom: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        max-width: calc(100vw - 24px);
       }
 
       /* イメージ案①: スマホ用 */
@@ -1044,6 +1186,63 @@
         margin-top: 4px;
       }
 
+      /* アイテム大分類編集モーダル：新規登録モーダル同様にラベル下に入力欄 */
+      .itemcategory-edit-modal .itemcategory-edit-search-box-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        width: 100%;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-toolbar-label {
+        margin: 4px 0 0;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--color-text);
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-select {
+        width: 100%;
+        flex: none;
+        margin-bottom: 8px;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-toolbar .btn-itemcategory-modal-action {
+        align-self: flex-end;
+        margin-top: 4px;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-fields.modal-form-grid {
+        grid-template-columns: 1fr;
+        row-gap: 0;
+        column-gap: 0;
+        align-items: stretch;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-fields.modal-form-grid label {
+        margin-top: 4px;
+        white-space: normal;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-fields.modal-form-grid label:first-child {
+        margin-top: 0;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-fields .itemcategory-edit-field-input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .itemcategory-edit-modal .itemcategory-edit-fields .itemcategory-edit-field-input:last-of-type {
+        margin-bottom: 0;
+      }
+
       /* 検索結果一覧：スマホ時はカード形式（ヘッダ「図案情報」・5段構成） */
       #approvalListArea {
         max-height: none;
@@ -1146,8 +1345,11 @@
     <div id="sidebarMount"></div>
     <!-- #endregion -->
 
-    <!-- 画面右下固定 新規登録ボタン -->
-    <a href="zuanjohotoroku.html" class="btn-fab-new" id="newEntryBtn">新規登録</a>
+    <!-- 画面右下固定アクションボタン -->
+    <div class="fab-actions" role="toolbar" aria-label="一覧操作">
+      <button type="button" class="btn-fab-new" id="itemcategoryEditBtn">大分類編集</button>
+      <button type="button" class="btn-fab-new" id="newEntryBtn">新規登録</button>
+    </div>
     <!-- #endregion -->
 
     <!--#region メインコンテンツ  -->
@@ -1170,7 +1372,7 @@
               <div class="search-box-inner" id="searchRowsPanel">
                 <div class="search-row">
                   <label for="searchItemcategory">アイテム大分類</label>
-                  <div class="multi-select" id="searchItemcategory" data-list="itemcategory">
+                  <div class="multi-select" id="searchItemcategory" data-list="itemcategory2">
                     <button type="button" class="multi-select-toggle" id="searchItemcategoryToggle"
                       aria-haspopup="listbox" aria-expanded="false">
                       選択してください
@@ -1230,147 +1432,147 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>白タオル</td>
+                      <td>タオル</td>
                       <td>ミニタオル</td>
                       <td>ダイカットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>白タオル</td>
+                      <td>タオル</td>
                       <td>ミニタオル</td>
                       <td>ポケットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>白タオル</td>
+                      <td>タオル</td>
                       <td>ミニタオル</td>
                       <td>タオルハンカチ</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>白タオル</td>
+                      <td>タオル</td>
                       <td>フェイスタオル</td>
                       <td>ロングフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>白タオル</td>
+                      <td>タオル</td>
                       <td>フェイスタオル</td>
                       <td>ループ付きフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>白タオル</td>
+                      <td>タオル</td>
                       <td>フェイスタオル</td>
                       <td>ダイカットフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（単品）</td>
+                      <td>タオル</td>
                       <td>ミニタオル</td>
                       <td>ダイカットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（単品）</td>
+                      <td>タオル</td>
                       <td>ミニタオル</td>
                       <td>ポケットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（単品）</td>
+                      <td>タオル</td>
                       <td>ミニタオル</td>
                       <td>タオルハンカチ</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（単品）</td>
+                      <td>タオル</td>
                       <td>フェイスタオル</td>
                       <td>ロングフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（単品）</td>
+                      <td>タオル</td>
                       <td>フェイスタオル</td>
                       <td>ループ付きフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（単品）</td>
+                      <td>寝装</td>
+                      <td>ベッドシーツ</td>
+                      <td>枕カバー</td>
+                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
+                    </tr>
+                    <tr>
+                      <td>寝装</td>
+                      <td>ベッドシーツ</td>
+                      <td>ベッドシーツ（シングル）</td>
+                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
+                    </tr>
+                    <tr>
+                      <td>寝装</td>
+                      <td>ベッドシーツ</td>
+                      <td>ベッドシーツ（ダブル）</td>
+                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
+                    </tr>
+                    <tr>
+                      <td>雑貨</td>
+                      <td>ミニタオル</td>
+                      <td>タオルハンカチ</td>
+                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
+                    </tr>
+                    <tr>
+                      <td>雑貨</td>
+                      <td>フェイスタオル</td>
+                      <td>ロングフェイスタオル</td>
+                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
+                    </tr>
+                    <tr>
+                      <td>雑貨</td>
+                      <td>フェイスタオル</td>
+                      <td>ループ付きフェイスタオル</td>
+                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
+                    </tr>
+                    <tr>
+                      <td>雑貨</td>
                       <td>フェイスタオル</td>
                       <td>ダイカットフェイスタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（ギフト）</td>
+                      <td>アパレル</td>
                       <td>ミニタオル</td>
                       <td>ダイカットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（ギフト）</td>
+                      <td>アパレル</td>
                       <td>ミニタオル</td>
                       <td>ポケットタオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（ギフト）</td>
+                      <td>アパレル</td>
                       <td>ミニタオル</td>
                       <td>タオルハンカチ</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（ギフト）</td>
-                      <td>フェイスタオル</td>
-                      <td>ロングフェイスタオル</td>
+                      <td>季節</td>
+                      <td>フマフラータオル</td>
+                      <td>ロングマフラータオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（ギフト）</td>
-                      <td>フェイスタオル</td>
-                      <td>ループ付きフェイスタオル</td>
+                      <td>季節</td>
+                      <td>マフラータオル</td>
+                      <td>ループ付きマフラータオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                     <tr>
-                      <td>カタログ掲載品（ギフト）</td>
-                      <td>フェイスタオル</td>
-                      <td>ダイカットフェイスタオル</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>定番外ギフト</td>
-                      <td>ミニタオル</td>
-                      <td>ダイカットタオル</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>定番外ギフト</td>
-                      <td>ミニタオル</td>
-                      <td>ポケットタオル</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>定番外ギフト</td>
-                      <td>ミニタオル</td>
-                      <td>タオルハンカチ</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>定番外ギフト</td>
-                      <td>フェイスタオル</td>
-                      <td>ロングフェイスタオル</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>定番外ギフト</td>
-                      <td>フェイスタオル</td>
-                      <td>ループ付きフェイスタオル</td>
-                      <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
-                    </tr>
-                    <tr>
-                      <td>定番外ギフト</td>
-                      <td>フェイスタオル</td>
-                      <td>ダイカットフェイスタオル</td>
+                      <td>季節</td>
+                      <td>マフラータオル</td>
+                      <td>ダイカットマフラータオル</td>
                       <td><button type="button" class="btn-edit " id="editBtn">編集</button></td>
                     </tr>
                   </tbody>
@@ -1415,11 +1617,53 @@
         </div>
       </form>
     </div>
+
+    <!--#region アイテム大分類編集モーダル -->
+    <div id="itemcategoryEditModalBackdrop" class="modal-backdrop"></div>
+    <div id="itemcategoryEditModal-window" class="modal-window itemcategory-edit-modal" role="dialog"
+      aria-modal="true" aria-labelledby="itemcategoryEditModalTitle">
+      <h2 id="itemcategoryEditModalTitle" class="modal-title">アイテム大分類編集</h2>
+      <form id="itemcategoryEditModalForm">
+        <div class="itemcategory-edit-search-box" aria-label="大分類の選択と操作">
+          <div class="itemcategory-edit-search-box-inner">
+            <div class="itemcategory-edit-toolbar">
+              <label class="itemcategory-edit-toolbar-label" for="itemcategoryEditSelect">アイテム大分類</label>
+              <select id="itemcategoryEditSelect" class="itemcategory-edit-select" aria-label="アイテム大分類を選択">
+                <option value="">選択してください</option>
+                <option value="D001">タオル</option>
+                <option value="D002">寝装</option>
+                <option value="D003">インテリア</option>
+                <option value="D004">雑貨</option>
+                <option value="D005">その他</option>
+                <option value="D006">季節</option>
+                <option value="D007">アパレル</option>
+                <option value="D008">ゴルフ</option>
+              </select>
+              <button type="button" class="btn-itemcategory-modal-action" id="itemcategoryModalNewBtn">新規登録</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="itemcategory-edit-fields modal-form-grid">
+          <label for="itemcategoryEditCode">アイテム大分類コード</label>
+          <input type="text" id="itemcategoryEditCode" name="itemcategoryCode" class="itemcategory-edit-field-input"
+            autocomplete="off" inputmode="text" required>
+          <label for="itemcategoryEditName">アイテム大分類名</label>
+          <input type="text" id="itemcategoryEditName" name="itemcategoryName" class="itemcategory-edit-field-input"
+            autocomplete="off" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn modal-btn-cancel" id="itemcategoryEditCancelBtn">キャンセル</button>
+          <button type="button" class="btn-itemcategory-modal-action-delete" id="itemcategoryModalDeleteBtn">削除</button>
+          <button type="submit" class="modal-btn modal-btn-save" id="itemcategoryEditSaveBtn">保存</button>
+        </div>
+      </form>
+    </div>
     <!-- #endregion -->
 
     <script src="js/sidebar.js"></script>
     <script>
-      // 図案情報検索ページ専用: 検索条件による一覧絞り込み（クリアボタン含む）
+      // 検索条件による一覧絞り込み（クリアボタン含む）
       window.initZuankensakuFilters = function () {
         var licensorWrap = document.getElementById("searchItemcategory");
         var licensorToggle = document.getElementById("searchItemcategoryToggle");
@@ -1596,13 +1840,7 @@
 
         if (clearBtn) {
           clearBtn.addEventListener("click", function () {
-            Array.prototype.forEach.call(licensorChecks, function (cb) { cb.checked = false; });
-            Array.prototype.forEach.call(itemsubcategoryChecks, function (cb) { cb.checked = false; });
-            Array.prototype.forEach.call(itemsubsubcategoryChecks, function (cb) { cb.checked = false; });
-            updateToggleLabel(licensorToggle, licensorChecks);
-            updateToggleLabel(itemsubcategoryToggle, itemsubcategoryChecks);
-            updateToggleLabel(itemsubsubcategoryToggle, itemsubsubcategoryChecks);
-            applyFilter();
+            window.location.reload();
           });
         }
 
@@ -1690,28 +1928,14 @@
       const icon = document.querySelector('.header-account_circle');
       const menu = document.querySelector('.account-menu');
 
-      icon.addEventListener('click', (e) => {
-        e.stopPropagation(); // クリックが外側に伝播しないように
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      });
-
-      // 初期表示（承認待ち）
-      var sel = document.getElementById("licensorSelect");
-
-      if (sel) {
-        sel.value = "";
-
-        updateLayout1("2026.03");
-
-        sel.addEventListener("change", function () {
-          updateLayout1(this.value);
+      if (icon && menu) {
+        icon.addEventListener('click', (e) => {
+          e.stopPropagation();
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         });
       }
 
-      // 検索条件による検索結果一覧の絞り込み（このページ内で定義）
-      if (typeof window.initZuankensakuFilters === "function") {
-        window.initZuankensakuFilters();
-      }
+      window.initZuankensakuFilters();
 
       // スマホ: 検索条件の折りたたみ開閉
       (function () {
@@ -1738,9 +1962,9 @@
         var licensorInput = document.getElementById("modalItemcategory");
         var itemsubcategoryInput = document.getElementById("modalItemsubcategory");
         var itemsubsubcategoryInput = document.getElementById("modalItemsubsubcategory");
-        var modalAutocompleteBoxes = modal.querySelectorAll(".autocomplete");
-
         if (!modal || !backdrop || !form || !title || !licensorInput || !itemsubcategoryInput || !itemsubsubcategoryInput) return;
+
+        var modalAutocompleteBoxes = modal.querySelectorAll(".autocomplete");
         if (window.initAutocomplete) {
           Array.prototype.forEach.call(modalAutocompleteBoxes, function (box) {
             window.initAutocomplete(box);
@@ -1818,6 +2042,361 @@
         form.addEventListener("submit", function (event) {
           event.preventDefault();
           closeModal();
+        });
+      })();
+
+      // アイテム大分類編集モーダル
+      (function () {
+        var editBtn = document.getElementById("itemcategoryEditBtn");
+        var categoryModal = document.getElementById("itemcategoryEditModal-window");
+        var categoryBackdrop = document.getElementById("itemcategoryEditModalBackdrop");
+        var categoryForm = document.getElementById("itemcategoryEditModalForm");
+        var categorySelect = document.getElementById("itemcategoryEditSelect");
+        var categoryNewBtn = document.getElementById("itemcategoryModalNewBtn");
+        var categoryDeleteBtn = document.getElementById("itemcategoryModalDeleteBtn");
+        var categoryModalEditBtn = document.getElementById("itemcategoryModalEditBtn");
+        var categoryCodeInput = document.getElementById("itemcategoryEditCode");
+        var categoryNameInput = document.getElementById("itemcategoryEditName");
+        var categoryCancelBtn = document.getElementById("itemcategoryEditCancelBtn");
+        var itemcategoryRecords = [];
+        var lastFocusedElement = null;
+
+        if (!editBtn || !categoryModal || !categoryBackdrop || !categoryForm || !categorySelect ||
+          !categoryCodeInput || !categoryNameInput) return;
+
+        /** select#itemcategoryEditSelect の option（1514行目～）をマスタとする */
+        function buildItemcategoryRecordsFromSelect() {
+          var records = [];
+          Array.prototype.forEach.call(categorySelect.options, function (opt) {
+            var key = String(opt.value || "").trim();
+            if (!key) return;
+            var parsed = parseItemcategoryOptionText(opt.textContent);
+            records.push({
+              key: key,
+              code: normalizeItemcategoryDisplayCode(parsed.displayCode || key),
+              name: parsed.name || String(opt.textContent || "").trim()
+            });
+          });
+          return records;
+        }
+
+        function findRecordByCode(selectValue) {
+          var key = String(selectValue || "").trim();
+          if (!key) return null;
+          for (var i = 0; i < itemcategoryRecords.length; i++) {
+            if (itemcategoryRecords[i].key === key) return itemcategoryRecords[i];
+          }
+          return null;
+        }
+
+        function findSelectOptionByCode(code) {
+          var key = String(code || "").trim();
+          if (!key) return null;
+          for (var i = 0; i < categorySelect.options.length; i++) {
+            if (categorySelect.options[i].value === key) return categorySelect.options[i];
+          }
+          return null;
+        }
+
+        function normalizeItemcategoryDisplayCode(code) {
+          var c = String(code || "").trim();
+          if (/^D\d+$/i.test(c)) return c.toUpperCase();
+          return c;
+        }
+
+        /** アイテム大分類コード（D001 等）に一致する option を検索 */
+        function findSelectOptionByDisplayCode(displayCode) {
+          var code = normalizeItemcategoryDisplayCode(displayCode);
+          if (!code) return null;
+          for (var i = 0; i < categorySelect.options.length; i++) {
+            var opt = categorySelect.options[i];
+            if (!opt.value) continue;
+            if (opt.value === code) return opt;
+            var parsed = parseItemcategoryOptionText(opt.textContent);
+            if (parsed.displayCode === code) return opt;
+          }
+          return null;
+        }
+
+        function selectOptionMatchesDisplayCode(opt, displayCode) {
+          var code = normalizeItemcategoryDisplayCode(displayCode);
+          if (!code || !opt || !opt.value) return false;
+          if (opt.value === code) return true;
+          var parsed = parseItemcategoryOptionText(opt.textContent);
+          return parsed.displayCode === code;
+        }
+
+        /** option 表示文言（例: D001 タオル）から D コードと名称を分離 */
+        function parseItemcategoryOptionText(text) {
+          var trimmed = String(text || "").trim();
+          var match = trimmed.match(/^(D\d+)\s*(.*)$/i);
+          if (match) {
+            return { displayCode: match[1].toUpperCase(), name: (match[2] || "").trim() };
+          }
+          return { displayCode: "", name: trimmed };
+        }
+
+        /** リスト上の D001～ の最大番号の次（例: D009） */
+        function getNextItemcategoryCode() {
+          var max = 0;
+          Array.prototype.forEach.call(categorySelect.options, function (opt) {
+            if (!opt.value) return;
+            var displayCode = normalizeItemcategoryDisplayCode(opt.value);
+            var numMatch = displayCode.match(/^D(\d+)$/i);
+            if (!numMatch) {
+              var parsed = parseItemcategoryOptionText(opt.textContent);
+              numMatch = parsed.displayCode.match(/^D(\d+)$/i);
+            }
+            if (!numMatch) return;
+            var n = parseInt(numMatch[1], 10);
+            if (!isNaN(n)) max = Math.max(max, n);
+          });
+          var next = max + 1;
+          var digits = String(next);
+          while (digits.length < 3) digits = "0" + digits;
+          return "D" + digits;
+        }
+
+        function setCategorySelectValue(selectedCode) {
+          categorySelect.value = selectedCode != null ? String(selectedCode) : "";
+        }
+
+        /** リスト表示用（アイテム大分類名のみ） */
+        function formatItemcategoryOptionLabel(displayCode, name) {
+          var n = String(name || "").trim();
+          if (n) return n;
+          return String(displayCode || "").trim();
+        }
+
+        function syncSelectOptionLabel(optionValue, displayCode, name) {
+          var label = formatItemcategoryOptionLabel(displayCode, name);
+          var opt = findSelectOptionByCode(optionValue);
+          if (opt) {
+            opt.textContent = label;
+            return;
+          }
+          var option = document.createElement("option");
+          option.value = optionValue;
+          option.textContent = label;
+          categorySelect.appendChild(option);
+        }
+
+        function clearCategoryFields() {
+          categoryCodeInput.value = "";
+          categoryNameInput.value = "";
+        }
+
+        /** 保存時と同じ HTML5 required のエラーを表示 */
+        function validateItemcategoryFields() {
+          var fields = [categoryCodeInput, categoryNameInput];
+          for (var i = 0; i < fields.length; i++) {
+            if (!fields[i].checkValidity()) {
+              fields[i].reportValidity();
+              return false;
+            }
+          }
+          return true;
+        }
+
+        function setCategoryFields(record) {
+          if (!record) {
+            clearCategoryFields();
+            return;
+          }
+          categoryCodeInput.value = record.code || "";
+          categoryNameInput.value = record.name || "";
+        }
+
+        /** リストボックス選択中のコード・名称（未選択時は null） */
+        function getSelectedCategoryFromList() {
+          var selectKey = String(categorySelect.value || "").trim();
+          if (!selectKey) return null;
+          var opt = findSelectOptionByCode(selectKey);
+          if (!opt) return null;
+          var parsed = parseItemcategoryOptionText(opt.textContent);
+          return {
+            code: normalizeItemcategoryDisplayCode(parsed.displayCode || selectKey),
+            name: parsed.name || String(opt.textContent || "").trim()
+          };
+        }
+
+        function applySelectedCategoryToFields(focusTarget) {
+          var selected = getSelectedCategoryFromList();
+          if (!selected) {
+            if (!String(categorySelect.value || "").trim()) {
+              clearCategoryFields();
+              categoryCodeInput.readOnly = false;
+            }
+            return false;
+          }
+          categoryCodeInput.value = selected.code;
+          categoryNameInput.value = selected.name;
+          categoryCodeInput.readOnly = true;
+          if (focusTarget === "name") categoryNameInput.focus();
+          return true;
+        }
+
+        function startNewCategoryMode() {
+          categorySelect.value = "";
+          clearCategoryFields();
+          categoryCodeInput.value = getNextItemcategoryCode();
+          categoryCodeInput.readOnly = false;
+          categoryNameInput.focus();
+        }
+
+        function startEditCategoryMode() {
+          var selected = getSelectedCategoryFromList();
+          if (!selected) return;
+          categoryCodeInput.value = selected.code;
+          categoryNameInput.value = selected.name;
+          categoryCodeInput.readOnly = true;
+        }
+
+        /** 入力欄のアイテム大分類コードと同じコードのデータをリストからすべて削除 */
+        function deleteCurrentCategoryFromList() {
+          var code = normalizeItemcategoryDisplayCode(categoryCodeInput.value);
+          if (!code) return false;
+          var removed = false;
+          for (var i = categorySelect.options.length - 1; i >= 0; i--) {
+            var opt = categorySelect.options[i];
+            if (selectOptionMatchesDisplayCode(opt, code)) {
+              opt.remove();
+              removed = true;
+            }
+          }
+          if (!removed) return false;
+          itemcategoryRecords = buildItemcategoryRecordsFromSelect();
+          rebuildSearchItemcategoryOptions();
+          return true;
+        }
+
+        function upsertCurrentCategoryRecord() {
+          var code = String(categoryCodeInput.value || "").trim();
+          var name = String(categoryNameInput.value || "").trim();
+          if (!code || !name) return false;
+          var selectKey = String(categorySelect.value || "").trim();
+          var existingIndex = -1;
+          var optionKey = "";
+          for (var i = 0; i < itemcategoryRecords.length; i++) {
+            if ((selectKey && itemcategoryRecords[i].key === selectKey) ||
+              itemcategoryRecords[i].code === code) {
+              existingIndex = i;
+              optionKey = itemcategoryRecords[i].key;
+              break;
+            }
+          }
+          if (existingIndex >= 0) {
+            itemcategoryRecords[existingIndex].code = code;
+            itemcategoryRecords[existingIndex].name = name;
+          } else {
+            optionKey = code;
+            itemcategoryRecords.push({ key: optionKey, code: code, name: name });
+          }
+          syncSelectOptionLabel(optionKey, code, name);
+          setCategorySelectValue(optionKey);
+          return true;
+        }
+
+        function rebuildSearchItemcategoryOptions() {
+          var names = [];
+          Array.prototype.forEach.call(categorySelect.options, function (opt) {
+            if (!opt.value) return;
+            var parsed = parseItemcategoryOptionText(opt.textContent);
+            names.push(parsed.name || String(opt.textContent || "").trim());
+          });
+          if (window.AUTOCOMPLETE_LISTS) {
+            window.AUTOCOMPLETE_LISTS.itemcategory = names;
+          }
+          var wrap = document.getElementById("searchItemcategory");
+          var menu = document.getElementById("searchItemcategoryMenu");
+          if (!wrap || !menu) return;
+          menu.innerHTML = "";
+          names.forEach(function (item) {
+            var label = document.createElement("label");
+            label.className = "multi-select-option";
+            var input = document.createElement("input");
+            input.type = "checkbox";
+            input.value = item;
+            var span = document.createElement("span");
+            span.textContent = item;
+            label.appendChild(input);
+            label.appendChild(span);
+            menu.appendChild(label);
+          });
+          var toggle = document.getElementById("searchItemcategoryToggle");
+          if (toggle) toggle.textContent = "選択してください";
+        }
+
+        function openCategoryModal() {
+          lastFocusedElement = document.activeElement;
+          itemcategoryRecords = buildItemcategoryRecordsFromSelect();
+          setCategorySelectValue("");
+          clearCategoryFields();
+          categoryCodeInput.readOnly = false;
+          categoryModal.classList.add("is-open");
+          categoryBackdrop.classList.add("is-open");
+          document.body.style.overflow = "hidden";
+          categorySelect.focus();
+        }
+
+        function closeCategoryModal() {
+          categoryModal.classList.remove("is-open");
+          categoryBackdrop.classList.remove("is-open");
+          document.body.style.overflow = "";
+          if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+            lastFocusedElement.focus();
+          }
+        }
+
+        editBtn.addEventListener("click", function () {
+          openCategoryModal();
+        });
+
+        if (categoryNewBtn) {
+          categoryNewBtn.addEventListener("click", function () {
+            startNewCategoryMode();
+          });
+        }
+
+        if (categoryModalEditBtn) {
+          categoryModalEditBtn.addEventListener("click", function () {
+            startEditCategoryMode();
+          });
+        }
+
+        if (categoryDeleteBtn) {
+          categoryDeleteBtn.addEventListener("click", function () {
+            if (!validateItemcategoryFields()) return;
+            if (!deleteCurrentCategoryFromList()) return;
+            closeCategoryModal();
+          });
+        }
+
+        categorySelect.addEventListener("change", function () {
+          applySelectedCategoryToFields(null);
+        });
+
+        if (categoryCancelBtn) {
+          categoryCancelBtn.addEventListener("click", function () {
+            closeCategoryModal();
+          });
+        }
+
+        categoryBackdrop.addEventListener("click", function () {
+          closeCategoryModal();
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && categoryModal.classList.contains("is-open")) {
+            closeCategoryModal();
+          }
+        });
+
+        categoryForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          if (!upsertCurrentCategoryRecord()) return;
+          rebuildSearchItemcategoryOptions();
+          closeCategoryModal();
         });
       })();
     </script>
