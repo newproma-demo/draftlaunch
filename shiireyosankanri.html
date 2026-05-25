@@ -781,6 +781,63 @@
       text-align: right !important;
     }
 
+    #detailModal .detail-expand-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      background: transparent;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    #detailModal .detail-expand-btn:hover {
+      color: var(--color-primary-dark);
+    }
+
+    #detailModal .detail-expand-btn .expand-icon {
+      display: inline-block;
+      width: 1em;
+      color: var(--color-primary);
+      transition: transform 0.2s ease;
+    }
+
+    #detailModal .detail-expand-btn[aria-expanded="true"] .expand-icon {
+      transform: rotate(90deg);
+    }
+
+    #detailModal .detail-child-row td {
+      padding: 0;
+      background: #f8fafc;
+      border-top: none;
+    }
+
+    #detailModal .detail-nested-wrap {
+      padding: 12px 14px 14px 36px;
+    }
+
+    #detailModal .detail-nested-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    #detailModal .detail-nested-table th,
+    #detailModal .detail-nested-table td {
+      border: 1px solid #d9e1ea;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    #detailModal .detail-nested-table thead th {
+      background: #eef6f0;
+      font-weight: 700;
+      color: #374151;
+    }
+
     .shiire-page .top-margin {
       margin-top: 18px;
     }
@@ -1646,7 +1703,7 @@
                 <label>品種</label>
                 <select>
                   <option>インテリア</option>
-                  <option>文房具</option>
+                  <option>タオル</option>
                   <option>雑貨</option>
                 </select>
               </div>
@@ -1906,6 +1963,32 @@
       return Number(value).toLocaleString("ja-JP");
     }
 
+    /** 別注予算サマリ（得意先×ライセンス×品種）のデモ配分 */
+    const batchuBudgetSplitTemplates = [
+      { customer: "ABC商事", license: "キャラクターA", variety: "インテリア", ratio: 0.32 },
+      { customer: "ABC商事", license: "キャラクターB", variety: "雑貨", ratio: 0.18 },
+      { customer: "サンプル商会", license: "キャラクターA", variety: "タオル", ratio: 0.22 },
+      { customer: "サンプル商会", license: "ブランドC", variety: "インテリア", ratio: 0.15 },
+      { customer: "テスト物産", license: "ブランドC", variety: "雑貨", ratio: 0.13 }
+    ];
+
+    function createBatchuBudgetSummary(total) {
+      let allocated = 0;
+      return batchuBudgetSplitTemplates.map((item, index) => {
+        const isLast = index === batchuBudgetSplitTemplates.length - 1;
+        const amount = isLast
+          ? total - allocated
+          : Math.round(total * item.ratio);
+        if (!isLast) allocated += amount;
+        return {
+          customer: item.customer,
+          license: item.license,
+          variety: item.variety,
+          amount
+        };
+      });
+    }
+
     function createDetailData(label, value) {
       const a = Math.round(value * 0.4);
       const b = Math.round(value * 0.25);
@@ -1913,9 +1996,9 @@
 
       if (label.includes("売上")) {
         return [
-          ["国内売上", a],
-          ["EC売上", b],
-          ["海外売上", c]
+          { label: "国内売上", amount: a },
+          { label: "EC売上", amount: b },
+          { label: "海外売上", amount: c }
         ];
       }
 
@@ -1923,16 +2006,88 @@
         const teiban = Math.round(value * 0.65);
         const batchu = value - teiban;
         return [
-          ["定番仕入", teiban],
-          ["別注仕入", batchu]
+          { label: "定番仕入", amount: teiban },
+          { label: "別注仕入額", amount: batchu, expandable: true, expandType: "batchu-budget" }
         ];
       }
 
       return [
-        ["インテリア", a],
-        ["文房具", b],
-        ["営業部", c]
+        { label: "インテリア", amount: a },
+        { label: "タオル", amount: b },
+        { label: "営業部", amount: c }
       ];
+    }
+
+    function renderBatchuNestedRows(batchuTotal, rowIndex) {
+      const rows = createBatchuBudgetSummary(batchuTotal);
+      const bodyRows = rows.map(row => `
+        <tr>
+          <td>${row.customer}</td>
+          <td>${row.license}</td>
+          <td>${row.variety}</td>
+          <td class="text-right">${formatNumber(row.amount)}</td>
+        </tr>
+      `).join("");
+
+      return `
+        <tr
+          class="detail-child-row"
+          id="batchuBudgetDetail${rowIndex}"
+          data-batchu-child
+          data-parent-index="${rowIndex}"
+          hidden>
+          <td colspan="2">
+            <div class="detail-nested-wrap">
+              <table class="detail-nested-table">
+                <thead>
+                  <tr>
+                    <th>得意先</th>
+                    <th>ライセンス</th>
+                    <th>品種</th>
+                    <th>予算</th>
+                  </tr>
+                </thead>
+                <tbody>${bodyRows}</tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderDetailRows(details) {
+      return details.map((row, index) => {
+        const amountCell = `<td class="text-right">${formatNumber(row.amount)}</td>`;
+        const expandLabel = row.expandType === "batchu-budget"
+          ? `${row.label}（${batchuBudgetSplitTemplates.length}件）`
+          : row.label;
+        const labelCell = row.expandable
+          ? `<td>
+              <button
+                type="button"
+                class="detail-expand-btn"
+                data-expand-type="${row.expandType}"
+                data-row-index="${index}"
+                aria-expanded="false"
+                aria-controls="batchuBudgetDetail${index}">
+                <span class="expand-icon" aria-hidden="true">▶</span>
+                <span>${expandLabel}</span>
+              </button>
+            </td>`
+          : `<td>${row.label}</td>`;
+
+        const childRow = row.expandable && row.expandType === "batchu-budget"
+          ? renderBatchuNestedRows(row.amount, index)
+          : "";
+
+        return `
+          <tr class="detail-parent-row" data-row-index="${index}">
+            ${labelCell}
+            ${amountCell}
+          </tr>
+          ${childRow}
+        `;
+      }).join("");
     }
 
     function buildTable(frameInfo) {
@@ -2047,23 +2202,32 @@
           const basis = button.dataset.basis === "previous" ? "前年ベース" : "目標ベース";
 
           const details = createDetailData(label, value);
-          const total = details.reduce((sum, row) => sum + row[1], 0);
+          const total = details.reduce((sum, row) => sum + row.amount, 0);
 
           modalTitle.textContent = `${label} / ${month} / ${term} / ${basis}`;
           modalTotal.textContent = formatNumber(total);
           modalCount.textContent = `${details.length}件`;
-
-          modalDetailBody.innerHTML = details.map(row => `
-          <tr>
-            <td>${row[0]}</td>
-            <td class="text-right">${formatNumber(row[1])}</td>
-          </tr>
-        `).join("");
+          modalDetailBody.innerHTML = renderDetailRows(details);
 
           modal.classList.add("show");
         });
       });
     }
+
+    modalDetailBody.addEventListener("click", (e) => {
+      const expandBtn = e.target.closest(".detail-expand-btn");
+      if (!expandBtn || expandBtn.dataset.expandType !== "batchu-budget") return;
+
+      const rowIndex = expandBtn.dataset.rowIndex;
+      const childRow = modalDetailBody.querySelector(
+        `[data-batchu-child][data-parent-index="${rowIndex}"]`
+      );
+      if (!childRow) return;
+
+      const isExpanded = expandBtn.getAttribute("aria-expanded") === "true";
+      expandBtn.setAttribute("aria-expanded", isExpanded ? "false" : "true");
+      childRow.hidden = isExpanded;
+    });
 
     closeModalBtn.addEventListener("click", () => {
       modal.classList.remove("show");
