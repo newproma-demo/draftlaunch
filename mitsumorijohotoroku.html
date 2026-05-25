@@ -1002,7 +1002,8 @@
       align-items: flex-start;
       gap: 16px;
       width: 100%;
-      min-width: 100%;
+      min-width: 0;
+      max-width: 100%;
       min-height: 0;
       box-sizing: border-box;
     }
@@ -1186,8 +1187,8 @@
     }
 
     .product-table {
-      --form-row-select1-width: 200px;
-      --desired-delivery-select-width: 500px;
+      --form-row-select1-width: min(12.5rem, 100%);
+      --desired-delivery-select-width: min(31.25rem, 100%);
       --product-label-font-size: 12px;
       --product-input-font-size: 14px;
       --product-label-input-gap: 4px;
@@ -1369,14 +1370,14 @@
       font-size: 14px !important;
     }
 
-    /* 仕様行：列を広めに */
+    /* 仕様行・Pt方法行：ビューポート縮小時も枠内で連動縮小（列 min は 0） */
     .product-fields-compact__row--with-spec-select {
-      grid-template-columns: repeat(4, minmax(var(--product-spec-select-col-min), 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    /* Pt方法（2 select）・シャーリング・刺繡：1行3等分（列を広めに） */
+    /* Pt方法（2 select）・シャーリング・刺繡：1行3等分 */
     .product-fields-compact__row--pt-shirring-shishu {
-      grid-template-columns: repeat(3, minmax(var(--product-pt-shirring-col-min), 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .product-fields-compact__row--pt-shirring-shishu > label.field {
@@ -1645,7 +1646,7 @@
 
     .product-table .fukushizai-block {
       --fukushizai-inputs-col-gap: 16px;
-      --fukushizai-umu-col-width: 180px;
+      --fukushizai-umu-col-width: min(11.25rem, 100%);
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -1695,13 +1696,9 @@
 
     /* 手配先・請求先＋空列2つ（select は select-tehai-seikyu-wide で幅指定） */
     .product-table .fukushizai-tehai-seikyu-row {
-      --fukushizai-tehai-select-width: 400px;
+      --fukushizai-tehai-select-width: min(25rem, 100%);
       display: grid;
-      grid-template-columns:
-        minmax(0, var(--fukushizai-tehai-select-width))
-        minmax(0, var(--fukushizai-tehai-select-width))
-        minmax(0, 1fr)
-        minmax(0, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: var(--fukushizai-inputs-col-gap);
       width: 100%;
       min-width: 0;
@@ -1728,10 +1725,10 @@
 
     .product-table .select-tehai-seikyu-wide,
     .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
-      flex: 0 0 auto !important;
-      flex-grow: 0 !important;
-      flex-shrink: 0 !important;
-      width: var(--fukushizai-tehai-select-width, 400px) !important;
+      flex: 1 1 0 !important;
+      flex-grow: 1 !important;
+      flex-shrink: 1 !important;
+      width: 100% !important;
       max-width: 100% !important;
       min-width: 0 !important;
       margin: 0 !important;
@@ -1755,7 +1752,7 @@
     @media (min-width: 768px) {
       .product-table .select-tehai-seikyu-wide,
       .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
-        width: var(--fukushizai-tehai-select-width, 400px) !important;
+        width: 100% !important;
         max-width: 100% !important;
       }
     }
@@ -1892,7 +1889,7 @@
     }
 
     .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields {
-      --production-delivery-select-width: calc(12rem + 60px);
+      --production-delivery-select-width: min(calc(12rem + 60px), 100%);
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
@@ -1907,10 +1904,10 @@
 
     @media (min-width: 768px) {
       .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields > select.desired-delivery-select {
-        flex: 0 0 var(--production-delivery-select-width) !important;
-        width: var(--production-delivery-select-width) !important;
-        min-width: var(--production-delivery-select-width) !important;
-        max-width: var(--production-delivery-select-width) !important;
+        flex: 1 1 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
       }
     }
 
@@ -1991,9 +1988,9 @@
       align-items: flex-start;
       gap: 6px;
       /* ネーム等の label */
-      flex: 0 0 180px;
-      width: 180px;
-      max-width: 180px;
+      flex: 0 1 min(11.25rem, 100%);
+      width: min(11.25rem, 100%);
+      max-width: 100%;
       min-width: 0;
       box-sizing: border-box;
     }
@@ -2049,10 +2046,10 @@
     }
 
     .product-table .supplier-input-row--shiiresaki .autocomplete {
-      flex: 0 0 var(--shiiresaki-name-flex-basis);
-      width: var(--shiiresaki-name-width);
-      max-width: var(--shiiresaki-name-width);
-      min-width: var(--shiiresaki-name-min-width);
+      flex: 1 1 0;
+      width: auto;
+      max-width: 100%;
+      min-width: 0;
       box-sizing: border-box;
     }
 
@@ -2116,16 +2113,39 @@
       align-self: center;
     }
 
-    /* 768px以上：仕入先の名称入力のみ広げる */
+    /* 768px以上：仕入行は枠内で縮小可能に（100%+固定幅ははみ出しの原因） */
     @media (min-width: 768px) {
-      .product-table .supplier-input-row--shiiresaki {
-        --shiiresaki-name-flex-basis: calc(100% + 40px);
-        --shiiresaki-name-width: calc(100% + 40px);
+      .product-table .supplier-input-row {
+        flex-wrap: wrap;
+        min-width: 0;
+        max-width: 100%;
       }
 
       .product-table .supplier-input-row--shiire-tokuisaki {
-        --shiire-tokuisaki-name-flex-basis: calc(16rem + 60px);
-        --shiire-tokuisaki-name-min-width: calc(12rem + 60px);
+        overflow-x: visible;
+        flex-wrap: wrap;
+      }
+
+      .product-table .supplier-input-row--shiire-tokuisaki .autocomplete {
+        flex: 1 1 8rem;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields {
+        flex: 1 1 auto;
+        min-width: 0;
+        flex-wrap: wrap;
+      }
+
+      .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-input,
+      .product-table .supplier-input-row--shiire-tokuisaki > .supplier-row-side-fields > .supplier-input,
+      .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-input[name="shiireTokuisakiIriRate[]"],
+      .product-table .supplier-input-row--shiire-tokuisaki > .supplier-row-side-fields > .supplier-input[name="shiireTokuisakiIriRate[]"] {
+        flex: 1 1 5rem;
+        width: auto;
+        min-width: 0;
+        max-width: 100%;
       }
     }
 
@@ -2586,10 +2606,11 @@
       }
     }
 
-    /* 見積依頼日のカレンダーを大きく表示 */
+    /* 見積依頼日のカレンダーを大きく表示（縮小時は枠内に収める） */
     #periodFromOnly.period-range-input.period-range-yyyymmdd {
-      width: 170px;
-      min-width: 170px;
+      width: min(10.625rem, 100%);
+      min-width: 0;
+      max-width: 100%;
       font-size: var(--product-input-font-size, 14pt);
     }
 
@@ -2716,10 +2737,10 @@
     .product-table #fukushizaiumu.form-row-select1,
     .product-table .fukushizai-block > select.form-row-select1:not(.select-tehai-seikyu-wide),
     #betchuOnlyFieldsAfterKensa select.form-row-select1 {
-      flex: 0 0 auto !important;
-      flex-grow: 0 !important;
-      flex-shrink: 0 !important;
-      width: var(--form-row-select1-width) !important;
+      flex: 1 1 0 !important;
+      flex-grow: 1 !important;
+      flex-shrink: 1 !important;
+      width: 100% !important;
       max-width: var(--form-row-select1-width) !important;
       min-width: 0 !important;
       min-height: unset !important;
@@ -2739,13 +2760,14 @@
       font-size: var(--product-input-font-size) !important;
     }
 
-    /* 副資材 select：.product-table select { flex:1 } による縦伸びを防止 */
+    /* 副資材 select：親グリッド内で縮小可能に */
     .product-table #fukushizaiumu,
     .product-table .fukushizai-block > select.form-row-select1 {
-      flex: none !important;
-      flex-grow: 0 !important;
-      flex-shrink: 0 !important;
-      align-self: flex-start !important;
+      flex: 1 1 0 !important;
+      flex-grow: 1 !important;
+      flex-shrink: 1 !important;
+      align-self: stretch !important;
+      max-width: 100% !important;
     }
 
     @media (min-width: 768px) {
@@ -2753,10 +2775,10 @@
       .product-table #fukushizaiumu.form-row-select1,
       .product-table .fukushizai-block > select.form-row-select1:not(.select-tehai-seikyu-wide),
       #betchuOnlyFieldsAfterKensa select.form-row-select1 {
-        flex: none !important;
-        flex-grow: 0 !important;
-        flex-shrink: 0 !important;
-        width: var(--form-row-select1-width) !important;
+        flex: 1 1 0 !important;
+        flex-grow: 1 !important;
+        flex-shrink: 1 !important;
+        width: 100% !important;
         max-width: var(--form-row-select1-width) !important;
         font-size: var(--product-input-font-size) !important;
         padding: 8px 10px !important;
@@ -2765,8 +2787,89 @@
 
       .product-table #fukushizaiumu,
       .product-table .fukushizai-block > select.form-row-select1:not(.select-tehai-seikyu-wide) {
-        flex: none !important;
-        flex-grow: 0 !important;
+        max-width: min(var(--fukushizai-umu-col-width, 100%), 100%) !important;
+      }
+    }
+
+    /* 768px以上：ビューポート縮小時、商品パネル全体を枠内で連動縮小 */
+    @media (min-width: 768px) {
+      .content,
+      .content-area,
+      .content-area-2,
+      #approvalNoticeArea,
+      .product-card,
+      .product-table,
+      .product-fields-compact,
+      .product-fields-compact__row,
+      .top-filter-row,
+      .fukushizai-block,
+      .form-row-delivery-case-inline,
+      .kensa-fields-row {
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row > .top-filter-item {
+        flex: 1 1 12rem;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .top-filter-item > .field,
+      .top-filter-item-tokuisaki > .field,
+      .top-filter-item-tokuisaki .autocomplete {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .top-filter-row {
+        --top-filter-control-width: min(16rem, 100%);
+      }
+
+      .product-table .form-row.form-row-left > div,
+      .product-table .form-row.form-row-left > .autocomplete,
+      .product-table .form-row.form-row-left > .fukushizai-block,
+      .product-table .form-row.form-row-left > .remarks-inputs-row,
+      .product-fields-compact > .form-row.form-row-left > div,
+      .product-fields-compact > .form-row.form-row-left > .autocomplete {
+        margin-left: 0 !important;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .product-table .form-row-select-stack-sp__fields > div {
+        margin-left: clamp(0px, 2vw, 28px);
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects {
+        flex-wrap: wrap;
+      }
+
+      .product-table input:not([type="file"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+      .product-table textarea,
+      .product-table select,
+      .product-table .autocomplete,
+      .product-table .autocomplete-input,
+      .period-range-row--from-only,
+      .period-range-field,
+      .period-range-row {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .product-table .desired-delivery-fields > select.desired-delivery-select {
+        max-width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .product-table .fukushizai-main-row {
+        grid-template-columns: minmax(0, var(--fukushizai-umu-col-width)) repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -2826,9 +2929,10 @@
 
     @media (min-width: 768px) {
       .product-table .desired-delivery-fields > select.desired-delivery-select {
-        width: var(--desired-delivery-select-width) !important;
+        flex: 1 1 0 !important;
+        width: 100% !important;
         max-width: var(--desired-delivery-select-width) !important;
-        min-width: var(--desired-delivery-select-width) !important;
+        min-width: 0 !important;
       }
     }
 
