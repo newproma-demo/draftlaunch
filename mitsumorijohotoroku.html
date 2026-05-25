@@ -820,6 +820,30 @@
         min-width: 0 !important;
         max-width: 100% !important;
       }
+
+      /* SP：補助 date を表示入力の上に重ね、ピッカー表示時の横スクロールずれを防ぐ */
+      .period-range-field .period-range-picker {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 2.75rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0.001 !important;
+        clip: auto !important;
+        clip-path: none !important;
+        overflow: hidden !important;
+        border: 0 !important;
+        pointer-events: none !important;
+        z-index: 1 !important;
+      }
+
+      html.period-picker-open,
+      html.period-picker-open body {
+        overflow-x: hidden !important;
+      }
     }
     
     /* 承認通知／検索結果・ボックス共通 */
@@ -3377,6 +3401,151 @@
     // 見積依頼日・各種日付: カレンダーボタン押下で日付ピッカーを開く（root 以下に対して付与可能）
     function attachPeriodRangeFields(root) {
       var scope = root || document;
+      var mqSp = window.matchMedia('(max-width: 767px)');
+
+      function isSp() {
+        return mqSp.matches;
+      }
+
+      function syncPickerFromText(picker, textInput) {
+        var digits = (textInput.value || '').replace(/\D/g, '');
+        if (digits.length === 8) {
+          picker.value = digits.slice(0, 4) + '-' + digits.slice(4, 6) + '-' + digits.slice(6, 8);
+        } else {
+          picker.value = '';
+        }
+      }
+
+      function captureScrollState(anchor) {
+        var saved = [];
+        var seen = new Set();
+        var node = anchor;
+        while (node && node !== document.documentElement) {
+          if (node.scrollLeft || node.scrollTop) {
+            if (!seen.has(node)) {
+              seen.add(node);
+              saved.push({ el: node, left: node.scrollLeft, top: node.scrollTop });
+            }
+          }
+          node = node.parentElement;
+        }
+        scope.querySelectorAll('.product-swiper, .content, .main-wrapper').forEach(function (el) {
+          if ((el.scrollLeft || el.scrollTop) && !seen.has(el)) {
+            seen.add(el);
+            saved.push({ el: el, left: el.scrollLeft, top: el.scrollTop });
+          }
+        });
+        saved.push({
+          el: null,
+          left: window.scrollX || document.documentElement.scrollLeft || 0,
+          top: window.scrollY || document.documentElement.scrollTop || 0
+        });
+        return saved;
+      }
+
+      function restoreScrollState(saved) {
+        if (!saved || !saved.length) return;
+        function apply() {
+          saved.forEach(function (item) {
+            if (item.el === null) {
+              window.scrollTo(item.left, item.top);
+            } else {
+              item.el.scrollLeft = item.left;
+              item.el.scrollTop = item.top;
+            }
+          });
+        }
+        apply();
+        requestAnimationFrame(apply);
+        setTimeout(apply, 0);
+        setTimeout(apply, 50);
+        setTimeout(apply, 150);
+      }
+
+      function setPickerOpenLock(on) {
+        document.documentElement.classList.toggle('period-picker-open', !!on);
+      }
+
+      function finishPickerSession(field, textInput) {
+        var savedScroll = field._periodScrollSaved;
+        if (!savedScroll) return;
+        field._periodScrollSaved = null;
+        setPickerOpenLock(false);
+        restoreScrollState(savedScroll);
+        try {
+          textInput.focus({ preventScroll: true });
+        } catch (_) {
+          textInput.focus();
+        }
+      }
+
+      function openDatePicker(field, picker, textInput) {
+        syncPickerFromText(picker, textInput);
+
+        if (isSp()) {
+          field._periodScrollSaved = captureScrollState(field);
+          setPickerOpenLock(true);
+        }
+
+        function restoreScrollNow() {
+          if (!field._periodScrollSaved) return;
+          restoreScrollState(field._periodScrollSaved);
+        }
+
+        try {
+          if (typeof picker.showPicker === 'function') {
+            var result = picker.showPicker();
+            if (result && typeof result.finally === 'function') {
+              result.finally(function () {
+                if (isSp()) {
+                  finishPickerSession(field, textInput);
+                }
+              });
+            } else if (result && typeof result.then === 'function') {
+              result.then(function () {
+                if (isSp()) {
+                  finishPickerSession(field, textInput);
+                }
+              }, function () {
+                if (isSp()) {
+                  finishPickerSession(field, textInput);
+                }
+              });
+            }
+          } else {
+            var prevOpacity = picker.style.opacity;
+            var prevPointer = picker.style.pointerEvents;
+            picker.style.opacity = '0.01';
+            picker.style.pointerEvents = 'auto';
+            try {
+              picker.focus({ preventScroll: true });
+            } catch (_) {
+              picker.focus();
+            }
+            picker.click();
+            window.setTimeout(function () {
+              picker.style.opacity = prevOpacity;
+              picker.style.pointerEvents = prevPointer;
+              finishPickerSession(field, textInput);
+            }, 0);
+          }
+        } catch (_) {
+          try {
+            picker.focus({ preventScroll: true });
+          } catch (__) {
+            picker.focus();
+          }
+          picker.click();
+          finishPickerSession(field, textInput);
+        }
+
+        if (isSp()) {
+          restoreScrollNow();
+          setTimeout(restoreScrollNow, 0);
+          setTimeout(restoreScrollNow, 100);
+        }
+      }
+
       var fields = scope.querySelectorAll('.period-range-row--from-only .period-range-field');
       fields.forEach(function (field) {
         if (field.getAttribute('data-period-bound') === '1') return;
@@ -3386,25 +3555,32 @@
         var btn = field.querySelector('.period-range-calendar-btn');
         if (!picker || !btn || !textInput) return;
 
+        picker.addEventListener('blur', function () {
+          if (isSp()) {
+            finishPickerSession(field, textInput);
+          }
+        });
+
+        if ('oncancel' in picker) {
+          picker.addEventListener('cancel', function () {
+            if (isSp()) {
+              finishPickerSession(field, textInput);
+            }
+          });
+        }
+
         btn.addEventListener('click', function (e) {
           e.preventDefault();
-          try {
-            if (typeof picker.showPicker === 'function') {
-              picker.showPicker();
-            } else {
-              picker.focus();
-              picker.click();
-            }
-          } catch (_) {
-            picker.focus();
-            picker.click();
-          }
+          openDatePicker(field, picker, textInput);
         });
 
         picker.addEventListener('change', function () {
           if (!picker.value) return;
           textInput.value = picker.value.replace(/-/g, '');
           textInput.dispatchEvent(new Event('change', { bubbles: true }));
+          if (isSp()) {
+            finishPickerSession(field, textInput);
+          }
         });
       });
     }
