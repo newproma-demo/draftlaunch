@@ -128,31 +128,61 @@
     }
 
     .search-condition-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .search-condition-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px 12px;
       align-items: start;
     }
 
-    .search-condition-reason-clear-row {
+    .search-condition-row--cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* 下段：受取日・返却予定日・貸出理由を左に詰め、クリアを右端 */
+    .search-condition-row--bottom {
       display: flex;
       flex-direction: row;
-      align-items: stretch;
-      gap: 10px;
+      align-items: flex-end;
+      gap: 12px;
       width: 100%;
       min-width: 0;
     }
 
-    .search-condition-reason-clear-row .exhibit-bs-multiselect {
-      flex: 1 1 auto;
+    .search-condition-row-fields {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: start;
+      gap: 10px 12px;
+      flex: 0 1 auto;
       min-width: 0;
-      max-width: min(100%, 28rem);
     }
 
-    /* 貸出理由＋クリア行を検索条件グリッド全幅にし、クリアをパネル内の右端へ */
-    .search-condition-panel .field.field--reason-with-clear {
-      grid-column: 1 / -1;
-      min-width: 0;
+    .search-condition-row-fields .field--arrival-date {
+      flex: 0 0 auto;
+      width: min(11.5rem, 100%);
+    }
+
+    .search-condition-row-fields .field--reason {
+      flex: 0 1 28rem;
+      min-width: 10rem;
+      max-width: 28rem;
+      width: min(28rem, 100%);
+    }
+
+    .search-condition-row-fields .field--reason .exhibit-bs-multiselect {
+      width: 100%;
+    }
+
+    .search-condition-row--bottom #searchConditionClearBtn {
+      flex-shrink: 0;
+      margin-left: auto;
+      align-self: flex-end;
     }
 
     /* 仕様書一覧・締切パネル：ヘッダー帯の高さを子ボタンに引き伸ばされないように固定 */
@@ -1202,7 +1232,7 @@
     /* 検索条件「到着日」：グリッド列いっぱいに yyyymmdd 入力を広げる */
     .search-condition-panel .field--arrival-date .period-range-row--from-only {
       max-width: none;
-      width: 45%;
+      width: 100%;
     }
 
     .search-condition-panel .field--arrival-date .period-range-field {
@@ -1561,8 +1591,8 @@
         margin-right: 0;
       }
 
-      .search-condition-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .search-condition-row-fields .field--arrival-date {
+        width: min(10.5rem, 100%);
       }
 
       .spec-panel {
@@ -1669,8 +1699,30 @@
         padding: 10px 12px;
       }
 
-      .search-condition-grid {
+      .search-condition-row--cols-2 {
         grid-template-columns: 1fr;
+      }
+
+      .search-condition-row--bottom {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-condition-row-fields {
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .search-condition-row-fields .field--arrival-date,
+      .search-condition-row-fields .field--reason {
+        width: 100%;
+        max-width: none;
+      }
+
+      .search-condition-row--bottom #searchConditionClearBtn {
+        margin-left: 0;
+        align-self: flex-end;
       }
 
       /* 日付（type=date） */
@@ -1890,7 +1942,8 @@
         </div>
         <div id="searchConditionBody" class="panel-body search-condition-body">
           <div class="search-condition-grid">
-            <div class="field">
+            <div class="search-condition-row search-condition-row--cols-2">
+              <div class="field">
                 <span class="field-label" id="searchConditionSampleFieldLabel">サンプル区分</span>
                 <div class="exhibit-bs-multiselect" id="searchConditionExhibitMs">
                   <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionSampleToggle"
@@ -1926,57 +1979,61 @@
                     <option value="発売済み">発売済み</option>
                   </select>
                 </div>
-            </div>
-            <div class="field">
-              <span class="field-label" id="searchConditionCustomerFieldLabel">得意先</span>
-              <div class="exhibit-bs-multiselect" id="searchConditionCustomerMs">
-                <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionCustomerToggle"
-                  aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionCustomerPopover"
-                  aria-labelledby="searchConditionCustomerFieldLabel">
-                  <span class="exhibit-bs-multiselect-label" id="searchConditionCustomerToggleLabel">すべて</span>
-                  <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
-                </button>
-                <div class="exhibit-bs-multiselect-popover" id="searchConditionCustomerPopover" hidden>
-                  <input type="text" id="searchConditionCustomerFilter" class="exhibit-bs-multiselect-filter"
-                    placeholder="キーワードで絞り込み" autocomplete="off" aria-label="得意先リストの絞り込み"
-                    aria-controls="searchConditionCustomerMenu">
-                  <div class="exhibit-bs-multiselect-menu" id="searchConditionCustomerMenu" role="listbox"
-                    aria-multiselectable="true">
-                    <div class="exhibit-bs-multiselect-inner" id="searchConditionCustomerInner"></div>
+              </div>
+              <div class="field">
+                <span class="field-label" id="searchConditionCustomerFieldLabel">得意先</span>
+                <div class="exhibit-bs-multiselect" id="searchConditionCustomerMs">
+                  <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionCustomerToggle"
+                    aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionCustomerPopover"
+                    aria-labelledby="searchConditionCustomerFieldLabel">
+                    <span class="exhibit-bs-multiselect-label" id="searchConditionCustomerToggleLabel">すべて</span>
+                    <span class="exhibit-bs-multiselect-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="exhibit-bs-multiselect-popover" id="searchConditionCustomerPopover" hidden>
+                    <input type="text" id="searchConditionCustomerFilter" class="exhibit-bs-multiselect-filter"
+                      placeholder="キーワードで絞り込み" autocomplete="off" aria-label="得意先リストの絞り込み"
+                      aria-controls="searchConditionCustomerMenu">
+                    <div class="exhibit-bs-multiselect-menu" id="searchConditionCustomerMenu" role="listbox"
+                      aria-multiselectable="true">
+                      <div class="exhibit-bs-multiselect-inner" id="searchConditionCustomerInner"></div>
+                    </div>
                   </div>
+                  <select id="searchConditionCustomer" name="searchConditionCustomer" multiple tabindex="-1"
+                    aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
                 </div>
-                <select id="searchConditionCustomer" name="searchConditionCustomer" multiple tabindex="-1"
-                  aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0,0,0,0)"></select>
               </div>
             </div>
-            <label class="field field--arrival-date">
-                <span class="field-label">受取日</span>
-                <div class="search-row period-range-row period-range-row--from-only">
-                  <div class="period-range-field">
-                    <input type="date" class="period-range-picker" aria-label="日付をカレンダーで選択" title="">
-                  </div>
-                </div>
-              </label>
-               <label class="field field--arrival-date">
-              <span class="field-label">返却予定日</span>
-              <div class="search-row period-range-row period-range-row--from-only">
-                <div class="period-range-field">
-                  <input type="date" class="period-range-picker" aria-label="日付をカレンダーで選択" title="">
-                </div>
-              </div>
-            </label>
-            <label class="field">
+            <div class="search-condition-row search-condition-row--cols-2">
+              <label class="field">
                 <span class="field-label">商品コード</span>
                 <textarea id="searchsohincd" name="Syohincd" rows="1" placeholder="商品コードを入力" aria-label="商品コード"></textarea>
-            </label>
-            <label class="field">
+              </label>
+              <label class="field">
                 <span class="field-label">商品名</span>
-                <input id="searchHinmei" type="text" placeholder="商品名を入力" aria-label="商品名"></input>
-            </label> 
-            <div class="field field--reason-with-clear">
-              <span class="field-label" id="searchConditionSampleFieldLabel">貸出理由</span>
-              <div class="search-condition-reason-clear-row">
-                <div class="exhibit-bs-multiselect" id="searchConditionStatusMs">
+                <input id="searchHinmei" type="text" placeholder="商品名を入力" aria-label="商品名">
+              </label>
+            </div>
+            <div class="search-condition-row search-condition-row--bottom">
+              <div class="search-condition-row-fields">
+                <label class="field field--arrival-date">
+                  <span class="field-label">受取日</span>
+                  <div class="search-row period-range-row period-range-row--from-only">
+                    <div class="period-range-field">
+                      <input type="date" class="period-range-picker" aria-label="受取日をカレンダーで選択" title="">
+                    </div>
+                  </div>
+                </label>
+                <label class="field field--arrival-date">
+                  <span class="field-label">返却予定日</span>
+                  <div class="search-row period-range-row period-range-row--from-only">
+                    <div class="period-range-field">
+                      <input type="date" class="period-range-picker" aria-label="返却予定日をカレンダーで選択" title="">
+                    </div>
+                  </div>
+                </label>
+                <div class="field field--reason">
+                  <span class="field-label" id="searchConditionStatusFieldLabel">貸出理由</span>
+                  <div class="exhibit-bs-multiselect" id="searchConditionStatusMs">
                   <button type="button" class="exhibit-bs-multiselect-toggle" id="searchConditionStatusToggle"
                     aria-expanded="false" aria-haspopup="listbox" aria-controls="searchConditionStatusPopover"
                     aria-labelledby="searchConditionStatusFieldLabel">
@@ -2028,8 +2085,9 @@
                     <option value="その他">その他</option>
                   </select>
                 </div>
-                <button type="button" class="btn-secondary" id="searchConditionClearBtn">クリア</button>
+                </div>
               </div>
+              <button type="button" class="btn-secondary" id="searchConditionClearBtn">クリア</button>
             </div>
           </div>
         </div>

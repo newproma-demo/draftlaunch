@@ -2086,10 +2086,22 @@
             <ul class="spec-list" id="specList">
               <li class="spec-item"
                 data-hikiage-ymd="2026/07/01"
+                data-tokuisaki-name="取引先名１"
+                data-eigyotanto="営業担当①"
+                data-shiyo-mokuteki="展示会用"
                 data-biko="備考１">     
                 <div class="spec-list-inner">
                   <div class="spec-row">
                     <span class="spec-line-val spec-hikiage-ymd"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki-name"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-eigyotanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-shiyo-mokuteki"></span>
                   </div>
                   <div class="spec-row">
                     <span class="spec-line-val spec-biko"></span>
@@ -2098,10 +2110,22 @@
               </li>
               <li class="spec-item"
                 data-hikiage-ymd="2026/07/02"
+                data-tokuisaki-name="取引先名２"
+                data-eigyotanto="営業担当②"
+                data-shiyo-mokuteki="撮影用"
                 data-biko="備考２">     
                 <div class="spec-list-inner">
                   <div class="spec-row">
                     <span class="spec-line-val spec-hikiage-ymd"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki-name"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-eigyotanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-shiyo-mokuteki"></span>
                   </div>
                   <div class="spec-row">
                     <span class="spec-line-val spec-biko"></span>
@@ -2110,10 +2134,22 @@
               </li>
               <li class="spec-item"
                 data-hikiage-ymd="2026/07/03"
+                data-tokuisaki-name="取引先名３"
+                data-eigyotanto="営業担当③"
+                data-shiyo-mokuteki="商談用"
                 data-biko="備考３">     
                 <div class="spec-list-inner">
                   <div class="spec-row">
                     <span class="spec-line-val spec-hikiage-ymd"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-tokuisaki-name"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-eigyotanto"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-shiyo-mokuteki"></span>
                   </div>
                   <div class="spec-row">
                     <span class="spec-line-val spec-biko"></span>
@@ -2415,8 +2451,9 @@
 
       function specOptionLabel(item) {
         const hikiageYmd = item.dataset.hikiageYmd || '';
-        const line = [hikiageYmd].filter((part) => String(part || '').trim()).join(' / ');
-        return  hikiageYmd ? hikiageYmd : '（未設定）';
+        const tokuisakiName = item.dataset.tokuisakiName || '';
+        const line = [hikiageYmd, tokuisakiName].filter((part) => String(part || '').trim()).join(' / ');
+        return line || '（未設定）';
       }
 
       function rebuildSpecSelectOptions() {
@@ -2480,17 +2517,32 @@
         });
       }
 
+      function specLabelValue(label, value) {
+        const v = String(value || '').trim();
+        return label + '：' + (v ? v : '—');
+      }
+
       function renderSpecMeta(item) {
         const hikiageYmdEl = item.querySelector('.spec-hikiage-ymd');
+        const tokuisakiNameEl = item.querySelector('.spec-tokuisaki-name');
+        const eigyotantoEl = item.querySelector('.spec-eigyotanto');
+        const shiyoMokutekiEl = item.querySelector('.spec-shiyo-mokuteki');
         const bikoEl = item.querySelector('.spec-biko');
 
         if (hikiageYmdEl) {
-            const hikiageYmd = (item.dataset.hikiageYmd || '').trim();
-            hikiageYmdEl.textContent = '引き上げ希望日 ' + (hikiageYmd ? hikiageYmd : '—');
-        }       
+          hikiageYmdEl.textContent = specLabelValue('引き上げ希望日', item.dataset.hikiageYmd);
+        }
+        if (tokuisakiNameEl) {
+          tokuisakiNameEl.textContent = specLabelValue('取引先名', item.dataset.tokuisakiName);
+        }
+        if (eigyotantoEl) {
+          eigyotantoEl.textContent = specLabelValue('営業担当', item.dataset.eigyotanto);
+        }
+        if (shiyoMokutekiEl) {
+          shiyoMokutekiEl.textContent = specLabelValue('使用目的', item.dataset.shiyoMokuteki);
+        }
         if (bikoEl) {
-            const biko = (item.dataset.biko || '').trim();
-            bikoEl.textContent = biko ? biko : '—';
+          bikoEl.textContent = specLabelValue('備考', item.dataset.biko);
         }
       }
 
@@ -2625,6 +2677,9 @@
         li.innerHTML = ''
           + '<div class="spec-list-inner">'
           + '<div class="spec-row"><span class="spec-line-val spec-hikiage-ymd"></span></div>'
+          + '<div class="spec-row"><span class="spec-line-val spec-tokuisaki-name"></span></div>'
+          + '<div class="spec-row"><span class="spec-line-val spec-eigyotanto"></span></div>'
+          + '<div class="spec-row"><span class="spec-line-val spec-shiyo-mokuteki"></span></div>'
           + '<div class="spec-row"><span class="spec-line-val spec-biko"></span></div>'
           + '</div>';
         specList.appendChild(li);
