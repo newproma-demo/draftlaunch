@@ -1316,6 +1316,19 @@
       margin-top: 20px;
     }
 
+    #budgetEntryModal .budget-scope .form-footer--custom {
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    #budgetEntryModal .budget-scope .form-footer-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     #budgetEntryModal .budget-scope .btn {
       height: 40px;
       padding: 0 18px;
@@ -1730,9 +1743,13 @@
               </div>
             </div>
 
-            <div class="form-footer">
-              <button type="button" class="btn btn-light">クリア</button>
-              <button type="button" class="btn btn-primary">別注予算を登録</button>
+            <div class="form-footer form-footer--custom">
+              <button type="button" class="btn btn-light" id="budgetCustomExcelImport">Excel取込(別注)</button>
+              <input type="file" id="budgetCustomExcelFile" accept=".xlsx,.xls,.csv" hidden>
+              <div class="form-footer-actions">
+                <button type="button" class="btn btn-light">クリア</button>
+                <button type="button" class="btn btn-primary">別注予算を登録</button>
+              </div>
             </div>
           </div>
         </section>
@@ -2322,6 +2339,17 @@
     const budgetStandardClear = document.getElementById("budgetStandardClear");
     if (budgetStandardClear) {
       budgetStandardClear.addEventListener("click", clearStandardBudgetForm);
+    }
+
+    const budgetCustomExcelImport = document.getElementById("budgetCustomExcelImport");
+    const budgetCustomExcelFile = document.getElementById("budgetCustomExcelFile");
+    if (budgetCustomExcelImport && budgetCustomExcelFile) {
+      budgetCustomExcelImport.addEventListener("click", () => {
+        budgetCustomExcelFile.click();
+      });
+      budgetCustomExcelFile.addEventListener("change", () => {
+        budgetCustomExcelFile.value = "";
+      });
     }
   </script>
 </body>
