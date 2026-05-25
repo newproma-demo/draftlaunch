@@ -1361,7 +1361,8 @@
       .product-fields-compact .select-product-field-wide,
       .product-fields-compact__row > label.field > select.select-product-field-wide,
       .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields > select.select-product-field-wide,
-      .product-fields-compact__row--pt-shirring-shishu .select-product-field-wide {
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects .select-product-field-wide,
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu .select-product-field-wide {
         flex: 1 1 0 !important;
       }
     }
@@ -1405,10 +1406,27 @@
     }
 
     @media (min-width: 768px) {
+      /* 横並びラッパー内のみ flex 伸長（シャーリングは label 直下のため縦伸びしないよう除外） */
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select,
-      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select,
-      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select {
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select,
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > select {
         flex: 1 1 0 !important;
+      }
+
+      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select.select-product-field-wide {
+        flex: 0 0 auto !important;
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+        align-self: stretch !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: unset !important;
+        height: auto !important;
+        max-height: none !important;
+        padding: 8px 10px !important;
+        font-size: var(--product-input-font-size, 14px) !important;
+        line-height: 1.4 !important;
+        box-sizing: border-box;
       }
     }
 
@@ -2035,22 +2053,27 @@
       box-sizing: border-box;
     }
 
-    /* 仕入先：名称入力（+30px） */
+    /* 仕入先：静的・動的で名称入力幅を統一（削除×は absolute・先頭行も同じ右余白） */
     .product-table .supplier-input-row--shiiresaki {
-      --shiiresaki-name-flex-basis: calc(40% + 30px);
-      --shiiresaki-name-width: calc(40% + 30px);
-      --shiiresaki-name-min-width: calc(10rem + 30px);
       position: relative;
       padding-right: 28px;
       box-sizing: border-box;
     }
 
     .product-table .supplier-input-row--shiiresaki .autocomplete {
-      flex: 1 1 0;
-      width: auto;
-      max-width: 100%;
+      flex: 0 0 40%;
+      width: 40%;
+      max-width: 40%;
       min-width: 0;
       box-sizing: border-box;
+    }
+
+    .product-table .supplier-input-row--shiiresaki .btn-delete-supplier {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
     }
 
     /* 仕入先：候補リスト（autocomplete-dropdown）のフォント 14px（静的・動的共通） */
@@ -2119,6 +2142,21 @@
         flex-wrap: wrap;
         min-width: 0;
         max-width: 100%;
+      }
+
+      /* 仕入先：追加前後・静的/動的とも名称入力 40%（flex 伸長で幅がずれるのを防止） */
+      .product-table .supplier-input-row--shiiresaki .autocomplete {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .product-table .supplier-input-row--shiiresaki .autocomplete .autocomplete-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
       }
 
       .product-table .supplier-input-row--shiire-tokuisaki {
