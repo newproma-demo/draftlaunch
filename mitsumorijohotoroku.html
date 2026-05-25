@@ -2644,12 +2644,104 @@
       }
     }
 
-    /* 見積依頼日のカレンダーを大きく表示（縮小時は枠内に収める） */
-    #periodFromOnly.period-range-input.period-range-yyyymmdd {
-      width: min(10.625rem, 100%);
-      min-width: 0;
-      max-width: 100%;
-      font-size: var(--product-input-font-size, 14pt);
+    /* ヘッダー（768px以上）：各項目幅を固定し、カレンダー操作・定番/別注切替で見積依頼日が伸縮しない */
+    @media (min-width: 768px) {
+      .top-filter-row {
+        --top-filter-control-width: 16rem;
+        --top-filter-control-height: 36px;
+        align-items: flex-end;
+      }
+
+      .top-filter-row > .top-filter-item {
+        flex: 0 0 var(--top-filter-control-width) !important;
+        width: var(--top-filter-control-width) !important;
+        min-width: var(--top-filter-control-width) !important;
+        max-width: var(--top-filter-control-width) !important;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row > .top-filter-item > .field {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row .top-filter-item > .field > .period-range-row--from-only {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row .top-filter-item > .field > .period-range-row--from-only .period-range-field {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        height: var(--top-filter-control-height);
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row .period-range-field .period-range-picker {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        margin: -1px !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        border: 0 !important;
+      }
+
+      #periodFromOnly.period-range-input.period-range-yyyymmdd,
+      .top-filter-row .period-range-field .period-range-input.period-range-yyyymmdd {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        height: var(--top-filter-control-height) !important;
+        min-height: var(--top-filter-control-height) !important;
+        max-height: var(--top-filter-control-height) !important;
+        padding: 8px 2.6em 8px 10px !important;
+        font-size: var(--product-input-font-size, 14px) !important;
+        line-height: 1.4 !important;
+        font-variant-numeric: tabular-nums;
+        box-sizing: border-box !important;
+      }
+
+      #periodFromOnly.period-range-input.period-range-yyyymmdd:focus,
+      #periodFromOnly.period-range-input.period-range-yyyymmdd:hover {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        height: var(--top-filter-control-height) !important;
+        min-height: var(--top-filter-control-height) !important;
+        max-height: var(--top-filter-control-height) !important;
+      }
+
+      #teibanBetchuSelect,
+      #gaisanSeishikiSelect {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: var(--top-filter-control-height) !important;
+        min-height: var(--top-filter-control-height) !important;
+        max-height: var(--top-filter-control-height) !important;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row .top-filter-item > .field > .period-range-field .period-range-calendar-btn {
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        margin: 0;
+        max-height: calc(var(--top-filter-control-height) - 8px);
+        box-sizing: border-box;
+      }
     }
 
     /* ヘッダ「得意先」フォント（style 末尾で最終上書き） */
@@ -2848,22 +2940,11 @@
         box-sizing: border-box;
       }
 
-      .top-filter-row > .top-filter-item {
-        flex: 1 1 12rem;
-        min-width: 0;
-        max-width: 100%;
-      }
-
-      .top-filter-item > .field,
       .top-filter-item-tokuisaki > .field,
       .top-filter-item-tokuisaki .autocomplete {
         width: 100%;
         min-width: 0;
         max-width: 100%;
-      }
-
-      .top-filter-row {
-        --top-filter-control-width: min(16rem, 100%);
       }
 
       .product-table .form-row.form-row-left > div,
@@ -2892,9 +2973,9 @@
       .product-table select,
       .product-table .autocomplete,
       .product-table .autocomplete-input,
-      .period-range-row--from-only,
-      .period-range-field,
-      .period-range-row {
+      .product-table .period-range-row--from-only,
+      .product-table .period-range-field,
+      .product-table .period-range-row {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -3639,14 +3720,17 @@
 
       function finishPickerSession(field, textInput) {
         var savedScroll = field._periodScrollSaved;
-        if (!savedScroll) return;
-        field._periodScrollSaved = null;
-        setPickerOpenLock(false);
-        restoreScrollState(savedScroll);
-        try {
-          textInput.focus({ preventScroll: true });
-        } catch (_) {
-          textInput.focus();
+        if (savedScroll) {
+          field._periodScrollSaved = null;
+          setPickerOpenLock(false);
+          restoreScrollState(savedScroll);
+        }
+        if (isSp()) {
+          try {
+            textInput.focus({ preventScroll: true });
+          } catch (_) {
+            textInput.focus();
+          }
         }
       }
 
