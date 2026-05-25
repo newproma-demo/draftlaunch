@@ -1756,11 +1756,10 @@
       font-size: 14px !important;
     }
 
-    /* 手配先・請求先＋空列2つ（select は select-tehai-seikyu-wide で幅指定） */
+    /* 手配先・請求先（SP は末尾 @media (max-width: 767px) で縦積み・全幅） */
     .product-table .fukushizai-tehai-seikyu-row {
-      --fukushizai-tehai-select-width: min(25rem, 100%);
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: var(--fukushizai-inputs-col-gap);
       width: 100%;
       min-width: 0;
@@ -1770,9 +1769,10 @@
     .product-table .fukushizai-tehai-seikyu-row > label.field {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       gap: var(--product-label-input-gap, 4px);
       min-width: 0;
+      width: 100%;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -1787,19 +1787,40 @@
 
     .product-table .select-tehai-seikyu-wide,
     .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
-      flex: 1 1 0 !important;
-      flex-grow: 1 !important;
-      flex-shrink: 1 !important;
+      flex: 0 0 auto !important;
+      flex-grow: 0 !important;
+      flex-shrink: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
       min-width: 0 !important;
       margin: 0 !important;
       padding: 8px 10px !important;
-      align-self: flex-start !important;
+      align-self: stretch !important;
       font-family: inherit !important;
       font-size: 14px !important;
       line-height: 1.4 !important;
       box-sizing: border-box;
+    }
+
+    @media (min-width: 768px) {
+      /* 手配先・請求先＋空列2つ（select は select-tehai-seikyu-wide で幅指定） */
+      .product-table .fukushizai-tehai-seikyu-row {
+        --fukushizai-tehai-select-width: min(25rem, 100%);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .product-table .fukushizai-tehai-seikyu-row > label.field {
+        align-items: flex-start;
+        width: auto;
+      }
+
+      .product-table .select-tehai-seikyu-wide,
+      .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
+        flex: 1 1 0 !important;
+        flex-grow: 1 !important;
+        flex-shrink: 1 !important;
+        align-self: flex-start !important;
+      }
     }
 
     .product-table .select-tehai-seikyu-wide option {
@@ -1807,11 +1828,16 @@
     }
 
     .product-table .fukushizai-tehai-seikyu-row__spacer {
-      min-width: 0;
-      min-height: 1px;
+      display: none;
     }
 
     @media (min-width: 768px) {
+      .product-table .fukushizai-tehai-seikyu-row__spacer {
+        display: block;
+        min-width: 0;
+        min-height: 1px;
+      }
+
       .product-table .select-tehai-seikyu-wide,
       .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
         width: 100% !important;
@@ -3155,6 +3181,94 @@
       .product-table select.form-row-select1,
       #betchuOnlyFieldsAfterKensa select.form-row-select1 {
         font-size: 16px !important;
+      }
+
+      /* ヘッダ（SP）：得意先テキストボックスを概算/正式 select と同じ幅に */
+      .top-filter-row {
+        --top-filter-control-width: 100%;
+      }
+
+      .top-filter-row > .top-filter-item {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row > .top-filter-item > .field {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+      }
+
+      #teibanBetchuSelect,
+      #gaisanSeishikiSelect {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      .top-filter-item-tokuisaki,
+      .top-filter-item-tokuisaki > .field {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+        box-sizing: border-box;
+      }
+
+      .top-filter-item-tokuisaki .autocomplete,
+      #headerTokuisakiRow .autocomplete {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      #headerTokuisakiRow #searchCategory,
+      #headerTokuisakiRow input.autocomplete-input,
+      #headerTokuisakiRow .field .autocomplete .autocomplete-input {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      /* 副資材：手配先・請求先（SP）— グローバル flex-shrink より後に適用して潰れを防止 */
+      .product-table .fukushizai-tehai-seikyu-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .product-table .fukushizai-tehai-seikyu-row__spacer {
+        display: none;
+      }
+
+      .product-table .fukushizai-tehai-seikyu-row > label.field {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
+        flex: 0 0 auto !important;
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        align-self: stretch !important;
+        padding: 6px 8px !important;
+        font-size: var(--product-input-font-size, 16px) !important;
       }
     }
   </style>
