@@ -541,6 +541,16 @@
       border-top: none;
     }
 
+    /* 一覧スクロール時：項目名行（thead）を固定 */
+    #approvalListArea .result-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: #fff;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+    }
+
     #approvalListArea .result-table tbody tr,
     #approvalListArea .result-table tbody tr:nth-child(even) {
       background: #fff;
@@ -1208,6 +1218,34 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px 12px;
       align-items: start;
+    }
+
+    /* スマホ：検索条件を縦並び（上記 grid 3列より後に定義して上書き） */
+    @media (max-width: 768px) {
+      .search-condition-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .search-condition-grid > .field {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .search-condition-clear-field {
+        align-items: flex-end;
+      }
+
+      .search-condition-clear-field .field-label--spacer {
+        display: none;
+      }
+
+      .search-condition-clear-field .btn-search-cancel,
+      .search-condition-clear-field .btn-secondary {
+        width: auto;
+        align-self: flex-end;
+      }
     }
 
     .search-condition-clear-field .field-label--spacer {
