@@ -585,6 +585,7 @@
     /* 一覧：デザイナー列のプルダウンを列幅いっぱいに */
     #approvalListArea .result-table td:last-child {
       vertical-align: middle;
+      overflow: visible;
     }
 
     #approvalListArea .result-table td:last-child .row-designer-select,
@@ -659,7 +660,14 @@
     }
 
     #approvalListArea .row-designer-ms.is-open .exhibit-bs-multiselect-popover {
-      z-index: 101;
+      z-index: 3000;
+      border: 1px solid var(--color-border);
+    }
+
+    #approvalListArea .row-designer-ms.is-dropup.is-open .exhibit-bs-multiselect-caret {
+      border-top: 0;
+      border-bottom: 6px solid #446354;
+      margin-top: 0;
     }
 
     .result-list-panel .result-list-panel-body {
@@ -4167,6 +4175,69 @@
 
         root.dataset.msBound = '1';
 
+        const POPOVER_MAX_HEIGHT = 220;
+        let scrollResizeHandler = null;
+
+        function resetPopoverPosition() {
+          popover.style.position = '';
+          popover.style.left = '';
+          popover.style.right = '';
+          popover.style.top = '';
+          popover.style.bottom = '';
+          popover.style.width = '';
+          popover.style.maxHeight = '';
+          popover.style.zIndex = '';
+          root.classList.remove('is-dropup');
+        }
+
+        function positionPopover() {
+          const rect = btn.getBoundingClientRect();
+          const viewportH = window.innerHeight;
+          const spaceBelow = viewportH - rect.bottom - 8;
+          const spaceAbove = rect.top - 8;
+          const openUp = spaceBelow < 140 && spaceAbove > spaceBelow;
+
+          popover.style.position = 'fixed';
+          popover.style.left = Math.max(8, rect.left) + 'px';
+          popover.style.width = Math.max(rect.width, 120) + 'px';
+          popover.style.right = 'auto';
+          popover.style.zIndex = '3000';
+
+          const maxH = Math.max(100, Math.min(POPOVER_MAX_HEIGHT, openUp ? spaceAbove : spaceBelow));
+          popover.style.maxHeight = maxH + 'px';
+
+          if (openUp) {
+            popover.style.top = 'auto';
+            popover.style.bottom = (viewportH - rect.top + 2) + 'px';
+            root.classList.add('is-dropup');
+          } else {
+            popover.style.bottom = 'auto';
+            popover.style.top = (rect.bottom + 2) + 'px';
+            root.classList.remove('is-dropup');
+          }
+        }
+
+        function closeOtherRowDesignerDropdowns() {
+          document.querySelectorAll('#approvalListArea .row-designer-ms.is-open').forEach((other) => {
+            if (other === root) return;
+            other.classList.remove('is-open', 'is-dropup');
+            const otherBtn = other.querySelector('.exhibit-bs-multiselect-toggle');
+            const otherPop = other.querySelector('.exhibit-bs-multiselect-popover');
+            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+            if (otherPop) {
+              otherPop.setAttribute('hidden', '');
+              otherPop.style.position = '';
+              otherPop.style.left = '';
+              otherPop.style.right = '';
+              otherPop.style.top = '';
+              otherPop.style.bottom = '';
+              otherPop.style.width = '';
+              otherPop.style.maxHeight = '';
+              otherPop.style.zIndex = '';
+            }
+          });
+        }
+
         function getPickItems() {
           return Array.from(root.querySelectorAll('.exhibit-bs-multiselect-pick'));
         }
@@ -4199,9 +4270,26 @@
           root.classList.toggle('is-open', open);
           btn.setAttribute('aria-expanded', open ? 'true' : 'false');
           if (open) {
+            closeOtherRowDesignerDropdowns();
             popover.removeAttribute('hidden');
+            requestAnimationFrame(() => {
+              positionPopover();
+            });
+            if (!scrollResizeHandler) {
+              scrollResizeHandler = () => {
+                if (root.classList.contains('is-open')) positionPopover();
+              };
+              window.addEventListener('scroll', scrollResizeHandler, true);
+              window.addEventListener('resize', scrollResizeHandler);
+            }
           } else {
             popover.setAttribute('hidden', '');
+            resetPopoverPosition();
+            if (scrollResizeHandler) {
+              window.removeEventListener('scroll', scrollResizeHandler, true);
+              window.removeEventListener('resize', scrollResizeHandler);
+              scrollResizeHandler = null;
+            }
           }
         }
 
