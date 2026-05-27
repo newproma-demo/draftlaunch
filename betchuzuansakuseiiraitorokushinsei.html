@@ -418,6 +418,49 @@
       min-width: 0;
     }
 
+    /*
+     * 提出日／図案提出納期／発注納期の3行：3列グリッドで列位置を統一。
+     */
+    @media (min-width: 769px) {
+      .entry-form .entry-form-noki-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 16px;
+        row-gap: 16px;
+      }
+
+      .entry-form .entry-form-noki-grid .form-row-noki-grid-row {
+        display: contents;
+      }
+
+      .entry-form .entry-form-noki-grid .form-field-inline {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .entry-form .entry-form-noki-grid .form-field-inline > label:not(.checkbox-label) {
+        flex: 0 0 180px;
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
+        box-sizing: border-box;
+        padding-top: 8px;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .entry-form .entry-form-noki-grid .form-field-inline > label:not(.checkbox-label) + * {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: auto;
+        max-width: none;
+      }
+    }
+
     /* 1行に4項目を均等幅で表示 */
     .entry-form .form-row-four-cols {
       display: flex;
@@ -1151,6 +1194,19 @@
        * 商品販売時期（全幅行）と見た目が揃わない。
        */
       .entry-form .form-row-two-cols:not(.form-row-zuan-hanbai) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .entry-form .entry-form-noki-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .entry-form .entry-form-noki-grid .form-row-noki-grid-row {
+        display: flex;
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
@@ -2080,7 +2136,8 @@
               <span class="amount-unit">円（税別）</span>
             </div>
           </div>
-          <div class="form-row form-row-two-cols">
+          <div class="entry-form-noki-grid">
+          <div class="form-row form-row-two-cols form-row-noki-grid-row">
             <div class="form-field-inline">
               <label for="teishutsuBi">提出日</label>
               <div class="period-range-inputs">
@@ -2123,7 +2180,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-field-inline">
+            <div class="form-field-inline form-field-designer form-field-label-tight">
               <label for="designerTanto">デザイナー担当</label>
               <div class="autocomplete">
                 <input type="text" class="autocomplete-input" id="designerTanto" name="designerTanto" data-list="creator" placeholder="デザイナー担当を入力">
@@ -2131,7 +2188,7 @@
               </div>
             </div>
           </div>
-          <div class="form-row form-row-four-cols">
+          <div class="form-row form-row-four-cols form-row-noki-grid-row">
             <div class="form-field-inline">
               <label for="zuanteishutsuNoki">図案提出納期</label>
               <div class="period-range-inputs">
@@ -2196,7 +2253,7 @@
               </div>
             </div>
           </div>
-          <div class="form-row form-row-four-cols">
+          <div class="form-row form-row-four-cols form-row-noki-grid-row">
             <div class="form-field-inline">
               <label for="hatsuyouNoki">発注納期</label>
               <div class="period-range-inputs">
@@ -2260,6 +2317,7 @@
                 </div>
               </div>
             </div>
+          </div>
           </div>
           <div class="form-actions">
             <button type="submit" class="btn-primary">取消</button>
