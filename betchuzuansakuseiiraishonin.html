@@ -418,6 +418,105 @@
       min-width: 0;
     }
 
+    /* 1行に3項目を均等幅で表示（納期行） */
+    .entry-form .form-row-four-cols {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .entry-form .form-row-four-cols .form-field-inline {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .entry-form .form-row-four-cols .form-field-inline > label:not(.checkbox-label) {
+      min-width: 0;
+      flex: 0 0 45%;
+      width: 45%;
+      max-width: 45%;
+      flex-shrink: 0;
+      padding-top: 8px;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      box-sizing: border-box;
+    }
+
+    .entry-form .form-row-four-cols .form-field-inline:first-child > label:not(.checkbox-label) {
+      flex: 0 0 180px;
+      width: 180px;
+      min-width: 180px;
+      max-width: 180px;
+    }
+
+    .entry-form .form-row-four-cols .form-field-inline > label:not(.checkbox-label) + * {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: auto;
+      max-width: none;
+    }
+
+    .entry-form .form-row-four-cols .form-field-inline input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .entry-form .form-row-four-cols .form-field-inline.form-field-label-tight > label:not(.checkbox-label) {
+      flex: 0 0 180px;
+      width: 180px;
+      min-width: 180px;
+      max-width: 180px;
+    }
+
+    /*
+     * 提出日／図案提出納期／発注納期の3行：3列グリッドで列位置を統一。
+     */
+    @media (min-width: 769px) {
+      .entry-form .entry-form-noki-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 16px;
+        row-gap: 16px;
+      }
+
+      .entry-form .entry-form-noki-grid .form-row-noki-grid-row {
+        display: contents;
+      }
+
+      .entry-form .entry-form-noki-grid .form-field-inline {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .entry-form .entry-form-noki-grid .form-field-inline > label:not(.checkbox-label) {
+        flex: 0 0 180px;
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
+        box-sizing: border-box;
+        padding-top: 8px;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .entry-form .entry-form-noki-grid .form-field-inline > label:not(.checkbox-label) + * {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: auto;
+        max-width: none;
+      }
+    }
+
     .entry-form .form-row .autocomplete {
       flex: 1;
       min-width: 0;
@@ -1051,6 +1150,57 @@
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
+      }
+
+      .entry-form .entry-form-noki-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .entry-form .entry-form-noki-grid .form-row-noki-grid-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .entry-form .form-row.form-row-four-cols {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .entry-form .form-row.form-row-four-cols .form-field-inline {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: var(--sp-label-gap);
+      }
+
+      .entry-form .form-row.form-row-four-cols .form-field-inline > label:not(.checkbox-label) {
+        min-width: 0;
+        flex: 0 0 var(--sp-label-col);
+        width: var(--sp-label-col);
+        max-width: var(--sp-label-col);
+        box-sizing: border-box;
+        flex-shrink: 0;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        padding-top: 6px;
+      }
+
+      .entry-form .form-row-two-cols .form-field-inline > .period-range-inputs,
+      .entry-form .form-row-four-cols .form-field-inline > .period-range-inputs {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: auto;
+        max-width: none;
       }
 
       .content {
@@ -1944,7 +2094,8 @@
               <span class="amount-unit">円（税別）</span>
             </div>
           </div>
-          <div class="form-row form-row-two-cols">
+          <div class="entry-form-noki-grid">
+          <div class="form-row form-row-two-cols form-row-noki-grid-row">
             <div class="form-field-inline">
               <label for="teishutsuBi">提出日</label>
               <div class="period-range-inputs">
@@ -1967,12 +2118,164 @@
               </div>
             </div>
             <div class="form-field-inline">
+              <label for="shipYoteiBi">Ship予定日</label>
+              <div class="period-range-inputs">
+                <div class="period-range-field">
+                  <input
+                    type="text"
+                    id="shipYoteiBi"
+                    name="shipYoteiBi"
+                    class="period-range-input period-range-yyyymmdd"
+                    inputmode="numeric"
+                    maxlength="8"
+                    placeholder="yyyymmdd"
+                    autocomplete="off"
+                    aria-label="Ship予定日 yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー"
+                  >
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="Ship予定日をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-field-inline form-field-label-tight">
               <label for="designerTanto">デザイナー担当</label>
               <div class="autocomplete">
                 <input type="text" class="autocomplete-input" id="designerTanto" name="designerTanto" data-list="creator" placeholder="デザイナー担当を入力">
                 <div class="autocomplete-dropdown"></div>
               </div>
             </div>
+          </div>
+          <div class="form-row form-row-four-cols form-row-noki-grid-row">
+            <div class="form-field-inline">
+              <label for="zuanteishutsuNoki">図案提出納期</label>
+              <div class="period-range-inputs">
+                <div class="period-range-field">
+                  <input
+                    type="text"
+                    id="zuanteishutsuNoki"
+                    name="zuanteishutsuNoki"
+                    class="period-range-input period-range-yyyymmdd"
+                    inputmode="numeric"
+                    maxlength="8"
+                    placeholder="yyyymmdd"
+                    autocomplete="off"
+                    aria-label="図案提出納期 yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー"
+                  >
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="図案提出納期をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-field-inline form-field-label-tight">
+              <label for="shisakunyukoNoki">試作入稿納期</label>
+              <div class="period-range-inputs">
+                <div class="period-range-field">
+                  <input
+                    type="text"
+                    id="shisakunyukoNoki"
+                    name="shisakunyukoNoki"
+                    class="period-range-input period-range-yyyymmdd"
+                    inputmode="numeric"
+                    maxlength="8"
+                    placeholder="yyyymmdd"
+                    autocomplete="off"
+                    aria-label="試作入稿納期 yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー"
+                  >
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="試作入稿納期をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-field-inline form-field-label-tight">
+              <label for="saisyunyukoNoki">最終入稿納期</label>
+              <div class="period-range-inputs">
+                <div class="period-range-field">
+                  <input
+                    type="text"
+                    id="saisyunyukoNoki"
+                    name="saisyunyukoNoki"
+                    class="period-range-input period-range-yyyymmdd"
+                    inputmode="numeric"
+                    maxlength="8"
+                    placeholder="yyyymmdd"
+                    autocomplete="off"
+                    aria-label="最終入稿納期 yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー"
+                  >
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="最終入稿納期をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row form-row-four-cols form-row-noki-grid-row">
+            <div class="form-field-inline">
+              <label for="hatsuyouNoki">発注納期</label>
+              <div class="period-range-inputs">
+                <div class="period-range-field">
+                  <input
+                    type="text"
+                    id="hatsuyouNoki"
+                    name="hatsuyouNoki"
+                    class="period-range-input period-range-yyyymmdd"
+                    inputmode="numeric"
+                    maxlength="8"
+                    placeholder="yyyymmdd"
+                    autocomplete="off"
+                    aria-label="発注納期 yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー"
+                  >
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="発注納期をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-field-inline form-field-label-tight">
+              <label for="tehaiNoki">手配納期</label>
+              <div class="period-range-inputs">
+                <div class="period-range-field">
+                  <input
+                    type="text"
+                    id="tehaiNoki"
+                    name="tehaiNoki"
+                    class="period-range-input period-range-yyyymmdd"
+                    inputmode="numeric"
+                    maxlength="8"
+                    placeholder="yyyymmdd"
+                    autocomplete="off"
+                    aria-label="手配納期 yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー"
+                  >
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="手配納期をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-field-inline form-field-label-tight">
+              <label for="nyukaNoki">入荷納期</label>
+              <div class="period-range-inputs">
+                <div class="period-range-field">
+                  <input
+                    type="text"
+                    id="nyukaNoki"
+                    name="nyukaNoki"
+                    class="period-range-input period-range-yyyymmdd"
+                    inputmode="numeric"
+                    maxlength="8"
+                    placeholder="yyyymmdd"
+                    autocomplete="off"
+                    aria-label="入荷納期 yyyymmdd"
+                    title="8桁で入力（例: 20250309）またはカレンダー"
+                  >
+                  <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                  <button type="button" class="period-range-calendar-btn" aria-label="入荷納期をカレンダーで選択">📅</button>
+                </div>
+              </div>
+            </div>
+          </div>
           </div>
           <div class="form-actions">
             <button type="submit" class="btn-primary">取消</button>
