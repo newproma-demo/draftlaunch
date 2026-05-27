@@ -974,11 +974,14 @@
                 grid-template-columns: 1fr;
             }
 
-            .delete-condition-row {
-                grid-template-columns: 1fr;
+            .delete-condition-row,
+            .delete-condition-row.show-customer {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
             }
 
-            .delete-condition-row,
             .manual-add-grid-delete.unified-add-grid {
                 grid-template-columns: 1fr;
             }
@@ -1338,7 +1341,6 @@
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 8px;
             align-items: end;
-            overflow: visible;
         }
 
         .delete-condition-row.show-customer {
@@ -1370,45 +1372,13 @@
             border-radius: 6px;
         }
 
-        .delete-condition-row .autocomplete {
-            position: relative;
-            width: 100%;
-        }
-
-        /* 削除条件：kenpintoroku ステータス（exhibit-bs-multiselect-caret）と同様の三角 */
-        .delete-condition-field-wrap {
-            position: relative;
-            width: 100%;
-        }
-
-        .delete-condition-field-wrap::after {
-            content: '';
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            width: 0;
-            height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 6px solid #446354;
-            margin-top: 2px;
-            pointer-events: none;
-        }
-
-        .delete-condition-field-wrap.is-open::after {
-            border-top: 0;
-            border-bottom: 6px solid #446354;
-            margin-top: 0;
-        }
-
-        .delete-condition-row select.form-control,
-        .delete-condition-row .autocomplete .autocomplete-input {
+        .delete-condition-row select.form-control {
             padding-right: 24px;
             background-color: #fff;
-            background-image: none;
-        }
-
-        .delete-condition-row select.form-control {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%23000' fill-opacity='.54' d='M0 0h10L5 6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 10px 5px;
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
@@ -1418,19 +1388,8 @@
             display: none;
         }
 
-        .delete-condition-row select.form-control:focus,
-        .delete-condition-row .autocomplete .autocomplete-input:focus {
+        .delete-condition-row select.form-control:focus {
             background-color: #fff;
-        }
-
-        .delete-condition-row .autocomplete .autocomplete-input {
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .delete-condition-row .autocomplete-dropdown {
-            border: 1px solid #cfd8e3;
-            border-radius: 8px;
         }
 
         .process-page {
@@ -1680,8 +1639,12 @@
                 padding-bottom: 8px;
             }
 
-            .delete-condition-row {
-                grid-template-columns: 1fr;
+            .delete-condition-row,
+            .delete-condition-row.show-customer {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
             }
 
             .move-condition-row,
@@ -1940,25 +1903,24 @@
                             </div>
                             <div class="form-group delete-condition-customer" id="deleteConditionCustomerGroup">
                                 <label for="deleteConditionCustomer">得意先</label>
-                                <div class="autocomplete delete-condition-field-wrap">
-                                    <input type="text" class="form-control autocomplete-input" data-list="customer" placeholder="得意先検索" id="deleteConditionCustomer" name="deleteConditionCustomer" autocomplete="off">
-                                    <div class="autocomplete-dropdown"></div>
-                                </div>
+                                <select class="form-control" id="deleteConditionCustomer" name="deleteConditionCustomer">
+                                    <option value="">選択してください</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label>削除理由</label>
-                                <select class="form-control">
-                                    <option>経年劣化</option>
-                                    <option>汚損</option>
-                                    <option>破損</option>
-                                    <option>棚卸差異</option>
-                                    <option>その他</option>
+                                <label for="deleteConditionReason">削除理由</label>
+                                <select class="form-control" id="deleteConditionReason" name="deleteConditionReason">
+                                    <option value="経年劣化">経年劣化</option>
+                                    <option value="汚損">汚損</option>
+                                    <option value="破損">破損</option>
+                                    <option value="棚卸差異">棚卸差異</option>
+                                    <option value="その他">その他</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label>拠点</label>
-                                <select class="form-control">
+                                <label for="deleteConditionBase">拠点</label>
+                                <select class="form-control" id="deleteConditionBase" name="deleteConditionBase">
                                     <option>東京本社</option>
                                     <option>大阪支店</option>
                                     <option>名古屋支店</option>
@@ -2103,64 +2065,30 @@
         overlay.classList.remove('show');
         }
 
-        function initDeleteConditionFieldCaret() {
-            const row = document.querySelector('.delete-condition-row');
-            if (!row) return;
+        function populateDeleteConditionCustomerSelect() {
+            const select = document.getElementById('deleteConditionCustomer');
+            const list = window.AUTOCOMPLETE_LISTS && window.AUTOCOMPLETE_LISTS.customer;
+            if (!select || !list || !Array.isArray(list)) return;
 
-            row.querySelectorAll('select.form-control').forEach((select) => {
-                let wrap = select.parentElement;
-                if (!wrap || !wrap.classList.contains('delete-condition-field-wrap')) {
-                    wrap = document.createElement('div');
-                    wrap.className = 'delete-condition-field-wrap';
-                    select.parentNode.insertBefore(wrap, select);
-                    wrap.appendChild(select);
-                }
-
-                const setOpen = (open) => wrap.classList.toggle('is-open', open);
-
-                select.addEventListener('mousedown', () => setOpen(true));
-                select.addEventListener('focus', () => setOpen(true));
-                select.addEventListener('blur', () => {
-                    window.setTimeout(() => setOpen(false), 0);
-                });
-                select.addEventListener('change', () => setOpen(false));
-            });
-
-            row.querySelectorAll('.autocomplete.delete-condition-field-wrap').forEach((box) => {
-                const input = box.querySelector('.autocomplete-input');
-                const dropdown = box.querySelector('.autocomplete-dropdown');
-                if (!input || !dropdown) return;
-
-                const setOpen = (open) => box.classList.toggle('is-open', open);
-
-                input.addEventListener('focus', () => setOpen(true));
-                input.addEventListener('blur', () => {
-                    window.setTimeout(() => setOpen(false), 150);
-                });
-                document.addEventListener('click', (e) => {
-                    if (!box.contains(e.target)) {
-                        setOpen(false);
-                    }
-                });
+            list.forEach((name) => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                select.appendChild(option);
             });
         }
 
         function initDeleteConditionCustomerVisibility() {
             const categorySelect = document.getElementById('deleteConditionCategory');
             const row = document.querySelector('.delete-condition-row');
-            const customerGroup = document.getElementById('deleteConditionCustomerGroup');
-            const customerInput = document.getElementById('deleteConditionCustomer');
-            if (!categorySelect || !row || !customerGroup) return;
+            const customerSelect = document.getElementById('deleteConditionCustomer');
+            if (!categorySelect || !row) return;
 
             function update() {
                 const show = categorySelect.value === '提供';
                 row.classList.toggle('show-customer', show);
-                if (!show && customerInput) {
-                    customerInput.value = '';
-                    const dropdown = customerGroup.querySelector('.autocomplete-dropdown');
-                    if (dropdown) dropdown.innerHTML = '';
-                    const customerWrap = customerGroup.querySelector('.delete-condition-field-wrap');
-                    if (customerWrap) customerWrap.classList.remove('is-open');
+                if (!show && customerSelect) {
+                    customerSelect.selectedIndex = 0;
                 }
             }
 
@@ -2169,7 +2097,7 @@
         }
 
         loadSharedSidebar();
-        initDeleteConditionFieldCaret();
+        populateDeleteConditionCustomerSelect();
         initDeleteConditionCustomerVisibility();
 
         // スマホ: 検索条件の折りたたみ開閉
