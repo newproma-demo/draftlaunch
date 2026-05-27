@@ -482,6 +482,49 @@
             gap: 14px 16px;
         }
 
+        /* 検索条件：kenpintoroku ステータス（exhibit-bs-multiselect-caret）と同様の三角 */
+        .inquiry-search-field-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .inquiry-search-field-wrap::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #446354;
+            margin-top: 2px;
+            pointer-events: none;
+        }
+
+        .inquiry-search-field-wrap.is-open::after {
+            border-top: 0;
+            border-bottom: 6px solid #446354;
+            margin-top: 0;
+        }
+
+        .inquiry-search-box .search-grid select.form-control {
+            padding-right: 24px;
+            background-color: #fff;
+            background-image: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .inquiry-search-box .search-grid select.form-control::-ms-expand {
+            display: none;
+        }
+
+        .inquiry-search-box .search-grid select.form-control:focus {
+            background-color: #fff;
+        }
+
         .search-toggle-sp {
             display: none;
         }
@@ -2338,7 +2381,32 @@
         overlay.classList.remove('show');
       }
 
+      function initInquirySearchFieldCaret() {
+        const grid = document.querySelector('.inquiry-search-box .search-grid');
+        if (!grid) return;
+
+        grid.querySelectorAll('select.form-control').forEach((select) => {
+          let wrap = select.parentElement;
+          if (!wrap || !wrap.classList.contains('inquiry-search-field-wrap')) {
+            wrap = document.createElement('div');
+            wrap.className = 'inquiry-search-field-wrap';
+            select.parentNode.insertBefore(wrap, select);
+            wrap.appendChild(select);
+          }
+
+          const setOpen = (open) => wrap.classList.toggle('is-open', open);
+
+          select.addEventListener('mousedown', () => setOpen(true));
+          select.addEventListener('focus', () => setOpen(true));
+          select.addEventListener('blur', () => {
+            window.setTimeout(() => setOpen(false), 0);
+          });
+          select.addEventListener('change', () => setOpen(false));
+        });
+      }
+
       loadSharedSidebar();
+      initInquirySearchFieldCaret();
 
       function initExhibitBsMultiselect(root) {
         if (!root || root.dataset.msBound === '1') return;
@@ -2535,6 +2603,9 @@
           e.preventDefault();
           resetExhibitBsMultiselects(searchBox);
           if (searchBox) {
+            searchBox.querySelectorAll('.inquiry-search-field-wrap').forEach(function (wrap) {
+              wrap.classList.remove('is-open');
+            });
             searchBox.querySelectorAll('.search-grid .form-control').forEach(function (el) {
               if (el.tagName === 'SELECT') {
                 el.selectedIndex = 0;
