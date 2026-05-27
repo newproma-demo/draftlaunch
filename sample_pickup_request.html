@@ -797,6 +797,149 @@
       background: #eef5ff;
     }
 
+    /* 履歴モーダル */
+    #historyModal.modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 9999;
+      box-sizing: border-box;
+    }
+
+    #historyModal.modal-overlay.show {
+      display: flex;
+    }
+
+    #historyModal .modal-box {
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: rentalModalFadeIn 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      max-height: min(90vh, 800px);
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+
+    #historyModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      background: #e8f5ef;
+      border-bottom: 1px solid #c5e6d9;
+      flex-shrink: 0;
+    }
+
+    #historyModal .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #1d3557;
+    }
+
+    #historyModal .modal-close-btn {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 50%;
+      background: #fff;
+      color: #1d3557;
+      font-size: 22px;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    #historyModal .modal-close-btn:hover {
+      background: #d4ede2;
+    }
+
+    #historyModal .modal-body {
+      padding: 20px 22px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+
+    #historyModal .modal-footer {
+      padding: 0 22px 20px;
+      display: flex;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+
+    #historyModal .modal-footer .btn.btn-secondary {
+      background: #fff;
+      color: var(--color-primary, #008632);
+      border: 1px solid var(--color-primary, #008632);
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    #historyModal .modal-footer .btn.btn-secondary:hover {
+      background: #eef5ff;
+    }
+
+    #historyModal .modal-info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    #historyModal .modal-info-item {
+      background: #f3faf6;
+      border: 1px solid #c9e8db;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    #historyModal .modal-info-item .label {
+      color: #5b6d7f;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    #historyModal .branch-list {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #historyModal .branch-list th,
+    #historyModal .branch-list td {
+      border: 1px solid #c9e8db;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    #historyModal .branch-list th {
+      background: #e8f5ef;
+      color: #1d3557;
+      font-weight: 700;
+    }
+
+    @media (max-width: 767px) {
+      #historyModal .modal-info {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
     #searchConditionClearBtn {
       display: inline-block;
       padding: 6px 14px;
@@ -2188,6 +2331,7 @@
                         <th>数量</th>
                         <th>使用目的</th>
                         <th>確認欄</th>
+                        <th>操作</th>
                       </tr>
                     </thead>
                     <tbody id="rentalDetailEntryTbody">
@@ -2218,6 +2362,9 @@
                             <option value="不要" selected>不要</option>
                           </select>
                         </td>
+                        <td>
+                          <button type="button" class="btn-fab-new" id="rentalDetailRowHistoryBtn" style="font-size: 12px;width: 55px;" aria-haspopup="dialog" aria-controls="historyModal">履歴</button>
+                        </td>
                       </tr>
                       <tr>
                         <td>2</td>
@@ -2245,6 +2392,7 @@
                             <option value="不要">不要</option>
                           </select>
                         </td>
+                        <td>&nbsp;</td>
                       </tr>
                     </tbody>
                   </table>
@@ -2347,6 +2495,66 @@
     </div>
   </div>
 
+  <!-- 履歴モーダル -->
+  <div id="historyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="historyModalTitle">履歴</h2>
+        <button type="button" class="modal-close-btn" id="historyModalCloseX" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-info">
+          <div class="modal-info-item">
+            <span class="label">取引先コード</span>
+            <span id="modalTokuisakiCode">-</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="label">取引先名</span>
+            <span id="modalTokuisakiName">-</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="label">営業担当</span>
+            <span id="modalEigyotanto">-</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="label">商品コード</span>
+            <span id="modalProductCode">-</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="label">品番</span>
+            <span id="modalProductNumber">-</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="label">商品名</span>
+            <span id="modalProductName">-</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="branch-list">
+            <thead>
+              <tr id="modalHeadRow">
+                <th>引き上げ希望日</th>
+                <th>数量</th>
+              </tr>
+            </thead>
+            <tbody id="modalTableBody">
+              <tr>
+                <td>2026/01/01</td>
+                <td style="text-align: right;">1</td>
+              </tr>
+              <tr>
+                <td>2026/03/31</td>
+                <td style="text-align: right;">15</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="historyModalClose">閉じる</button>
+      </div>
+    </div>
+  </div>
   <script src="js/autocomplete.js"></script>
   <script src="js/sidebar.js"></script>
   <script>
@@ -3031,6 +3239,63 @@
       });
     }
 
+    /** 引き上げ明細行の履歴モーダル */
+    function initHistoryModal() {
+      const historyBtn = document.getElementById('rentalDetailRowHistoryBtn');
+      const modal = document.getElementById('historyModal');
+      const closeX = document.getElementById('historyModalCloseX');
+      const closeFooter = document.getElementById('historyModalClose');
+      if (!historyBtn || !modal) return;
+
+      function rowInputValue(row, placeholder) {
+        const input = row.querySelector(`input[placeholder="${placeholder}"]`);
+        const value = input ? String(input.value || '').trim() : '';
+        return value || '-';
+      }
+
+      function fillModalFromRow(row) {
+        if (!row) return;
+        const fields = [
+          ['modalTokuisakiCode', '取引先コード'],
+          ['modalTokuisakiName', '取引先名'],
+          ['modalEigyotanto', '営業担当'],
+          ['modalProductCode', '商品コード'],
+          ['modalProductNumber', '品番'],
+          ['modalProductName', '商品名']
+        ];
+        fields.forEach(([id, placeholder]) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = rowInputValue(row, placeholder);
+        });
+      }
+
+      function openModal() {
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        if (closeX) closeX.focus();
+      }
+
+      function closeModal() {
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        historyBtn.focus();
+      }
+
+      historyBtn.addEventListener('click', () => {
+        fillModalFromRow(historyBtn.closest('tr'));
+        openModal();
+      });
+
+      if (closeX) closeX.addEventListener('click', closeModal);
+      if (closeFooter) closeFooter.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('show')) closeModal();
+      });
+    }
+
     function initRentalDetailEntryTable() {
       const tbody = document.getElementById('rentalDetailEntryTbody');
       const addBtn = document.getElementById('rentalDetailRowAddBtn');
@@ -3087,7 +3352,8 @@
           + unitSelectCellHtml(idx)
           + `<td><input type="number" class="form-control" placeholder="数量" inputmode="numeric" aria-label="行${idx} 数量"></td>`
           + `<td><input type="text" class="form-control" placeholder="使用目的" autocomplete="off" aria-label="行${idx} 使用目的"></td>`
-          + confirmSelectCellHtml(idx);
+          + confirmSelectCellHtml(idx)
+          + `<td>&nbsp;</td>`;
         tbody.appendChild(tr);
         renumberRows();
       }
@@ -3112,6 +3378,7 @@
     initSampleRentalEntryEmbedModal();
     initSampleRentalEntryEmbedReasonOther();
     initPreviewModal();
+    initHistoryModal();
     initRentalDetailEntryTable();
   </script>
 </body>
