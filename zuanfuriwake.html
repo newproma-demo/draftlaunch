@@ -516,14 +516,11 @@
       padding-bottom: 8px;
     }
 
-    /* 検索結果一覧テーブル（スクロール対応） */
-    /* PC/タブレット共通：テーブルエリアに縦横スクロール */
+    /* 検索結果一覧テーブル（スクロールは 769px 以上で #approvalListArea 内） */
     #approvalListArea {
       width: 100%;
-      max-height: none;
       flex: 0 1 auto;
       overflow-x: auto;
-      overflow-y: visible;
     }
 
     .result-table {
@@ -551,11 +548,11 @@
       border-top: none;
     }
 
-    /* 一覧スクロール時：項目名行（thead）を固定 */
+    /* 一覧スクロール時：項目名行（thead）を固定（スマホは thead 非表示のため影響なし） */
     #approvalListArea .result-table thead th {
       position: sticky;
       top: 0;
-      z-index: 2;
+      z-index: 5;
       background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       color: #fff;
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
@@ -1697,6 +1694,51 @@
       padding: 6px 14px;
       cursor: pointer;
       font-weight: 600;
+    }
+
+    /* PC・タブレット：一覧エリア内スクロール＋項目タイトル行固定 */
+    @media (min-width: 769px) {
+      .content {
+        overflow-y: hidden;
+      }
+
+      .content-box {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .result-list-panel {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .result-list-panel .panel-body,
+      .result-list-panel .result-list-panel-body {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .result-list-panel .view-layout-2 {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      #approvalListArea {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      #approvalListArea .result-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
