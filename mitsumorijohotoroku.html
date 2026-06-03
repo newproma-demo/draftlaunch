@@ -13,6 +13,14 @@
     rel="stylesheet">
   <script src="js/autocomplete.js"></script>
   <style>
+    .pc-only {
+      display: block;
+    }
+
+    .sp-only {
+      display: none;
+    }
+
     /* body を縦方向の flex にし、ヘッダー + main-wrapper を viewport 内に収める */
     html, body {
       overflow-x: hidden;
@@ -64,9 +72,42 @@
       flex: 1;
     }
 
+    /* ガントチャート */
+    .timeline-wrapper {
+      position: relative;
+      margin-bottom: 0;
+      width: 450px;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 47%;
+      left: 50px;
+      right: 50px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
     /* #region レスポンシブ対応 */
     /* 画面の幅が768px以下ならスマホ*/
     @media (max-width: 767px) {
+      .pc-only {
+        display: none;
+      }
+
+      .sp-only {
+        display: block;
+      }
+
       .header-title {
         margin: 5px 0px 0px 35px;
         font-size: var(--fs-xl);
@@ -96,6 +137,60 @@
         padding: 20px 20px 56px 20px;
         margin-left: -220px;
         width: 100%;
+      }
+
+      .dashboard-section {
+        display: flex;
+        gap: 24px;
+        margin-top: 0;
+        width: 100%;
+        flex-direction: column;
+        padding-bottom: 20px;
+      }
+
+      /* イメージ案①: スマホ用 */
+      .filter-row {
+        flex-wrap: wrap;
+      }
+
+      .filter-item {
+        flex: 1 1 100%;
+      }
+
+      .timeline-line {
+        left: 20px;
+        right: 20px;
+      }
+
+      /* 商品パネル内：ラベルと入力を近づける */
+      .product-table .form-row {
+        gap: 2px;
+        margin-bottom: 8px;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .product-table .form-row > label {
+        width: 100px;
+        padding-top: 4px;
+      }
+
+      .product-table .label-with-button {
+        flex: 0 0 100px;
+        width: 100px;
+        max-width: 100px;
+        gap: 2px;
+      }
+
+      .product-table .label-with-button > label {
+        padding-top: 4px;
+      }
+
+      /* パネル内：入力・選択をパネル幅に収め、値列で最大まで使う */
+      .product-panels-row .product-card {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
       }
 
       /* 商品パネル内：ラベルと入力を近づける */
@@ -174,6 +269,7 @@
         flex-direction: column;
         align-items: stretch;
         gap: 4px;
+        grid-column: auto;
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0;
@@ -211,7 +307,7 @@
       .product-fields-compact__row > label.field .autocomplete-input,
       .product-fields-compact__row--pt-shirring-shishu .select-product-field-wide,
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select,
-      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select,
+      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > div > select,
       .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select {
         width: 100% !important;
         max-width: 100% !important;
@@ -222,7 +318,7 @@
 
       .product-fields-compact__row > label.field select,
       .product-fields-compact__row > label.field select option {
-        font-size: 14px !important;
+        font-size: 13px !important;
       }
 
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects,
@@ -231,6 +327,18 @@
         align-items: stretch;
         gap: 8px;
         width: 100% !important;
+      }
+
+      .product-fields-compact__row--pt-shirring-shishu > label.field--pt-hoho {
+        grid-column: auto;
+        --pt-hoho-select-width: min(calc((100% - 8px) / 2), var(--product-field-input-width));
+      }
+
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects {
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 8px;
       }
 
       /* 刺繡（SP）：select の下にテキストボックスを 100%・左寄せ */
@@ -314,28 +422,6 @@
       .product-fields-compact > .form-row.form-row-left > .autocomplete,
       .product-fields-compact .form-row .form-row-select-stack-sp__fields {
         margin-left: 0 !important;
-      }
-
-      .product-table .label-with-button {
-        flex: 0 0 100px;
-        width: 100px;
-        max-width: 100px;
-        gap: 2px;
-      }
-
-      .product-table .label-with-button > .field-label {
-        padding-top: 4px;
-      }
-
-      /* パネル内：入力・選択をパネル幅に収め、値列で最大まで使う */
-      .product-panels-row .product-card {
-        min-width: 0;
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-
-      .product-table {
-        min-width: 0;
       }
 
       .product-table .form-row > div,
@@ -506,21 +592,21 @@
         max-width: 100% !important;
         min-width: 0 !important;
         flex: 0 0 auto !important;
-        min-height: unset !important;
+        min-height: var(--product-control-min-height) !important;
         height: auto !important;
         max-height: none !important;
         margin: 0 !important;
-        padding: 8px 10px !important;
+        padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
         font-family: inherit !important;
-        font-size: 14px !important;
-        line-height: 1.4 !important;
+        font-size: var(--product-input-font-size) !important;
+        line-height: var(--product-control-line-height) !important;
         align-self: stretch !important;
         box-sizing: border-box;
       }
 
       .product-table .select-tehai-seikyu-wide option,
       .product-table select.desired-delivery-select option {
-        font-size: 14px !important;
+        font-size: 13px !important;
       }
 
       .product-table .desired-delivery-fields {
@@ -548,6 +634,7 @@
         grid-template-columns: 1fr;
         gap: 8px;
         width: 100%;
+        max-width: 100%;
         margin-left: 0;
       }
 
@@ -634,11 +721,12 @@
         margin: 0;
       }
 
-      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row .autocomplete {
-        flex: 1 1 0% !important;
-        width: auto !important;
-        max-width: 100% !important;
+      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row > .autocomplete,
+      .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row--shiire-tokuisaki > .autocomplete {
+        flex: 0 0 auto !important;
+        width: 100% !important;
         min-width: 0 !important;
+        max-width: 100% !important;
       }
 
       .product-table .form-row.supplier-inputs-dynamic-rows-sp .supplier-input-row--shiiresaki {
@@ -760,6 +848,8 @@
 
       .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields > select.desired-delivery-select {
         order: 1;
+        width: 100% !important;
+        max-width: 100% !important;
       }
 
       .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields > div {
@@ -802,7 +892,13 @@
       }
 
       .product-table .hem-fields-row > label.field {
+        grid-column: auto;
         margin-bottom: 6px;
+      }
+
+      .product-table .hem-fields-row > label.field > input[type="text"] {
+        width: 100% !important;
+        max-width: 100% !important;
       }
 
       .fab-actions {
@@ -817,6 +913,7 @@
       /* ヘッダ（SP）：見積依頼日 — 入力枠と同幅にし、📅を枠内右端に配置 */
       .top-filter-row {
         --top-filter-control-width: 100%;
+        --product-input-font-size: 13px;
       }
 
       .top-filter-row > .top-filter-item > .field {
@@ -849,7 +946,7 @@
         min-width: 0 !important;
         max-width: 100% !important;
         padding: 8px 2.6em 8px 10px !important;
-        font-size: var(--product-input-font-size, 16px) !important;
+        font-size: var(--product-input-font-size, 13px) !important;
         line-height: 1.4 !important;
         font-variant-numeric: tabular-nums;
         box-sizing: border-box !important;
@@ -888,14 +985,109 @@
       html.period-picker-open body {
         overflow-x: hidden !important;
       }
+
+      /* iOS Safari：入力16px未満でフォーカス時に自動ズーム */
+      .top-filter-row input:not([type="hidden"]),
+      .top-filter-row select:not(#teibanBetchuSelect):not(#gaisanSeishikiSelect),
+      .top-filter-row textarea,
+      .top-filter-row .autocomplete-input,
+      #headerTokuisakiRow #searchCategory,
+      #headerTokuisakiRow .autocomplete-input,
+      .period-range-input.period-range-yyyymmdd {
+        font-size: 13px !important;
+      }
+
+      #teibanBetchuSelect,
+      #gaisanSeishikiSelect,
+      #teibanBetchuSelect option,
+      #gaisanSeishikiSelect option {
+        font-size: 13px !important;
+      }
+
+      .top-filter-row > .top-filter-item {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .top-filter-row > .top-filter-item > .field {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+      }
+
+      #teibanBetchuSelect,
+      #gaisanSeishikiSelect {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      .top-filter-item-tokuisaki,
+      .top-filter-item-tokuisaki > .field {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+        box-sizing: border-box;
+      }
+
+      .top-filter-item-tokuisaki .autocomplete,
+      #headerTokuisakiRow .autocomplete {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      #headerTokuisakiRow #searchCategory,
+      #headerTokuisakiRow input.autocomplete-input,
+      #headerTokuisakiRow .field .autocomplete .autocomplete-input {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
     }
     
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+
+    .filter-row .filter-label {
+      margin-right: 4px;
+    }
+
+    .filter-row input[type="text"] {
+      padding: 4px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+    }
+
     /* 承認通知／検索結果・ボックス共通 */
     .content-area {
 
       margin-bottom: 10px;
     }
 
+    /* 検索条件と検索結果一覧の間の余白（5px） */
+    .view-layout-1-group>.content-area:first-of-type {
+      margin-bottom: 5px;
+    }
+    
     .content-area h3 {
       margin: 0 0 12px;
       border-bottom: 2px solid var(--color-primary);
@@ -948,46 +1140,6 @@
       color: #fff;
     }
 
-    /* btn-fab-new のコンパクト版（+ページを追加など） */
-    .btn-fab-new.btn-ai-data-upload {
-      padding: 3px 6px;
-    }
-
-    #deadlineAddPageBtn.deadline-area2-add-page--suppressed {
-      display: none !important;
-    }
-
-    #deadlineDeletePageBtn.deadline-area2-delete-page--suppressed {
-      display: none !important;
-    }
-
-    .btn-secondary.btn-area2-page-delete {
-      padding: 3px 6px;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    .btn-ai-data-upload {
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    .btn-secondary {
-      border: 1px solid #c5d4ca;
-      background: #fff;
-      color: #204331;
-      border-radius: var(--radius-sm);
-      padding: 6px 14px;
-      cursor: pointer;
-      font-weight: 600;
-      font-family: inherit;
-    }
-
-    .btn-secondary:hover {
-      background: #edf8f0;
-      border-color: var(--color-primary);
-    }
-
     .fab-actions .btn-fab-new {
       /* min-width: 132px;
       width: clamp(132px, 9vw, 180px); */
@@ -1027,6 +1179,7 @@
       overflow-x: auto;
       touch-action: pan-x pan-y;
       -webkit-overflow-scrolling: touch;
+      /* 横スクロールバーを常に確保（パネル複製時にスクロール可能に見せる） */
       scrollbar-gutter: stable;
     }
 
@@ -1035,9 +1188,40 @@
       -ms-overflow-style: scrollbar;
     }
 
+    /* パネル複数時：メイン .content で横スクロール（画面＝コンテンツ列の横スクロールバーを表示） */
+    body.product-panels-multi .content {
+      overflow-x: scroll;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      -ms-overflow-style: scrollbar;
+    }
+
+    body.product-panels-multi #approvalNoticeArea {
+      align-self: flex-start;
+      width: max-content;
+      max-width: none;
+      min-width: 100%;
+      box-sizing: border-box;
+    }
+
+    body.product-panels-multi .view-layout.view-layout-2 {
+      overflow: visible;
+    }
+
+    body.product-panels-multi .product-swiper {
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+    }
+
     .product-panel-section {
+      --product-panel-width: 480px;
+      --product-panel-side-offset: 271px;
       width: 100%;
       min-width: 0;
+    }
+
+    .product-panel-toolbar {
+      margin-bottom: 12px;
     }
 
     .product-panels-row {
@@ -1045,23 +1229,48 @@
       flex-direction: row;
       align-items: flex-start;
       gap: 16px;
-      width: 100%;
-      min-width: 0;
-      max-width: 100%;
+      /* 子パネル合計幅で横方向に伸ばし、親の .product-swiper で横スクロール */
+      width: max-content;
+      min-width: 100%;
       min-height: 0;
       box-sizing: border-box;
     }
 
-    /* パネル横幅（コンテンツ領域いっぱい） */
+    /* パネル横幅 */
     .product-panels-row .product-card {
-      flex: 1 1 auto;
-      width: 100%;
-      min-width: 0;
-      max-width: 100%;
+      flex: 0 0 auto;
+      width: min(var(--product-panel-width, 580px), calc(100vw - var(--product-panel-side-offset, 271px)));
+      min-width: min(var(--product-panel-width, 580px), 100%);
+      max-width: var(--product-panel-width, 580px);
       margin-bottom: 0;
       min-height: auto;
       position: relative;
-      box-sizing: border-box;
+    }
+
+    /* 動的追加パネル削除 */
+    .product-panels-row .product-card .btn-delete-product-panel {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 5;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .product-panels-row .product-card .btn-delete-product-panel:hover {
+      background: rgba(200, 0, 0, 0.9);
     }
 
     .product-card {
@@ -1077,127 +1286,37 @@
       min-height: 120vh;
     }
 
-    /* ページネーション・ページ追加/削除（keiyakushosofuiraikakunin .deadline-area-2 相当） */
-    .product-card-paging-toolbar {
-      min-height: 44px;
+    .product-nav {
       display: flex;
-      align-items: center;
       justify-content: flex-end;
       gap: 8px;
-      flex-wrap: wrap;
-      width: 100%;
-      box-sizing: border-box;
+      margin-bottom: 8px;
     }
 
-    @media (max-width: 767px) {
-      .product-card-paging-toolbar {
-        min-height: 44px;
-        padding-top: 4px;
-        padding-bottom: 4px;
-      }
-    }
-
-    .deadline-area-2-pagination-nav {
-      margin-right: auto;
-      flex-shrink: 0;
-      min-width: 0;
-    }
-
-    .deadline-pagination {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: stretch;
-      gap: 0;
-      padding: 0;
-      margin: 0;
-      list-style: none;
-    }
-
-    .deadline-pagination-item {
-      display: flex;
-      align-items: stretch;
-    }
-
-    .deadline-pagination-item + .deadline-pagination-item {
-      margin-left: -1px;
-    }
-
-    .deadline-pagination-link {
-      position: relative;
-      box-sizing: border-box;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 25px;
-      min-height: 25px;
-      height: 25px;
-      padding: 0 6px;
-      font-size: 12px;
-      line-height: 1.2;
-      font-family: inherit;
-      text-align: center;
-      color: var(--color-primary, #008632);
-      background: #fff;
-      border: 1px solid #dee2e6;
+    .product-nav-btn {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: var(--color-card);
       cursor: pointer;
-      transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
-      border-radius: 0;
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      white-space: nowrap;
     }
 
-    .deadline-pagination-link.deadline-pagination-link--icon {
-      flex: 0 0 auto;
-      padding: 0 4px;
-      min-width: 25px;
+    .product-nav-btn:hover:not(:disabled) {
+      background: var(--color-surface);
     }
 
-    .deadline-pagination-link.deadline-pagination-link--icon svg {
-      display: block;
-      width: 15px;
-      height: 15px;
-      flex-shrink: 0;
-      pointer-events: none;
-    }
-
-    .deadline-pagination-link:disabled {
-      opacity: 0.42;
-      cursor: not-allowed;
-      color: rgba(32, 67, 49, 0.55);
-      background: #f8faf9;
-    }
-
-    .deadline-pagination-item:first-child .deadline-pagination-link {
-      border-top-left-radius: var(--radius-sm, 0.375rem);
-      border-bottom-left-radius: var(--radius-sm, 0.375rem);
-    }
-
-    .deadline-pagination-item:last-child .deadline-pagination-link {
-      border-top-right-radius: var(--radius-sm, 0.375rem);
-      border-bottom-right-radius: var(--radius-sm, 0.375rem);
-    }
-
-    .deadline-pagination-item.is-active .deadline-pagination-link {
-      z-index: 2;
-      color: var(--color-primary, #008632);
-      background-color: #edf8f0;
-      border-color: var(--color-primary, #008632);
-    }
-
-    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):hover {
-      color: var(--color-primary-dark, #006b28);
-      background: #edf8f0;
-      border-color: var(--color-primary, #008632);
-    }
-
-    .deadline-pagination-item:not(.is-active) .deadline-pagination-link:not(:disabled):focus-visible {
-      z-index: 3;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.2);
+    .product-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
     }
 
     .product-image-block {
       display: flex;
-      align-items: flex-start;
-      align-self: flex-start;
+      align-items: left;
+      align-self: left;
       /* 参考画像スロット */
       max-width: 200px;
     }
@@ -1212,8 +1331,8 @@
       border-radius: var(--radius-sm);
       background: var(--color-surface);
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
     }
 
@@ -1226,7 +1345,6 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      object-position: center;
       display: block;
     }
 
@@ -1234,8 +1352,17 @@
       --form-row-select1-width: min(12.5rem, 100%);
       --desired-delivery-select-width: min(31.25rem, 100%);
       --product-label-font-size: 12px;
-      --product-input-font-size: 14px;
+      --product-input-font-size: 13px;
       --product-label-input-gap: 4px;
+      --product-field-input-width: 450px;
+      --product-field-cols-per-row: 8;
+      --product-field-item-col-span: 4;
+      --product-field-group-gap: 16px;
+      --supplier-name-input-width: min(15rem, 100%);
+      --product-control-line-height: 1.4;
+      --product-control-padding-block: 8px;
+      --product-control-padding-inline: 10px;
+      --product-control-min-height: calc(var(--product-control-line-height) * var(--product-input-font-size) + var(--product-control-padding-block) + var(--product-control-padding-block) + 2px);
       width: 100%;
       max-width: 100%;
       order: 0;
@@ -1249,16 +1376,16 @@
       margin-bottom: 12px;
     }
 
-    /* アイテム～仕様：1・2行目とも4項目を等間隔 */
+    /* アイテム～仕様：8列グリッドで span 4 = 50%（2項目/行） */
     .product-fields-compact {
       --product-field-label-width: 180px;
       --product-field-label-value-gap: 2px;
       --product-field-group-gap: 16px;
-      --product-shishu-input-width: 150px;
-      --product-spec-select-col-min: 220px;
-      --product-pt-shirring-col-min: 280px;
-      --product-field-input-width: 300px;
-      --product-field-cols-per-row: 4;
+      --product-spec-select-col-min: 330px;
+      --product-pt-shirring-col-min: 420px;
+      --product-field-input-width: 450px;
+      --product-field-cols-per-row: 8;
+      --product-field-item-col-span: 4;
       display: flex;
       flex-direction: column;
       align-items: stretch;
@@ -1311,6 +1438,7 @@
 
     .product-fields-compact > .form-row:has(textarea) {
       width: 100%;
+      margin-bottom: 0;
     }
 
     .product-fields-compact > .form-row:has(textarea) > .field-label {
@@ -1330,13 +1458,14 @@
       box-sizing: border-box;
     }
 
-    /* アイテム～仕様：ラベルを入力の左上、行内4項目は等幅 */
+    /* アイテム～仕様：ラベルを入力の左上、行内項目は等幅（span 4 = 50%） */
     .product-fields-compact__row > label.field {
       --product-field-label-input-gap: 4px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: var(--product-field-label-input-gap);
+      grid-column: span var(--product-field-item-col-span);
       min-width: 0;
       padding-left: 0 !important;
       margin: 0;
@@ -1359,8 +1488,10 @@
 
     .product-fields-compact__row > label.field .autocomplete,
     .product-fields-compact__row > label.field > div:has(> input[type="text"]),
-    .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields {
-      width: 100%;
+    .product-fields-compact__row > label.field > div:has(> select.select-product-field-wide),
+    .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields,
+    .product-fields-compact__row > label.field .field-inline-selects--shishu > div {
+      width: min(100%, var(--product-field-input-width));
       max-width: 100%;
       min-width: 0;
       box-sizing: border-box;
@@ -1374,10 +1505,10 @@
       box-sizing: border-box;
     }
 
-    /* 仕様：label.field 内の .field select(14pt) より 14px を優先 */
+    /* 仕様：label.field 内の select(14pt) より 13px を優先 */
     .product-fields-compact__row > label.field select,
     .product-fields-compact__row > label.field select option {
-      font-size: 14px !important;
+      font-size: 13px !important;
     }
 
     .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields {
@@ -1391,13 +1522,18 @@
     /* 仕様・Pt方法・シャーリング・刺繡：select 幅（form-row-select1 / 20% 制限の対象外） */
     .product-fields-compact .select-product-field-wide,
     .product-fields-compact__row > label.field > select.select-product-field-wide,
+    .product-fields-compact__row > label.field > div > select.select-product-field-wide,
     .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields > select.select-product-field-wide,
     .product-fields-compact__row--pt-shirring-shishu .select-product-field-wide {
       width: 100% !important;
       max-width: 100% !important;
       min-width: 0 !important;
       margin: 0 !important;
-      font-size: 14px !important;
+      padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
+      font-size: var(--product-input-font-size) !important;
+      line-height: var(--product-control-line-height) !important;
+      min-height: var(--product-control-min-height) !important;
+      height: auto !important;
       box-sizing: border-box;
     }
 
@@ -1405,24 +1541,49 @@
       .product-fields-compact .select-product-field-wide,
       .product-fields-compact__row > label.field > select.select-product-field-wide,
       .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields > select.select-product-field-wide,
-      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects .select-product-field-wide,
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu .select-product-field-wide {
         flex: 1 1 0 !important;
       }
     }
 
+    /* Pt方法：2 select 横並び（行幅いっぱい・各 select 幅は糸番手テキストボックスと同じ） */
+    .product-fields-compact__row--pt-shirring-shishu > label.field--pt-hoho {
+      grid-column: span 8;
+      --pt-hoho-select-width: min(calc((100% - var(--product-field-group-gap)) / 2), var(--product-field-input-width));
+    }
+
+    .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: var(--product-field-group-gap);
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select.select-product-field-wide {
+      flex: 0 0 auto !important;
+      flex-grow: 0 !important;
+      flex-shrink: 0 !important;
+      width: var(--pt-hoho-select-width) !important;
+      max-width: var(--product-field-input-width) !important;
+      min-width: 0 !important;
+    }
+
     .product-fields-compact .select-product-field-wide option {
-      font-size: 14px !important;
+      font-size: 13px !important;
     }
 
     /* 仕様行・Pt方法行：ビューポート縮小時も枠内で連動縮小（列 min は 0） */
     .product-fields-compact__row--with-spec-select {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
     }
 
-    /* Pt方法（2 select）・シャーリング・刺繡：1行3等分 */
+    /* Pt方法・シャーリング：糸番手と同じ 8 列グリッド（span 4 = 50%） */
     .product-fields-compact__row--pt-shirring-shishu {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
     }
 
     .product-fields-compact__row--pt-shirring-shishu > label.field {
@@ -1435,51 +1596,57 @@
       flex-wrap: nowrap;
       align-items: center;
       gap: var(--product-field-label-value-gap);
-      width: 100%;
       min-width: 0;
       box-sizing: border-box;
     }
 
-    .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select,
-    .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select {
+    .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select {
       min-width: 0;
       width: 100% !important;
       max-width: 100% !important;
-      font-size: 14px !important;
+      padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
+      font-size: var(--product-input-font-size) !important;
+      line-height: var(--product-control-line-height) !important;
+      min-height: var(--product-control-min-height) !important;
+      height: auto !important;
       box-sizing: border-box;
     }
 
+    /* シャーリング：糸番手と同じ div ラッパー内 select */
+    .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > div > select.select-product-field-wide {
+      flex: 0 0 auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      align-self: stretch !important;
+    }
+
+    /* 刺繡：針数・サイズは横並び（各入力幅はアイテムと同じ） */
+    .product-fields-compact__row--pt-shirring-shishu > label.field--shishu {
+      grid-column: span 8;
+    }
+
+    .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      gap: var(--product-field-group-gap);
+      width: 100%;
+      max-width: 100%;
+    }
+
     @media (min-width: 768px) {
-      /* 横並びラッパー内のみ flex 伸長（シャーリングは label 直下のため縦伸びしないよう除外） */
-      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select,
-      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select,
+      /* 刺繡ラッパー内のみ flex 伸長（Pt方法・シャーリングは糸番手同幅のため除外） */
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > select {
         flex: 1 1 0 !important;
-      }
-
-      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select.select-product-field-wide {
-        flex: 0 0 auto !important;
-        flex-grow: 0 !important;
-        flex-shrink: 0 !important;
-        align-self: stretch !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-height: unset !important;
-        height: auto !important;
-        max-height: none !important;
-        padding: 8px 10px !important;
-        font-size: var(--product-input-font-size, 14px) !important;
-        line-height: 1.4 !important;
-        box-sizing: border-box;
       }
     }
 
     .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select option,
-    .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select option {
-      font-size: 14px !important;
+    .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > div > select option {
+      font-size: 13px !important;
     }
 
-    /* 刺繡：select と針数入力を列幅いっぱいに（固定150pxは使わない） */
+    /* 刺繡：針数・サイズ入力（幅はアイテムと同じ --product-field-input-width） */
     .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > select {
       min-width: 0;
       width: 100% !important;
@@ -1493,9 +1660,9 @@
     }
 
     .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > div {
-      flex: 1 1 0 !important;
-      width: auto !important;
-      max-width: none !important;
+      flex: 0 0 auto !important;
+      width: min(calc((100% - var(--product-field-group-gap)) / 2), var(--product-field-input-width)) !important;
+      max-width: 100% !important;
       min-width: 0;
       box-sizing: border-box;
     }
@@ -1504,7 +1671,7 @@
       width: 100% !important;
       max-width: 100% !important;
       min-width: 0 !important;
-      font-size: 14px !important;
+      font-size: 13px !important;
       box-sizing: border-box;
     }
 
@@ -1522,7 +1689,7 @@
       box-sizing: border-box;
     }
 
-    /* ヘム：主ラベルは上、種類・長さ・耳・ネームを1行4等分 */
+    /* ヘム：主ラベルは上、種類・長さ・耳・ネーム（入力幅はアイテムと同様） */
     .product-table .form-row-hem-inline {
       flex-direction: column;
       align-items: flex-start;
@@ -1533,10 +1700,15 @@
       padding-top: 0;
     }
 
+    /* その他とヘムの間隔を狭く */
+    .product-fields-compact > .form-row:has(textarea) + .form-row-hem-inline {
+      margin-top: -6px;
+    }
+
     .product-table .hem-fields-row {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: var(--product-field-group-gap, 16px);
+      grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
+      gap: var(--product-field-group-gap);
       width: 100%;
       min-width: 0;
       box-sizing: border-box;
@@ -1547,6 +1719,7 @@
       flex-direction: column;
       align-items: flex-start;
       gap: var(--product-label-input-gap, 4px);
+      grid-column: span var(--product-field-item-col-span);
       min-width: 0;
       margin: 0;
       padding: 0;
@@ -1563,10 +1736,10 @@
     }
 
     .product-table .hem-fields-row > label.field > input[type="text"] {
-      width: 100% !important;
+      width: min(100%, var(--product-field-input-width)) !important;
       max-width: 100% !important;
       min-width: 0 !important;
-      font-size: 14px !important;
+      font-size: 13px !important;
       box-sizing: border-box;
     }
 
@@ -1587,9 +1760,14 @@
       box-sizing: border-box;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
-      padding: 8px 10px;
+      padding: var(--product-control-padding-block) var(--product-control-padding-inline);
       font-family: inherit;
       font-size: var(--product-input-font-size);
+      line-height: var(--product-control-line-height);
+    }
+
+    .product-table select {
+      min-height: var(--product-control-min-height);
     }
 
     .product-table select option {
@@ -1619,7 +1797,8 @@
       .product-fields-compact .select-product-field-wide,
       .product-fields-compact__row > label.field > select.select-product-field-wide,
       .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields > select.select-product-field-wide,
-      .product-fields-compact__row--pt-shirring-shishu .select-product-field-wide {
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu .select-product-field-wide,
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > select {
         flex: 1 1 0 !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -1627,9 +1806,9 @@
       }
 
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > div {
-        flex: 1 1 0 !important;
-        width: auto !important;
-        max-width: none !important;
+        flex: 0 0 auto !important;
+        width: min(calc((100% - var(--product-field-group-gap)) / 2), var(--product-field-input-width)) !important;
+        max-width: 100% !important;
         min-width: 0 !important;
       }
 
@@ -1670,7 +1849,6 @@
       min-width: 0;
       margin-left: 28px;
     }
-
     .product-table .form-row-delivery-case-inline > label.field .period-range-input.period-range-yyyymmdd {
       font-size: var(--product-input-font-size) !important;
     }
@@ -1709,6 +1887,7 @@
     .product-table .fukushizai-block {
       --fukushizai-inputs-col-gap: 16px;
       --fukushizai-umu-col-width: min(11.25rem, 100%);
+      --fukushizai-input-col-width: min(20.25rem, 100%);
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -1718,42 +1897,55 @@
       box-sizing: border-box;
     }
 
-    /* 副資材：有無 select は狭め、品番入力2つは残り幅を均等に */
+    /* 副資材：有無 select は狭め、品番入力2つは右列に縦並び */
     .product-table .fukushizai-main-row {
       display: grid;
       grid-template-columns:
         var(--fukushizai-umu-col-width)
-        minmax(0, 1fr)
-        minmax(0, 1fr);
+        minmax(0, var(--fukushizai-input-col-width));
+      grid-template-rows: auto auto;
       gap: var(--fukushizai-inputs-col-gap);
-      width: 100%;
+      width: fit-content;
+      max-width: 100%;
       min-width: 0;
       box-sizing: border-box;
     }
 
     .product-table .fukushizai-main-row > #fukushizaiumu.form-row-select1 {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      align-self: start;
       width: 100% !important;
       max-width: 100% !important;
       min-width: 0 !important;
       flex: none !important;
       margin: 0 !important;
-      font-size: 14px !important;
+      font-size: 13px !important;
       box-sizing: border-box;
     }
 
     .product-table .fukushizai-main-row > #fukushizai-1,
     .product-table .fukushizai-main-row > #fukushizai-2 {
+      grid-column: 2;
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: var(--fukushizai-input-col-width) !important;
       min-width: 0 !important;
-      flex: 1 1 0 !important;
+      flex: none !important;
       margin: 0 !important;
-      font-size: 14px !important;
+      font-size: 13px !important;
       box-sizing: border-box;
     }
 
+    .product-table .fukushizai-main-row > #fukushizai-1 {
+      grid-row: 1;
+    }
+
+    .product-table .fukushizai-main-row > #fukushizai-2 {
+      grid-row: 2;
+    }
+
     .product-table .fukushizai-main-row > #fukushizaiumu.form-row-select1 option {
-      font-size: 14px !important;
+      font-size: 13px !important;
     }
 
     /* 手配先・請求先（SP は末尾 @media (max-width: 767px) で縦積み・全幅） */
@@ -1794,37 +1986,41 @@
       max-width: 100% !important;
       min-width: 0 !important;
       margin: 0 !important;
-      padding: 8px 10px !important;
+      padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
       align-self: stretch !important;
       font-family: inherit !important;
-      font-size: 14px !important;
-      line-height: 1.4 !important;
+      font-size: var(--product-input-font-size) !important;
+      line-height: var(--product-control-line-height) !important;
+      min-height: var(--product-control-min-height) !important;
+      height: auto !important;
       box-sizing: border-box;
     }
 
     @media (min-width: 768px) {
-      /* 手配先・請求先＋空列2つ（select は select-tehai-seikyu-wide で幅指定） */
+      /* 手配先・請求先：アイテムと同じ 8 列グリッド（span 4 = 50%） */
       .product-table .fukushizai-tehai-seikyu-row {
-        --fukushizai-tehai-select-width: min(25rem, 100%);
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
       }
 
-      .product-table .fukushizai-tehai-seikyu-row > label.field {
+      .product-table .fukushizai-tehai-seikyu-row > label.field:has(> select.select-tehai-seikyu-wide) {
+        grid-column: span var(--product-field-item-col-span);
         align-items: flex-start;
         width: auto;
       }
 
       .product-table .select-tehai-seikyu-wide,
       .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
-        flex: 1 1 0 !important;
-        flex-grow: 1 !important;
-        flex-shrink: 1 !important;
+        flex: 0 0 auto !important;
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+        width: min(100%, var(--product-field-input-width)) !important;
+        max-width: min(100%, var(--product-field-input-width)) !important;
         align-self: flex-start !important;
       }
     }
 
     .product-table .select-tehai-seikyu-wide option {
-      font-size: 14px !important;
+      font-size: 13px !important;
     }
 
     .product-table .fukushizai-tehai-seikyu-row__spacer {
@@ -1833,15 +2029,7 @@
 
     @media (min-width: 768px) {
       .product-table .fukushizai-tehai-seikyu-row__spacer {
-        display: block;
-        min-width: 0;
-        min-height: 1px;
-      }
-
-      .product-table .select-tehai-seikyu-wide,
-      .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
-        width: 100% !important;
-        max-width: 100% !important;
+        display: none;
       }
     }
 
@@ -1856,7 +2044,7 @@
       .product-table .fukushizai-main-row > #fukushizai-2 {
         width: 100% !important;
         max-width: 100% !important;
-        flex: 1 1 0 !important;
+        flex: none !important;
       }
     }
 
@@ -1925,8 +2113,17 @@
       min-width: 0;
     }
 
+    /* ケース仕様：アイテムと同じ 8 列グリッド（span 4 = 50%） */
+    .product-table .form-row-delivery-case-inline:has(> .field--case-specification:only-child) {
+      grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
+    }
+
+    .product-table .form-row-delivery-case-inline:has(> .field--case-specification:only-child) > label.field--case-specification {
+      grid-column: span var(--product-field-item-col-span);
+    }
+
     .product-table .form-row-delivery-case-inline > label.field--case-specification .autocomplete {
-      width: 100%;
+      width: min(100%, var(--product-field-input-width));
       max-width: 100%;
       min-width: 0;
     }
@@ -1953,6 +2150,16 @@
       max-width: 100%;
     }
 
+    /* 試作データ入稿予定・希望サンプル納期：2列等幅 */
+    .product-table .form-row-delivery-case-inline:has(> .field--delivery-date-narrow:nth-child(2):last-child) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .product-table .form-row-delivery-case-inline:has(> .field--delivery-date-narrow:nth-child(2):last-child) > label.field--delivery-date-narrow .period-range-field {
+      width: 70%;
+      max-width: 70%;
+    }
+
     .product-table .form-row-delivery-case-inline > label.field--delivery-date-narrow .period-range-row--from-only,
     .product-table .form-row-delivery-case-inline > label.field--delivery-date-narrow .period-range-field {
       width: 100%;
@@ -1970,19 +2177,24 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .product-table .form-row-delivery-case-inline:has(> .field--production-delivery:only-child) {
+      grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
+    }
+
     .product-table .form-row-delivery-case-inline > label.field.field--production-delivery {
       justify-self: stretch;
       width: 100%;
       min-width: 0;
+      grid-column: span var(--product-field-cols-per-row);
     }
 
     .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields {
-      --production-delivery-select-width: min(calc(12rem + 60px), 100%);
+      --production-delivery-control-width: min(calc((100% - var(--product-field-group-gap)) / 2), var(--product-field-input-width));
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      align-items: flex-end;
-      gap: 8px;
+      align-items: flex-start;
+      gap: var(--product-field-group-gap);
       width: 100% !important;
       max-width: 100% !important;
       min-width: 0 !important;
@@ -1992,21 +2204,23 @@
 
     @media (min-width: 768px) {
       .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields > select.desired-delivery-select {
-        flex: 1 1 0 !important;
-        width: 100% !important;
+        flex: 0 0 auto !important;
+        width: var(--production-delivery-control-width) !important;
         min-width: 0 !important;
-        max-width: 100% !important;
+        max-width: var(--product-field-input-width) !important;
+      }
+
+      .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields > div {
+        flex: 0 0 auto !important;
+        width: var(--production-delivery-control-width) !important;
+        max-width: var(--product-field-input-width) !important;
+        min-width: 0;
+        margin: 0;
       }
     }
 
     .product-table select.desired-delivery-select option {
       font-size: var(--product-input-font-size) !important;
-    }
-
-    .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields > div {
-      flex: 1 1 0;
-      min-width: 0;
-      margin: 0;
     }
 
     .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields input[type="text"] {
@@ -2032,7 +2246,7 @@
       box-sizing: border-box;
     }
 
-    /* 備考：ラベル上、remarks1–3 を1行3等分 */
+    /* 備考：ラベル上、remarks1–3 を縦並び */
     .product-table .form-row.remarks-row {
       flex-direction: column;
       align-items: flex-start;
@@ -2050,11 +2264,11 @@
     }
 
     .product-table .remarks-inputs-row {
-      --remarks-inputs-gap: 16px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--remarks-inputs-gap);
-      width: 100%;
+      grid-template-columns: 1fr;
+      gap: var(--product-field-group-gap, 16px);
+      width: min(100%, var(--product-field-input-width));
+      max-width: 100%;
       min-width: 0;
       margin: 0;
       box-sizing: border-box;
@@ -2066,7 +2280,41 @@
       min-width: 0 !important;
       flex: none !important;
       margin: 0;
-      font-size: 14px !important;
+      font-size: 13px !important;
+      box-sizing: border-box;
+    }
+    .product-table .date-wide-row .period-range-input.period-range-yyyymmdd {
+      width: 170px !important;
+      min-width: 170px !important;
+    }
+
+    .product-table .btn-add-image {
+      background: var(--color-primary) !important;
+      border-color: var(--color-primary) !important;
+      color: #fff !important;
+    }
+
+    .product-table .btn-add-image:hover {
+      background: var(--color-primary-dark) !important;
+      border-color: var(--color-primary-dark) !important;
+    }
+
+    .product-table .half-field {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .product-table .form-row > .autocomplete .autocomplete-input {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    /* グローバル .autocomplete { width:250px } を打ち消し、値列内でレイアウト可能に */
+    .product-table .autocomplete {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       box-sizing: border-box;
     }
 
@@ -2090,7 +2338,6 @@
       font-weight: 600;
       line-height: 1.3;
     }
-
     .reference-images-wrapper {
       flex: 1;
       min-width: 0;
@@ -2109,6 +2356,12 @@
       margin-bottom: 0;
     }
 
+    .product-table .supplier-inputs-wrapper {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
     .product-table .supplier-input-row {
       display: flex;
       align-items: center;
@@ -2118,153 +2371,74 @@
       flex-wrap: nowrap;
     }
 
-    .product-table .supplier-input-row .autocomplete .autocomplete-input {
-      width: 100%;
-      box-sizing: border-box;
+    .product-table .supplier-input-row > .autocomplete,
+    .product-table .supplier-input-row--shiire-tokuisaki > .autocomplete {
+      flex: 0 0 auto !important;
+      width: var(--supplier-name-input-width) !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
     }
 
-    /* 仕入先：静的・動的で名称入力幅を統一（削除×は absolute・先頭行も同じ右余白） */
-    .product-table .supplier-input-row--shiiresaki {
-      position: relative;
-      padding-right: 28px;
-      box-sizing: border-box;
+    .product-table .supplier-input-row > .autocomplete .autocomplete-input,
+    .product-table .supplier-input-row--shiire-tokuisaki > .autocomplete .autocomplete-input {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
     }
 
-    .product-table .supplier-input-row--shiiresaki .autocomplete {
-      flex: 0 0 40%;
-      width: 40%;
-      max-width: 40%;
-      min-width: 0;
-      box-sizing: border-box;
-    }
-
-    .product-table .supplier-input-row--shiiresaki .btn-delete-supplier {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      margin: 0;
-    }
-
-    /* 仕入先：候補リスト（autocomplete-dropdown）のフォント 14px（静的・動的共通） */
-    .product-table .supplier-input-row--shiiresaki .autocomplete-dropdown,
-    .product-table .supplier-input-row--shiiresaki .autocomplete-dropdown div {
-      font-size: 14px !important;
-    }
-
-    /* 仕入得意先：名称・単価～値入率・チェックを横1行（各項目 +30px） */
+    /* 仕入得意先：名称（1段目）の下に単価～値入率・チェック（2段目） */
     .product-table .supplier-input-row--shiire-tokuisaki {
-      --shiire-tokuisaki-name-flex-basis: calc(12rem + 30px);
-      --shiire-tokuisaki-name-min-width: calc(10rem + 30px);
-      --shiire-tokuisaki-field-width: calc(5.3rem + 30px);
-      --shiire-tokuisaki-iri-width: calc(6.3rem + 30px);
-      flex-direction: row;
-      align-items: center;
+      flex-direction: column;
+      align-items: stretch;
       align-self: stretch;
       flex-wrap: nowrap;
       gap: 8px;
       position: relative;
       box-sizing: border-box;
-      padding-right: 28px;
-      width: 100%;
-      min-width: 0;
-      overflow-x: auto;
     }
 
-    .product-table .supplier-input-row--shiire-tokuisaki .autocomplete {
-      flex: 1 1 var(--shiire-tokuisaki-name-flex-basis);
-      width: auto;
-      min-width: var(--shiire-tokuisaki-name-min-width);
-      max-width: none;
-      align-self: center;
-      box-sizing: border-box;
+    /* 仕入先と同じ幅（上記 .supplier-input-row > .autocomplete と共通） */
+    .product-table .supplier-input-row--shiire-tokuisaki > .autocomplete {
+      align-self: flex-start;
     }
 
     .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields {
-      display: contents;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      row-gap: 6px;
+      width: 100%;
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      padding-right: 28px;
     }
 
-    .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-input,
-    .product-table .supplier-input-row--shiire-tokuisaki > .supplier-row-side-fields > .supplier-input {
-      width: var(--shiire-tokuisaki-field-width);
-      min-width: var(--shiire-tokuisaki-field-width);
+    .product-table .supplier-input-row--shiire-tokuisaki .btn-delete-supplier {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+    }
+
+    .product-table .supplier-row-side-fields .supplier-input {
+      width: 5.3rem;
+      min-width: 5.3rem;
+      /* .product-table input の flex:1 による伸長を防ぎ、追加行と同じ見た目の幅に固定 */
       flex: 0 0 auto;
       box-sizing: border-box;
       padding-left: 6px;
       padding-right: 6px;
     }
 
-    .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-input[name="shiireTokuisakiIriRate[]"],
-    .product-table .supplier-input-row--shiire-tokuisaki > .supplier-row-side-fields > .supplier-input[name="shiireTokuisakiIriRate[]"] {
-      width: var(--shiire-tokuisaki-iri-width);
-      min-width: var(--shiire-tokuisaki-iri-width);
-    }
-
-    .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-row-check-label,
-    .product-table .supplier-input-row--shiire-tokuisaki > .supplier-row-side-fields > .supplier-row-check-label {
-      flex: 0 0 auto;
-      align-self: center;
-    }
-
-    /* 768px以上：仕入行は枠内で縮小可能に（100%+固定幅ははみ出しの原因） */
+    /* 768px以上：値入率（％） */
     @media (min-width: 768px) {
-      .product-table .supplier-input-row {
-        flex-wrap: wrap;
-        min-width: 0;
-        max-width: 100%;
-      }
-
-      /* 仕入先：追加前後・静的/動的とも名称入力 40%（flex 伸長で幅がずれるのを防止） */
-      .product-table .supplier-input-row--shiiresaki .autocomplete {
-        flex: 0 0 100% !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-      }
-
-      .product-table .supplier-input-row--shiiresaki .autocomplete .autocomplete-input {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box;
-      }
-
-      .product-table .supplier-input-row--shiire-tokuisaki {
-        overflow-x: visible;
-        flex-wrap: wrap;
-      }
-
-      .product-table .supplier-input-row--shiire-tokuisaki .autocomplete {
-        flex: 1 1 8rem;
-        min-width: 0;
-        max-width: 100%;
-      }
-
-      .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields {
-        flex: 1 1 auto;
-        min-width: 0;
-        flex-wrap: wrap;
-      }
-
-      .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-input,
-      .product-table .supplier-input-row--shiire-tokuisaki > .supplier-row-side-fields > .supplier-input,
-      .product-table .supplier-input-row--shiire-tokuisaki .supplier-row-side-fields .supplier-input[name="shiireTokuisakiIriRate[]"],
-      .product-table .supplier-input-row--shiire-tokuisaki > .supplier-row-side-fields > .supplier-input[name="shiireTokuisakiIriRate[]"] {
-        flex: 1 1 5rem;
-        width: auto;
-        min-width: 0;
-        max-width: 100%;
+      .product-table .supplier-row-side-fields .supplier-input[name="shiireTokuisakiIriRate[]"] {
+        width: 6.3rem;
+        min-width: 6.3rem;
       }
     }
-
-    .product-table .supplier-input-row--shiire-tokuisaki .btn-delete-supplier {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-      margin: 0;
-    }
-
 
     .product-table .supplier-row-check-label {
       display: inline-flex;
@@ -2363,6 +2537,11 @@
         overflow-y: visible;
       }
 
+      body.product-panels-multi .product-swiper {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+      }
+
       .product-card {
         padding: 8px;
         gap: 8px;
@@ -2370,10 +2549,16 @@
         overflow: visible;
       }
 
+      .product-table {
+        --product-control-padding-block: 6px;
+        --product-control-padding-inline: 8px;
+        --product-control-min-height: calc(var(--product-control-line-height) * var(--product-input-font-size) + var(--product-control-padding-block) + var(--product-control-padding-block) + 2px);
+      }
+
       .product-table input,
       .product-table textarea,
       .product-table select {
-        padding: 6px 8px;
+        padding: var(--product-control-padding-block) var(--product-control-padding-inline);
       }
 
       .product-table textarea {
@@ -2398,58 +2583,9 @@
       box-sizing: border-box;
     }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .field-label {
-      font-size: 12px;
-      color: #446354;
-      font-weight: 600;
-      line-height: 1.3;
-      text-align: left;
-      align-self: flex-start;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #c7d4cb;
-      border-radius: var(--radius-sm);
-      padding: 8px 9px;
-      font-size: 14pt;
-      color: #173425;
-      background: #fff;
-      font-family: inherit;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .field input:hover,
-    .field select:hover,
-    .field textarea:hover {
-      border-color: var(--color-primary);
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(0, 134, 50, 0.12);
-    }
-
-    .field textarea::placeholder {
-      color: rgba(23, 52, 37, 0.42);
-      opacity: 1;
-    }
-
     .top-filter-row {
       --product-label-font-size: 12px;
-      --product-input-font-size: 14px;
+      --product-input-font-size: 13px;
       --product-label-input-gap: 4px;
       display: flex;
       align-items: flex-end;
@@ -2481,16 +2617,20 @@
       min-width: var(--top-filter-control-width);
       max-width: 100%;
       box-sizing: border-box;
+      font-size: 13px !important;
+      font-family: inherit;
+    }
+
+    #teibanBetchuSelect option,
+    #gaisanSeishikiSelect option {
+      font-size: 13px !important;
+      font-family: inherit;
     }
 
     .top-filter-row .field input,
-    .top-filter-row .field select,
+    .top-filter-row .field select:not(#teibanBetchuSelect):not(#gaisanSeishikiSelect),
     .top-filter-row .field textarea,
-    .top-filter-row .field select option,
-    .top-filter-row #teibanBetchuSelect,
-    .top-filter-row #gaisanSeishikiSelect,
-    .top-filter-row #teibanBetchuSelect option,
-    .top-filter-row #gaisanSeishikiSelect option {
+    .top-filter-row .field select:not(#teibanBetchuSelect):not(#gaisanSeishikiSelect) option {
       font-size: var(--product-input-font-size) !important;
       font-family: inherit;
     }
@@ -2529,14 +2669,14 @@
       width: 100% !important;
       min-width: 0 !important;
       max-width: 100% !important;
-      font-size: var(--product-input-font-size, 14pt) !important;
+      font-size: var(--product-input-font-size, 13px) !important;
       line-height: 1.35 !important;
       padding: 8px 9px !important;
       box-sizing: border-box;
     }
 
     #headerTokuisakiRow .autocomplete-dropdown div {
-      font-size: 14px !important;
+      font-size: 13px !important;
       padding: 6px 8px;
     }
 
@@ -2673,7 +2813,7 @@
       gap: 10px;
       margin: 0;
       cursor: pointer;
-      font-size: var(--fs-base);
+      font-size: var(--product-input-font-size);
       font-weight: 500;
       color: var(--color-text);
       text-align: left;
@@ -2777,7 +2917,7 @@
         min-height: var(--top-filter-control-height) !important;
         max-height: var(--top-filter-control-height) !important;
         padding: 8px 2.6em 8px 10px !important;
-        font-size: var(--product-input-font-size, 14px) !important;
+        font-size: var(--product-input-font-size, 13px) !important;
         line-height: 1.4 !important;
         font-variant-numeric: tabular-nums;
         box-sizing: border-box !important;
@@ -2802,6 +2942,12 @@
         min-height: var(--top-filter-control-height) !important;
         max-height: var(--top-filter-control-height) !important;
         box-sizing: border-box;
+        font-size: 13px !important;
+      }
+
+      #teibanBetchuSelect option,
+      #gaisanSeishikiSelect option {
+        font-size: 13px !important;
       }
 
       .top-filter-row .top-filter-item > .field > .period-range-field .period-range-calendar-btn {
@@ -2812,14 +2958,17 @@
         max-height: calc(var(--top-filter-control-height) - 8px);
         box-sizing: border-box;
       }
+
+      .top-filter-item-tokuisaki > .field,
+      .top-filter-item-tokuisaki .autocomplete {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
     }
 
-    /* ヘッダ「得意先」フォント（style 末尾で最終上書き） */
-    #headerTokuisakiRow #searchCategory.autocomplete-input {
-      font-size: 14px !important;
-    }
 
-    /* 検査基準：生地・製品検査・指定検査基準名・ホルマリン検査＋空欄を1行4等分 */
+    /* 検査基準：生地・製品検査・ホルマリン検査はアイテム同幅、指定検査基準名は span 4 */
     #betchuOnlyFieldsAfterKensa {
       --product-field-group-gap: 16px;
       width: 100%;
@@ -2859,24 +3008,47 @@
       white-space: nowrap;
     }
 
-    #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > input[type="text"] {
-      width: 100% !important;
-      max-width: 100% !important;
-      min-width: 0 !important;
-      font-size: 14px !important;
-      box-sizing: border-box;
-    }
-
+    #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > input[type="text"],
     #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > select.form-row-select1 {
       width: 100% !important;
       max-width: 100% !important;
       min-width: 0 !important;
-      align-self: stretch !important;
+      box-sizing: border-box;
+    }
+
+    #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > input[type="text"] {
+      font-size: 13px !important;
     }
 
     @media (min-width: 768px) {
+      /* 生地・製品検査・ホルマリン検査：アイテムと同じ 8 列グリッド（span 4 = 50%） */
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row:has(> label.field > select.form-row-select1) {
+        grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
+      }
+
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field:has(> select.form-row-select1) {
+        grid-column: span var(--product-field-item-col-span);
+      }
+
+      /* 指定検査基準名：アイテムと同じ 8 列グリッド（span 4） */
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row:has(> label.field > input[type="text"]) {
+        grid-template-columns: repeat(var(--product-field-cols-per-row), minmax(0, 1fr));
+      }
+
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field:has(> input[type="text"]) {
+        grid-column: span var(--product-field-item-col-span);
+      }
+
       #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > select.form-row-select1 {
-        flex: 1 1 0 !important;
+        flex: 0 0 auto !important;
+        width: min(100%, var(--product-field-input-width)) !important;
+        max-width: min(100%, var(--product-field-input-width)) !important;
+        align-self: stretch !important;
+      }
+
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > input[type="text"] {
+        width: min(100%, var(--product-field-input-width)) !important;
+        max-width: 100% !important;
       }
     }
 
@@ -2885,21 +3057,15 @@
       min-height: 1px;
     }
 
-    @media (min-width: 768px) {
-      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > select.form-row-select1 {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 0 !important;
-      }
-    }
-
     @media (max-width: 767px) {
       #betchuOnlyFieldsAfterKensa {
         --product-field-group-gap: 10px;
       }
 
-      #betchuOnlyFieldsAfterKensa .kensa-fields-row {
-        grid-template-columns: 1fr;
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row,
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row:has(> label.field > select.form-row-select1),
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row:has(> label.field > input[type="text"]) {
+        grid-template-columns: 1fr !important;
       }
 
       #betchuOnlyFieldsAfterKensa .kensa-fields-row__spacer {
@@ -2907,7 +3073,33 @@
       }
 
       #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field {
+        width: 100% !important;
+        max-width: 100% !important;
         margin-bottom: 6px;
+      }
+
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field:has(> input[type="text"]),
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field:has(> select.form-row-select1) {
+        grid-column: auto !important;
+        align-self: stretch !important;
+      }
+
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > .field-label {
+        white-space: normal;
+        max-width: 100%;
+      }
+
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > input[type="text"],
+      #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > select.form-row-select1 {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        flex: 0 0 auto !important;
+        flex-shrink: 0 !important;
+        min-height: var(--product-control-min-height) !important;
+        height: auto !important;
+        align-self: stretch !important;
+        box-sizing: border-box;
       }
 
       #betchuOnlyFieldsAfterKensa .form-row-kensa-inline {
@@ -2927,8 +3119,10 @@
       }
 
       .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select {
-        width: 100% !important;
-        max-width: 100% !important;
+        flex: 0 0 auto !important;
+        width: var(--pt-hoho-select-width) !important;
+        max-width: var(--product-field-input-width) !important;
+        min-width: 0 !important;
       }
     }
 
@@ -2943,14 +3137,14 @@
       width: 100% !important;
       max-width: var(--form-row-select1-width) !important;
       min-width: 0 !important;
-      min-height: unset !important;
+      min-height: var(--product-control-min-height) !important;
       height: auto !important;
       max-height: none !important;
       margin: 0 !important;
-      padding: 8px 10px !important;
+      padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
       font-family: inherit !important;
       font-size: var(--product-input-font-size) !important;
-      line-height: 1.4 !important;
+      line-height: var(--product-control-line-height) !important;
       align-self: flex-start !important;
       box-sizing: border-box;
     }
@@ -2981,8 +3175,9 @@
         width: 100% !important;
         max-width: var(--form-row-select1-width) !important;
         font-size: var(--product-input-font-size) !important;
-        padding: 8px 10px !important;
-        line-height: 1.4 !important;
+        padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
+        line-height: var(--product-control-line-height) !important;
+        min-height: var(--product-control-min-height) !important;
       }
 
       .product-table #fukushizaiumu,
@@ -3058,19 +3253,24 @@
       }
 
       .product-table .fukushizai-main-row {
-        grid-template-columns: minmax(0, var(--fukushizai-umu-col-width)) repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, var(--fukushizai-umu-col-width)) minmax(0, var(--fukushizai-input-col-width));
+        grid-template-rows: auto auto;
+        width: 100%;
       }
     }
 
     @media (max-width: 767px) {
       .product-table,
       .top-filter-row {
-        --product-input-font-size: 16px;
+        --product-input-font-size: 13px;
       }
 
       .product-table {
         --form-row-select1-width: 100%;
         --product-label-font-size: 12px;
+        --product-control-padding-block: 8px;
+        --product-control-padding-inline: 10px;
+        --product-control-min-height: calc(var(--product-control-line-height) * var(--product-input-font-size) + var(--product-control-padding-block) + var(--product-control-padding-block) + 2px);
       }
 
       .product-table .form-row > .fukushizai-block {
@@ -3088,8 +3288,9 @@
         width: var(--form-row-select1-width) !important;
         max-width: var(--form-row-select1-width) !important;
         font-size: var(--product-input-font-size) !important;
-        padding: 6px 8px !important;
-        line-height: 1.4 !important;
+        padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
+        line-height: var(--product-control-line-height) !important;
+        min-height: var(--product-control-min-height) !important;
       }
 
       .product-table #fukushizaiumu,
@@ -3104,14 +3305,14 @@
       flex: 0 0 auto !important;
       flex-grow: 0 !important;
       flex-shrink: 0 !important;
-      min-height: unset !important;
+      min-height: var(--product-control-min-height) !important;
       height: auto !important;
       max-height: none !important;
       margin: 0 !important;
-      padding: 8px 10px !important;
+      padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
       font-family: inherit !important;
-      font-size: 14px !important;
-      line-height: 1.4 !important;
+      font-size: var(--product-input-font-size) !important;
+      line-height: var(--product-control-line-height) !important;
       align-self: flex-start !important;
       box-sizing: border-box;
     }
@@ -3123,6 +3324,25 @@
         max-width: var(--desired-delivery-select-width) !important;
         min-width: 0 !important;
       }
+
+      .product-table .form-row-delivery-case-inline .field--production-delivery .desired-delivery-fields > select.desired-delivery-select {
+        flex: 0 0 auto !important;
+        width: var(--production-delivery-control-width) !important;
+        max-width: var(--product-field-input-width) !important;
+      }
+    }
+
+    /* ヘッダ「得意先」フォント（style 末尾で最終上書き） */
+    #headerTokuisakiRow #searchCategory.autocomplete-input {
+      font-size: 13px !important;
+    }
+
+    /* ヘッダ：定番/別注・概算/正式リスト（最終上書き） */
+    #teibanBetchuSelect,
+    #gaisanSeishikiSelect,
+    #teibanBetchuSelect option,
+    #gaisanSeishikiSelect option {
+      font-size: 13px !important;
     }
 
     /* SP：Pt方法・シャーリング・検査 select の高さを仕様 select と同様に確保（flex 縮小を防止） */
@@ -3130,7 +3350,7 @@
       .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields > select.select-product-field-wide,
       .product-fields-compact__row--pt-shirring-shishu .select-product-field-wide,
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select,
-      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select,
+      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > div > select,
       #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > select.form-row-select1 {
         flex: 0 0 auto !important;
         flex-grow: 0 !important;
@@ -3138,14 +3358,14 @@
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
-        min-height: unset !important;
+        min-height: var(--product-control-min-height) !important;
         height: auto !important;
         max-height: none !important;
         margin: 0 !important;
-        padding: 6px 8px !important;
+        padding: var(--product-control-padding-block) var(--product-control-padding-inline) !important;
         font-family: inherit !important;
-        font-size: var(--product-input-font-size, 16px) !important;
-        line-height: 1.4 !important;
+        font-size: var(--product-input-font-size) !important;
+        line-height: var(--product-control-line-height) !important;
         box-sizing: border-box;
         align-self: stretch !important;
       }
@@ -3153,9 +3373,9 @@
       .product-fields-compact__row > label.field > .form-row-select-stack-sp__fields > select.select-product-field-wide option,
       .product-fields-compact__row--pt-shirring-shishu .select-product-field-wide option,
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects > select option,
-      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > select option,
+      .product-fields-compact__row--pt-shirring-shishu > label.field--shirring > div > select option,
       #betchuOnlyFieldsAfterKensa .kensa-fields-row > label.field > select.form-row-select1 option {
-        font-size: var(--product-input-font-size, 16px) !important;
+        font-size: var(--product-input-font-size, 13px) !important;
       }
 
       /* iOS Safari：入力16px未満でフォーカス時に自動ズームし、解除後も戻らないことがある */
@@ -3180,95 +3400,26 @@
       .product-table .desired-delivery-fields > select.desired-delivery-select,
       .product-table select.form-row-select1,
       #betchuOnlyFieldsAfterKensa select.form-row-select1 {
-        font-size: 16px !important;
+        font-size: 13px !important;
       }
 
-      /* ヘッダ（SP）：得意先テキストボックスを概算/正式 select と同じ幅に */
-      .top-filter-row {
-        --top-filter-control-width: 100%;
-      }
-
-      .top-filter-row > .top-filter-item {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
-      }
-
-      .top-filter-row > .top-filter-item > .field {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box;
-      }
-
-      #teibanBetchuSelect,
-      #gaisanSeishikiSelect {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-      }
-
-      .top-filter-item-tokuisaki,
-      .top-filter-item-tokuisaki > .field {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        flex: 1 1 100% !important;
-        box-sizing: border-box;
-      }
-
-      .top-filter-item-tokuisaki .autocomplete,
-      #headerTokuisakiRow .autocomplete {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-      }
-
-      #headerTokuisakiRow #searchCategory,
-      #headerTokuisakiRow input.autocomplete-input,
-      #headerTokuisakiRow .field .autocomplete .autocomplete-input {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-      }
-
-      /* 副資材：手配先・請求先（SP）— グローバル flex-shrink より後に適用して潰れを防止 */
-      .product-table .fukushizai-tehai-seikyu-row {
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        gap: 8px;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-
-      .product-table .fukushizai-tehai-seikyu-row__spacer {
-        display: none;
-      }
-
-      .product-table .fukushizai-tehai-seikyu-row > label.field {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0;
-        box-sizing: border-box;
-      }
-
-      .product-table .fukushizai-tehai-seikyu-row > label.field > select.select-tehai-seikyu-wide {
+      /* Pt方法（SP）：横並びのまま各 select 幅を維持 */
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select.select-product-field-wide {
+        width: var(--pt-hoho-select-width) !important;
+        max-width: var(--product-field-input-width) !important;
         flex: 0 0 auto !important;
-        flex-grow: 0 !important;
-        flex-shrink: 0 !important;
-        width: 100% !important;
+      }
+    }
+
+    @media (min-width: 768px) {
+      /* 仕入先・仕入得意先：名称入力幅を最終統一（.autocomplete 全幅指定より優先） */
+      .product-table .supplier-input-row > .autocomplete,
+      .product-table .supplier-input-row--shiire-tokuisaki > .autocomplete {
+        flex: 0 0 auto !important;
+        width: var(--supplier-name-input-width) !important;
         max-width: 100% !important;
         min-width: 0 !important;
-        align-self: stretch !important;
-        padding: 6px 8px !important;
-        font-size: var(--product-input-font-size, 16px) !important;
+        box-sizing: border-box !important;
       }
     }
   </style>
@@ -3379,329 +3530,336 @@
                    class="item-thumb"
                    onerror="this.src='images/noimage.png'">
             </div>
+            <div class="product-panel-toolbar">
+              <button type="button" id="addProductPanelBtn" class="btn-fab-new">追加</button>
+            </div>
             <div class="product-swiper" id="productSwiper">
               <div class="product-panels-row" id="productPanelsRow">
-                <div class="product-card is-active">
-                  <div class="product-card-paging-toolbar" role="toolbar" aria-label="ページ操作">
-                    <nav class="deadline-area-2-pagination-nav" id="deadlinePaginationNav" aria-label="ページ"
-                      hidden>
-                      <ul class="deadline-pagination" id="deadlinePaginationList" role="list"></ul>
-                    </nav>
-                    <button type="button" class="btn-secondary btn-area2-page-delete" id="deadlineDeletePageBtn" hidden
-                      aria-label="表示中のページを削除">表示中のページを削除</button>
-                    <button type="button" class="btn-fab-new btn-ai-data-upload" id="deadlineAddPageBtn" hidden
-                      aria-label="ページを追加">+ページを追加</button>
+            <div class="product-card is-active">
+              <div class="product-image-block">
+                <div class="product-image-wrapper">
+                  <img class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
+                </div>
+                <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+              </div>
+              <div class="product-table">
+                <div class="product-fields-compact">
+                  <div class="product-fields-compact__row">
+                    <label class="field">
+                      <span class="field-label">アイテム</span>
+                      <div class="autocomplete">
+                        <input type="text"  placeholder="アイテムを入力" id="searchItem">
+                        <div class="autocomplete-dropdown"></div>
+                      </div>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">商品サイズ</span>
+                      <div>
+                        <input type="text" placeholder="商品サイズを入力">
+                      </div>
+                    </label>
                   </div>
-                    <div class="product-image-block">
-                      <div class="product-image-wrapper">
-                        <img class="product-image" src="images/noimage.png" alt="商品画像プレビュー">
+                  <div class="product-fields-compact__row">
+                    <label class="field">
+                      <span class="field-label">生産数量</span>
+                      <div>
+                        <input type="text" placeholder="生産数量を入力">
                       </div>
-                      <input type="file" accept="image/*" class="product-image-input" style="display: none;">
+                    </label>
+                    <label class="field">
+                      <span class="field-label">重量(目付け)</span>
+                      <div>
+                        <input type="text" placeholder="重量(目付け)を入力">
+                      </div>
+                    </label>
+                  </div>
+                  <div class="product-fields-compact__row">
+                    <label class="field">
+                      <span class="field-label">柄数</span>
+                      <div>
+                        <input type="text" placeholder="柄数を入力">
+                      </div>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">配色</span>
+                      <div>
+                        <input type="text" placeholder="配色を入力">
+                      </div>
+                    </label>
+                  </div>
+                  <div class="product-fields-compact__row">
+                    <label class="field">
+                      <span class="field-label">糸番手</span>
+                      <div>
+                        <input type="text" placeholder="糸番手を入力">
+                      </div>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">仕様</span>
+                      <div class="form-row-select-stack-sp__fields">
+                        <select class="select-product-field-wide">
+                          <option>選択してください</option>
+                          <option>プリント</option>
+                          <option>ジャガード</option>
+                          <option>SVS</option>
+                          <option>無</option>
+                        </select>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="product-fields-compact__row product-fields-compact__row--pt-shirring-shishu">
+                    <label class="field field--pt-hoho">
+                      <span class="field-label">Pt方法</span>
+                      <div class="field-inline-selects">
+                        <select class="select-product-field-wide">
+                          <option>選択してください</option>
+                          <option>顔料Pt</option>
+                          <option>染料Pt</option>
+                          <option>インクジェットPt</option>
+                        </select>
+                        <select class="select-product-field-wide">
+                          <option>選択してください</option>
+                          <option>色１</option>
+                          <option>色２</option>
+                          <option>色３</option>
+                          <option>色４</option>
+                        </select>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="product-fields-compact__row product-fields-compact__row--pt-shirring-shishu">
+                    <label class="field field--shirring">
+                      <span class="field-label">シャーリング</span>
+                      <div>
+                        <select class="select-product-field-wide">
+                          <option>選択してください</option>
+                          <option>全シャーリング</option>
+                          <option>半シャーリング</option>
+                          <option>SVS</option>
+                          <option>無</option>
+                        </select>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="product-fields-compact__row product-fields-compact__row--pt-shirring-shishu">
+                    <label class="field field--shishu">
+                      <span class="field-label">刺繡</span>
+                      <div class="field-inline-selects field-inline-selects--shishu">
+                        <div>
+                          <span class="field-label">針数</span>
+                          <input type="text" placeholder="針数を入力">
+                        </div>
+                        <div>
+                          <span class="field-label">サイズ</span>
+                          <input type="text" placeholder="サイズを入力">
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="form-row form-row-select-wide form-row-select-stack-sp form-row-textbox form-row-left">
+                    <span class="field-label">その他</span>
+                    <div>
+                      <textarea rows="2" placeholder="その他仕様を入力"></textarea>
                     </div>
-                    <div class="product-table">
-                      <div class="product-fields-compact">
-                        <div class="product-fields-compact__row">
-                            <label class="field">
-                              <span class="field-label">アイテム</span>
-                              <div class="autocomplete">
-                                <input type="text"  placeholder="アイテムを入力" id="searchItem">
-                                <div class="autocomplete-dropdown"></div>
-                              </div>
-                            </label>
-                            <label class="field">
-                              <span class="field-label">商品サイズ</span>
-                              <div>
-                                <input type="text" placeholder="商品サイズを入力">
-                              </div>
-                            </label>
-                            <label class="field">
-                              <span class="field-label">生産数量</span>
-                              <div>
-                                <input type="text" placeholder="生産数量を入力">
-                              </div>
-                            </label>
-                            <label class="field">
-                              <span class="field-label">重量(目付け)</span>
-                              <div>
-                                <input type="text" placeholder="重量(目付け)を入力">
-                              </div>
-                            </label>
-                        </div>
-                        <div class="product-fields-compact__row product-fields-compact__row--with-spec-select">
-                          <label class="field">
-                            <span class="field-label">柄数</span>
-                            <div>
-                              <input type="text" placeholder="柄数を入力">
-                            </div>
-                          </label>
-                          <label class="field">
-                            <span class="field-label">配色</span>
-                            <div>
-                              <input type="text" placeholder="配色を入力">
-                            </div>
-                          </label>
-                          <label class="field">
-                            <span class="field-label">糸番手</span>
-                            <div>
-                              <input type="text" placeholder="糸番手を入力">
-                            </div>
-                          </label>
-                          <label class="field">
-                            <span class="field-label">仕様</span>
-                            <div class="form-row-select-stack-sp__fields">
-                              <select class="select-product-field-wide">
-                                <option>選択してください</option>
-                                <option>プリント</option>
-                                <option>ジャガード</option>
-                                <option>SVS</option>
-                                <option>無</option>
-                              </select>
-                            </div>
-                          </label>
-                        </div>
-                        <div class="product-fields-compact__row product-fields-compact__row--pt-shirring-shishu">
-                          <label class="field field--pt-hoho">
-                            <span class="field-label">Pt方法</span>
-                            <div class="field-inline-selects">
-                              <select class="select-product-field-wide">
-                                <option>選択してください</option>
-                                <option>顔料Pt</option>
-                                <option>染料Pt</option>
-                                <option>インクジェットPt</option>
-                              </select>
-                              <select class="select-product-field-wide">
-                                <option>選択してください</option>
-                                <option>色１</option>
-                                <option>色２</option>
-                                <option>色３</option>
-                                <option>色４</option>
-                              </select>
-                            </div>
-                          </label>
-                          <label class="field field--shirring">
-                            <span class="field-label">シャーリング</span>
-                            <select class="select-product-field-wide">
-                              <option>選択してください</option>
-                              <option>全シャーリング</option>
-                              <option>半シャーリング</option>
-                              <option>SVS</option>
-                              <option>無</option>
-                            </select>
-                          </label>
-                          <label class="field field--shishu">
-                            <span class="field-label">刺繡</span>
-                            <div class="field-inline-selects field-inline-selects--shishu">
-                              <select class="select-product-field-wide">
-                                <option>選択してください</option>
-                                <option>針数</option>
-                                <option>サイズ(5×8cm)</option>
-                              </select>
-                              <div>
-                                <input type="text" placeholder="針数を入力">
-                              </div>
-                            </div>
-                          </label>
-                        </div>
-                        <div class="form-row form-row-select-wide form-row-select-stack-sp form-row-textbox form-row-left">
-                          <span class="field-label">その他</span>
-                          <div>
-                            <textarea rows="2" placeholder="その他仕様を入力" style="resize:none; width:100%;"></textarea>
-                          </div>
-                        </div>
-                      </div>
-                        <div class="form-row form-row-hem-inline">
-                          <span class="field-label">ヘム</span>
-                          <div class="hem-fields-row">
-                            <label class="field">
-                              <span class="field-label">種類</span>
-                              <input type="text" placeholder="種類を入力">
-                            </label>
-                            <label class="field">
-                              <span class="field-label">長さ</span>
-                              <input type="text" placeholder="長さを入力">
-                            </label>
-                          </div>
-                          <div class="hem-fields-row" style="margin-top: 8px;">
-                            <label class="field">
-                              <span class="field-label">耳</span>
-                              <input type="text" placeholder="耳を入力">
-                            </label>
-                            <label class="field">
-                              <span class="field-label">ネーム</span>
-                              <input type="text" placeholder="ネームを入力">
-                            </label>
-                          </div>
-                        </div>
-                      <div id="betchuOnlyFieldsAfterKensa" class="betchu-only-after-kensa">
-                        <div class="form-row form-row-kensa-inline">
-                          <span class="field-label">検査基準</span>
-                          <div class="kensa-fields-row">
-                            <label class="field">
-                              <span class="field-label">生地・製品検査</span>
-                              <select class="form-row-select1">
-                                <option>選択してください</option>
-                                <option>必要</option>
-                                <option>不要</option>
-                              </select>
-                            </label>
-                            <label class="field">
-                              <span class="field-label">指定検査基準名</span>
-                              <input type="text" placeholder="指定検査基準名を入力">
-                            </label>
-                            <label class="field">
-                              <span class="field-label">ホルマリン検査</span>
-                              <select class="form-row-select1">
-                                <option>選択してください</option>
-                                <option>必要</option>
-                                <option>不要</option>
-                              </select>
-                            </label>
-                            <div class="kensa-fields-row__spacer" aria-hidden="true"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-row form-row-select-wide form-row-select-stack-sp form-row-textbox form-row-left">
-                        <span class="field-label">副資材(ハンガー等)指定の場合は品番・手配先・請求先も記入</span>
-                        <div class="fukushizai-block">
-                          <div class="fukushizai-main-row">
-                            <select class="form-row-select1" id="fukushizaiumu">
-                              <option>選択してください</option>
-                              <option>有（指定 有）</option>
-                              <option>有（指定 無）</option>
-                              <option>無</option>
-                            </select>
-                            <input type="text" placeholder="" id="fukushizai-1">
-                            <input type="text" placeholder="" id="fukushizai-2">
-                          </div>
-                          <div class="fukushizai-tehai-seikyu-row">
-                            <label class="field">
-                              <span class="field-label">手配先</span>
-                              <select class="form-row-select1 select-tehai-seikyu-wide">
-                                <option>選択してください</option>
-                                <option>工場</option>
-                                <option>丸眞</option>
-                                <option>支給</option>
-                              </select>
-                            </label>
-                            <label class="field">
-                              <span class="field-label">請求先</span>
-                              <select class="form-row-select1 select-tehai-seikyu-wide">
-                                <option>選択してください</option>
-                                <option>工場</option>
-                                <option>丸眞</option>
-                                <option>支給</option>
-                              </select>
-                            </label>
-                            <div class="fukushizai-tehai-seikyu-row__spacer" aria-hidden="true"></div>
-                            <div class="fukushizai-tehai-seikyu-row__spacer" aria-hidden="true"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-row-delivery-case-inline">
-                        <label class="field field--case-specification">
-                          <span class="field-label">ケース仕様</span>
-                          <div class="autocomplete">
-                            <input type="text"  placeholder="ケース仕様を入力" id="caseSpecification">
-                          </div>
-                        </label>
-                        <label class="field field--delivery-date-narrow">
-                          <span class="field-label">試作データ入稿予定</span>
-                          <div class="period-range-row--from-only">
-                            <div class="period-range-field">
-                              <input type="text" id="periodTrialDataDate" name="periodTrialDataDate"
-                                class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
-                                placeholder="yyyymmdd" autocomplete="off" aria-label="試作データ入稿予定 yyyymmdd"
-                                title="8桁で入力（例: 20250309）またはカレンダー">
-                              <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                              <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
-                            </div>
-                          </div>
-                        </label>
-                        <label class="field field--delivery-date-narrow">
-                          <span class="field-label">希望サンプル納期</span>
-                          <div class="period-range-row--from-only">
-                            <div class="period-range-field">
-                              <input type="text" id="periodSampleDeliveryDate" name="periodSampleDeliveryDate"
-                                class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
-                                placeholder="yyyymmdd" autocomplete="off" aria-label="希望サンプル納期 yyyymmdd"
-                                title="8桁で入力（例: 20250309）またはカレンダー">
-                              <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
-                              <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
-                            </div>
-                          </div>
-                        </label>
-                        <label class="field field--production-delivery">
-                          <span class="field-label">本番希望納期</span>
-                          <div class="desired-delivery-fields">
-                            <select class="desired-delivery-select">
-                              <option>選択してください</option>
-                            <option>一括</option>
-                            <option value="bunno" data-label-desktop="分納(分納の場合希望を右に記入→)" data-label-mobile="分納(分納の場合希望を下に記入↓)">分納(分納の場合希望を右に記入→)</option>
+                  </div>
+                  <div class="form-row form-row-hem-inline">
+                    <span class="field-label">ヘム</span>
+                    <div class="hem-fields-row">
+                      <label class="field">
+                        <span class="field-label">種類</span>
+                        <input type="text" placeholder="種類を入力">
+                      </label>
+                      <label class="field">
+                        <span class="field-label">長さ</span>
+                        <input type="text" placeholder="長さを入力">
+                      </label>
+                    </div>
+                    <div class="hem-fields-row" style="margin-top: 8px;">
+                      <label class="field">
+                        <span class="field-label">耳</span>
+                        <input type="text" placeholder="耳を入力">
+                      </label>
+                      <label class="field">
+                        <span class="field-label">ネーム</span>
+                        <input type="text" placeholder="ネームを入力">
+                      </label>
+                    </div>
+                  </div>
+                  <div id="betchuOnlyFieldsAfterKensa" class="betchu-only-after-kensa">
+                    <div class="form-row form-row-kensa-inline">
+                      <span class="field-label">検査基準</span>
+                      <div class="kensa-fields-row">
+                        <label class="field">
+                          <span class="field-label">生地・製品検査</span>
+                          <select class="form-row-select1">
+                            <option>選択してください</option>
+                            <option>必要</option>
+                            <option>不要</option>
                           </select>
-                          <div><input type="text" placeholder=""></div>
-                          </div>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">ホルマリン検査</span>
+                          <select class="form-row-select1">
+                            <option>選択してください</option>
+                            <option>必要</option>
+                            <option>不要</option>
+                          </select>
                         </label>
                       </div>
-                      <div class="form-row remarks-row form-row-left">
-                        <span class="field-label">備考(FOB or C&F等)(第三者検品等)</span>
-                        <div class="remarks-inputs-row">
-                          <input type="text" placeholder="" id="remarks1">
-                          <input type="text" placeholder="" id="remarks2">
-                          <input type="text" placeholder="" id="remarks3">
+                      <div class="kensa-fields-row">
+                        <label class="field">
+                          <span class="field-label">指定検査基準名</span>
+                          <input type="text" placeholder="指定検査基準名を入力">
+                        </label>
+                        <div class="kensa-fields-row__spacer" aria-hidden="true"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-row-select-wide form-row-select-stack-sp form-row-textbox form-row-left">
+                    <span class="field-label">副資材(ハンガー等)指定の場合は品番・手配先・請求先も記入</span>
+                    <div class="fukushizai-block">
+                      <div class="fukushizai-main-row">
+                        <select class="form-row-select1" id="fukushizaiumu">
+                          <option>選択してください</option>
+                          <option>有（指定 有）</option>
+                          <option>有（指定 無）</option>
+                          <option>無</option>
+                        </select>
+                        <input type="text" placeholder="" id="fukushizai-1">
+                        <input type="text" placeholder="" id="fukushizai-2">
+                      </div>
+                      <div class="fukushizai-tehai-seikyu-row">
+                        <label class="field">
+                          <span class="field-label">手配先</span>
+                          <select class="form-row-select1 select-tehai-seikyu-wide">
+                            <option>選択してください</option>
+                            <option>工場</option>
+                            <option>丸眞</option>
+                            <option>支給</option>
+                          </select>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">請求先</span>
+                          <select class="form-row-select1 select-tehai-seikyu-wide">
+                            <option>選択してください</option>
+                            <option>工場</option>
+                            <option>丸眞</option>
+                            <option>支給</option>
+                          </select>
+                        </label>
+                        <div class="fukushizai-tehai-seikyu-row__spacer" aria-hidden="true"></div>
+                        <div class="fukushizai-tehai-seikyu-row__spacer" aria-hidden="true"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row-delivery-case-inline">
+                    <label class="field field--case-specification">
+                      <span class="field-label">ケース仕様</span>
+                      <div class="autocomplete">
+                        <input type="text"  placeholder="ケース仕様を入力" id="caseSpecification">
+                      </div>
+                    </label>
+                  </div>
+                  <div class="form-row-delivery-case-inline">
+                    <label class="field field--delivery-date-narrow">
+                      <span class="field-label">試作データ入稿予定</span>
+                      <div class="period-range-row--from-only">
+                        <div class="period-range-field">
+                          <input type="text" id="periodTrialDataDate" name="periodTrialDataDate"
+                            class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                            placeholder="yyyymmdd" autocomplete="off" aria-label="試作データ入稿予定 yyyymmdd"
+                            title="8桁で入力（例: 20250309）またはカレンダー">
+                          <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                          <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
                         </div>
                       </div>
-                      <div class="form-row form-row-reference-images-sp">
-                        <div class="label-with-button">
-                          <span class="field-label">参考画像</span>
-                          <button type="button" id="addImageBtn" class="btn-add-image btn-add-image--small js-add-reference-image" title="参考画像追加">追加</button>
+                    </label>
+                    <label class="field field--delivery-date-narrow">
+                      <span class="field-label">希望サンプル納期</span>
+                      <div class="period-range-row--from-only">
+                        <div class="period-range-field">
+                          <input type="text" id="periodSampleDeliveryDate" name="periodSampleDeliveryDate"
+                            class="period-range-input period-range-yyyymmdd" inputmode="numeric" maxlength="8"
+                            placeholder="yyyymmdd" autocomplete="off" aria-label="希望サンプル納期 yyyymmdd"
+                            title="8桁で入力（例: 20250309）またはカレンダー">
+                          <input type="date" class="period-range-picker" aria-hidden="true" tabindex="-1" title="">
+                          <button type="button" class="period-range-calendar-btn" aria-label="日付をカレンダーで選択">📅</button>
                         </div>
-                        <div class="reference-images-wrapper">
-                          <div id="referenceImagesContainer" class="reference-images-container js-reference-images-container"></div>
-                        </div>
-                      </div>                  
-                      <div class="form-row form-row-supplier-inputs-sp supplier-inputs-dynamic-rows-sp">
-                        <div class="label-with-button">
-                          <span class="field-label">仕入得意先</span>
-                          <button type="button" id="addShiireTokuisakiBtn" class="btn-add-image btn-add-image--small js-add-shiire-tokuisaki" title="仕入得意先追加">追加</button>
-                        </div>
-                        <div class="supplier-inputs-wrapper">
-                          <div id="shiireTokuisakiInputsContainer" class="js-shiire-tokuisaki-container">
-                            <div class="supplier-input-item">
-                              <div class="supplier-input-row supplier-input-row--shiire-tokuisaki">
-                                <div class="autocomplete">
-                                  <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入得意先を入力" name="shiireTokuisaki[]">
-                                  <div class="autocomplete-dropdown"></div>
-                                </div>
-                                <div class="supplier-row-side-fields">
-                                  <input type="text" class="supplier-input" name="shiireTokuisakiTanka[]" placeholder="単価" inputmode="decimal" autocomplete="off" aria-label="単価">
-                                  <input type="text" class="supplier-input" name="shiireTokuisakiUedai[]" placeholder="上代" inputmode="decimal" autocomplete="off" aria-label="上代">
-                                  <input type="text" class="supplier-input" name="shiireTokuisakiKawase[]" placeholder="為替" inputmode="decimal" autocomplete="off" aria-label="為替">
-                                  <input type="text" class="supplier-input" name="shiireTokuisakiKeihiritsu[]" placeholder="経費率" inputmode="decimal" autocomplete="off" aria-label="経費率">
-                                  <input type="text" class="supplier-input" name="shiireTokuisakiIriRate[]" placeholder="値入率（％）" inputmode="decimal" autocomplete="off" aria-label="値入率（％）">
-                                  <label class="supplier-row-check-label">
-                                    <input type="checkbox" class="supplier-row-checkbox" name="shiireTokuisakiCheck[]" value="1" aria-label="対象">
-                                  </label>
-                                </div>
-                              </div>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="form-row-delivery-case-inline">
+                    <label class="field field--production-delivery">
+                      <span class="field-label">本番希望納期</span>
+                      <div class="desired-delivery-fields">
+                        <select class="desired-delivery-select">
+                          <option>選択してください</option>
+                        <option>一括</option>
+                        <option value="bunno" data-label-desktop="分納(分納の場合希望を右に記入→)" data-label-mobile="分納(分納の場合希望を下に記入↓)">分納(分納の場合希望を右に記入→)</option>
+                      </select>
+                      <div><input type="text" placeholder=""></div>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="form-row remarks-row form-row-left">
+                    <span class="field-label">備考(FOB or C&F等)(第三者検品等)</span>
+                    <div class="remarks-inputs-row">
+                      <input type="text" placeholder="" id="remarks1">
+                      <input type="text" placeholder="" id="remarks2">
+                      <input type="text" placeholder="" id="remarks3">
+                    </div>
+                  </div>
+                  <div class="form-row form-row-reference-images-sp">
+                    <div class="label-with-button">
+                      <label>参考画像</label>
+                      <button type="button" id="addImageBtn" class="btn-add-image btn-add-image--small js-add-reference-image" title="参考画像追加">追加</button>
+                    </div>
+                    <div class="reference-images-wrapper">
+                      <div id="referenceImagesContainer" class="reference-images-container js-reference-images-container"></div>
+                    </div>
+                  </div>                  
+                  <div class="form-row form-row-supplier-inputs-sp supplier-inputs-dynamic-rows-sp">
+                    <div class="label-with-button">
+                      <label>仕入得意先</label>
+                      <button type="button" id="addShiireTokuisakiBtn" class="btn-add-image btn-add-image--small js-add-shiire-tokuisaki" title="仕入得意先追加">追加</button>
+                    </div>
+                    <div class="supplier-inputs-wrapper">
+                      <div id="shiireTokuisakiInputsContainer" class="js-shiire-tokuisaki-container">
+                        <div class="supplier-input-item">
+                          <div class="supplier-input-row supplier-input-row--shiire-tokuisaki">
+                            <div class="autocomplete">
+                              <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入得意先を入力" name="shiireTokuisaki[]">
+                              <div class="autocomplete-dropdown"></div>
+                            </div>
+                            <div class="supplier-row-side-fields">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiTanka[]" placeholder="単価" inputmode="decimal" autocomplete="off" aria-label="単価">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiUedai[]" placeholder="上代" inputmode="decimal" autocomplete="off" aria-label="上代">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiKawase[]" placeholder="為替" inputmode="decimal" autocomplete="off" aria-label="為替">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiKeihiritsu[]" placeholder="経費率" inputmode="decimal" autocomplete="off" aria-label="経費率">
+                              <input type="text" class="supplier-input" name="shiireTokuisakiIriRate[]" placeholder="値入率（％）" inputmode="decimal" autocomplete="off" aria-label="値入率（％）">
+                              <label class="supplier-row-check-label">
+                                <input type="checkbox" class="supplier-row-checkbox" name="shiireTokuisakiCheck[]" value="1" aria-label="対象">
+                              </label>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div id="shiiresakiTeibanOnlyBlock" class="shiiresaki-teiban-only">
-                        <div class="form-row form-row-select-wide form-row-supplier-inputs-sp supplier-inputs-dynamic-rows-sp">
-                          <div class="label-with-button">
-                            <span class="field-label">仕入先</span>
-                            <button type="button" id="addShiiresakiBtn" class="btn-add-image btn-add-image--small js-add-shiiresaki" title="仕入先を追加">追加</button>
-                          </div>
-                          <div class="supplier-inputs-wrapper">
-                            <div id="shiiresakiInputsContainer" class="js-shiiresaki-container">
-                              <div class="supplier-input-item">
-                                <div class="supplier-input-row supplier-input-row--shiiresaki">
-                                  <div class="autocomplete">
-                                    <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入先を入力" name="shiiresaki[]">
-                                    <div class="autocomplete-dropdown"></div>
-                                  </div>
-                                </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div id="shiiresakiTeibanOnlyBlock" class="shiiresaki-teiban-only">
+                    <div class="form-row form-row-select-wide form-row-supplier-inputs-sp supplier-inputs-dynamic-rows-sp">
+                      <div class="label-with-button">
+                        <label>仕入先</label>
+                        <button type="button" id="addShiiresakiBtn" class="btn-add-image btn-add-image--small js-add-shiiresaki" title="仕入先を追加">追加</button>
+                      </div>
+                      <div class="supplier-inputs-wrapper">
+                        <div id="shiiresakiInputsContainer" class="js-shiiresaki-container">
+                          <div class="supplier-input-item">
+                            <div class="supplier-input-row">
+                              <div class="autocomplete">
+                                <input type="text" class="autocomplete-input" data-list="supplier" placeholder="仕入先を入力" name="shiiresaki[]">
+                                <div class="autocomplete-dropdown"></div>
                               </div>
                             </div>
                           </div>
@@ -3716,6 +3874,7 @@
         </div>
       </div>
     </div>
+  </div>
   <!--#region 送信：様式選択モーダル  -->
   <div id="modalBackdropNewreg" class="modal-backdrop-newreg" aria-hidden="true"></div>
     <div id="modal-window-newreg" class="modal-window modal-window--newreg" role="dialog" aria-modal="true"
@@ -4003,17 +4162,18 @@
     })();
 
     /* 本番希望納期「分納」：SP/PC で option 文言を切り替え */
+    function applyBunnoOptionLabels(root) {
+      var mqSp = window.matchMedia('(max-width: 767px)');
+      var scope = root || document;
+      scope.querySelectorAll('option[data-label-desktop][data-label-mobile]').forEach(function (opt) {
+        opt.textContent = mqSp.matches
+          ? opt.getAttribute('data-label-mobile')
+          : opt.getAttribute('data-label-desktop');
+      });
+    }
+
     (function () {
       var mqSp = window.matchMedia('(max-width: 767px)');
-
-      function applyBunnoOptionLabels(root) {
-        var scope = root || document;
-        scope.querySelectorAll('option[data-label-desktop][data-label-mobile]').forEach(function (opt) {
-          opt.textContent = mqSp.matches
-            ? opt.getAttribute('data-label-mobile')
-            : opt.getAttribute('data-label-desktop');
-        });
-      }
 
       function initBunnoOptionLabels() {
         applyBunnoOptionLabels(document);
@@ -4378,7 +4538,9 @@
         });
       }
 
+      // 初期カードに画像ハンドラを付与（複製パネル用に公開）
       getCards().forEach(attachImageHandler);
+      window.__attachProductCardImage = attachImageHandler;
     })();
 
     // 参考画像：追加（パネルごとに委譲）
@@ -4450,7 +4612,7 @@
         row.className =
           rowKind === "shiire"
             ? "supplier-input-row supplier-input-row--shiire-tokuisaki"
-            : "supplier-input-row supplier-input-row--shiiresaki";
+            : "supplier-input-row";
 
         var autocompleteDiv = document.createElement("div");
         autocompleteDiv.className = "autocomplete";
@@ -4546,6 +4708,111 @@
       });
     })();
 
+    // 商品パネル：先頭「追加」で右にパネル複製
+    (function () {
+      var btn = document.getElementById("addProductPanelBtn");
+      var row = document.getElementById("productPanelsRow");
+      if (!btn || !row) return;
+
+      function syncProductPanelsMultiMode() {
+        var multi = row.querySelectorAll(".product-card").length > 1;
+        document.body.classList.toggle("product-panels-multi", multi);
+      }
+
+      function resetSupplierContainer(container) {
+        if (!container) return;
+        var items = container.querySelectorAll(".supplier-input-item");
+        for (var i = 1; i < items.length; i++) {
+          items[i].remove();
+        }
+        var first = container.querySelector(".supplier-input-item");
+        if (first) {
+          first.querySelectorAll("input").forEach(function (inp) {
+            inp.value = "";
+          });
+        }
+      }
+
+      function resetPanelForm(card) {
+        card.querySelectorAll("input, textarea, select").forEach(function (el) {
+          if (el.tagName === "SELECT") {
+            return;
+          }
+          if (el.type === "file") {
+            el.value = "";
+          } else if (el.type === "checkbox" || el.type === "radio") {
+            el.checked = false;
+          } else {
+            el.value = "";
+          }
+        });
+        /* 各 select は先頭の「選択してください」相当（1番目の option）を選ぶ */
+        card.querySelectorAll("select").forEach(function (sel) {
+          if (sel.options.length > 0) {
+            sel.selectedIndex = 0;
+          }
+        });
+        card.querySelectorAll("img.product-image").forEach(function (img) {
+          img.src = "images/noimage.png";
+        });
+        card.querySelectorAll(".reference-image-item").forEach(function (n) {
+          n.remove();
+        });
+        resetSupplierContainer(card.querySelector(".js-shiire-tokuisaki-container"));
+        resetSupplierContainer(card.querySelector(".js-shiiresaki-container"));
+        card.querySelectorAll(".period-range-field[data-period-bound]").forEach(function (n) {
+          n.removeAttribute("data-period-bound");
+        });
+      }
+
+      btn.addEventListener("click", function () {
+        var template = row.querySelector(".product-card");
+        if (!template) return;
+        var clone = template.cloneNode(true);
+        clone.classList.remove("is-active");
+        clone.querySelectorAll("[id]").forEach(function (el) {
+          el.removeAttribute("id");
+        });
+        resetPanelForm(clone);
+        row.appendChild(clone);
+
+        var delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "btn-delete-product-panel";
+        delBtn.setAttribute("aria-label", "このパネルを削除");
+        delBtn.title = "削除";
+        delBtn.innerHTML = "×";
+        delBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          clone.remove();
+          syncProductPanelsMultiMode();
+        });
+        clone.insertBefore(delBtn, clone.firstChild);
+
+        syncProductPanelsMultiMode();
+
+        if (typeof window.__attachProductCardImage === "function") {
+          window.__attachProductCardImage(clone);
+        }
+
+        clone.querySelectorAll(".autocomplete").forEach(function (box) {
+          if (window.initAutocomplete) {
+            window.initAutocomplete(box);
+          }
+        });
+        attachPeriodRangeFields(clone);
+        applyBunnoOptionLabels(clone);
+
+        var teibanSel = document.getElementById("teibanBetchuSelect");
+        if (teibanSel) {
+          teibanSel.dispatchEvent(new Event("change"));
+        }
+
+        clone.scrollIntoView({ behavior: "smooth", inline: "end", block: "nearest" });
+      });
+    })();
+
     // 見積図案サムネイル：クリックでモーダル表示
     (function () {
       var thumb = document.querySelector(".item-thumb");
@@ -4585,168 +4852,6 @@
         }
       });
     })();
-
-    /* ページネーション（keiyakushosofuiraikakunin.html より） */
-    let deadlinePageCount = 0;
-    let deadlineActivePage = 1;
-
-    const MS_PAGINATION_PATH_FIRST = 'M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z';
-    const MS_PAGINATION_PATH_PREV = 'M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z';
-    const MS_PAGINATION_PATH_NEXT = 'M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z';
-    const MS_PAGINATION_PATH_LAST = 'M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z';
-
-    const DEADLINE_PAGINATION_VISIBLE_PAGE_COUNT = 5;
-
-    function deadlinePaginationMsIcon(pathD) {
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('viewBox', '0 -960 960 960');
-      svg.setAttribute('width', '15');
-      svg.setAttribute('height', '15');
-      svg.setAttribute('aria-hidden', 'true');
-      svg.setAttribute('focusable', 'false');
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', pathD);
-      p.setAttribute('fill', 'currentColor');
-      svg.appendChild(p);
-      return svg;
-    }
-
-    function renderDeadlinePagination() {
-      const ul = document.getElementById('deadlinePaginationList');
-      const nav = document.getElementById('deadlinePaginationNav');
-      if (!ul || !nav) return;
-      ul.replaceChildren();
-      if (deadlinePageCount < 1) {
-        nav.hidden = true;
-        return;
-      }
-      nav.hidden = false;
-
-      function appendNavControl(label, pathD, disabled, onActivate) {
-        const li = document.createElement('li');
-        li.className = 'deadline-pagination-item';
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'deadline-pagination-link deadline-pagination-link--icon';
-        b.setAttribute('aria-label', label);
-        b.disabled = !!disabled;
-        b.appendChild(deadlinePaginationMsIcon(pathD));
-        b.addEventListener('click', () => {
-          if (b.disabled) return;
-          onActivate();
-          renderDeadlinePagination();
-        });
-        li.appendChild(b);
-        ul.appendChild(li);
-      }
-
-      const atFirst = deadlineActivePage <= 1;
-      const atLast = deadlineActivePage >= deadlinePageCount;
-
-      appendNavControl('先頭のページへ', MS_PAGINATION_PATH_FIRST, atFirst, () => {
-        deadlineActivePage = 1;
-      });
-      appendNavControl('前のページへ', MS_PAGINATION_PATH_PREV, atFirst, () => {
-        deadlineActivePage = Math.max(1, deadlineActivePage - 1);
-      });
-
-      const total = deadlinePageCount;
-      const maxVis = DEADLINE_PAGINATION_VISIBLE_PAGE_COUNT;
-      let rangeStart = 1;
-      let rangeEnd = total;
-      if (total > maxVis) {
-        rangeStart = Math.max(1, Math.min(deadlineActivePage - 2, total - maxVis + 1));
-        rangeEnd = rangeStart + maxVis - 1;
-      }
-      for (let i = rangeStart; i <= rangeEnd; i++) {
-        const li = document.createElement('li');
-        li.className = 'deadline-pagination-item';
-        if (i === deadlineActivePage) li.classList.add('is-active');
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'deadline-pagination-link';
-        b.textContent = String(i);
-        b.setAttribute('aria-label', 'ページ ' + i);
-        if (i === deadlineActivePage) {
-          b.setAttribute('aria-current', 'page');
-        }
-        b.addEventListener('click', () => {
-          deadlineActivePage = i;
-          renderDeadlinePagination();
-        });
-        li.appendChild(b);
-        ul.appendChild(li);
-      }
-
-      appendNavControl('次のページへ', MS_PAGINATION_PATH_NEXT, atLast, () => {
-        deadlineActivePage = Math.min(deadlinePageCount, deadlineActivePage + 1);
-      });
-      appendNavControl('末尾のページへ', MS_PAGINATION_PATH_LAST, atLast, () => {
-        deadlineActivePage = deadlinePageCount;
-      });
-    }
-
-    function setAddPageBtnVisible(show) {
-      const addBtn = document.getElementById('deadlineAddPageBtn');
-      if (!addBtn) return;
-      addBtn.hidden = !show;
-      addBtn.classList.toggle('deadline-area2-add-page--suppressed', !show);
-      addBtn.toggleAttribute('aria-hidden', !show);
-    }
-
-    function setDeletePageBtnVisible(show) {
-      const deleteBtn = document.getElementById('deadlineDeletePageBtn');
-      if (!deleteBtn) return;
-      const visible = !!show && deadlinePageCount >= 1;
-      const canDelete = deadlinePageCount > 1;
-      deleteBtn.hidden = !visible;
-      deleteBtn.classList.toggle('deadline-area2-delete-page--suppressed', !visible);
-      deleteBtn.toggleAttribute('aria-hidden', !visible);
-      deleteBtn.disabled = !visible || !canDelete;
-    }
-
-    function showMitsumoriPagingUi() {
-      deadlinePageCount = Math.max(1, deadlinePageCount || 1);
-      deadlineActivePage = Math.min(
-        Math.max(1, deadlineActivePage || 1),
-        deadlinePageCount
-      );
-      setAddPageBtnVisible(true);
-      setDeletePageBtnVisible(true);
-      renderDeadlinePagination();
-    }
-
-    function initDeadlinePaging() {
-      const deleteBtn = document.getElementById('deadlineDeletePageBtn');
-      const addBtn = document.getElementById('deadlineAddPageBtn');
-      if (!deleteBtn || !addBtn || addBtn.dataset.bound === '1') return;
-
-      function refreshDeleteButtonInPagingMode() {
-        setDeletePageBtnVisible(true);
-      }
-
-      addBtn.dataset.bound = '1';
-      deleteBtn.dataset.bound = '1';
-      addBtn.addEventListener('click', () => {
-        deadlinePageCount += 1;
-        deadlineActivePage = deadlinePageCount;
-        renderDeadlinePagination();
-        refreshDeleteButtonInPagingMode();
-      });
-      deleteBtn.addEventListener('click', () => {
-        /* ページが1枚のみのときは削除しない */
-        if (deadlinePageCount <= 1) return;
-        deadlinePageCount -= 1;
-        if (deadlineActivePage > deadlinePageCount) {
-          deadlineActivePage = deadlinePageCount > 0 ? deadlinePageCount : 1;
-        }
-        renderDeadlinePagination();
-        refreshDeleteButtonInPagingMode();
-      });
-    }
-
-    initDeadlinePaging();
-    showMitsumoriPagingUi();
 
   </script>
 </body>
