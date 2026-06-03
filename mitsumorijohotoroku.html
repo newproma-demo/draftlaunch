@@ -341,10 +341,12 @@
       }
 
       .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects {
-        flex-direction: row !important;
+        flex-direction: column !important;
         flex-wrap: nowrap;
-        align-items: center;
+        align-items: stretch;
         gap: 8px;
+        width: 100% !important;
+        max-width: 100% !important;
       }
 
       /* 刺繡（SP）：select の下にテキストボックスを 100%・左寄せ */
@@ -1562,24 +1564,26 @@
       --pt-hoho-select-width: min(calc((100% - var(--product-field-group-gap)) / 2), var(--product-field-input-width));
     }
 
-    .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects {
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: var(--product-field-group-gap);
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-    }
+    @media (min-width: 768px) {
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: var(--product-field-group-gap);
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
 
-    .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select.select-product-field-wide {
-      flex: 0 0 auto !important;
-      flex-grow: 0 !important;
-      flex-shrink: 0 !important;
-      width: var(--pt-hoho-select-width) !important;
-      max-width: var(--product-field-input-width) !important;
-      min-width: 0 !important;
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select.select-product-field-wide {
+        flex: 0 0 auto !important;
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+        width: var(--pt-hoho-select-width) !important;
+        max-width: var(--product-field-input-width) !important;
+        min-width: 0 !important;
+      }
     }
 
     .product-fields-compact .select-product-field-wide option {
@@ -1635,16 +1639,17 @@
       grid-column: span 8;
     }
 
-    .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu {
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: flex-start;
-      gap: var(--product-field-group-gap);
-      width: 100%;
-      max-width: 100%;
-    }
-
     @media (min-width: 768px) {
+      /* 刺繡：針数・サイズは横並び（各入力幅はアイテムと同じ） */
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        gap: var(--product-field-group-gap);
+        width: 100%;
+        max-width: 100%;
+      }
+
       /* 刺繡ラッパー内のみ flex 伸長（Pt方法・シャーリングは糸番手同幅のため除外） */
       .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > select {
         flex: 1 1 0 !important;
@@ -1669,12 +1674,14 @@
       }
     }
 
-    .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > div {
-      flex: 0 0 auto !important;
-      width: min(calc((100% - var(--product-field-group-gap)) / 2), var(--product-field-input-width)) !important;
-      max-width: 100% !important;
-      min-width: 0;
-      box-sizing: border-box;
+    @media (min-width: 768px) {
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > div {
+        flex: 0 0 auto !important;
+        width: min(calc((100% - var(--product-field-group-gap)) / 2), var(--product-field-input-width)) !important;
+        max-width: 100% !important;
+        min-width: 0;
+        box-sizing: border-box;
+      }
     }
 
     .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > div input[type="text"] {
@@ -3109,11 +3116,14 @@
         margin-left: 0 !important;
       }
 
-      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select {
-        flex: 0 0 auto !important;
-        width: var(--pt-hoho-select-width) !important;
-        max-width: var(--product-field-input-width) !important;
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select,
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select.select-product-field-wide {
+        width: 100% !important;
+        max-width: 100% !important;
         min-width: 0 !important;
+        flex: 0 0 auto !important;
+        align-self: stretch !important;
+        box-sizing: border-box;
       }
     }
 
@@ -3402,11 +3412,49 @@
         font-size: 16px !important;
       }
 
-      /* Pt方法（SP）：横並びのまま各 select 幅を維持 */
+      /* Pt方法（SP）：select を縦並び・各100% */
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects {
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select,
       .product-fields-compact__row--pt-shirring-shishu .field--pt-hoho .field-inline-selects > select.select-product-field-wide {
-        width: var(--pt-hoho-select-width) !important;
-        max-width: var(--product-field-input-width) !important;
+        width: 100% !important;
+        max-width: 100% !important;
         flex: 0 0 auto !important;
+        align-self: stretch !important;
+        box-sizing: border-box;
+      }
+
+      /* 刺繡（SP）：針数・サイズを縦並び・テキストボックス100% */
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu {
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .product-fields-compact__row > label.field .field-inline-selects--shishu > div,
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        flex: 0 0 auto !important;
+        margin-left: 0 !important;
+        align-self: stretch !important;
+        box-sizing: border-box;
+      }
+
+      .product-fields-compact__row--pt-shirring-shishu .field-inline-selects--shishu > div input[type="text"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
       }
     }
 
