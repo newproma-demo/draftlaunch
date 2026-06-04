@@ -1133,6 +1133,108 @@
     .shohin-version-ref-link:hover { color: #004499; }
     .shohin-shiyosho-external-wrap { margin: 0; font-size: var(--fs-sm); line-height: 1.5; }
     .shohin-shiyosho-external-note { display: block; margin-top: 6px; font-size: var(--fs-xs); color: var(--color-text-muted); font-weight: 400; }
+    .shohin-detail-kessai-line { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--color-border); }
+    .shohin-detail-kessai-status { font-size: var(--fs-sm); line-height: 1.5; color: var(--color-text); }
+    .shohin-detail-kessai-status.is-active { color: var(--color-primary-dark); font-weight: 600; }
+    .shohin-detail-kessai-status.is-done { color: #166534; font-weight: 600; }
+    .shohin-detail-kessai-status.is-empty { color: var(--color-text-muted); }
+    .shohin-kessai-kushi-list { display: flex; flex-direction: column; gap: 12px; }
+    .shohin-kessai-kushi-row {
+      margin: 0;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+    }
+    .shohin-kessai-kushi-row.is-active {
+      border-color: var(--color-primary);
+      background: #f4fbf6;
+      box-shadow: 0 0 0 1px rgba(0, 134, 50, 0.12);
+    }
+    .shohin-kessai-kushi-row-title {
+      margin: 0 0 10px;
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+    .shohin-kessai-kushi-row.is-active .shohin-kessai-kushi-row-title { color: var(--color-primary-dark); }
+    .shohin-kessai-kushi-flow {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .shohin-kessai-kushi-node {
+      flex: 0 0 auto;
+      min-width: 96px;
+      max-width: 140px;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+    .shohin-kessai-kushi-node-name {
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--color-text);
+      word-break: break-word;
+    }
+    .shohin-kessai-kushi-node-date,
+    .shohin-kessai-kushi-node-approver {
+      font-size: 10px;
+      line-height: 1.3;
+      color: var(--color-text-muted);
+    }
+    .shohin-kessai-kushi-node.is-done .shohin-kessai-kushi-node-date,
+    .shohin-kessai-kushi-node.is-done .shohin-kessai-kushi-node-approver {
+      color: #166534;
+      font-weight: 600;
+    }
+    .shohin-kessai-kushi-node.is-done {
+      border-color: #6cbf87;
+      background: #f2fbf5;
+    }
+    .shohin-kessai-kushi-node.is-current {
+      border-color: #f1cb5a;
+      background: #fff9e8;
+      box-shadow: 0 0 0 2px rgba(241, 203, 90, 0.35);
+    }
+    .shohin-kessai-kushi-node.is-returned {
+      border-color: #f87171;
+      background: #fef2f2;
+    }
+    .shohin-kessai-kushi-node.is-todo { opacity: 0.72; }
+    .shohin-kessai-kushi-node.is-idle { opacity: 0.55; }
+    .shohin-kessai-kushi-arrow {
+      flex: 0 0 28px;
+      align-self: center;
+      text-align: center;
+      color: var(--color-primary);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .shohin-kessai-case-status { display: inline-block; margin-left: 8px; font-size: var(--fs-xs); font-weight: 700; padding: 2px 8px; border-radius: 999px; vertical-align: middle; }
+    .shohin-kessai-case-status.is-waiting { background: #fff1bf; color: #92400e; }
+    .shohin-kessai-case-status.is-done { background: #d4f1de; color: #166534; }
+    .shohin-kessai-case-status.is-returned { background: #fee2e2; color: #991b1b; }
+    .approval-flow-empty {
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      background: var(--color-surface);
+    }
 
     /* 画面右下固定アクションボタン群 */
     .fab-actions {
@@ -1505,6 +1607,7 @@
           <div class="shohin-detail-line"><span class="shohin-detail-label">商品コード</span><span id="shohinDetailCode">—</span></div>
           <div class="shohin-detail-line"><span class="shohin-detail-label">商品名</span><span id="shohinDetailName">—</span></div>
           <div class="shohin-detail-line"><span class="shohin-detail-label">JANコード</span><span id="shohinDetailJan">—</span></div>
+          <div class="shohin-detail-line shohin-detail-kessai-line"><span class="shohin-detail-label">承認状況</span><span id="shohinDetailKessaiStatus" class="shohin-detail-kessai-status is-empty">—</span></div>
           <div class="shohin-detail-basic-title">基本的な情報</div>
           <p class="shohin-detail-basic-body" id="shohinDetailBasic">—</p>
         </div>
@@ -1512,9 +1615,10 @@
       <ul class="shohin-detail-tablist" role="tablist" aria-label="商品詳細タブ">
         <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab0" aria-selected="true" aria-controls="shohinPanel0">商品詳細①</button></li>
         <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab1" aria-selected="false" aria-controls="shohinPanel1">商品詳細②</button></li>
-        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab2" aria-selected="false" aria-controls="shohinPanel2">仕様書</button></li>
-        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab3" aria-selected="false" aria-controls="shohinPanel3">発注書</button></li>
-        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab4" aria-selected="false" aria-controls="shohinPanel4">ECサイト画像</button></li>
+        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab2" aria-selected="false" aria-controls="shohinPanel2">決裁履歴</button></li>
+        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab3" aria-selected="false" aria-controls="shohinPanel3">仕様書</button></li>
+        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab4" aria-selected="false" aria-controls="shohinPanel4">発注書</button></li>
+        <li><button type="button" class="shohin-detail-tab" role="tab" id="shohinTab5" aria-selected="false" aria-controls="shohinPanel5">ECサイト画像</button></li>
       </ul>
       <div class="shohin-detail-panels">
         <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel0" aria-labelledby="shohinTab0"></div>
@@ -1523,10 +1627,13 @@
           <ul id="shohinVersionHistoryList" class="shohin-version-list"></ul>
         </div>
         <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel2" aria-labelledby="shohinTab2" hidden>
+          <div id="shohinKessaiRirekiList" class="shohin-kessai-kushi-list"></div>
+        </div>
+        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel3" aria-labelledby="shohinTab3" hidden>
           <p class="shohin-shiyosho-external-wrap"><a class="shohin-teiban-external-link" href="shiyoshosakusei_teiban.html">仕様書作成（定番）画面を開く</a><span class="shohin-shiyosho-external-note">（仕様書検索一覧の仕様書No.リンクと同じ遷移先です。商品コードはクエリに付与しますが、デモでは定番画面側の参照は未実装です）</span></p>
         </div>
-        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel3" aria-labelledby="shohinTab3" hidden><p>発注書の参照・リンク用エリアです。</p><p><a href="chumonshorirekishokai_teiban.html">注文書履歴（例）</a></p></div>
-        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel4" aria-labelledby="shohinTab4" hidden>
+        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel4" aria-labelledby="shohinTab4" hidden><p>発注書の参照・リンク用エリアです。</p><p><a href="chumonshorirekishokai_teiban.html">注文書履歴（例）</a></p></div>
+        <div class="shohin-tab-panel" role="tabpanel" id="shohinPanel5" aria-labelledby="shohinTab5" hidden>
           <p class="shohin-ec-image-dir" id="shohinEcImageDir"></p>
           <div class="shohin-ec-image-list-head" aria-hidden="true">
             <span>サムネイル</span>
@@ -1820,6 +1927,8 @@
       var ecImageEmptyEl = document.getElementById('shohinEcImageEmpty');
       var ecImageDirEl = document.getElementById('shohinEcImageDir');
       var panel1 = document.getElementById('shohinPanel1');
+      var kessaiStatusEl = document.getElementById('shohinDetailKessaiStatus');
+      var kessaiRirekiListEl = document.getElementById('shohinKessaiRirekiList');
       var tabs = modal.querySelectorAll('.shohin-detail-tab[role="tab"]');
       var panels = modal.querySelectorAll('.shohin-tab-panel[role="tabpanel"]');
       var EC_IMAGE_FOLDER_PATH = 'images/ecsite/';
@@ -1839,6 +1948,413 @@
           { label: 'v1（2026/03/01）', image: DEFAULT_SHOHIN_THUMB, snapshot: { code: 'SHN-2026-0003', name: 'ギフトタオル3点セット（初版）', cat: 'セット', item: 'とじものWT3P', brand: 'ディズニー', jan: '4901234567892', tenjikai: 'ー', hanbaiKubun: '別注', updated: '2026/03/01' } }
         ]
       };
+
+      /** デモ用：dashboard.html の承認フロー定義（商品コード → 案件一覧） */
+      var KESSAI_ROUTE_MASTER = {
+        'ROUTE_BETCHU_SAKUSEI_IRAI': {
+          routeName: '別注図案作成依頼',
+          steps: [
+            { name: '所属長：決裁', approver: '○○部 丸眞亜蓮' },
+            { name: '専務：決裁', approver: '丸眞成騎' },
+            { name: '商品部部長：回覧', approver: '商品部部長 丸眞翔' }
+          ]
+        },
+        'ROUTE_TEIBAN_SHIYOSHO_SAKUSEI': {
+          routeName: '仕様書（定番）',
+          steps: [
+            { name: 'コントローラー決裁', approver: '商品部 ○○' },
+            { name: '品質管理決裁', approver: '品質管理課' },
+            { name: 'バイヤー決裁', approver: '担当バイヤー' }
+          ]
+        },
+        'ROUTE_BETCHU_SHIYOSHO_SAKUSEI': {
+          routeName: '仕様書（別注）',
+          steps: [
+            { name: '営業担当決裁', approver: '営業部 ○○' },
+            { name: '品質管理決裁', approver: '品質管理課' },
+            { name: 'バイヤー決裁', approver: '担当バイヤー' }
+          ]
+        },
+        'ROUTE_SHIP_IRAI_TEIBAN': {
+          routeName: 'Ship依頼書（定番）',
+          steps: [
+            { name: 'バイヤー決裁', approver: '担当バイヤー' },
+            { name: '貿易課回覧', approver: '貿易課' }
+          ]
+        },
+        'ROUTE_SHIP_IRAI_BETCHU': {
+          routeName: 'Ship依頼書（別注）',
+          steps: [
+            { name: 'バイヤー決裁', approver: '担当バイヤー' },
+            { name: '貿易課回覧', approver: '貿易課' }
+          ]
+        },
+        'ROUTE_HINSHITSUKENSAGOUKAKUSHO': {
+          routeName: '品質検査合格書',
+          steps: [
+            { name: 'コントローラー決裁', approver: '商品部 担当' },
+            { name: 'バイヤー決裁', approver: '担当バイヤー' }
+          ]
+        },
+        'ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI': {
+          routeName: '別注商品登録依頼',
+          steps: [
+            { name: '所属長決裁', approver: '○○部 ' },
+            { name: '商品部担当決裁', approver: '商品部 ○○' }
+          ]
+        },
+        'ROUTE_SAISHU_SAMPLESHONIN': {
+          routeName: '最終サンプル承認結果',
+          steps: [
+            { name: 'コントローラー決裁', approver: '担当コントローラー' },
+            { name: 'バイヤー決裁', approver: '担当バイヤー' }
+          ]
+        },
+        'ROUTE_TEIBAN_KEIYAKU_SAKUSEI': {
+          routeName: '発注書・契約書（定番）',
+          steps: [
+            { name: 'バイヤー決裁', approver: '担当バイヤー' },
+            { name: '商品部部長決裁', approver: '商品部 部長' }
+          ]
+        },
+        'ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI': {
+          routeName: '発注書・契約書（定番加工）',
+          steps: [
+            { name: 'バイヤー決裁', approver: '担当バイヤー' },
+            { name: '商品部部長決裁', approver: '商品部 部長' }
+          ]
+        },
+        'ROUTE_BETCHU_KEIYAKU_SAKUSEI': {
+          routeName: '発注書・契約書（別注）',
+          steps: [
+            { name: '所属長決裁', approver: '商品部 ○○' },
+            { name: '専務決裁', approver: '専務 ○○' },
+            { name: 'バイヤー決裁', approver: '担当バイヤー' },
+            { name: '商品部部長決裁', approver: '商品部 部長' }
+          ]
+        },
+        'ROUTE_SHOSHIIRAISHO_SAKUSEI': {
+          routeName: '証紙依頼書',
+          steps: [
+            { name: 'バイヤー決裁', approver: '担当バイヤー' },
+            { name: '専務決裁', approver: '専務 ○○' },
+            { name: '経営管理担当', approver: '経営管理課 担当' }
+          ]
+        },
+        'ROUTE_KOKUNAITEHAISHO_TEIBAN': {
+          routeName: '国内手配書（定番）',
+          steps: [
+            { name: 'バイヤー決裁', approver: '担当バイヤー' }
+          ]
+        },
+        'ROUTE_KOKUNAITEHAISHO_BETCHU': {
+          routeName: '国内手配書（別注）',
+          steps: [
+            { name: 'バイヤー決裁', approver: '担当バイヤー' }
+          ]
+        }
+      };
+      /** 決裁フロー.pptx の串刺し表示順（上→下） */
+      var KESSAI_KUSHI_ROW_ORDER = [
+        '別注図案作成依頼',
+        '仕様書（定番）※校正指示書含む',
+        '仕様書（別注）※校正指示書含む',
+        '最終サンプル承認結果',
+        '発注書・契約書（定番）',
+        '発注書・契約書（定番加工）',
+        '発注書・契約書（別注）',
+        '証紙依頼書（定番・別注・定番加工）',
+        'Ship依頼書(定番)',
+        'Ship依頼書(別注)',
+        '国内手配書(定番)',
+        '国内手配書(別注)',
+        '品質検査合格書',
+        '別注商品登録依頼'
+      ];
+      /** 販売区分ごとに表示する業務種別（決裁フロー.pptx 準拠） */
+      var KESSAI_CATEGORY_HANBAI = {
+        '別注図案作成依頼': ['別注'],
+        '仕様書（定番）※校正指示書含む': ['定番'],
+        '仕様書（別注）※校正指示書含む': ['別注'],
+        '最終サンプル承認結果': ['定番', '定番加工', '別注'],
+        '発注書・契約書（定番）': ['定番'],
+        '発注書・契約書（定番加工）': ['定番加工'],
+        '発注書・契約書（別注）': ['別注'],
+        '証紙依頼書（定番・別注・定番加工）': ['定番', '定番加工', '別注'],
+        'Ship依頼書(定番)': ['定番'],
+        'Ship依頼書(別注)': ['別注'],
+        '国内手配書(定番)': ['定番'],
+        '国内手配書(別注)': ['別注'],
+        '品質検査合格書': ['定番', '定番加工', '別注'],
+        '別注商品登録依頼': ['別注']
+      };
+      var KESSAI_ROUTE_BY_CATEGORY = {
+        '別注図案作成依頼': 'ROUTE_BETCHU_SAKUSEI_IRAI',
+        '仕様書（定番）※校正指示書含む': 'ROUTE_TEIBAN_SHIYOSHO_SAKUSEI',
+        '仕様書（別注）※校正指示書含む': 'ROUTE_BETCHU_SHIYOSHO_SAKUSEI',
+        '最終サンプル承認結果': 'ROUTE_SAISHU_SAMPLESHONIN',
+        '発注書・契約書（定番）': 'ROUTE_TEIBAN_KEIYAKU_SAKUSEI',
+        '発注書・契約書（定番加工）': 'ROUTE_TEIBANKAKO_KEIYAKU_SAKUSEI',
+        '発注書・契約書（別注）': 'ROUTE_BETCHU_KEIYAKU_SAKUSEI',
+        '証紙依頼書（定番・別注・定番加工）': 'ROUTE_SHOSHIIRAISHO_SAKUSEI',
+        'Ship依頼書(定番)': 'ROUTE_SHIP_IRAI_TEIBAN',
+        'Ship依頼書(別注)': 'ROUTE_SHIP_IRAI_BETCHU',
+        '国内手配書(定番)': 'ROUTE_KOKUNAITEHAISHO_TEIBAN',
+        '国内手配書(別注)': 'ROUTE_KOKUNAITEHAISHO_BETCHU',
+        '品質検査合格書': 'ROUTE_HINSHITSUKENSAGOUKAKUSHO',
+        '別注商品登録依頼': 'ROUTE_BETCHU_SHOHIN_TOUROKU_SAKUSEI'
+      };
+      var KESSAI_CASE_PROGRESS = {
+        'B案件': { routeId: 'ROUTE_TEIBAN_SHIYOSHO_SAKUSEI', currentIndex: 1, completedAt: { 0: '2026-05-01', 1: '2026-05-04' } },
+        'H案件': { routeId: 'ROUTE_SHIP_IRAI_TEIBAN', currentIndex: 0, completedAt: { 0: '2026-05-01' } },
+        'C案件': { routeId: 'ROUTE_BETCHU_SHIYOSHO_SAKUSEI', currentIndex: 0, completedAt: { 0: '2026-04-30' } },
+        'L案件': { routeId: 'ROUTE_HINSHITSUKENSAGOUKAKUSHO', currentIndex: 1, completedAt: { 0: '2026-03-25', 1: '2026-03-30' } },
+        'O案件': { routeId: 'ROUTE_TEIBAN_SHIYOSHO_SAKUSEI', currentIndex: 2, completedAt: { 0: '2026-04-01', 1: '2026-04-03', 2: '2026-04-05' } },
+        'N案件': { routeId: 'ROUTE_BETCHU_SAKUSEI_IRAI', currentIndex: 0, completedAt: {} }
+      };
+      /** デモ用：商品コードごとに1ルートのみ（dashboard の案件定義を参照） */
+      var SHOHIN_KESSAI_BY_CODE = {
+        'SHN-2026-0001': { name: 'B案件', category: '仕様書（定番）※校正指示書含む', status: 'waiting' },
+        'SHN-2026-0002': { name: 'H案件', category: 'Ship依頼書(定番)', status: 'waiting' },
+        'SHN-2026-0003': { name: 'C案件', category: '仕様書（別注）※校正指示書含む', status: 'waiting' },
+      };
+      /** 全業務種別を完了表示する商品（デモ） */
+      var SHOHIN_KESSAI_ALL_ROUTES_DONE = ['SHN-2026-0004', 'SHN-2026-0005'];
+      /** 商品ごとの完了表示範囲（串刺しの上→下、両端含む） */
+      var SHOHIN_KESSAI_DONE_RANGE_BY_CODE = {
+        'SHN-2026-0004': { start: '別注図案作成依頼', end: '別注商品登録依頼' },
+        'SHN-2026-0005': { start: '仕様書（定番）※校正指示書含む', end: '品質検査合格書' }
+      };
+
+      function isShohinAllKessaiRoutesDone(shohinCode) {
+        return SHOHIN_KESSAI_ALL_ROUTES_DONE.indexOf(shohinCode) !== -1;
+      }
+
+      function resolveKessaiDoneRange(shohinCode) {
+        return SHOHIN_KESSAI_DONE_RANGE_BY_CODE[shohinCode] || null;
+      }
+
+      function isCategoryInKessaiFullDoneRange(category, shohinCode) {
+        var range = resolveKessaiDoneRange(shohinCode);
+        if (!range) return false;
+        var start = KESSAI_KUSHI_ROW_ORDER.indexOf(range.start);
+        var end = KESSAI_KUSHI_ROW_ORDER.indexOf(range.end);
+        var idx = KESSAI_KUSHI_ROW_ORDER.indexOf(category);
+        if (start < 0 || end < 0 || idx < 0) return false;
+        return idx >= start && idx <= end;
+      }
+
+      function kessaiAllDoneHeaderText(shohinCode) {
+        var range = resolveKessaiDoneRange(shohinCode);
+        if (!range) return '全て承認済み';
+        return range.start + '～' + range.end + '：全て承認済み';
+      }
+
+      function buildFullRouteDoneProgress(route, category) {
+        var last = route.steps.length - 1;
+        var completedAt = {};
+        var rowIdx = KESSAI_KUSHI_ROW_ORDER.indexOf(category);
+        var baseDay = 1 + (rowIdx >= 0 ? rowIdx : 0);
+        for (var i = 0; i <= last; i++) {
+          var day = Math.min(baseDay + i, 28);
+          completedAt[i] = '2026-03-' + (day < 10 ? '0' + day : String(day));
+        }
+        return {
+          currentIndex: last,
+          isFullyDone: true,
+          isReturned: false,
+          completedAt: completedAt
+        };
+      }
+
+      function formatKessaiDate(raw) {
+        if (!raw) return '';
+        return String(raw).replace(/-/g, '/');
+      }
+
+      function kessaiCategoryMatchesHanbai(category, hanbaiKubun) {
+        var allowed = KESSAI_CATEGORY_HANBAI[category];
+        if (!allowed) return true;
+        var kubun = (hanbaiKubun || '').trim();
+        if (!kubun || kubun === '—') return true;
+        return allowed.indexOf(kubun) !== -1;
+      }
+
+      function resolveKessaiKushiCategories(hanbaiKubun) {
+        return KESSAI_KUSHI_ROW_ORDER.filter(function (category) {
+          return kessaiCategoryMatchesHanbai(category, hanbaiKubun);
+        });
+      }
+
+      function resolveActiveKessai(shohinCode, hanbaiKubun) {
+        var kessai = SHOHIN_KESSAI_BY_CODE[shohinCode];
+        if (!kessai) return null;
+        if (!kessaiCategoryMatchesHanbai(kessai.category, hanbaiKubun)) return null;
+        return kessai;
+      }
+
+      function resolveKessaiRouteId(item) {
+        var caseProgress = KESSAI_CASE_PROGRESS[item.name];
+        if (caseProgress && caseProgress.routeId) return caseProgress.routeId;
+        return KESSAI_ROUTE_BY_CATEGORY[item.category] || 'ROUTE_BETCHU_SAKUSEI_IRAI';
+      }
+
+      function kessaiStatusLabel(status) {
+        if (status === 'done') return '承認済み';
+        if (status === 'returned') return '差戻し';
+        return '承認待ち';
+      }
+
+      function buildKessaiFlowParts(item) {
+        var caseProgress = KESSAI_CASE_PROGRESS[item.name] || {};
+        var routeId = resolveKessaiRouteId(item);
+        var route = KESSAI_ROUTE_MASTER[routeId];
+        var steps = route ? route.steps : [];
+        if (!steps.length) {
+          return { summaryText: '承認ルート定義が見つかりません' };
+        }
+        var currentIndex = Math.min(
+          Math.max(typeof caseProgress.currentIndex === 'number' ? caseProgress.currentIndex : 0, 0),
+          steps.length - 1
+        );
+        var isFullyDone = item.status === 'done' || (item.status !== 'returned' && currentIndex === steps.length - 1 && caseProgress.completedAt && caseProgress.completedAt[currentIndex]);
+        if (item.status === 'returned') {
+          return { summaryText: '現在ステップ: ' + steps[currentIndex].name + '（差戻し）' };
+        }
+        if (isFullyDone || item.status === 'done') {
+          return { summaryText: '現在ステップ: 全ステップ承認済み（' + steps.length + '/' + steps.length + '）' };
+        }
+        return { summaryText: '現在ステップ: ' + steps[currentIndex].name + '（' + (currentIndex + 1) + '/' + steps.length + '）' };
+      }
+
+      function resolveKessaiProgressIndex(item) {
+        if (!item) return { currentIndex: -1, isFullyDone: false, isReturned: false };
+        var caseProgress = KESSAI_CASE_PROGRESS[item.name] || {};
+        var routeId = resolveKessaiRouteId(item);
+        var route = KESSAI_ROUTE_MASTER[routeId];
+        var steps = route ? route.steps : [];
+        if (!steps.length) return { currentIndex: -1, isFullyDone: false, isReturned: false };
+        var currentIndex = Math.min(
+          Math.max(typeof caseProgress.currentIndex === 'number' ? caseProgress.currentIndex : 0, 0),
+          steps.length - 1
+        );
+        var isFullyDone = item.status === 'done' || (item.status !== 'returned' && currentIndex === steps.length - 1 && caseProgress.completedAt && caseProgress.completedAt[currentIndex]);
+        return {
+          currentIndex: currentIndex,
+          isFullyDone: isFullyDone,
+          isReturned: item.status === 'returned',
+          completedAt: caseProgress.completedAt || {}
+        };
+      }
+
+      function resolveKessaiNodeState(progress, stepIndex) {
+        if (!progress || progress.currentIndex < 0) return 'is-idle';
+        if (stepIndex < progress.currentIndex || (progress.isFullyDone && stepIndex <= progress.currentIndex)) return 'is-done';
+        if (stepIndex === progress.currentIndex && !progress.isFullyDone) {
+          return progress.isReturned ? 'is-returned' : 'is-current';
+        }
+        return 'is-todo';
+      }
+
+      function buildKessaiKushiRowHtml(category, activeKessai, shohinCode, hanbaiKubun) {
+        var routeId = KESSAI_ROUTE_BY_CATEGORY[category];
+        var route = routeId ? KESSAI_ROUTE_MASTER[routeId] : null;
+        if (!route || !route.steps.length) return '';
+        var rowFullyDone = isShohinAllKessaiRoutesDone(shohinCode) &&
+          isCategoryInKessaiFullDoneRange(category, shohinCode) &&
+          kessaiCategoryMatchesHanbai(category, hanbaiKubun);
+        var isActiveRow = rowFullyDone || !!(activeKessai && activeKessai.category === category);
+        var progress = null;
+        if (rowFullyDone) {
+          progress = buildFullRouteDoneProgress(route, category);
+        } else if (activeKessai && activeKessai.category === category) {
+          progress = resolveKessaiProgressIndex(activeKessai);
+        }
+        var flowHtml = route.steps.map(function (step, index) {
+          var stateClass = resolveKessaiNodeState(progress, index);
+          var metaHtml = '';
+          if (isActiveRow && stateClass === 'is-done' && progress && progress.completedAt && progress.completedAt[index]) {
+            var approverText = (step.approver || '').trim() || '—';
+            metaHtml =
+              '<span class="shohin-kessai-kushi-node-date">決裁日: ' + formatKessaiDate(progress.completedAt[index]) + '</span>' +
+              '<span class="shohin-kessai-kushi-node-approver">決裁者: ' + approverText + '</span>';
+          }
+          var nodeHtml =
+            '<div class="shohin-kessai-kushi-node ' + stateClass + '">' +
+              '<span class="shohin-kessai-kushi-node-name">' + step.name + '</span>' +
+              metaHtml +
+            '</div>';
+          if (index < route.steps.length - 1) {
+            nodeHtml += '<span class="shohin-kessai-kushi-arrow" aria-hidden="true">→</span>';
+          }
+          return nodeHtml;
+        }).join('');
+        var badgeHtml = '';
+        if (isActiveRow) {
+          var statusClass = rowFullyDone || (activeKessai && activeKessai.status === 'done') ? 'is-done' : (activeKessai && activeKessai.status === 'returned' ? 'is-returned' : 'is-waiting');
+          var statusKey = rowFullyDone ? 'done' : (activeKessai ? activeKessai.status : 'waiting');
+          badgeHtml = '<span class="shohin-kessai-case-status ' + statusClass + '">' + kessaiStatusLabel(statusKey) + '</span>';
+        }
+        return (
+          '<section class="shohin-kessai-kushi-row' + (isActiveRow ? ' is-active' : '') + '" data-kessai-category="' + category + '">' +
+            '<h4 class="shohin-kessai-kushi-row-title">' + category + badgeHtml + '</h4>' +
+            '<div class="shohin-kessai-kushi-flow">' + flowHtml + '</div>' +
+          '</section>'
+        );
+      }
+
+      function renderKessaiHeaderSummary(shohinCode, hanbaiKubun) {
+        if (!kessaiStatusEl) return;
+        kessaiStatusEl.className = 'shohin-detail-kessai-status';
+        if (isShohinAllKessaiRoutesDone(shohinCode)) {
+          kessaiStatusEl.textContent = kessaiAllDoneHeaderText(shohinCode);
+          kessaiStatusEl.classList.add('is-done');
+          return;
+        }
+        var kessai = resolveActiveKessai(shohinCode, hanbaiKubun);
+        if (!kessai) {
+          kessaiStatusEl.textContent = '該当する決裁案件はありません';
+          kessaiStatusEl.classList.add('is-empty');
+          return;
+        }
+        var parts = buildKessaiFlowParts(kessai);
+        kessaiStatusEl.textContent = parts.summaryText;
+        if (kessai.status === 'done') {
+          kessaiStatusEl.classList.add('is-done');
+        } else {
+          kessaiStatusEl.classList.add('is-active');
+        }
+      }
+
+      function renderKessaiRirekiPanel(shohinCode, hanbaiKubun) {
+        if (!kessaiRirekiListEl) return;
+        var kessai = resolveActiveKessai(shohinCode, hanbaiKubun);
+        var categories = resolveKessaiKushiCategories(hanbaiKubun);
+        var rowsHtml = categories.map(function (category) {
+          return buildKessaiKushiRowHtml(category, kessai, shohinCode, hanbaiKubun);
+        }).join('');
+        kessaiRirekiListEl.innerHTML = rowsHtml || '<div class="approval-flow-empty">決裁フローを表示できません。</div>';
+        if (isShohinAllKessaiRoutesDone(shohinCode)) {
+          var firstDoneRow = kessaiRirekiListEl.querySelector('.shohin-kessai-kushi-row.is-active');
+          if (firstDoneRow && typeof firstDoneRow.scrollIntoView === 'function') {
+            requestAnimationFrame(function () {
+              firstDoneRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            });
+          }
+        } else if (kessai) {
+          var activeRow = kessaiRirekiListEl.querySelector('.shohin-kessai-kushi-row.is-active');
+          if (activeRow && typeof activeRow.scrollIntoView === 'function') {
+            requestAnimationFrame(function () {
+              activeRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            });
+          }
+        }
+      }
+
+      function renderKessaiForShohin(shohinCode, hanbaiKubun) {
+        renderKessaiHeaderSummary(shohinCode, hanbaiKubun);
+        renderKessaiRirekiPanel(shohinCode, hanbaiKubun);
+      }
 
       function getRowDataFromTr(tr) {
         var cells = tr.cells;
@@ -1905,6 +2421,7 @@
         Array.prototype.forEach.call(modal.querySelectorAll('a.shohin-teiban-external-link'), function (a) {
           a.href = 'shiyoshosakusei_teiban.html' + teibanQuery;
         });
+        renderKessaiForShohin(d.code, d.hanbaiKubun);
       }
 
       function probeImage(src) {
