@@ -65,11 +65,20 @@
       min-width: 0;
       width: 100%;
       display: grid;
-      /* PC: 締切パネル 82% / 履歴 18% */
-      grid-template-columns: minmax(0, 82fr) minmax(0, 18fr);
+      /* PC: 仕様書一覧 20% / 締切パネル 65% / 履歴 15% */
+      grid-template-columns: minmax(0, 20fr) minmax(0, 65fr) minmax(0, 15fr);
       gap: 16px;
       padding-right: 20px;
       box-sizing: border-box;
+    }
+
+    /* 品質検査合格書一覧で未選択のときは締切パネル（エリア1〜2）を非表示・グリッドを一覧＋明細サマリーのみ */
+    .screen-body.screen-body--deadline-panel-hidden {
+      grid-template-columns: minmax(0, 28fr) minmax(0, 72fr);
+    }
+
+    .screen-body.screen-body--deadline-panel-hidden .deadline-panel {
+      display: none !important;
     }
 
     .search-condition-panel {
@@ -367,6 +376,20 @@
       flex-wrap: nowrap;
       overflow: hidden;
       padding: 6px;
+    }
+
+    /* エリア2：品質検査合格書プレビュー（一覧選択時・固定画像・アップロード不可） */
+    .deadline-panel-body .deadline-area-2 .product-card.product-card--gokakusyo-readonly {
+      pointer-events: none;
+      user-select: none;
+      cursor: default;
+    }
+
+    .deadline-panel-body .deadline-area-2 .product-image-wrapper.product-image-wrapper--readonly {
+      border-style: solid;
+      border-color: var(--color-border, #d7e0d9);
+      cursor: default;
+      background-color: #fcfefc;
     }
 
     /* content-area-2 相当（hinshitsukensagokakushotoroku.html）: 商品プレビュー＋アップロード */
@@ -790,24 +813,32 @@
       margin-top: 2px;
     }
 
-    .spec-row.spec-zuan-row {
+    /* 1件目ブロック（hinmei1 / hanbai-exhibit1）と 2件目（hinmei2 以降）の区切り */
+    .spec-list-inner > .spec-row.spec-row--after-first-hanbai-exhibit {
+      border-top: 1px solid #d7e0d9;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .spec-row.spec-gokakusyo-row {
       align-items: center;
       flex-wrap: nowrap;
       gap: 10px;
     }
 
-    .spec-zuan-thumb {
+    .spec-gokakusyo-thumb {
       flex-shrink: 0;
-      width: 120px;
-      height: 120px;
+      width: 50px;
+      height: 50px;
       object-fit: contain;
       border: 1px solid #d7e0d9;
       border-radius: var(--radius-sm);
       background: #fcfefc;
       box-sizing: border-box;
+      cursor: pointer;
     }
 
-    .spec-zuan-row .spec-line-val.spec-zuan {
+    .spec-gokakusyo-row .spec-line-val.spec-gokakusyo {
       flex: 1;
       min-width: 0;
     }
@@ -1233,13 +1264,25 @@
       .screen-body {
         flex: none;
         min-height: auto;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 30fr) minmax(0, 70fr);
         grid-template-rows: 500px auto;
         grid-template-areas:
-          "deadline"
-          "progress";
+          "spec deadline"
+          "progress progress";
         gap: 12px;
         padding-right: 0;
+      }
+
+      .screen-body.screen-body--deadline-panel-hidden {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: 500px auto;
+        grid-template-areas:
+          "spec"
+          "progress";
+      }
+
+      .screen-body.screen-body--deadline-panel-hidden .deadline-panel {
+        display: none !important;
       }
 
       .search-condition-panel {
@@ -1396,6 +1439,10 @@
       .summary-panel {
         grid-area: unset;
         width: 100%;
+      }
+
+      .screen-body.screen-body--deadline-panel-hidden .deadline-panel {
+        display: none !important;
       }
 
       .panel {
@@ -2112,8 +2159,204 @@
           </div>
         </div>
       </div>
-      <div class="screen-body">
-        <section class="panel deadline-panel">
+      <div class="screen-body screen-body--deadline-panel-hidden">
+        <section class="panel spec-panel">
+          <div class="panel-header spec-list-panel-header">
+            <span id="listPanelHeader" class="spec-list-panel-title">品質検査合格書一覧</span>
+          </div>
+          <div class="panel-body">
+            <select id="specListSelect" class="spec-select" aria-label="品質検査合格書を選択"></select>
+            <ul class="spec-list" id="specList">
+              <li class="spec-item"
+                data-status="承認待ち" 
+                data-status-ymd="" 
+                data-hinno1="999991" 
+                data-hinmei1="ミッキーA柄タオル"
+                data-hanbai-kubun1="定番" 
+                data-exhibit1="2026年4月 / 東京インターナショナルギフトショー"
+                data-category1="単品" 
+                data-brand1="ディズニー" 
+                data-item1="フェイスタオル"
+                data-designer1="丸眞太郎"
+                
+                data-hinno2="999992" 
+                data-hinmei2="ミッキーB柄タオル"
+                data-hanbai-kubun2="定番" 
+                data-exhibit2="2026年4月 / 東京インターナショナルギフトショー"
+                data-category2="単品" 
+                data-brand2="ディズニー" 
+                data-item2="フェイスタオル"
+                data-designer2="丸眞太郎"
+
+                data-hinno3="999993" 
+                data-hinmei3="ミッキーC柄タオル"
+                data-hanbai-kubun3="定番" 
+                data-exhibit3="2026年4月 / 東京インターナショナルギフトショー"
+                data-category3="単品" 
+                data-brand3="ディズニー" 
+                data-item3="フェイスタオル"
+                data-designer3="丸眞太郎"
+                >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <img class="spec-gokakusyo-thumb" src="images/品質検査合格書.png" alt="" decoding="async" loading="lazy">       
+                    <span class="spec-line-val spec-status"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei1"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit1"></span>
+                  </div>
+                  <div class="spec-row spec-row--after-first-hanbai-exhibit">
+                    <span class="spec-line-val spec-hinmei2"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit2"></span>
+                  </div>
+                  <div class="spec-row spec-row--after-first-hanbai-exhibit">
+                    <span class="spec-line-val spec-hinmei3"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit3"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-status="承認済み" 
+                data-status-ymd="2026/06/15" 
+                data-hinno1="888801" 
+                data-hinmei1="別注無地タオル"
+                data-hanbai-kubun1="別注" 
+                data-exhibit1=""
+                data-category1="単品" 
+                data-brand1="ディズニー" 
+                data-item1="タオル"
+                data-designer1="丸眞花子"
+                
+                data-hinno2="777701" 
+                data-hinmei2="OEM無地タオル"
+                data-hanbai-kubun2="OEM" 
+                data-exhibit2=""
+                data-category2="単品" 
+                data-brand2="ディズニー" 
+                data-item2="タオル"
+                data-designer2="丸眞桜子"
+                >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <img class="spec-gokakusyo-thumb" src="images/品質検査合格書.png" alt="" decoding="async" loading="lazy">       
+                    <span class="spec-line-val spec-status"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei1"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit1"></span>
+                  </div>
+                  <div class="spec-row spec-row--after-first-hanbai-exhibit">
+                    <span class="spec-line-val spec-hinmei2"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit2"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-status="差し戻し" 
+                data-status-ymd="2026/06/14" 
+                data-hinno1="999994" 
+                data-hinmei1="ミッキー春らしい柄タオル"
+                data-hanbai-kubun1="定番" 
+                data-exhibit1="2026年4月 / 東京インターナショナルギフトショー"
+                data-category1="単品" 
+                data-brand1="ディズニー" 
+                data-item1="タオル"
+                data-designer1="丸眞太郎"
+                >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <img class="spec-gokakusyo-thumb" src="images/品質検査合格書.png" alt="" decoding="async" loading="lazy">       
+                    <span class="spec-line-val spec-status"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei1"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit1"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-status="承認待ち" 
+                data-status-ymd="" 
+                data-hinno1="666661" 
+                data-hinmei1="無地タオルA"
+                data-hanbai-kubun1="定番加工" 
+                data-exhibit1=""
+                data-category1="単品" 
+                data-brand1="ディズニー" 
+                data-item1="バスタオル"
+                data-designer1="丸眞太郎"
+                
+                data-hinno2="666662" 
+                data-hinmei2="無地タオルB"
+                data-hanbai-kubun2="定番加工" 
+                data-exhibit2=""
+                data-category2="単品" 
+                data-brand2="ディズニー" 
+                data-item2="バスタオル"
+                data-designer2="丸眞太郎"
+                >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <img class="spec-gokakusyo-thumb" src="images/品質検査合格書.png" alt="" decoding="async" loading="lazy">       
+                    <span class="spec-line-val spec-status"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei1"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit1"></span>
+                  </div>
+                  <div class="spec-row spec-row--after-first-hanbai-exhibit">
+                    <span class="spec-line-val spec-hinmei2"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit2"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="spec-item"
+                data-status="承認済み" 
+                data-status-ymd="2026/06/13" 
+                data-hinno1="888883" 
+                data-hinmei1="別注花柄タオル"
+                data-hanbai-kubun1="別注" 
+                data-exhibit1=""
+                data-category1="総合" 
+                data-brand1="ディズニー" 
+                data-item1="ウォッシュタオル"
+                data-designer1="丸眞太郎"
+                >
+                <div class="spec-list-inner">
+                  <div class="spec-row">
+                    <img class="spec-gokakusyo-thumb" src="images/品質検査合格書.png" alt="" decoding="async" loading="lazy">       
+                    <span class="spec-line-val spec-status"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hinmei1"></span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-line-val spec-hanbai-exhibit1"></span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="panel deadline-panel" hidden aria-hidden="true">
           <div class="panel-header">
             <div class="search-type-toggle cycle-toggle" role="group" aria-label="図案を選択"></div>
           </div>
@@ -2403,8 +2646,122 @@
       return String(raw || '').trim().normalize('NFC');
     }
 
+    const SPEC_PRODUCT_SAMPLE_IMAGES = [
+      'images/zuan001.png',
+      'images/zuan002.png',
+      'images/zuan003.png'
+    ];
+    const GOKAKUSYO_PREVIEW_SRC = 'images/品質検査合格書.png';
+
+    /** 品質検査合格書一覧の data-hinmei1〜3 から商品明細行を組み立て */
+    function getProductsFromSpecItem(item) {
+      if (!item || !item.dataset) return [];
+      const products = [];
+      for (let i = 1; i <= 3; i += 1) {
+        const hinmei = String(item.dataset['hinmei' + i] || '').trim();
+        if (!hinmei) continue;
+        const hanbai = String(item.dataset['hanbaiKubun' + i] || '').trim();
+        const exhibit = String(item.dataset['exhibit' + i] || '').trim();
+        const category = String(item.dataset['category' + i] || '').trim();
+        const brand = String(item.dataset['brand' + i] || '').trim();
+        const itemType = String(item.dataset['item' + i] || '').trim();
+        const designer = String(item.dataset['designer' + i] || '').trim();
+        let hanbaiPart = hanbai;
+        if (exhibit) {
+          hanbaiPart = hanbai ? hanbai + '（' + exhibit + '）' : exhibit;
+        }
+        const metaParts = [hanbaiPart, category, brand, itemType, designer].filter((v) => v.length > 0);
+        products.push({
+          hinmei,
+          meta: metaParts.join('｜') || '—',
+          imageSrc: SPEC_PRODUCT_SAMPLE_IMAGES[products.length] || 'images/noimage.png'
+        });
+      }
+      return products;
+    }
+
+    function renderDetailTableFromSpecItem(item) {
+      const tbody = document.getElementById('detailTableProductListBody');
+      if (!tbody) return;
+      tbody.replaceChildren();
+      if (!item) {
+        const countEl = document.getElementById('progressPanelSummaryDetailCount');
+        if (countEl) countEl.textContent = '0';
+        return;
+      }
+      const products = getProductsFromSpecItem(item);
+      products.forEach((product) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td class="detail-delete-cell">' +
+          '<button type="button" class="detail-delete-btn">×</button>' +
+          '</td>' +
+          '<td>' +
+          '<div class="detail-name"></div>' +
+          '<div class="detail-meta"></div>' +
+          '</td>' +
+          '<td class="detail-image-cell">' +
+          '<div class="detail-row-upload">' +
+          '<div class="product-image-wrapper">' +
+          '<img class="product-image" src="' + product.imageSrc + '" alt="" decoding="async" loading="lazy">' +
+          '<div class="product-pdf-canvas-wrap" aria-hidden="true"><canvas class="product-pdf-canvas"></canvas></div>' +
+          '<div class="product-pdf-fallback"><p>埋め込み不可</p><p><a class="product-pdf-open-tab" href="#" target="_blank" rel="noopener">開く</a></p></div>' +
+          '</div>' +
+          '<input type="file" accept="image/*,application/pdf,.pdf,.ai" class="product-image-input" style="display: none;">' +
+          '</div></td>';
+        tr.querySelector('.detail-name').textContent = product.hinmei;
+        tr.querySelector('.detail-meta').textContent = product.meta;
+        const rowImg = tr.querySelector('.product-image');
+        if (rowImg) {
+          rowImg.alt = product.hinmei ? product.hinmei + 'のプレビュー' : 'プレビュー';
+        }
+        tbody.appendChild(tr);
+        if (typeof window.bindDetailRowImageUploader === 'function') {
+          window.bindDetailRowImageUploader(tr);
+        }
+      });
+      const countEl = document.getElementById('progressPanelSummaryDetailCount');
+      if (countEl) countEl.textContent = String(products.length);
+    }
+
+    function syncGokakusyoPreviewFromItem(item) {
+      const mainImg = document.getElementById('mainProductPreviewImage');
+      const card = document.querySelector('.deadline-area-2 .product-card');
+      const wrapper = card ? card.querySelector('.product-image-wrapper') : null;
+      const fileInput = document.getElementById('productImageInput');
+      const pdfWrap = card ? card.querySelector('.product-pdf-canvas-wrap') : null;
+      if (!mainImg || !card) return;
+
+      if (!item) {
+        card.classList.remove('product-card--gokakusyo-readonly');
+        if (wrapper) wrapper.classList.remove('product-image-wrapper--readonly');
+        mainImg.src = 'images/noimage.png';
+        mainImg.alt = '商品画像プレビュー';
+        if (wrapper) wrapper.classList.remove('is-pdf', 'is-pdf-fallback');
+        if (fileInput) fileInput.hidden = false;
+        if (pdfWrap) pdfWrap.setAttribute('aria-hidden', 'true');
+        return;
+      }
+
+      card.classList.add('product-card--gokakusyo-readonly');
+      if (wrapper) {
+        wrapper.classList.add('product-image-wrapper--readonly');
+        wrapper.classList.remove('is-pdf', 'is-pdf-fallback', 'dragover');
+      }
+      card.classList.remove('dragover');
+      mainImg.src = GOKAKUSYO_PREVIEW_SRC;
+      mainImg.alt = '品質検査合格書';
+      if (pdfWrap) pdfWrap.setAttribute('aria-hidden', 'true');
+      if (fileInput) fileInput.hidden = true;
+    }
+
     function applyDeadlineArea1Image(item) {
-      /* エリア1は「商品を選択」＋明細のみ。従来の帳票プレビュー画像は使用しない */
+      const active = item || (function () {
+        const specList = document.getElementById('specList');
+        if (!specList) return null;
+        return specList.querySelector('.spec-item.is-active');
+      })();
+      renderDetailTableFromSpecItem(active);
     }
 
     /** 仕様書No. に応じたサンプル段階タブ（図案のみの行は specNo なし → タブなし） */
@@ -2667,22 +3024,36 @@
     function initSpecSearch() {
       const specList = document.getElementById('specList');
       const specListSelect = document.getElementById('specListSelect');
-      if (!specList) {
-        const body = document.querySelector('.deadline-panel .deadline-panel-body');
-        if (body) {
-          body.classList.remove('deadline-panel-body--no-spec');
-          body.querySelectorAll('.deadline-area-1, .deadline-area-2').forEach((el) => {
-            el.removeAttribute('aria-hidden');
-          });
-        }
-        return;
-      }
+      if (!specList) return;
       let items = Array.from(specList.querySelectorAll('.spec-item'));
 
+      /** data-hinno1〜3 + data-hinmei1〜3 から「品番　品名」行を列挙 */
+      function getSpecItemCodeNameLines(item) {
+        const lines = [];
+        for (let i = 1; i <= 3; i += 1) {
+          const code = String(item.dataset['hinno' + i] || '').trim();
+          const name = String(item.dataset['hinmei' + i] || '').trim();
+          if (!code && !name) continue;
+          if (code && name) lines.push(code + '\u3000' + name);
+          else lines.push(code || name);
+        }
+        return lines;
+      }
+
+      function isSpecSelectMobileViewport() {
+        return typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 767px)').matches;
+      }
+
       function specOptionLabel(item) {
-        const zuan = item.dataset.zuan || '';
-        const line = [zuan].filter((part) => String(part || '').trim()).join(' / ');
-        return line || '（未設定）';
+        const lines = getSpecItemCodeNameLines(item);
+        if (lines.length) {
+          if (isSpecSelectMobileViewport()) return lines.join(' / ');
+          return lines[0];
+        }
+        const itemName = String(item.dataset.itemName || '').trim();
+        const hinmei = String(item.dataset.hinmei || '').trim();
+        const legacy = [itemName, hinmei].filter(Boolean).join(' / ');
+        return legacy || '（未設定）';
       }
 
       function rebuildSpecSelectOptions() {
@@ -2718,17 +3089,32 @@
         return items.find((item) => item.classList.contains('is-active')) || null;
       }
 
-      function syncDeadlinePanelBodyVisibility(hasSpec) {
+      /** hasActiveSpec: 品質検査合格書一覧でいずれかの行が選択されているとき true */
+      function syncDeadlinePanelBodyVisibility(hasActiveSpec) {
+        const screenBody = document.querySelector('.screen-body');
+        const deadlinePanelEl = document.querySelector('.deadline-panel');
+        if (screenBody) {
+          screenBody.classList.toggle('screen-body--deadline-panel-hidden', !hasActiveSpec);
+        }
+        if (deadlinePanelEl) {
+          if (hasActiveSpec) {
+            deadlinePanelEl.removeAttribute('hidden');
+            deadlinePanelEl.removeAttribute('aria-hidden');
+          } else {
+            deadlinePanelEl.setAttribute('hidden', '');
+            deadlinePanelEl.setAttribute('aria-hidden', 'true');
+          }
+        }
         const body = document.querySelector('.deadline-panel .deadline-panel-body');
         if (!body) return;
-        body.classList.toggle('deadline-panel-body--no-spec', !hasSpec);
+        body.classList.toggle('deadline-panel-body--no-spec', !hasActiveSpec);
         const areas = [
           body.querySelector('.deadline-area-1'),
           body.querySelector('.deadline-area-2')
         ];
         areas.forEach((el) => {
           if (!el) return;
-          if (hasSpec) el.removeAttribute('aria-hidden');
+          if (hasActiveSpec) el.removeAttribute('aria-hidden');
           else el.setAttribute('aria-hidden', 'true');
         });
       }
@@ -2748,14 +3134,82 @@
       }
 
       function renderSpecMeta(item) {
-        const zuanEl = item.querySelector('.spec-zuan');
-        if (zuanEl) {
-          const zuan = (item.dataset.zuan || '').trim();
-          zuanEl.textContent = zuan || '—';
+        const statusEl = item.querySelector('.spec-status');
+        const hinmeiEl1 = item.querySelector('.spec-hinmei1');
+        const hanbaiExhibitEl1 = item.querySelector('.spec-hanbai-exhibit1');
+        const hinmeiEl2 = item.querySelector('.spec-hinmei2');
+        const hanbaiExhibitEl2 = item.querySelector('.spec-hanbai-exhibit2');
+        const hinmeiEl3 = item.querySelector('.spec-hinmei3');
+        const hanbaiExhibitEl3 = item.querySelector('.spec-hanbai-exhibit3');
+
+        if (statusEl) {
+          const status = (item.dataset.status || '').trim();
+          const statusYmd = (item.dataset.statusYmd || '').trim();
+          if (status) {
+            statusEl.textContent = statusYmd ? `${status}（${statusYmd}）` : status;
+          } else {
+            statusEl.textContent = '—';
+          }
+        }
+        if (hinmeiEl1) {
+          const parts = [
+            (item.dataset.hinno1 || '').trim(),
+            (item.dataset.hinmei1 || '').trim()
+          ].filter((v) => v.length > 0);
+          hinmeiEl1.textContent = parts.length ? parts.join('　') : '—';
+        }
+        if (hanbaiExhibitEl1) {
+          const parts = [
+            (item.dataset.hanbaiKubun1 || '').trim(),
+            (item.dataset.exhibit1 || '').trim(),
+            (item.dataset.category1 || '').trim(),
+            (item.dataset.brand1 || '').trim(),
+            (item.dataset.item1 || '').trim(),
+            (item.dataset.designer1 || '').trim()
+          ].filter((v) => v.length > 0);
+          hanbaiExhibitEl1.textContent = parts.length ? parts.join(' / ') : '—';
+        }
+        if (hinmeiEl2) {
+          const parts = [
+            (item.dataset.hinno2 || '').trim(),
+            (item.dataset.hinmei2 || '').trim()
+          ].filter((v) => v.length > 0);
+          hinmeiEl2.textContent = parts.length ? parts.join('　') : '—';
+        }
+        if (hanbaiExhibitEl2) {
+          const parts = [
+            (item.dataset.hanbaiKubun2 || '').trim(),
+            (item.dataset.exhibit2 || '').trim(),
+            (item.dataset.category2 || '').trim(),
+            (item.dataset.brand2 || '').trim(),
+            (item.dataset.item2 || '').trim(),
+            (item.dataset.designer2 || '').trim()
+          ].filter((v) => v.length > 0);
+          hanbaiExhibitEl2.textContent = parts.length ? parts.join(' / ') : '—';
+        }
+        if (hinmeiEl3) {
+          const parts = [
+            (item.dataset.hinno3 || '').trim(),
+            (item.dataset.hinmei3 || '').trim()
+          ].filter((v) => v.length > 0);
+          hinmeiEl3.textContent = parts.length ? parts.join('　') : '—';
+        }
+        if (hanbaiExhibitEl3) {
+          const parts = [
+            (item.dataset.hanbaiKubun3 || '').trim(),
+            (item.dataset.exhibit3 || '').trim(),
+            (item.dataset.category3 || '').trim(),
+            (item.dataset.brand3 || '').trim(),
+            (item.dataset.item3 || '').trim(),
+            (item.dataset.designer3 || '').trim()
+          ].filter((v) => v.length > 0);
+          hanbaiExhibitEl3.textContent = parts.length ? parts.join(' / ') : '—';
         }
       }
 
       function syncFormFromItem(item) {
+        renderDetailTableFromSpecItem(item);
+        syncGokakusyoPreviewFromItem(item);
         syncCycleToggleButtons(item);
         const specNo = item ? (item.dataset.specNo || '').trim() : '';
         const historyMount = document.getElementById('specHistoryCommentMount');
@@ -2828,7 +3282,7 @@
       function clearSpecSelection() {
         items.forEach((candidate) => candidate.classList.remove('is-active'));
         rebuildSpecSelectOptions();
-        syncDeadlinePanelBodyVisibility(true);
+        syncDeadlinePanelBodyVisibility(false);
         syncFormFromItem(null);
       }
 
@@ -2843,6 +3297,13 @@
           if (!Number.isFinite(idx) || !items[idx]) return;
           selectItem(items[idx]);
         });
+      }
+
+      if (typeof window.matchMedia === 'function') {
+        const mq = window.matchMedia('(max-width: 767px)');
+        const onSpecSelectLayoutChange = () => rebuildSpecSelectOptions();
+        if (mq.addEventListener) mq.addEventListener('change', onSpecSelectLayoutChange);
+        else if (mq.addListener) mq.addListener(onSpecSelectLayoutChange);
       }
 
       items.forEach((item) => {
@@ -3053,22 +3514,47 @@
       const sourceImg = document.querySelector('.deadline-area-1 .deadline-area-1-img');
       const modal = document.getElementById('imagePreviewModal');
       const modalImg = document.getElementById('imagePreviewModalImage');
-      if (!previewBtns.length || !sourceImg || !modal || !modalImg) return;
+      if (!modal || !modalImg) return;
 
       function closeModal() {
         modal.hidden = true;
         modalImg.removeAttribute('src');
       }
 
-      previewBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const src = sourceImg.getAttribute('src');
-          if (!src) return;
-          modalImg.src = src;
-          modalImg.alt = sourceImg.alt || '画像プレビュー';
-          modal.hidden = false;
+      function openPreview(src, alt) {
+        if (!src) return;
+        modalImg.src = src;
+        modalImg.alt = alt || '画像プレビュー';
+        modal.hidden = false;
+      }
+
+      if (previewBtns.length && sourceImg) {
+        previewBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const src = sourceImg.getAttribute('src');
+            openPreview(src, sourceImg.alt || '画像プレビュー');
+          });
         });
-      });
+      }
+
+      const specList = document.getElementById('specList');
+      if (specList && specList.dataset.gokakusyoThumbBound !== '1') {
+        specList.dataset.gokakusyoThumbBound = '1';
+        specList.addEventListener('click', (e) => {
+          const thumb = e.target.closest && e.target.closest('.spec-gokakusyo-thumb');
+          if (!thumb || !specList.contains(thumb)) return;
+          e.preventDefault();
+          const src = (thumb.getAttribute('src') || thumb.currentSrc || '').trim();
+          if (!src) return;
+          const item = thumb.closest('.spec-item');
+          const hinmei =
+            item &&
+            (item.getAttribute('data-hinmei') || item.getAttribute('data-hinmei1') || '').trim();
+          const altFromThumb = (thumb.getAttribute('alt') || '').trim();
+          const alt = altFromThumb || (hinmei ? hinmei + 'の品質検査合格書' : '品質検査合格書プレビュー');
+          openPreview(src, alt);
+        });
+      }
 
       modal.addEventListener('click', (event) => {
         if (event.target === modal) closeModal();
