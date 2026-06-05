@@ -72,7 +72,7 @@
       box-sizing: border-box;
     }
 
-    /* 右カラム：履歴・明細サマリーを別パネルで縦積み */
+    /* 右カラム：履歴パネル */
     .screen-body-rail {
       display: flex;
       flex-direction: column;
@@ -83,11 +83,6 @@
 
     .history-panel {
       flex: 1 1 0;
-      min-height: 0;
-    }
-
-    .summary-panel {
-      flex: 0 1 auto;
       min-height: 0;
     }
 
@@ -259,15 +254,13 @@
     }
 
     .deadline-panel,
-    .history-panel,
-    .summary-panel {
+    .history-panel {
       min-height: 0;
       overflow: hidden;
     }
 
     .deadline-panel .panel-body,
-    .history-panel .panel-body,
-    .summary-panel .panel-body {
+    .history-panel .panel-body {
       min-height: 0;
       overflow-x: hidden;
       overflow-y: auto;
@@ -372,7 +365,7 @@
     .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 720px;
+      min-width: 900px;
       background: #fff;
       font-size: 12px;
       font-weight: 600;
@@ -424,6 +417,178 @@
       box-shadow: 0 0 0 2px rgba(0, 134, 50, 0.12);
     }
 
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-product-image-cell {
+      width: 56px;
+      padding: 4px;
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-product-thumb {
+      display: block;
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      margin: 0 auto;
+      border: 1px solid #d7e0d9;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-product-thumb[hidden] {
+      display: none;
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-product-thumb:not([hidden]) {
+      cursor: pointer;
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-stock-inquiry-cell {
+      width: 88px;
+      padding: 4px;
+      white-space: nowrap;
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-stock-inquiry-btn {
+      min-width: 72px;
+      min-height: 32px;
+      padding: 6px 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: nowrap;
+      background: #fff;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      transition: 0.15s;
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-stock-inquiry-btn:hover {
+      background: #edf8f0;
+    }
+
+    #rentalStockInquiryModal.modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 9999;
+      box-sizing: border-box;
+    }
+
+    #rentalStockInquiryModal.modal-overlay.show {
+      display: flex;
+    }
+
+    #rentalStockInquiryModal .modal-box {
+      width: 100%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: rentalModalFadeIn 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    #rentalStockInquiryModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      background: #e8f5ef;
+      border-bottom: 1px solid #c5e6d9;
+    }
+
+    #rentalStockInquiryModal .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #1d3557;
+    }
+
+    #rentalStockInquiryModal .modal-close-btn {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 50%;
+      background: #fff;
+      color: #1d3557;
+      font-size: 22px;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    #rentalStockInquiryModal .modal-close-btn:hover {
+      background: #d4ede2;
+    }
+
+    #rentalStockInquiryModal .modal-body {
+      padding: 20px 22px;
+    }
+
+    #rentalStockInquiryModal .modal-footer {
+      padding: 0 22px 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    #rentalStockInquiryModal .modal-info {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    #rentalStockInquiryModal .modal-info-item {
+      background: #f3faf6;
+      border: 1px solid #c9e8db;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    #rentalStockInquiryModal .modal-info-item.full {
+      grid-column: 1 / -1;
+    }
+
+    #rentalStockInquiryModal .modal-info-item .label {
+      color: #5b6d7f;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    #rentalStockInquiryModal .branch-list {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #rentalStockInquiryModal .branch-list th,
+    #rentalStockInquiryModal .branch-list td {
+      border-left: none;
+      border-right: none;
+      border-top: 1px solid #d9e4ef;
+      border-bottom: 1px solid #d9e4ef;
+      padding: 10px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    #rentalStockInquiryModal .branch-list th {
+      background: var(--color-primary);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      #rentalStockInquiryModal .modal-info {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
     .deadline-panel-body .deadline-area-1 .rental-detail-subtext {
       margin: 4px 0 0;
       font-size: 11px;
@@ -468,6 +633,17 @@
       object-fit: contain;
       border-radius: 6px;
       background: #fff;
+    }
+
+    .image-preview-modal.is-product-preview .image-preview-modal__dialog {
+      overflow: visible;
+    }
+
+    .image-preview-modal.is-product-preview .image-preview-modal__image {
+      max-width: min(96vw, 2100px);
+      max-height: 92vh;
+      transform: scale(1.5);
+      transform-origin: center center;
     }
 
     #searchConditionClearBtn {
@@ -977,61 +1153,10 @@
       }
     }
 
-    .history-panel .panel-body,
-    .summary-panel .panel-body {
+    .history-panel .panel-body {
       display: flex;
       flex-direction: column;
       gap: 12px;
-    }
-
-    .summary-panel .summary-table-wrap {
-      width: 100%;
-      min-width: 0;
-      overflow-x: auto;
-    }
-
-    .summary-panel table.summary-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      font-weight: 600;
-      color: #204331;
-      background: #fff;
-    }
-
-    .summary-panel table.summary-table th,
-    .summary-panel table.summary-table td {
-      padding: 8px 10px;
-      border: 1px solid #d7e0d9;
-      vertical-align: middle;
-      box-sizing: border-box;
-    }
-
-    .summary-panel table.summary-table thead th {
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    .summary-panel table.summary-table tbody th {
-      width: 48%;
-      text-align: left;
-      font-weight: 600;
-      background: #f6faf7;
-      font-size: 12px;
-    }
-
-    .summary-panel table.summary-table tbody td {
-      text-align: right;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .summary-panel table.summary-table tbody tr:nth-child(even) td,
-    .summary-panel table.summary-table tbody tr:nth-child(even) th {
-      background: #fbfcfb;
     }
 
     #specHistoryCommentMount {
@@ -1629,14 +1754,8 @@
         min-height: auto;
       }
 
-      .summary-panel {
-        flex: 0 1 auto;
-        min-height: 0;
-      }
-
       .deadline-panel .panel-body,
-      .history-panel .panel-body,
-      .summary-panel .panel-body {
+      .history-panel .panel-body {
         overflow: auto;
       }
 
@@ -2195,8 +2314,10 @@
                     <thead>
                       <tr>
                         <th>No</th>
+                        <th></th>
                         <th>商品コード</th>
                         <th>商品名</th>
+                        <th></th>
                         <th>依頼数</th>
                         <th>手配数</th>
                         <th>サンプルスペック</th>
@@ -2205,16 +2326,20 @@
                     <tbody id="rentalDetailEntryTbody">
                       <tr>
                         <td>1</td>
-                        <td><input type="text" class="form-control" placeholder="商品コード" autocomplete="off" value="A10023"></td>
-                        <td><input type="text" class="form-control" placeholder="商品名" autocomplete="off" value="ロゴプリントTシャツ"></td>
+                        <td class="rental-detail-product-image-cell"><img src="images/zuan006.png" class="rental-detail-product-thumb" alt="行1 商品画像"></td>
+                        <td><input type="text" class="form-control rental-detail-product-code-input" placeholder="商品コード" autocomplete="off" value="A10023"></td>
+                        <td><input type="text" class="form-control rental-detail-product-name-input" placeholder="商品名" autocomplete="off" value="ロゴプリントTシャツ"></td>
+                        <td class="rental-detail-stock-inquiry-cell"><button type="button" class="btn btn-secondary btn-small rental-detail-stock-inquiry-btn" aria-label="行1 在庫照会">在庫照会</button></td>
                         <td><input type="number" class="form-control" placeholder="依頼数" inputmode="numeric" value="5"></td>
                         <td><input type="number" class="form-control" placeholder="手配数" inputmode="numeric" value="5"></td>
                         <td><input type="text" class="form-control" placeholder="サンプルスペック" autocomplete="off" value="M / レッド"></td>
                       </tr>
                       <tr>
                         <td>2</td>
-                        <td><input type="text" class="form-control" placeholder="商品コード" autocomplete="off" value="B30012"></td>
-                        <td><input type="text" class="form-control" placeholder="商品名" autocomplete="off" value="キャンバストート"></td>
+                        <td class="rental-detail-product-image-cell"><img src="images/zuan002.png" class="rental-detail-product-thumb" alt="行2 商品画像"></td>
+                        <td><input type="text" class="form-control rental-detail-product-code-input" placeholder="商品コード" autocomplete="off" value="B30012"></td>
+                        <td><input type="text" class="form-control rental-detail-product-name-input" placeholder="商品名" autocomplete="off" value="キャンバストート"></td>
+                        <td class="rental-detail-stock-inquiry-cell"><button type="button" class="btn btn-secondary btn-small rental-detail-stock-inquiry-btn" aria-label="行2 在庫照会">在庫照会</button></td>
                         <td><input type="number" class="form-control" placeholder="依頼数" inputmode="numeric" value="5"></td>
                         <td><input type="number" class="form-control" placeholder="手配数" inputmode="numeric" value="5"></td>
                         <td><input type="text" class="form-control" placeholder="サンプルスペック" autocomplete="off" value="標準 / 生成り"></td>
@@ -2232,29 +2357,6 @@
             <div class="panel-header" id="progressPanelHistoryHeader">履歴</div>
             <div class="panel-body">
               <div id="specHistoryCommentMount" class="spec-history-comments" hidden></div>
-            </div>
-          </section>
-          <section class="panel summary-panel">
-            <div class="panel-header" id="progressPanelSummaryHeader">明細サマリー</div>
-            <div class="panel-body">
-              <div class="summary-table-wrap">
-                <table class="summary-table" id="progressPanelSummaryTable" aria-label="明細サマリー">
-                  <tbody>
-                    <tr>
-                      <th scope="row">登録明細数</th>
-                      <td id="progressPanelSummaryDetailCount">2</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">依頼数合計</th>
-                      <td id="progressPanelSummaryRequestTotal">10</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">手配数合計</th>
-                      <td id="progressPanelSummaryArrangeTotal">10</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </div>
           </section>
         </div>      
@@ -2276,6 +2378,45 @@
   <div class="image-preview-modal" id="imagePreviewModal" role="dialog" aria-modal="true" aria-label="画像プレビュー" hidden>
     <div class="image-preview-modal__dialog">
       <img class="image-preview-modal__image" id="imagePreviewModalImage" alt="仕様書プレビュー">
+    </div>
+  </div>
+
+  <!-- 在庫照会モーダル -->
+  <div id="rentalStockInquiryModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rentalStockInquiryModalTitle" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="rentalStockInquiryModalTitle">拠点別最終サンプル数</h2>
+        <button type="button" class="modal-close-btn" id="rentalStockInquiryModalCloseX" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-info">
+          <div class="modal-info-item">
+            <span class="label">商品コード</span>
+            <span id="rentalStockInquiryCode">-</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="label">商品名</span>
+            <span id="rentalStockInquiryName">-</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="branch-list">
+            <thead>
+              <tr id="rentalStockInquiryHeadRow">
+                <th>拠点</th>
+                <th>在庫数</th>
+                <th>使用予定</th>
+                <th>貸出中</th>
+                <th>貸出可能数</th>
+              </tr>
+            </thead>
+            <tbody id="rentalStockInquiryTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="rentalStockInquiryModalClose">閉じる</button>
+      </div>
     </div>
   </div>
 
@@ -3096,33 +3237,132 @@
       }
     }
 
+    let openImagePreviewModal = null;
+
     function initPreviewModal() {
-      const previewBtns = document.querySelectorAll('[data-preview-open="1"]');
-      const sourceImg = document.querySelector('.deadline-area-1 .deadline-area-1-img');
       const modal = document.getElementById('imagePreviewModal');
       const modalImg = document.getElementById('imagePreviewModalImage');
-      if (!previewBtns.length || !sourceImg || !modal || !modalImg) return;
+      if (!modal || !modalImg) return;
 
       function closeModal() {
         modal.hidden = true;
+        modal.classList.remove('is-product-preview');
         modalImg.removeAttribute('src');
       }
 
-      previewBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const src = sourceImg.getAttribute('src');
-          if (!src) return;
-          modalImg.src = src;
-          modalImg.alt = sourceImg.alt || '仕様書プレビュー';
-          modal.hidden = false;
+      function openModal(src, alt, options = {}) {
+        const imageSrc = (src || '').trim();
+        if (!imageSrc) return;
+        modal.classList.toggle('is-product-preview', !!options.isProduct);
+        modalImg.src = imageSrc;
+        modalImg.alt = alt || '画像プレビュー';
+        modal.hidden = false;
+      }
+
+      openImagePreviewModal = (src, alt) => openModal(src, alt, { isProduct: true });
+
+      const previewBtns = document.querySelectorAll('[data-preview-open="1"]');
+      const sourceImg = document.querySelector('.deadline-area-1 .deadline-area-1-img');
+      if (previewBtns.length && sourceImg) {
+        previewBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            openModal(sourceImg.getAttribute('src'), sourceImg.alt || '仕様書プレビュー');
+          });
         });
-      });
+      }
 
       modal.addEventListener('click', (event) => {
         if (event.target === modal) closeModal();
       });
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && !modal.hidden) closeModal();
+      });
+    }
+
+    const RENTAL_DETAIL_PRODUCT_IMAGES = [
+      'images/zuan006.png',
+      'images/zuan002.png',
+      'images/zuan003.png',
+      'images/zuan004.png',
+      'images/zuan005.png',
+    ];
+
+    function getRentalDetailProductImageSrc(rowIndex) {
+      return RENTAL_DETAIL_PRODUCT_IMAGES[(rowIndex - 1) % RENTAL_DETAIL_PRODUCT_IMAGES.length];
+    }
+
+    function updateRentalDetailProductImage(tr, rowIndex) {
+      const codeInput = tr.querySelector('.rental-detail-product-code-input');
+      const thumb = tr.querySelector('.rental-detail-product-thumb');
+      if (!codeInput || !thumb) return;
+
+      const hasCode = codeInput.value.trim().length > 0;
+      if (!hasCode) {
+        thumb.hidden = true;
+        thumb.removeAttribute('src');
+        return;
+      }
+
+      const idx = rowIndex ?? Array.from(tr.parentElement.querySelectorAll('tr')).indexOf(tr) + 1;
+      thumb.src = getRentalDetailProductImageSrc(idx);
+      thumb.hidden = false;
+    }
+
+    function getFinalSampleBranchRows(code) {
+      if (code === 'A10023') {
+        return ''
+          + '<tr><td>東京本社</td><td>7</td><td>1</td><td>1</td><td>5</td></tr>'
+          + '<tr><td>大阪支店</td><td>6</td><td>1</td><td>0</td><td>5</td></tr>'
+          + '<tr><td>名古屋支店</td><td>5</td><td>0</td><td>0</td><td>5</td></tr>';
+      }
+      if (code === 'A10024') {
+        return ''
+          + '<tr><td>東京本社</td><td>4</td><td>1</td><td>1</td><td>2</td></tr>'
+          + '<tr><td>大阪支店</td><td>3</td><td>0</td><td>1</td><td>2</td></tr>'
+          + '<tr><td>名古屋支店</td><td>2</td><td>0</td><td>0</td><td>2</td></tr>';
+      }
+      return ''
+        + '<tr><td>東京本社</td><td>10</td><td>2</td><td>1</td><td>7</td></tr>'
+        + '<tr><td>大阪支店</td><td>9</td><td>1</td><td>1</td><td>7</td></tr>'
+        + '<tr><td>名古屋支店</td><td>7</td><td>1</td><td>0</td><td>6</td></tr>';
+    }
+
+    function initRentalStockInquiryModal() {
+      const modal = document.getElementById('rentalStockInquiryModal');
+      const closeX = document.getElementById('rentalStockInquiryModalCloseX');
+      const closeBtn = document.getElementById('rentalStockInquiryModalClose');
+      const modalCode = document.getElementById('rentalStockInquiryCode');
+      const modalName = document.getElementById('rentalStockInquiryName');
+      const modalTableBody = document.getElementById('rentalStockInquiryTableBody');
+      if (!modal || !modalTableBody) return;
+
+      function closeModal() {
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      function openModal(tr) {
+        const codeInput = tr.querySelector('.rental-detail-product-code-input');
+        const nameInput = tr.querySelector('.rental-detail-product-name-input');
+        const code = (codeInput?.value || '').trim();
+        const name = (nameInput?.value || '').trim();
+
+        if (modalCode) modalCode.textContent = code || '-';
+        if (modalName) modalName.textContent = name || '-';
+        modalTableBody.innerHTML = getFinalSampleBranchRows(code);
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+      }
+
+      window.openRentalStockInquiryModal = openModal;
+
+      if (closeX) closeX.addEventListener('click', closeModal);
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('show')) closeModal();
       });
     }
 
@@ -3137,12 +3377,17 @@
           const noCell = tr.querySelector('td');
           if (noCell) noCell.textContent = String(i + 1);
           const n = i + 1;
+          const thumb = tr.querySelector('.rental-detail-product-thumb');
+          if (thumb) thumb.setAttribute('alt', `行${n} 商品画像`);
+          const stockBtn = tr.querySelector('.rental-detail-stock-inquiry-btn');
+          if (stockBtn) stockBtn.setAttribute('aria-label', `行${n} 在庫照会`);
           tr.querySelectorAll('input').forEach((input) => {
             const lab = input.getAttribute('aria-label') || '';
             const m = lab.match(/行\d+\s*(.+)$/);
             const tail = m ? m[1] : lab.replace(/^行\d+\s*/, '');
             if (tail) input.setAttribute('aria-label', `行${n} ${tail}`);
           });
+          updateRentalDetailProductImage(tr, n);
         });
       }
 
@@ -3151,14 +3396,42 @@
         const idx = tbody.querySelectorAll('tr').length + 1;
         tr.innerHTML = ''
           + `<td>${idx}</td>`
-          + `<td><input type="text" class="form-control" placeholder="商品コード" autocomplete="off" aria-label="行${idx} 商品コード"></td>`
-          + `<td><input type="text" class="form-control" placeholder="商品名" autocomplete="off" aria-label="行${idx} 商品名"></td>`
+          + `<td class="rental-detail-product-image-cell"><img class="rental-detail-product-thumb" alt="行${idx} 商品画像" hidden></td>`
+          + `<td><input type="text" class="form-control rental-detail-product-code-input" placeholder="商品コード" autocomplete="off" aria-label="行${idx} 商品コード"></td>`
+          + `<td><input type="text" class="form-control rental-detail-product-name-input" placeholder="商品名" autocomplete="off" aria-label="行${idx} 商品名"></td>`
+          + `<td class="rental-detail-stock-inquiry-cell"><button type="button" class="btn btn-secondary btn-small rental-detail-stock-inquiry-btn" aria-label="行${idx} 在庫照会">在庫照会</button></td>`
           + `<td><input type="number" class="form-control" placeholder="依頼数" inputmode="numeric" aria-label="行${idx} 依頼数"></td>`
           + `<td><input type="number" class="form-control" placeholder="手配数" inputmode="numeric" aria-label="行${idx} 手配数"></td>`
           + `<td><input type="text" class="form-control" placeholder="サンプルスペック" autocomplete="off" aria-label="行${idx} サンプルスペック"></td>`;
         tbody.appendChild(tr);
         renumberRows();
       }
+
+      tbody.addEventListener('input', (event) => {
+        const input = event.target;
+        if (!input.classList.contains('rental-detail-product-code-input')) return;
+        const tr = input.closest('tr');
+        if (tr) updateRentalDetailProductImage(tr);
+      });
+
+      tbody.addEventListener('click', (event) => {
+        const stockBtn = event.target.closest('.rental-detail-stock-inquiry-btn');
+        if (stockBtn && tbody.contains(stockBtn)) {
+          event.preventDefault();
+          const tr = stockBtn.closest('tr');
+          if (tr && typeof window.openRentalStockInquiryModal === 'function') {
+            window.openRentalStockInquiryModal(tr);
+          }
+          return;
+        }
+
+        const thumb = event.target.closest('.rental-detail-product-thumb');
+        if (!thumb || thumb.hidden || !tbody.contains(thumb)) return;
+        const src = (thumb.getAttribute('src') || thumb.src || '').trim();
+        if (!src || !openImagePreviewModal) return;
+        event.preventDefault();
+        openImagePreviewModal(src, thumb.getAttribute('alt') || '商品画像');
+      });
 
       addBtn.addEventListener('click', () => appendEmptyRow());
 
@@ -3168,6 +3441,8 @@
         rows[rows.length - 1].remove();
         renumberRows();
       });
+
+      renumberRows();
     }
 
     loadSharedSidebar();
@@ -3180,6 +3455,7 @@
     initSampleRentalEntryEmbedModal();
     initSampleRentalEntryEmbedReasonOther();
     initPreviewModal();
+    initRentalStockInquiryModal();
     initRentalDetailEntryTable();
   </script>
 </body>
