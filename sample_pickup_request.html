@@ -275,9 +275,63 @@
       box-sizing: border-box;
     }
 
+    .deadline-panel-body .deadline-area-1 .rental-detail-header-fields {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px 12px;
+      margin-bottom: 10px;
+      align-items: start;
+    }
+
+    .deadline-panel-body .deadline-area-1 .rental-detail-header-fields .form-control {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      border: 1px solid #c7d4cb;
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #204331;
+      background: #fff;
+    }
+
+    .deadline-panel-body .deadline-area-1 .rental-detail-header-fields .form-control:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(0, 134, 50, 0.12);
+    }
+
+    .deadline-panel-body .deadline-area-1 .rental-detail-header-fields select.form-control {
+      cursor: pointer;
+      min-height: 30px;
+      font-family: inherit;
+    }
+
+    .deadline-panel-body .deadline-area-1 .rental-detail-header-display {
+      display: block;
+      width: 100%;
+      min-height: 30px;
+      box-sizing: border-box;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #204331;
+      background: #f6faf7;
+      line-height: 1.4;
+    }
+
+    .deadline-panel-body .deadline-area-1 .rental-detail-header-display:empty::before,
+    .deadline-panel-body .deadline-area-1 .rental-detail-header-display.is-empty {
+      color: rgba(32, 67, 49, 0.45);
+      font-weight: 500;
+    }
+
     .deadline-panel-body .deadline-area-1 .rental-detail-section-title-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       gap: 10px;
       margin-bottom: 8px;
@@ -329,7 +383,7 @@
     .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 720px;
+      min-width: 560px;
       background: #fff;
       font-size: 12px;
       font-weight: 600;
@@ -379,6 +433,26 @@
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 2px rgba(0, 134, 50, 0.12);
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-cell-display {
+      display: block;
+      width: 100%;
+      min-height: 30px;
+      box-sizing: border-box;
+      border: 1px solid #d7e0d9;
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #204331;
+      background: #f6faf7;
+      line-height: 1.4;
+    }
+
+    .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table .rental-detail-cell-display.is-empty {
+      color: rgba(32, 67, 49, 0.45);
+      font-weight: 500;
     }
 
     .deadline-panel-body .deadline-area-1 table.rental-detail-entry-table select.form-control {
@@ -1987,6 +2061,10 @@
         gap: 8px;
       }
 
+      .deadline-panel-body .deadline-area-1 .rental-detail-header-fields {
+        grid-template-columns: 1fr;
+      }
+
       .content-footer {
         padding: 6px 4px 4px;
       }
@@ -2229,6 +2307,7 @@
             <ul class="spec-list" id="specList">
               <li class="spec-item"
                 data-hikiage-ymd="2026/07/01"
+                data-tokuisaki-code="C0001"
                 data-tokuisaki-name="取引先名１"
                 data-eigyotanto="営業担当①"
                 data-shiyo-mokuteki="展示会用"
@@ -2253,6 +2332,7 @@
               </li>
               <li class="spec-item"
                 data-hikiage-ymd="2026/07/02"
+                data-tokuisaki-code="C0002"
                 data-tokuisaki-name="取引先名２"
                 data-eigyotanto="営業担当②"
                 data-shiyo-mokuteki="撮影用"
@@ -2277,6 +2357,7 @@
               </li>
               <li class="spec-item"
                 data-hikiage-ymd="2026/07/03"
+                data-tokuisaki-code="C0003"
                 data-tokuisaki-name="取引先名３"
                 data-eigyotanto="営業担当③"
                 data-shiyo-mokuteki="商談用"
@@ -2310,6 +2391,27 @@
           <div class="panel-body deadline-panel-body deadline-panel-body--no-spec">
             <div class="deadline-area deadline-area-1" aria-label="エリア1" aria-hidden="true">
               <div class="rental-detail-block">
+                <div class="rental-detail-header-fields" aria-label="申請ヘッダ">
+                  <div class="field">
+                    <span class="field-label" id="rentalDetailTokuisakiCodeFieldLabel">取引先コード</span>
+                    <select class="form-control" id="rentalDetailTokuisakiCode" aria-labelledby="rentalDetailTokuisakiCodeFieldLabel">
+                      <option value="">未選択</option>
+                      <option value="C0001" selected>C0001</option>
+                      <option value="C0002">C0002</option>
+                      <option value="C0003">C0003</option>
+                      <option value="C0004">C0004</option>
+                      <option value="C0005">C0005</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <span class="field-label" id="rentalDetailTokuisakiNameFieldLabel">取引先名</span>
+                    <span class="rental-detail-header-display" id="rentalDetailTokuisakiName" aria-labelledby="rentalDetailTokuisakiNameFieldLabel">取引先名１</span>
+                  </div>
+                  <div class="field">
+                    <span class="field-label" id="rentalDetailEigyotantoFieldLabel">営業担当</span>
+                    <span class="rental-detail-header-display" id="rentalDetailEigyotanto" aria-labelledby="rentalDetailEigyotantoFieldLabel">営業担当①</span>
+                  </div>
+                </div>
                 <div class="rental-detail-section-title-row">
                   <div class="rental-detail-header-buttons">
                     <button type="button" class="btn btn-secondary btn-small" id="rentalDetailRowAddBtn">行追加</button>
@@ -2321,14 +2423,10 @@
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>取引先コード</th>
-                        <th>取引先名</th>
-                        <th>営業担当</th>
                         <th>商品コード</th>
-                        <th>品番</th>
                         <th>商品名</th>
-                        <th>単位</th>
                         <th>数量</th>
+                        <th>単位</th>
                         <th>使用目的</th>
                         <th>確認欄</th>
                         <th>操作</th>
@@ -2337,22 +2435,18 @@
                     <tbody id="rentalDetailEntryTbody">
                       <tr>
                         <td>1</td>
-                        <td><input type="text" class="form-control" placeholder="取引先コード" autocomplete="off" value="C0001"></td>
-                        <td><input type="text" class="form-control" placeholder="取引先名" autocomplete="off" value="取引先名１"></td>
-                        <td><input type="text" class="form-control" placeholder="営業担当" autocomplete="off" value="営業担当①"></td>
-                        <td><input type="text" class="form-control" placeholder="商品コード" autocomplete="off" value="A10023"></td>
-                        <td><input type="text" class="form-control" placeholder="品番" autocomplete="off" value="A10023-RD-M"></td>
-                        <td><input type="text" class="form-control" placeholder="商品名" autocomplete="off" value="ロゴプリントTシャツ"></td>
                         <td>
-                          <select class="form-control" aria-label="行1 単位">
+                          <select class="form-control rental-detail-product-code-select" aria-label="行1 商品コード">
                             <option value="">未選択</option>
-                            <option value="枚" selected>枚</option>
-                            <option value="個">個</option>
-                            <option value="本">本</option>
-                            <option value="セット">セット</option> 
+                            <option value="A10023" selected>A10023</option>
+                            <option value="B30012">B30012</option>
+                            <option value="C40001">C40001</option>
+                            <option value="D50001">D50001</option>
                           </select>
                         </td>
+                        <td><span class="rental-detail-cell-display rental-detail-product-name" aria-label="行1 商品名">ロゴプリントTシャツ</span></td>
                         <td><input type="number" class="form-control" placeholder="数量" inputmode="numeric" value="5"></td>
+                        <td><span class="rental-detail-cell-display rental-detail-product-unit" aria-label="行1 単位">枚</span></td>
                         <td><input type="text" class="form-control" placeholder="使用目的" autocomplete="off" value="展示会用"></td>
                         <td>
                           <select class="form-control" aria-label="行1 確認欄">
@@ -2363,26 +2457,23 @@
                           </select>
                         </td>
                         <td>
-                          <button type="button" class="btn-fab-new" id="rentalDetailRowHistoryBtn" style="font-size: 12px;width: 55px;" aria-haspopup="dialog" aria-controls="historyModal">履歴</button>
+                          <button type="button" class="btn-fab-new rental-detail-row-history-btn" style="font-size: 12px;width: 55px;" aria-label="行1 履歴" aria-haspopup="dialog" aria-controls="historyModal">履歴</button>
                         </td>
                       </tr>
                       <tr>
                         <td>2</td>
-                        <td><input type="text" class="form-control" placeholder="取引先コード" autocomplete="off" value="C0002"></td>
-                        <td><input type="text" class="form-control" placeholder="取引先名" autocomplete="off" value="取引先名２"></td>
-                        <td><input type="text" class="form-control" placeholder="営業担当" autocomplete="off" value="営業担当②"></td>
-                        <td><input type="text" class="form-control" placeholder="商品コード" autocomplete="off" value="B30012"></td>
-                        <td><input type="text" class="form-control" placeholder="品番" autocomplete="off" value="B30012-NT"></td>
-                        <td><input type="text" class="form-control" placeholder="商品名" autocomplete="off" value="キャンバストート"></td>
                         <td>
-                          <select class="form-control" aria-label="行2 単位">
+                          <select class="form-control rental-detail-product-code-select" aria-label="行2 商品コード">
                             <option value="">未選択</option>
-                            <option value="枚">枚</option>
-                            <option value="個" selected>個</option>
-                            <option value="セット">セット</option>
+                            <option value="A10023">A10023</option>
+                            <option value="B30012" selected>B30012</option>
+                            <option value="C40001">C40001</option>
+                            <option value="D50001">D50001</option>
                           </select>
                         </td>
+                        <td><span class="rental-detail-cell-display rental-detail-product-name" aria-label="行2 商品名">キャンバストート</span></td>
                         <td><input type="number" class="form-control" placeholder="数量" inputmode="numeric" value="3"></td>
+                        <td><span class="rental-detail-cell-display rental-detail-product-unit" aria-label="行2 単位">個</span></td>
                         <td><input type="text" class="form-control" placeholder="使用目的" autocomplete="off" value="撮影用"></td>
                         <td>
                           <select class="form-control" aria-label="行2 確認欄">
@@ -2392,12 +2483,14 @@
                             <option value="不要">不要</option>
                           </select>
                         </td>
-                        <td>&nbsp;</td>
+                        <td>
+                          <button type="button" class="btn-fab-new rental-detail-row-history-btn" style="font-size: 12px;width: 55px;" aria-label="行2 履歴" aria-haspopup="dialog" aria-controls="historyModal">履歴</button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <p class="rental-detail-subtext">取引先ごと・商品ごとに複数行で入力し、引き上げ対象をまとめて申請する想定です。</p>
+                <p class="rental-detail-subtext">取引先コードをヘッダで選択すると取引先名・営業担当が自動表示され、明細では商品コードを選択すると商品名・単位が自動表示されます。</p>
               </div>
             </div>
           </div>
@@ -2426,6 +2519,10 @@
                     <tr>
                       <th scope="row">数量合計</th>
                       <td id="progressPanelSummaryArrangeTotal">8</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">引き上げ金額</th>
+                      <td id="progressPanelSummaryHikiageAmountTotal">¥12,000</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2755,6 +2852,13 @@
       }
 
       function syncFormFromItem(item) {
+        const tokuisakiCodeEl = document.getElementById('rentalDetailTokuisakiCode');
+        if (tokuisakiCodeEl) {
+          const code = item ? String(item.dataset.tokuisakiCode || '').trim() : '';
+          tokuisakiCodeEl.value = code;
+          syncRentalDetailTokuisakiDisplay(code);
+        }
+
         const historyMount = document.getElementById('specHistoryCommentMount');
         if (historyMount) {
           historyMount.replaceChildren();
@@ -3241,31 +3345,37 @@
 
     /** 引き上げ明細行の履歴モーダル */
     function initHistoryModal() {
-      const historyBtn = document.getElementById('rentalDetailRowHistoryBtn');
+      const tbody = document.getElementById('rentalDetailEntryTbody');
       const modal = document.getElementById('historyModal');
       const closeX = document.getElementById('historyModalCloseX');
       const closeFooter = document.getElementById('historyModalClose');
-      if (!historyBtn || !modal) return;
+      if (!tbody || !modal) return;
 
-      function rowInputValue(row, placeholder) {
-        const input = row.querySelector(`input[placeholder="${placeholder}"]`);
-        const value = input ? String(input.value || '').trim() : '';
-        return value || '-';
+      let lastFocusedHistoryBtn = null;
+
+      function displayValue(value) {
+        const v = String(value || '').trim();
+        return v && v !== '—' ? v : '-';
       }
 
       function fillModalFromRow(row) {
         if (!row) return;
-        const fields = [
-          ['modalTokuisakiCode', '取引先コード'],
-          ['modalTokuisakiName', '取引先名'],
-          ['modalEigyotanto', '営業担当'],
-          ['modalProductCode', '商品コード'],
-          ['modalProductNumber', '品番'],
-          ['modalProductName', '商品名']
+        const tokuisakiCodeEl = document.getElementById('rentalDetailTokuisakiCode');
+        const tokuisakiNameEl = document.getElementById('rentalDetailTokuisakiName');
+        const eigyotantoEl = document.getElementById('rentalDetailEigyotanto');
+        const productCodeSelect = row.querySelector('.rental-detail-product-code-select');
+        const productNameEl = row.querySelector('.rental-detail-product-name');
+        const modalFields = [
+          ['modalTokuisakiCode', tokuisakiCodeEl ? tokuisakiCodeEl.value : ''],
+          ['modalTokuisakiName', tokuisakiNameEl ? tokuisakiNameEl.textContent : ''],
+          ['modalEigyotanto', eigyotantoEl ? eigyotantoEl.textContent : ''],
+          ['modalProductCode', productCodeSelect ? productCodeSelect.value : ''],
+          ['modalProductNumber', '-'],
+          ['modalProductName', productNameEl ? productNameEl.textContent : '']
         ];
-        fields.forEach(([id, placeholder]) => {
+        modalFields.forEach(([id, value]) => {
           const el = document.getElementById(id);
-          if (el) el.textContent = rowInputValue(row, placeholder);
+          if (el) el.textContent = displayValue(value);
         });
       }
 
@@ -3278,10 +3388,13 @@
       function closeModal() {
         modal.classList.remove('show');
         modal.setAttribute('aria-hidden', 'true');
-        historyBtn.focus();
+        if (lastFocusedHistoryBtn) lastFocusedHistoryBtn.focus();
       }
 
-      historyBtn.addEventListener('click', () => {
+      tbody.addEventListener('click', (event) => {
+        const historyBtn = event.target.closest('.rental-detail-row-history-btn');
+        if (!historyBtn) return;
+        lastFocusedHistoryBtn = historyBtn;
         fillModalFromRow(historyBtn.closest('tr'));
         openModal();
       });
@@ -3296,6 +3409,79 @@
       });
     }
 
+    /** 取引先マスタ（デモ） */
+    const tokuisakiMasterByCode = {
+      C0001: { name: '取引先名１', eigyotanto: '営業担当①' },
+      C0002: { name: '取引先名２', eigyotanto: '営業担当②' },
+      C0003: { name: '取引先名３', eigyotanto: '営業担当③' },
+      C0004: { name: '取引先名４', eigyotanto: '営業担当④' },
+      C0005: { name: '取引先名５', eigyotanto: '営業担当⑤' }
+    };
+
+    function syncRentalDetailTokuisakiDisplay(code) {
+      const tokuisakiNameEl = document.getElementById('rentalDetailTokuisakiName');
+      const eigyotantoEl = document.getElementById('rentalDetailEigyotanto');
+      const master = code ? tokuisakiMasterByCode[code] : null;
+      const name = master ? master.name : '';
+      const eigyotanto = master ? master.eigyotanto : '';
+
+      if (tokuisakiNameEl) {
+        tokuisakiNameEl.textContent = name || '—';
+        tokuisakiNameEl.classList.toggle('is-empty', !name);
+      }
+      if (eigyotantoEl) {
+        eigyotantoEl.textContent = eigyotanto || '—';
+        eigyotantoEl.classList.toggle('is-empty', !eigyotanto);
+      }
+    }
+
+    function initRentalDetailHeaderFields() {
+      const tokuisakiCodeEl = document.getElementById('rentalDetailTokuisakiCode');
+      if (!tokuisakiCodeEl) return;
+
+      tokuisakiCodeEl.addEventListener('change', () => {
+        syncRentalDetailTokuisakiDisplay(String(tokuisakiCodeEl.value || '').trim());
+      });
+
+      syncRentalDetailTokuisakiDisplay(String(tokuisakiCodeEl.value || '').trim());
+    }
+
+    /** 商品マスタ（デモ） */
+    const productMasterByCode = {
+      A10023: { name: 'ロゴプリントTシャツ', unit: '枚' },
+      B30012: { name: 'キャンバストート', unit: '個' },
+      C40001: { name: 'エコバッグ', unit: '個' },
+      D50001: { name: 'ステッカーセット', unit: 'セット' }
+    };
+
+    function productCodeSelectOptionsHtml(selectedCode) {
+      let html = '<option value="">未選択</option>';
+      Object.keys(productMasterByCode).forEach((code) => {
+        const selected = code === selectedCode ? ' selected' : '';
+        html += `<option value="${code}"${selected}>${code}</option>`;
+      });
+      return html;
+    }
+
+    function syncProductDisplayForRow(tr) {
+      const select = tr.querySelector('.rental-detail-product-code-select');
+      const nameEl = tr.querySelector('.rental-detail-product-name');
+      const unitEl = tr.querySelector('.rental-detail-product-unit');
+      const code = select ? String(select.value || '').trim() : '';
+      const master = code ? productMasterByCode[code] : null;
+      const name = master ? master.name : '';
+      const unit = master ? master.unit : '';
+
+      if (nameEl) {
+        nameEl.textContent = name || '—';
+        nameEl.classList.toggle('is-empty', !name);
+      }
+      if (unitEl) {
+        unitEl.textContent = unit || '—';
+        unitEl.classList.toggle('is-empty', !unit);
+      }
+    }
+
     function initRentalDetailEntryTable() {
       const tbody = document.getElementById('rentalDetailEntryTbody');
       const addBtn = document.getElementById('rentalDetailRowAddBtn');
@@ -3307,7 +3493,7 @@
           const noCell = tr.querySelector('td');
           if (noCell) noCell.textContent = String(i + 1);
           const n = i + 1;
-          tr.querySelectorAll('input, select').forEach((el) => {
+          tr.querySelectorAll('input, select, .rental-detail-product-name, .rental-detail-product-unit, .rental-detail-row-history-btn').forEach((el) => {
             const lab = el.getAttribute('aria-label') || '';
             const m = lab.match(/行\d+\s*(.+)$/);
             const tail = m ? m[1] : lab.replace(/^行\d+\s*/, '');
@@ -3316,15 +3502,24 @@
         });
       }
 
-      function unitSelectCellHtml(idx) {
+      function productCodeSelectCellHtml(idx, selectedCode) {
         return (
-          `<td><select class="form-control" aria-label="行${idx} 単位">`
-          + '<option value="">未選択</option>'
-          + '<option value="枚">枚</option>'
-          + '<option value="個">個</option>'
-          + '<option value="セット">セット</option>'
+          `<td><select class="form-control rental-detail-product-code-select" aria-label="行${idx} 商品コード">`
+          + productCodeSelectOptionsHtml(selectedCode)
           + '</select></td>'
         );
+      }
+
+      function productNameDisplayCellHtml(idx, name) {
+        const text = name || '—';
+        const emptyClass = name ? '' : ' is-empty';
+        return `<td><span class="rental-detail-cell-display rental-detail-product-name${emptyClass}" aria-label="行${idx} 商品名">${text}</span></td>`;
+      }
+
+      function productUnitDisplayCellHtml(idx, unit) {
+        const text = unit || '—';
+        const emptyClass = unit ? '' : ' is-empty';
+        return `<td><span class="rental-detail-cell-display rental-detail-product-unit${emptyClass}" aria-label="行${idx} 単位">${text}</span></td>`;
       }
 
       function confirmSelectCellHtml(idx) {
@@ -3338,25 +3533,36 @@
         );
       }
 
+      function historyButtonCellHtml(idx) {
+        return (
+          `<td><button type="button" class="btn-fab-new rental-detail-row-history-btn" style="font-size: 12px;width: 55px;" aria-label="行${idx} 履歴" aria-haspopup="dialog" aria-controls="historyModal">履歴</button></td>`
+        );
+      }
+
       function appendEmptyRow() {
         const tr = document.createElement('tr');
         const idx = tbody.querySelectorAll('tr').length + 1;
         tr.innerHTML = ''
           + `<td>${idx}</td>`
-          + `<td><input type="text" class="form-control" placeholder="取引先コード" autocomplete="off" aria-label="行${idx} 取引先コード"></td>`
-          + `<td><input type="text" class="form-control" placeholder="取引先名" autocomplete="off" aria-label="行${idx} 取引先名"></td>`
-          + `<td><input type="text" class="form-control" placeholder="営業担当" autocomplete="off" aria-label="行${idx} 営業担当"></td>`
-          + `<td><input type="text" class="form-control" placeholder="商品コード" autocomplete="off" aria-label="行${idx} 商品コード"></td>`
-          + `<td><input type="text" class="form-control" placeholder="品番" autocomplete="off" aria-label="行${idx} 品番"></td>`
-          + `<td><input type="text" class="form-control" placeholder="商品名" autocomplete="off" aria-label="行${idx} 商品名"></td>`
-          + unitSelectCellHtml(idx)
+          + productCodeSelectCellHtml(idx, '')
+          + productNameDisplayCellHtml(idx, '')
           + `<td><input type="number" class="form-control" placeholder="数量" inputmode="numeric" aria-label="行${idx} 数量"></td>`
+          + productUnitDisplayCellHtml(idx, '')
           + `<td><input type="text" class="form-control" placeholder="使用目的" autocomplete="off" aria-label="行${idx} 使用目的"></td>`
           + confirmSelectCellHtml(idx)
-          + `<td>&nbsp;</td>`;
+          + historyButtonCellHtml(idx);
         tbody.appendChild(tr);
         renumberRows();
       }
+
+      tbody.addEventListener('change', (event) => {
+        const select = event.target.closest('.rental-detail-product-code-select');
+        if (!select) return;
+        const tr = select.closest('tr');
+        if (tr) syncProductDisplayForRow(tr);
+      });
+
+      Array.from(tbody.querySelectorAll('tr')).forEach((tr) => syncProductDisplayForRow(tr));
 
       addBtn.addEventListener('click', () => appendEmptyRow());
 
@@ -3379,6 +3585,7 @@
     initSampleRentalEntryEmbedReasonOther();
     initPreviewModal();
     initHistoryModal();
+    initRentalDetailHeaderFields();
     initRentalDetailEntryTable();
   </script>
 </body>
